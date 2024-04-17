@@ -3,18 +3,10 @@ import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-    const exemplares = await prisma.exemplar.findMany({
-        take: 10,
-        include: {
-            livro_exemplar_livroTolivro: {
-                select: {
-                    tombo: true,
-                    titulo: true
-                }
-            }
-        }
+    const colecoes = await prisma.serie.findMany({
+        take: 10
     });
-    return { exemplares };
+    return { colecoes };
 }
 
 export const actions: Actions = {

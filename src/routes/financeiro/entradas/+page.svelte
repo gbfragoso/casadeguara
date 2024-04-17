@@ -18,6 +18,7 @@
             <th scope="col">Contribuinte</th>
             <th scope="col">Valor</th>
             <th scope="col">Data</th>
+            <th scope="col">Ações</th>
         </thead>
         <tbody>
             {#each data.entradas as entrada}
@@ -25,6 +26,12 @@
                     <td>{entrada.contribuinte_entradas_contribuinteTocontribuinte?.nome}</td>
                     <td>{entrada.valor}</td>
                     <td>{formatarData(entrada.data_entrada)}</td>
+                    <td>
+                        <form method="POST">
+                            <button formaction="?/editar"><i class="fa-solid fa-pen-to-square">Editar</i></button>
+                            <button formaction="?/excluir"><i class="fa-regular fa-trash-can">Excluir</i></button>
+                        </form>
+                    </td>
                 </tr>
             {/each}
         </tbody>
