@@ -1,19 +1,16 @@
 import { prisma } from '$lib/server/prisma';
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ url }) => {
+    const nome = url.searchParams.get('nome')?.toUpperCase() || undefined;
     const leitores = await prisma.leitor.findMany({
-        take: 10
+        take: 10,
+        where: {
+            nome: {
+                contains: nome
+            }
+        }
     });
     return { leitores };
 }
-
-export const actions: Actions = {
-    editar: async (event) => {
-		console.log("editar");
-	},
-    excluir: async (event) => {
-		console.log("excluir");
-	}
-};

@@ -1,8 +1,13 @@
 import { prisma } from '$lib/server/prisma';
+import { fail, error } from '@sveltejs/kit';
+
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ url }) => {
+    const tombo = url.searchParams.get('tombo') || undefined;
+    const titulo = url.searchParams.get('titulo')?.toUpperCase() || undefined;
+    const status = url.searchParams.get('status') || undefined;
     const exemplares = await prisma.exemplar.findMany({
         take: 10,
         include: {
@@ -12,16 +17,41 @@ export const load: PageServerLoad = async ({ params }) => {
                     titulo: true
                 }
             }
+        },
+        where: {
+            livro_exemplar_livroTolivro: {
+                titulo: {
+                    contains: titulo
+                },
+                tombo: {
+                    startsWith: tombo
+                }
+            },
+            status: status
         }
     });
     return { exemplares };
 }
 
 export const actions: Actions = {
-    editar: async (event) => {
-		console.log("editar");
-	},
-    excluir: async (event) => {
-		console.log("excluir");
-	}
+    excluir: async ({ url }) => {
+        const id = url.searchParams.get("id");
+        if (!id) {
+            return fail(400, { message: 'Nenhum exemplar foi selecionada para exclusão' });
+        }
+
+        try {
+            await prisma.exemplar.delete({
+                where: {
+                    idexemplar: Number(id)
+                }
+            });
+        } catch (err) {
+            return error(500, { message: 'Falha ao excluir o exemplar' });
+        }
+
+        return {
+            status: 200
+        }
+    }
 };
