@@ -6,7 +6,30 @@ import type { Actions } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
     const tombo = url.searchParams.get('tombo') || undefined;
+    const autor = url.searchParams.get('autor') || undefined;
     const titulo = url.searchParams.get('titulo')?.toUpperCase() || undefined;
+    await prisma.autor_has_livro.findMany({
+        include: {
+            livro_autor_has_livro_livroTolivro: {
+                select: {
+                    tombo: true,
+                    titulo: true
+                }
+            },
+            autor_autor_has_livro_autorToautor: {
+                select: {
+                    nome: true
+                }
+            }
+        },
+        where: {
+            autor_autor_has_livro_autorToautor: {
+                nome: {
+                    startsWith: autor
+                }
+            }
+        }
+    })
     const status = url.searchParams.get('status') || undefined;
     const exemplares = await prisma.exemplar.findMany({
         take: 10,

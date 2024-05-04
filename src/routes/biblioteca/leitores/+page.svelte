@@ -5,15 +5,19 @@
 	$: ({ leitores } = data);
 </script>
 
-<div>Consulta de leitores</div>
+<h1>Consulta de leitores</h1>
 
-<form action="/biblioteca/leitores" method="GET">
-	<input type="text" name="nome" id="nome" />
-	<button>Pesquisar</button>
-</form>
-<a href="/biblioteca/leitores/novo">
-	<button>Novo</button>
-</a>
+<div class="grid">
+	<form action="/biblioteca/leitores" method="GET">
+		<fieldset role="group">
+			<input type="text" name="nome" id="nome" />
+			<button class="outline secondary">Pesquisar</button>
+		</fieldset>
+	</form>
+	<a href="/biblioteca/leitores/novo">
+		<button>Novo</button>
+	</a>
+</div>
 <table>
 	<thead>
 		<th>Nome</th>
@@ -37,7 +41,7 @@
 				{/if}
 				<td>
 					<a href="/biblioteca/leitores/{leitor.idleitor}">
-						<i class="fa-solid fa-pen-to-square">Editar</i>
+						<i class="fa-solid fa-pen-to-square"></i>
 					</a>
 				</td>
 			</tr>

@@ -1,10 +1,12 @@
-<script>
-	import "../app.css";
-	import '@fortawesome/fontawesome-free/css/all.min.css'
+<script lang="ts">
+	import '../app.css';
+	import '@picocss/pico/css/pico.min.css';
+	import '@picocss/pico/css/pico.colors.min.css';
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 </script>
 
 <header>
-	<div class="container">
+	<div class="container-fluid">
 		<nav>
 			<ul>
 				<li><strong>Casa de Guará</strong></li>

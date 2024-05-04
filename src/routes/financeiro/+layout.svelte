@@ -1,4 +1,4 @@
-<div class="wrapper">
+<main class="wrapper container-fluid">
 	<aside class="pico-background-gray-50">
 		<nav>
 			<ul>
@@ -8,7 +8,7 @@
 			</ul>
 		</nav>
 	</aside>
-	<main class="container grid pico-background-slate-50">
+	<section>
 		<slot />
-	</main>
-</div>
+	</section>
+</main>

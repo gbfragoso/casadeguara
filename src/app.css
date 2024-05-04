@@ -2,8 +2,19 @@ header {
     grid-area: header;
 }
 
+body {
+    font-family: sans-serif;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+}
+
 main {
     grid-area: main;
+}
+
+main>section {
+    grid-area: section;
+    margin: 2.5rem 1rem;
 }
 
 nav {
@@ -11,6 +22,8 @@ nav {
 }
 
 aside {
+    font-size: 1rem;
+    margin-top: 2.5rem;
     grid-area: sidebar;
 }
 
@@ -18,14 +31,26 @@ footer {
     grid-area: footer;
 }
 
+td>a {
+    align-content: center;
+}
+
+td>div>form>button {
+    margin: 0;
+    padding: 0;
+    color: #0172ad;;
+    background-color: transparent; 
+    border: 0px solid;
+    align-content: center;
+}
+
 @media (min-width: 700px) {
     .wrapper {
         display: grid;
-        grid-template-columns: 1fr 4fr 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-columns: 15rem 1fr 15rem;
         grid-template-areas:
-            "sidebar header  header"
-            "sidebar main main"
-            "sidebar main main"
+            "sidebar section aside"
             "sidebar footer footer";
     }
 }
