@@ -4,20 +4,32 @@
 </script>
 
 <hgroup>
-	<h2>Entradas</h2>
-	<p>Lançamento de doações e valores recebidos</p>
+	<h2>Despesas</h2>
+	<p>Lançamento de despesas</p>
 </hgroup>
 
 <form method="POST">
-    <label for="nome">Doador</label>
-	<input type="text" name="nome" id="nome" placeholder="Digite o nome do doador" />
-    <label for="nome">Valor</label>
-    <input type="number" name="valor" id="valor" min="1" step="any" placeholder="Digite o valor da doação"/>
-    <label for="nome">Data da doação</label>
-    <input type="date" name="data_entrada" aria-label="Date" />
+	<label for="nome">Valor</label>
+	<input
+		type="number"
+		name="valor"
+		id="valor"
+		min="1"
+		step="any"
+		placeholder="Digite o valor do pagamento"
+	/>
+	<label for="nome">Descrição</label>
+	<input
+		type="text"
+		name="categoria"
+		id="categoria"
+		placeholder="Digite a descrição do pagamento"
+	/>
+	<label for="nome">Data da pagamento</label>
+	<input type="date" name="data_despesa" aria-label="Date" />
 	<button>Cadastrar</button>
 </form>
 
 {#if form?.status === 201}
-	<p>Doação cadastrada com sucesso!</p>
+	<p>Pagamento cadastrado com sucesso!</p>
 {/if}

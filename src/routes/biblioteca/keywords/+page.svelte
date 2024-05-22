@@ -25,8 +25,8 @@
 				<td>{keyword.chave}</td>
 				<td>
 					<a href="/biblioteca/keywords/{keyword.idkeyword}">
-                        <i class="fa-solid fa-pen-to-square">Editar</i>
-                    </a>
+						<i class="fa-solid fa-pen-to-square">Editar</i>
+					</a>
 					<form action="?/excluir&id={keyword.idkeyword}" method="POST">
 						<button><i class="fa-regular fa-trash-can">Excluir</i></button>
 					</form>

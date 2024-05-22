@@ -40,8 +40,8 @@
 				<td>{livro.serie_livro_serieToserie?.nome || ''}</td>
 				<td>
 					<a href="/biblioteca/livros/{livro.idlivro}">
-                        <i class="fa-solid fa-pen-to-square">Editar</i>
-                    </a>
+						<i class="fa-solid fa-pen-to-square">Editar</i>
+					</a>
 					<form action="?/excluir&id={livro.idlivro}" method="POST">
 						<button><i class="fa-regular fa-trash-can">Excluir</i></button>
 					</form>

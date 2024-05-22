@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id      String    @id
+  Session Session[]
+}
+
 model acesso {
   idacesso                                             Int                  @id(map: "pk_acesso") @default(autoincrement()) @db.SmallInt
   conteudo                                             String?              @db.VarChar(40)
@@ -47,10 +59,10 @@ model configuracao {
 }
 
 model contribuinte {
-  idcontribuinte                               Int        @id(map: "contribuinte_pk") @default(autoincrement()) @db.SmallInt
-  nome                                         String     @db.VarChar(200)
-  trabalhador                                  Boolean
-  entradas_entradas_contribuinteTocontribuinte entradas[] @relation("entradas_contribuinteTocontribuinte")
+  idcontribuinte Int        @id(map: "contribuinte_pk") @default(autoincrement()) @db.SmallInt
+  nome           String     @db.VarChar(200)
+  trabalhador    Boolean
+  entradas       entradas[]
 }
 
 model editora {
@@ -76,11 +88,14 @@ model emprestimo {
 }
 
 model entradas {
-  identrada                                        Int           @id(map: "entradas_pk") @default(autoincrement()) @db.SmallInt
-  valor                                            Decimal       @db.Decimal
-  data_entrada                                     DateTime      @default(now()) @db.Date
-  contribuinte                                     Int?
-  contribuinte_entradas_contribuinteTocontribuinte contribuinte? @relation("entradas_contribuinteTocontribuinte", fields: [contribuinte], references: [idcontribuinte], onDelete: NoAction, onUpdate: NoAction, map: "entradas_contribuinte_fk")
+  identrada      Int          @id(map: "entradas_pk") @default(autoincrement())
+  descricao      String       @db.VarChar(200)
+  valor          Decimal      @db.Decimal
+  data_entrada   DateTime     @default(now()) @db.Date
+  idcontribuinte Int
+  user_cadastro  Int?         @db.SmallInt
+  user_alteracao Int?         @db.SmallInt
+  contribuinte   contribuinte @relation(fields: [idcontribuinte], references: [idcontribuinte], onDelete: NoAction, onUpdate: NoAction, map: "entradas_contribuinte_fk")
 }
 
 model exemplar {
@@ -157,10 +172,12 @@ model reserva {
 }
 
 model saidas {
-  idsaida    Int      @id(map: "saidas_pk") @db.SmallInt
-  valor      Decimal  @db.Decimal
-  data_saida DateTime @db.Timetz(6)
-  categoria  String   @db.VarChar(100)
+  idsaida        Int      @id(map: "saidas_pk") @default(autoincrement())
+  descricao      String   @db.VarChar(200)
+  valor          Decimal  @db.Decimal
+  data_saida     DateTime @default(now()) @db.Date
+  user_cadastro  Int?     @db.SmallInt
+  user_alteracao Int?     @db.SmallInt
 }
 
 model serie {

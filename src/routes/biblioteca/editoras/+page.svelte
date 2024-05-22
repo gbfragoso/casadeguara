@@ -25,8 +25,8 @@
 				<td>{editora.nome}</td>
 				<td>
 					<a href="/biblioteca/editoras/{editora.ideditora}">
-                        <i class="fa-solid fa-pen-to-square">Editar</i>
-                    </a>
+						<i class="fa-solid fa-pen-to-square">Editar</i>
+					</a>
 					<form action="?/excluir&id={editora.ideditora}" method="POST">
 						<button><i class="fa-regular fa-trash-can">Excluir</i></button>
 					</form>

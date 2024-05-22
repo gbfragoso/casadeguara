@@ -1,56 +1,114 @@
-header {
-    grid-area: header;
+html,
+body {
+	margin: 0;
+	height: 100svh;
+	background-color: #fafbfc;
 }
 
 body {
-    font-family: sans-serif;
-    font-feature-settings: normal;
-    font-variation-settings: normal;
+	font-family: sans-serif;
+	font-feature-settings: normal;
+	font-variation-settings: normal;
 }
 
-main {
-    grid-area: main;
-}
-
-main>section {
-    grid-area: section;
-    margin: 2.5rem 1rem;
+main > section {
+	grid-area: section;
+	padding: 1rem 2rem;
 }
 
 nav {
-    grid-area: nav;
+	grid-area: nav;
+	padding: 1rem 2rem;
+}
+
+a > button {
+	width: 100%;
 }
 
 aside {
-    font-size: 1rem;
-    margin-top: 2.5rem;
-    grid-area: sidebar;
+	font-size: 1rem;
+	grid-area: sidebar;
+}
+
+.card {
+	margin-bottom: var(--pico-block-spacing-vertical);
+	padding: var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);
+	border-radius: var(--pico-border-radius);
+	background: var(--pico-card-background-color);
+	box-shadow: var(--pico-card-box-shadow);
 }
 
 footer {
-    grid-area: footer;
+	grid-area: footer;
 }
 
-td>a {
-    align-content: center;
+td > a {
+	align-content: center;
+	text-decoration: none;
 }
 
-td>div>form>button {
-    margin: 0;
-    padding: 0;
-    color: #0172ad;;
-    background-color: transparent; 
-    border: 0px solid;
-    align-content: center;
+td > div > form > button {
+	margin: 0;
+	padding: 0;
+	color: #0172ad;
+	background-color: transparent;
+	border: 0px solid;
+	align-content: center;
+}
+
+.form-entradas > label {
+	text-transform: uppercase;
+}
+
+.flex-container {
+	display: flex;
+	flex-direction: row;
+	grid-gap: var(--pico-spacing);
+}
+
+.flex-end {
+	justify-content: end;
+}
+
+.flex-center {
+	align-items: center;
+	justify-content: center;
+}
+
+.pagination {
+	display: flex;
+	flex-direction: row;
+	grid-gap: var(--pico-spacing);
+	align-items: center;
+	justify-content: center;
+}
+
+.pagination button {
+	border: none;
+	padding: 0;
+}
+
+.pagination p {
+	margin: 0;
+}
+
+.sidebar {
+	border-radius: var(--pico-border-radius);
 }
 
 @media (min-width: 700px) {
-    .wrapper {
-        display: grid;
-        grid-template-rows: auto 1fr;
-        grid-template-columns: 15rem 1fr 15rem;
-        grid-template-areas:
-            "sidebar section aside"
-            "sidebar footer footer";
-    }
+	.wrapper {
+		display: grid;
+		grid-template-rows: auto 1fr;
+		grid-template-columns: 15rem 1fr 15rem;
+		grid-template-areas: 'sidebar section section';
+	}
+}
+
+@media (max-width: 1200px) {
+	.flex-container {
+		display: flex;
+		flex-direction: column;
+		grid-gap: var(--pico-spacing);
+	}
 }

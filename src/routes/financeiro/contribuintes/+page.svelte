@@ -3,8 +3,23 @@
 	export let data: PageData;
 </script>
 
-<section>
+<hgroup>
 	<h2>Contribuintes</h2>
+</hgroup>
+
+<form action="/financeiro/contribuintes" method="GET" role="search">
+	<input
+		type="search"
+		name="categoria"
+		id="categoria"
+		placeholder="Digite o nome do contribuinte"
+	/>
+	<input type="date" name="dataInicio" aria-label="Date" />
+	<input type="date" name="dataFim" aria-label="Date" />
+	<button class="outline" value="search">Pesquisar</button>
+</form>
+
+<div class="overflow-auto">
 	<table>
 		<thead>
 			<th scope="col">Contribuinte</th>
@@ -22,12 +37,13 @@
 					{/if}
 					<td>
 						<form method="POST">
-							<button formaction="?/editar"><i class="fa-solid fa-pen-to-square">Editar</i></button>
-							<button formaction="?/excluir"><i class="fa-regular fa-trash-can">Excluir</i></button>
+							<a href="/financeiro/contribuintes/{contribuinte.idcontribuinte}">
+								<i class="fa-solid fa-pen-to-square"></i>
+							</a>
 						</form>
 					</td>
 				</tr>
 			{/each}
 		</tbody>
 	</table>
-</section>
+</div>

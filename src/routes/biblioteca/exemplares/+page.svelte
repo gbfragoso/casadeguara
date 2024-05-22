@@ -38,8 +38,8 @@
 				<td>{exemplar.status}</td>
 				<td>
 					<a href="/biblioteca/exemplares/{exemplar.idexemplar}">
-                        <i class="fa-solid fa-pen-to-square">Editar</i>
-                    </a>
+						<i class="fa-solid fa-pen-to-square">Editar</i>
+					</a>
 					<form action="?/excluir&id={exemplar.idexemplar}" method="POST">
 						<button><i class="fa-regular fa-trash-can">Excluir</i></button>
 					</form>

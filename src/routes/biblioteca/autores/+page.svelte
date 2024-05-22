@@ -18,7 +18,7 @@
 </div>
 <div class="overflow-auto">
 	<table class="striped">
-		<thead>
+		<thead class="pico-background-azure-500">
 			<th>Nome</th>
 			<th>Ações</th>
 		</thead>

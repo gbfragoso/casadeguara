@@ -1,11 +1,11 @@
 <script lang="ts">
-    import type { PageServerData } from "./$types";
-    export let data: PageServerData;
+	import type { PageServerData } from './$types';
+	export let data: PageServerData;
 
-    $: ({editora} = data);
+	$: ({ editora } = data);
 </script>
 
 <form action="?/update" method="POST">
-    <input type="text" name="nome" id="nome" value={editora.nome}>
-    <button>Atualizar</button>
+	<input type="text" name="nome" id="nome" value={editora.nome} />
+	<button>Atualizar</button>
 </form>

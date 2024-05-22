@@ -45,6 +45,6 @@
 			<input type="checkbox" name="status" id="status" checked={leitor.status} />Ativo
 		</span>
 	</fieldset>
-	
+
 	<button>Atualizar</button>
 </form>
