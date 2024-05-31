@@ -59,8 +59,8 @@
 <div class="card overflow-auto">
 	<table class="striped">
 		<thead>
-			<th scope="col">Valor</th>
 			<th scope="col">Descrição</th>
+			<th scope="col">Valor</th>
 			<th scope="col">Data</th>
 			<th scope="col">Ações</th>
 		</thead>
@@ -70,8 +70,8 @@
 			{:then}
 				{#each saidas as saida}
 					<tr>
-						<td>R$ {saida.valor}</td>
 						<td>{saida.descricao}</td>
+						<td>R$ {saida.valor}</td>
 						<td>{formatarData(saida.data_saida)}</td>
 						<td>
 							<a href="/financeiro/saidas/{saida.idsaida}">

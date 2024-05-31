@@ -10,13 +10,8 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.leitor.create({
-				data: {
-					nome: nome.toUpperCase()
-				}
-			});
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar uma nova palavra-chave' });
+			return error(500, { message: 'Falha ao criar uma nova exemplar' });
 		}
 
 		return {

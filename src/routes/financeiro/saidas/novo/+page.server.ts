@@ -5,23 +5,23 @@ import type { Actions } from './$types';
 
 export const actions: Actions = {
 	default: async ({ request }) => {
-		const { categoria, valor, data_saida } = Object.fromEntries(await request.formData()) as {
-			categoria: string;
+		const { descricao, valor, data_saida } = Object.fromEntries(await request.formData()) as {
+			descricao: string;
 			valor: string;
 			data_saida: string;
 		};
 
 		try {
-			await prisma.despesas.create({
+			await prisma.saidas.create({
 				data: {
 					valor: valor,
-					categoria: categoria,
-					data_despesa: new Date(data_saida)
+					descricao: descricao,
+					data_saida: new Date(data_saida)
 				}
 			});
 		} catch (err) {
 			console.error(err);
-			return error(500, { message: 'Falha ao cadastrar uma nova doação' });
+			return error(500, { message: 'Falha ao cadastrar um novo pagamento' });
 		}
 
 		return {

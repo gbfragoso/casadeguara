@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatarData } from '$lib/js/date';
+	import dayjs from 'dayjs';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { PageServerData } from './$types';
@@ -94,7 +94,7 @@
 							})}</td
 						>
 						<td>{entrada.descricao}</td>
-						<td>{formatarData(entrada.data_entrada)}</td>
+						<td>{dayjs(entrada.data_entrada).format('DD/MM/YYYY')}</td>
 						<td>
 							<a href="/financeiro/entradas/{entrada.identrada}">
 								<i class="fa-solid fa-pen-to-square"></i>

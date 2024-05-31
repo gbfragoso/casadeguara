@@ -22,7 +22,6 @@
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
-		"lucia": "^3.2.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
 		"prisma": "^5.12.1",
@@ -41,6 +40,8 @@
 		"@prisma/adapter-pg": "^5.10.2",
 		"@prisma/client": "^5.10.2",
 		"chart.js": "^4.4.2",
+		"dayjs": "^1.11.11",
+		"lucia": "^3.2.0",
 		"pg": "^8.11.3",
 		"svelte-chartjs": "^3.1.5",
 		"svelte-routing": "^2.12.0"

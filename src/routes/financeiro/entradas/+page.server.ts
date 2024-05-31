@@ -34,6 +34,9 @@ export const load: PageServerLoad = async ({ url }) => {
 						startsWith: nome
 					}
 				}
+			},
+			orderBy: {
+				data_entrada: 'desc'
 			}
 		});
 

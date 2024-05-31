@@ -1,11 +1,21 @@
 import { prisma } from '$lib/server/prisma';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
+	const page = Number(url.searchParams.get('page') || 1);
+	const nome = url.searchParams.get('nome')?.toUpperCase() || undefined;
+
 	const contribuintes = await prisma.contribuinte.findMany({
-		skip: 0,
-		take: 50
+		skip: (page - 1) * 10,
+		take: 10,
+		where: {
+			nome: {
+				startsWith: nome
+			}
+		}
 	});
 
-	return { contribuintes };
+	const total = await prisma.contribuinte.count();
+
+	return { contribuintes, total };
 };

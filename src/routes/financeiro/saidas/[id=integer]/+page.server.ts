@@ -5,16 +5,16 @@ import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const entrada = await prisma.entradas.findUnique({
+	const saida = await prisma.saidas.findUnique({
 		where: {
-			identrada: Number(params.id)
+			idsaida: Number(params.id)
 		}
 	});
 
-	if (!entrada) {
-		throw error(404, 'Entrada não encontrada');
+	if (!saida) {
+		throw error(404, 'Saída não encontrada');
 	}
-	return { entrada: JSON.parse(JSON.stringify(entrada)) };
+	return { saida: JSON.parse(JSON.stringify(saida)) };
 };
 
 export const actions: Actions = {
@@ -25,17 +25,17 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.entradas.update({
+			await prisma.saidas.update({
 				data: {
 					valor: Number(valor),
-					data_entrada: new Date(data_entrada)
+					data_saida: new Date(data_entrada)
 				},
 				where: {
-					identrada: Number(params.id)
+					idsaida: Number(params.id)
 				}
 			});
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados da entrada' });
+			return error(500, { message: 'Falha ao atualizar os dados da despesa' });
 		}
 
 		return {

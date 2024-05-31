@@ -34,7 +34,7 @@ export const actions: Actions = {
 			if (contribuinte) {
 				await prisma.entradas.create({
 					data: {
-						idcontribuinte: Number(contribuinte),
+						idcontribuinte: Number(contribuinte.idcontribuinte),
 						descricao: descricao,
 						valor: valor,
 						data_entrada: new Date(data_entrada)

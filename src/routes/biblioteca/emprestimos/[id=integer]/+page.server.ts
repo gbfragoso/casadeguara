@@ -5,35 +5,35 @@ import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const leitor = await prisma.leitor.findUnique({
+	const exemplar = await prisma.exemplar.findUnique({
 		where: {
-			idleitor: Number(params.id)
+			idexemplar: Number(params.id)
 		}
 	});
 
-	if (!leitor) {
-		throw error(404, 'Leitor não encontrado');
+	if (!exemplar) {
+		throw error(404, 'Exemplar não encontrado');
 	}
-	return { leitor };
+	return { exemplar };
 };
 
 export const actions: Actions = {
 	update: async ({ request, params }) => {
-		const { nome } = Object.fromEntries(await request.formData()) as {
-			nome: string;
+		const { status } = Object.fromEntries(await request.formData()) as {
+			status: string;
 		};
 
 		try {
-			await prisma.leitor.update({
+			await prisma.exemplar.update({
 				data: {
-					nome: nome.toUpperCase()
+					status: status
 				},
 				where: {
-					idleitor: Number(params.id)
+					idexemplar: Number(params.id)
 				}
 			});
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados do leitor' });
+			return error(500, { message: 'Falha ao atualizar os dados do exemplar' });
 		}
 
 		return {
