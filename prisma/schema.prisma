@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id
+  username      String    @unique @db.VarChar(30)
+  password_hash String    @db.VarChar(2000)
+  roles         String    @db.VarChar(20)
+  Session       Session[]
+}
+
+model acesso {
+  idacesso                                             Int                  @id(map: "pk_acesso") @default(autoincrement()) @db.SmallInt
+  conteudo                                             String?              @db.VarChar(40)
+  usuario_has_acesso_usuario_has_acesso_acessoToacesso usuario_has_acesso[] @relation("usuario_has_acesso_acessoToacesso")
+}
+
+model autor {
+  idautor                                      Int               @id(map: "pk_autor") @default(autoincrement()) @db.SmallInt
+  nome                                         String            @db.VarChar(60)
+  data_cadastro                                DateTime?         @db.Date
+  autor_has_livro_autor_has_livro_autorToautor autor_has_livro[] @relation("autor_has_livro_autorToautor")
+}
+
+model autor_has_livro {
+  autor                              Int
+  livro                              Int
+  autor_autor_has_livro_autorToautor autor @relation("autor_has_livro_autorToautor", fields: [autor], references: [idautor], onDelete: Cascade, onUpdate: NoAction, map: "fk_autor")
+  livro_autor_has_livro_livroTolivro livro @relation("autor_has_livro_livroTolivro", fields: [livro], references: [idlivro], onDelete: Cascade, onUpdate: NoAction, map: "fk_livro")
+
+  @@id([autor, livro], map: "pk_autor_livro")
+}
+
+model aviso {
+  idaviso       Int       @id @default(autoincrement()) @db.SmallInt
+  data_cadastro DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  texto         String    @db.VarChar(300)
+}
+
+model configuracao {
+  idconf               Int     @id(map: "pk_conf") @default(autoincrement()) @db.SmallInt
+  chave                String  @db.Char(128)
+  duracao_emprestimo   Int?    @db.SmallInt
+  duracao_renovacao    Int?    @db.SmallInt
+  limite_emprestimo    Int?    @db.SmallInt
+  limite_renovacao     Int?    @db.SmallInt
+  intervalo_emprestimo Int?    @db.SmallInt
+  cobranca             String?
+}
+
+model contribuinte {
+  idcontribuinte Int        @id(map: "contribuinte_pk") @default(autoincrement()) @db.SmallInt
+  nome           String     @db.VarChar(200)
+  trabalhador    Boolean
+  entradas       entradas[]
+}
+
+model editora {
+  ideditora                    Int       @id(map: "pk_editora") @default(autoincrement()) @db.SmallInt
+  nome                         String    @db.VarChar(60)
+  data_cadastro                DateTime? @db.Date
+  livro_livro_editoraToeditora livro[]   @relation("livro_editoraToeditora")
+}
+
+model emprestimo {
+  idemp                                  Int       @id(map: "pk_emprestimo") @default(autoincrement())
+  leitor                                 Int       @db.SmallInt
+  exemplar                               Int       @db.SmallInt
+  data_emprestimo                        DateTime? @db.Date
+  data_devolucao                         DateTime? @db.Date
+  cobranca                               DateTime? @db.Timestamp(6)
+  renovacoes                             Int?      @default(0) @db.SmallInt
+  user_emprestimo                        Int?      @db.SmallInt
+  user_devolucao                         Int?      @db.SmallInt
+  data_devolvido                         DateTime? @db.Date
+  exemplar_emprestimo_exemplarToexemplar exemplar  @relation("emprestimo_exemplarToexemplar", fields: [exemplar], references: [idexemplar], onDelete: Cascade, onUpdate: NoAction, map: "fk_exemplar")
+  leitor_emprestimo_leitorToleitor       leitor    @relation("emprestimo_leitorToleitor", fields: [leitor], references: [idleitor], onDelete: NoAction, onUpdate: NoAction, map: "fk_leitor")
+}
+
+model entradas {
+  identrada      Int          @id(map: "entradas_pk") @default(autoincrement())
+  descricao      String       @db.VarChar(200)
+  valor          Decimal      @db.Decimal
+  data_entrada   DateTime     @default(now()) @db.Date
+  idcontribuinte Int
+  user_cadastro  Int?         @db.SmallInt
+  user_alteracao Int?         @db.SmallInt
+  contribuinte   contribuinte @relation(fields: [idcontribuinte], references: [idcontribuinte], onDelete: NoAction, onUpdate: NoAction, map: "entradas_contribuinte_fk")
+}
+
+model exemplar {
+  idexemplar                               Int          @id(map: "pk_exemplar") @default(autoincrement()) @db.SmallInt
+  livro                                    Int          @db.SmallInt
+  numero                                   Int          @db.SmallInt
+  status                                   String?      @db.VarChar(15)
+  data_cadastro                            DateTime?    @db.Date
+  emprestimo_emprestimo_exemplarToexemplar emprestimo[] @relation("emprestimo_exemplarToexemplar")
+  livro_exemplar_livroTolivro              livro        @relation("exemplar_livroTolivro", fields: [livro], references: [idlivro], onDelete: NoAction, onUpdate: NoAction, map: "fk_livro")
+}
+
+model keyword {
+  idkeyword                                            Int                 @id(map: "pk_keyword") @default(autoincrement()) @db.SmallInt
+  chave                                                String              @db.VarChar(30)
+  livro_has_keyword_livro_has_keyword_keywordTokeyword livro_has_keyword[] @relation("livro_has_keyword_keywordTokeyword")
+}
+
+model leitor {
+  idleitor                             Int          @id(map: "pk_leitor") @default(autoincrement()) @db.SmallInt
+  nome                                 String       @unique(map: "unique_leitor") @db.VarChar(60)
+  email                                String?      @db.VarChar(60)
+  telefone                             String?      @db.VarChar(12)
+  celular                              String?      @db.VarChar(12)
+  logradouro                           String?      @db.VarChar(80)
+  bairro                               String?      @db.VarChar(30)
+  complemento                          String?      @db.VarChar
+  cep                                  String?      @db.VarChar(11)
+  sexo                                 String?      @db.VarChar(10)
+  data_cadastro                        DateTime?    @db.Date
+  trab                                 Boolean?     @default(false)
+  cidade                               String?      @db.VarChar
+  paciente                             Boolean?
+  incompleto                           Boolean?
+  status                               Boolean?     @default(true)
+  aniversario                          String?      @db.Char(5)
+  rg                                   String?      @db.VarChar(12)
+  cpf                                  String?      @db.VarChar(15)
+  emprestimo_emprestimo_leitorToleitor emprestimo[] @relation("emprestimo_leitorToleitor")
+  reserva_reserva_leitorToleitor       reserva[]    @relation("reserva_leitorToleitor")
+}
+
+model livro {
+  idlivro                                          Int                 @id(map: "pk_livro") @default(autoincrement()) @db.SmallInt
+  tombo                                            String              @unique(map: "tombo_unico") @db.VarChar(8)
+  titulo                                           String              @db.VarChar(80)
+  editora                                          Int?
+  data_cadastro                                    DateTime?           @db.Date
+  serie                                            Int?                @db.SmallInt
+  ordem                                            Int?                @db.SmallInt
+  autor_has_livro_autor_has_livro_livroTolivro     autor_has_livro[]   @relation("autor_has_livro_livroTolivro")
+  exemplar_exemplar_livroTolivro                   exemplar[]          @relation("exemplar_livroTolivro")
+  editora_livro_editoraToeditora                   editora?            @relation("livro_editoraToeditora", fields: [editora], references: [ideditora], onDelete: NoAction, onUpdate: NoAction, map: "fk_editora")
+  serie_livro_serieToserie                         serie?              @relation("livro_serieToserie", fields: [serie], references: [idserie], onDelete: NoAction, onUpdate: NoAction, map: "fk_serie")
+  livro_has_keyword_livro_has_keyword_livroTolivro livro_has_keyword[] @relation("livro_has_keyword_livroTolivro")
+}
+
+model livro_has_keyword {
+  livro                                      Int
+  keyword                                    Int
+  keyword_livro_has_keyword_keywordTokeyword keyword @relation("livro_has_keyword_keywordTokeyword", fields: [keyword], references: [idkeyword], onDelete: Cascade, onUpdate: NoAction, map: "fk_keyword")
+  livro_livro_has_keyword_livroTolivro       livro   @relation("livro_has_keyword_livroTolivro", fields: [livro], references: [idlivro], onDelete: Cascade, onUpdate: NoAction, map: "fk_livro")
+
+  @@id([livro, keyword], map: "pk_livro_keyword")
+}
+
+model reserva {
+  leitor                        Int
+  livro                         Int
+  data_expira                   DateTime? @db.Timestamp(6)
+  leitor_reserva_leitorToleitor leitor    @relation("reserva_leitorToleitor", fields: [leitor], references: [idleitor], onDelete: NoAction, onUpdate: NoAction, map: "fk_leitor")
+
+  @@id([leitor, livro], map: "pk_leitor_exemplar")
+}
+
+model saidas {
+  idsaida        Int      @id(map: "saidas_pk") @default(autoincrement())
+  descricao      String   @db.VarChar(200)
+  valor          Decimal  @db.Decimal
+  data_saida     DateTime @default(now()) @db.Date
+  user_cadastro  Int?     @db.SmallInt
+  user_alteracao Int?     @db.SmallInt
+}
+
+model serie {
+  idserie                  Int       @id(map: "pk_serie") @default(autoincrement()) @db.SmallInt
+  nome                     String    @db.VarChar(60)
+  data_cadastro            DateTime? @db.Date
+  livro_livro_serieToserie livro[]   @relation("livro_serieToserie")
+}
+
+model usuario {
+  idusuario                                              Int                  @id(map: "pk_usuario") @default(autoincrement()) @db.SmallInt
+  nome                                                   String?              @db.VarChar(50)
+  login                                                  String               @db.VarChar(20)
+  senha                                                  String               @db.Char(128)
+  tipo                                                   String?              @db.VarChar(15)
+  data_cadastro                                          DateTime?            @db.Date
+  status                                                 Boolean?             @default(true)
+  usuario_has_acesso_usuario_has_acesso_usuarioTousuario usuario_has_acesso[] @relation("usuario_has_acesso_usuarioTousuario")
+}
+
+model usuario_has_acesso {
+  usuario                                     Int
+  acesso                                      Int
+  acesso_usuario_has_acesso_acessoToacesso    acesso  @relation("usuario_has_acesso_acessoToacesso", fields: [acesso], references: [idacesso], onDelete: NoAction, map: "fk_acesso")
+  usuario_usuario_has_acesso_usuarioTousuario usuario @relation("usuario_has_acesso_usuarioTousuario", fields: [usuario], references: [idusuario], onDelete: Cascade, onUpdate: NoAction, map: "fk_usuario")
+
+  @@id([usuario, acesso], map: "pk_usuario_acesso")
+}
