@@ -17,9 +17,10 @@ model Session {
 
 model User {
   id            String    @id
-  username      String    @unique @db.VarChar(30)
   password_hash String    @db.VarChar(2000)
   roles         String    @db.VarChar(20)
+  username      String    @unique @db.VarChar(30)
+  name          String    @db.VarChar(255)
   Session       Session[]
 }
 
