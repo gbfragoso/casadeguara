@@ -4,7 +4,7 @@
     $: ({ } = data);
 </script>
 
-<section class="hero is-info is-fullheight header-image">
+<section class="hero is-info is-large header-image">
     <div class="hero-head">
         <nav class="navbar">
             <div class="container">

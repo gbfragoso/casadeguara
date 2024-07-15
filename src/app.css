@@ -1,13 +1,20 @@
-html,
-body {
-    background-color: #f3f4f6 !important;
-}
-
 body {
     font-family: sans-serif;
     font-feature-settings: normal;
     font-variation-settings: normal;
+    min-height: 100vh !important;
+    background-color: #f3f4f6 !important;
     color: #1B254B !important;
+}
+
+#sidebar {
+    background-color: #ffffff;
+    height: 100vh;
+    border-radius: 0px 18px 18px 0px;
+    position: relative;
+    transition: all .5s;
+    min-width: 82px;
+    z-index: 2;
 }
 
 a {
@@ -26,11 +33,129 @@ tr td {
     border-bottom-style: hidden !important;
 }
 
-.header-image {
-    background-image: url("http://orig14.deviantart.net/7584/f/2015/181/2/7/flat_mountains_landscape_by_ggiuliafilippini-d8zdbco.jpg");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    background-color: #999;
+#user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+#user-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+#user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+#user-info span:last-child {
+    color: #6b6b6b;
+    font-size: 12px;
+}
+
+#sidebar-list {
+    gap: 8px;
+    list-style: none;
+}
+
+.sidebar-item {
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.sidebar-item.active {
+    background-color: #017FC0;
+}
+
+.sidebar-item:hover:not(.active),
+#logout_btn:hover {
+    background-color: #e3e9f7;
+}
+
+.sidebar-item a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0a0a0a;
+}
+
+.sidebar-item.active a {
+    color: #e3e9f7;
+}
+
+.sidebar-item a i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+#logout {
+    border-top: 1px solid #e3e9f7;
+    padding: 12px;
+}
+
+#logout-button {
+    border: none;
+    padding: 12px;
+    font-size: 14px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    border-radius: 8px;
+    text-align: start;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+#sidebar-button {
+    position: absolute;
+    top: 30px;
+    right: -10px;
+    background-color: #017FC0;
+    color: #e3e9f7;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+#sidebar-button-icon {
+    transition: transform .3s ease;
+}
+
+.open-sidebar #sidebar-button-icon {
+    transform: rotate(180deg);
+}
+
+.item-description {
+    width: 0px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    transition: width .6s;
+    height: 0px;
+}
+
+#sidebar.open-sidebar {
+    min-width: 15%;
+}
+
+#sidebar.open-sidebar .item-description {
+    width: 150px;
+    height: auto;
+}
+
+#sidebar.open-sidebar .sidebar-item a {
+    justify-content: flex-start;
+    gap: 1rem;
 }
