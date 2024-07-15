@@ -1,16 +1,14 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import type { LayoutServerData } from "./$types";
 	export let data: LayoutServerData;
 
 	let open = false;
-	$:({name} = data);
+	$:({ name } = data);
 </script>
 
 <main class="is-flex">
-	<nav
-		id="sidebar"
-		class="is-flex is-flex-direction-column is-justify-content-space-between {open === true? 'open-sidebar' : ''}"
-	>
+	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between {open === true? 'open-sidebar' : ''}">
 		<div class="p-3">
 			<div class="mb-5 is-flex is-2 is-align-content-center">
 				<img
@@ -76,10 +74,12 @@
 			</button>
 		</div>
 		<div id="logout">
-			<button id="logout-button">
-				<i class="fa-solid fa-right-from-bracket fa-fw"></i>
-				<span class="item-description">Sair</span>
-			</button>
+			<form action="/logout" method="post" use:enhance>
+				<button id="logout-button">
+					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
+					<span class="item-description">Sair</span>
+				</button>
+			</form>
 		</div>
 	</nav>
 	<section class="section is-flex-grow-1">
