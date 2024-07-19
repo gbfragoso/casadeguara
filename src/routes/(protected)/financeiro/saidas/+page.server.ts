@@ -16,20 +16,22 @@ export const load: PageServerLoad = async ({ url }) => {
 		dataFim = new Date(dataFimString);
 	}
 
+	const where = {
+		data_saida: {
+			lte: dataFim,
+			gte: dataInicio
+		},
+		descricao: {
+			startsWith: descricao
+		}
+	};
+
 	const saidas = await prisma.saidas.findMany({
 		skip: (page - 1) * 10,
 		take: 10,
-		where: {
-			data_saida: {
-				lte: dataFim,
-				gte: dataInicio
-			},
-			descricao: {
-				startsWith: descricao
-			}
-		}
+		where: where
 	});
-	const total = await prisma.saidas.count();
+	const total = await prisma.saidas.count( { where });
 
 	return {
 		saidas: JSON.parse(JSON.stringify(saidas)),

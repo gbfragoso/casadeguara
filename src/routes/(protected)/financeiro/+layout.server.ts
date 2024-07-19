@@ -5,4 +5,9 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     if (!locals.user?.roles.includes('financeiro')) error(401, {
         message: 'Usuário não possui acesso ao sistema da tesouraria',
     });
+    
+    const name = {
+        name: locals.user.name
+    }
+    return name;
 };
