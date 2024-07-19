@@ -1,7 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { autor } from "$lib/server/drizzle/schema";
-import { db } from '$lib/server/drizzle/connection';
-import { ilike, count } from "drizzle-orm";
+import { prisma } from '$lib/server/prisma';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
@@ -9,12 +7,23 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, "/login");
 
 	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('nome') + "%" || undefined;
-	const where = nome !== undefined ? ilike(autor.nome, nome) : undefined;
-
+	const nome = url.searchParams.get('nome')?.toUpperCase() || undefined;
+	const where = {
+		nome: {
+			startsWith: nome
+		}
+	};
+	
 	try {
-		const autores = await db.select().from(autor).offset((page - 1) * 10).where(where).limit(10);
-		const total = await db.select({ count: count() }).from(autor).where(where);
+		const autores = await prisma.autor.findMany({
+			skip: (page - 1) * 10,
+			take: 10,
+			where
+		});
+	
+		const total = await prisma.autor.count({
+			where
+		});
 		return { autores, total };
 	} catch (err) {
 		return error(500, { message: 'Falha ao carregar a lista de autores' });
