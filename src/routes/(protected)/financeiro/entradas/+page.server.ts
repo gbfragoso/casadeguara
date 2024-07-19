@@ -17,6 +17,18 @@ export const load: PageServerLoad = async ({ url }) => {
 		dataFim = new Date(dataFimString);
 	}
 
+	const where = {
+		data_entrada: {
+			lte: dataFim,
+			gte: dataInicio
+		},
+		contribuinte: {
+			nome: {
+				startsWith: nome
+			}
+		}
+	};
+
 	try {
 		const entradas = await prisma.entradas.findMany({
 			skip: (page - 1) * 10,
@@ -24,23 +36,13 @@ export const load: PageServerLoad = async ({ url }) => {
 			include: {
 				contribuinte: true
 			},
-			where: {
-				data_entrada: {
-					lte: dataFim,
-					gte: dataInicio
-				},
-				contribuinte: {
-					nome: {
-						startsWith: nome
-					}
-				}
-			},
+			where: where,
 			orderBy: {
 				data_entrada: 'desc'
 			}
 		});
 
-		const total = await prisma.entradas.count();
+		const total = await prisma.entradas.count({ where });
 
 		return {
 			entradas: JSON.parse(JSON.stringify(entradas)),
