@@ -33,6 +33,7 @@ export const actions: Actions = {
 			data: {
 				id: userId,
 				username: username,
+				name: "",
 				password_hash: passwordHash,
 				roles: ''
 			}
