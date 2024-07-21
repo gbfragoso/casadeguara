@@ -1,20 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { keyword } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const keyword = await prisma.keyword.findUnique({
-		where: {
-			idkeyword: Number(params.id)
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/login");
+
+	try {
+		const resultado = await db.select().from(keyword).where(eq(keyword.idkeyword, Number(params.id)));
+		if (!resultado) {
+			throw fail(404, { message: 'Palavra-chave não encontrada' });
 		}
-	});
-
-	if (!keyword) {
-		throw error(404, 'Palavra-chave não encontrada');
+		return { resultado };
+	} catch (err) {
+		return error(500, { message: 'Falha ao recuperar os dados dao palavra-chave' });
 	}
-	return { keyword };
 };
 
 export const actions: Actions = {
@@ -24,20 +26,10 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.keyword.update({
-				data: {
-					chave: chave.toUpperCase()
-				},
-				where: {
-					idkeyword: Number(params.id)
-				}
-			});
+			await db.update(keyword).set({ chave: chave.toUpperCase() }).where(eq(keyword.idkeyword, Number(params.id)));
+			return { status: 200 }
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados da palavra-chave' });
 		}
-
-		return {
-			status: 200
-		};
 	}
 };

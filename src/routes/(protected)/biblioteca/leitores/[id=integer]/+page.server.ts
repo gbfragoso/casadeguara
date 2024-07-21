@@ -1,20 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { leitor } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const leitor = await prisma.leitor.findUnique({
-		where: {
-			idleitor: Number(params.id)
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/login");
+
+	try {
+		const resultado = await db.select().from(leitor).where(eq(leitor.idleitor, Number(params.id)));
+		if (!resultado) {
+			throw fail(404, { message: 'Leitor não encontrado' });
 		}
-	});
-
-	if (!leitor) {
-		throw error(404, 'Leitor não encontrado');
+		return { resultado };
+	} catch (err) {
+		return error(500, { message: 'Falha ao recuperar os dados do leitor' });
 	}
-	return { leitor };
 };
 
 export const actions: Actions = {
@@ -24,14 +26,7 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.leitor.update({
-				data: {
-					nome: nome.toUpperCase()
-				},
-				where: {
-					idleitor: Number(params.id)
-				}
-			});
+			await db.update(leitor).set({ nome: nome.toUpperCase() }).where(eq(leitor.idleitor, Number(params.id)));
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados do leitor' });
 		}

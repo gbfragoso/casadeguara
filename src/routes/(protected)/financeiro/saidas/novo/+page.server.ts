@@ -1,4 +1,3 @@
-import { prisma } from '$lib/server/prisma';
 import { error } from '@sveltejs/kit';
 
 import type { Actions } from './$types';
@@ -12,13 +11,13 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.saidas.create({
-				data: {
-					valor: valor,
-					descricao: descricao,
-					data_saida: new Date(data_saida)
-				}
-			});
+			// await prisma.saidas.create({
+			// 	data: {
+			// 		valor: valor,
+			// 		descricao: descricao,
+			// 		data_saida: new Date(data_saida)
+			// 	}
+			// });
 		} catch (err) {
 			console.error(err);
 			return error(500, { message: 'Falha ao cadastrar um novo pagamento' });

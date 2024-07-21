@@ -1,11 +1,19 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { leitor, entradas } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async () => {
-	const contribuintes = await prisma.leitor.findMany();
-	return { contribuintes };
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) redirect(302, "/login");
+
+	try {
+		const contribuintes = await db.select({ nome: leitor.nome }).from(leitor);
+		return { contribuintes };
+	} catch (err) {
+		throw fail(500, { message: 'Falha ao carregar a lista de contribuintes' });
+	}
 };
 
 export const actions: Actions = {
@@ -20,39 +28,27 @@ export const actions: Actions = {
 		};
 
 		try {
-			const contribuinte = await prisma.leitor.findFirst({
-				select: {
-					idleitor: true
-				},
-				where: {
-					nome: {
-						startsWith: nome.toUpperCase()
-					}
-				}
-			});
+			const contribuinte = await db.select({ idleitor: leitor.idleitor }).from(leitor).where(eq(leitor.nome, nome.toUpperCase()));
 
 			if (contribuinte) {
-				await prisma.entradas.create({
-					data: {
-						idcontribuinte: Number(contribuinte.idleitor),
-						descricao: descricao,
-						valor: valor,
-						data_entrada: new Date(data_entrada)
-					}
+				await db.insert(entradas).values({
+					idcontribuinte: Number(contribuinte[0].idleitor),
+					descricao: descricao,
+					valor: valor,
+					data_entrada: new Date(data_entrada)
 				});
 			} else {
 				return {
 					status: 400,
 					field: 'nome',
 					message: 'Contribuinte não encontrado'
-				};
+				}
 			}
+			return { status: 201 }
 		} catch (err) {
 			return error(500, { message: 'Falha ao cadastrar uma nova doação' });
 		}
 
-		return {
-			status: 201
-		};
+		
 	}
 } satisfies Actions;

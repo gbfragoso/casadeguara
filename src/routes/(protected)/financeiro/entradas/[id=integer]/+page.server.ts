@@ -1,20 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { entradas } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const entrada = await prisma.entradas.findUnique({
-		where: {
-			identrada: Number(params.id)
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/login");
+
+	try {
+		const entrada = await db.select().from(entradas).where(eq(entradas.identrada, Number(params.id)));
+		if (!entrada) {
+			throw fail(404, { message: 'Entrada não encontrada' });
 		}
-	});
-
-	if (!entrada) {
-		throw error(404, 'Entrada não encontrada');
+		return { entrada: JSON.parse(JSON.stringify(entrada)) };
+	} catch (err) {
+		throw fail(500, { message: 'Falha ao recuperar os dados da entrada' });
 	}
-	return { entrada: JSON.parse(JSON.stringify(entrada)) };
 };
 
 export const actions: Actions = {
@@ -25,21 +27,13 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.entradas.update({
-				data: {
-					valor: Number(valor),
-					data_entrada: new Date(data_entrada)
-				},
-				where: {
-					identrada: Number(params.id)
-				}
-			});
+			await db.update(entradas)
+				.set({ valor: valor, data_entrada: new Date(data_entrada) })
+				.where(eq(entradas.identrada, Number(params.id)));
+
+			return { status: 200 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados da entrada' });
 		}
-
-		return {
-			status: 200
-		};
 	}
 };

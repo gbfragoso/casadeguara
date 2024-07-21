@@ -1,20 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { editora } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const editora = await prisma.editora.findUnique({
-		where: {
-			ideditora: Number(params.id)
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/login");
+
+	try {
+		const resultado = await db.select().from(editora).where(eq(editora.ideditora, Number(params.id)));
+		if (!resultado) {
+			throw fail(404, { message: 'Editora não encontrada' });
 		}
-	});
-
-	if (!editora) {
-		throw error(404, 'Editora não encontrada');
+		return { resultado };
+	} catch (err) {
+		throw error(500, 'Falha ao buscar os dados da editora');
 	}
-	return { editora };
 };
 
 export const actions: Actions = {
@@ -24,20 +26,10 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.editora.update({
-				data: {
-					nome: nome.toUpperCase()
-				},
-				where: {
-					ideditora: Number(params.id)
-				}
-			});
+			await db.update(editora).set({ nome: nome.toUpperCase()}).where(eq(editora.ideditora, Number(params.id)));
+			return { status: 200 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados da editora' });
 		}
-
-		return {
-			status: 200
-		};
 	}
 };

@@ -1,46 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { fail, error } from '@sveltejs/kit';
+import { keyword } from "$lib/database/schema";
+import { ilike, count } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
 
-const removeAccents = function (string: String) {
-	return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-};
+export const load: PageServerLoad = async ({ locals, url }) => {
+	if (!locals.user) redirect(302, "/login");
+	
+	const page = Number(url.searchParams.get('page') || 1);
+	const chave = url.searchParams.get('chave') + "%" || undefined;
+	const where = chave !== undefined ? ilike(keyword.chave, chave) : undefined;
 
-export const load: PageServerLoad = async ({ url, params }) => {
-	const chave = removeAccents(url.searchParams.get('chave') || '');
-	const keywords = await prisma.keyword.findMany({
-		take: 10,
-		where: {
-			chave: {
-				contains: chave.toUpperCase()
-			}
-		}
-	});
-	const total = await prisma.keyword.count();
-	return { keywords, total };
-};
-
-export const actions: Actions = {
-	excluir: async ({ url }) => {
-		const id = url.searchParams.get('id');
-		if (!id) {
-			return fail(400, { message: 'Nenhuma palavra-chave foi selecionada para exclusão' });
-		}
-
-		try {
-			await prisma.keyword.delete({
-				where: {
-					idkeyword: Number(id)
-				}
-			});
-		} catch (err) {
-			return error(500, { message: 'Falha ao excluir a palavra-chave' });
-		}
-
-		return {
-			status: 200
-		};
+	try {
+		const keywords = await db.select().from(keyword).offset((page - 1) * 10).where(where).limit(10);
+		const total = await db.select({ count: count() }).from(keyword).where(where);
+		return { keywords, total };
+	} catch (err) {
+		return error(500, { message: 'Falha ao carregar a lista de palavras-chave' });
 	}
 };

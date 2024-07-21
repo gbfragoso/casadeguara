@@ -1,42 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { fail, error } from '@sveltejs/kit';
+import { editora } from "$lib/database/schema";
+import { ilike, count } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
 
-export const load: PageServerLoad = async ({ url }) => {
-	const nome = url.searchParams.get('nome')?.toUpperCase() || undefined;
-	const editoras = await prisma.editora.findMany({
-		take: 10,
-		where: {
-			nome: {
-				contains: nome
-			}
-		}
-	});
-	const total = await prisma.editora.count();
-	return { editoras, total };
-};
+export const load: PageServerLoad = async ({ locals, url }) => {
+	if (!locals.user) redirect(302, "/login");
 
-export const actions: Actions = {
-	excluir: async ({ url }) => {
-		const id = url.searchParams.get('id');
-		if (!id) {
-			return fail(400, { message: 'Nenhuma editora foi selecionada para exclusão' });
-		}
+	const page = Number(url.searchParams.get('page') || 1);
+	const nome = url.searchParams.get('nome') + "%" || undefined;
+	const where = nome !== undefined ? ilike(editora.nome, nome) : undefined;
 
-		try {
-			await prisma.editora.delete({
-				where: {
-					ideditora: Number(id)
-				}
-			});
-		} catch (err) {
-			return error(500, { message: 'Falha ao excluir a editora' });
-		}
-
-		return {
-			status: 200
-		};
+	try {
+		const editoras = await db.select().from(editora).offset((page - 1) * 10).where(where).limit(10);
+		const total = await db.select({ count: count() }).from(editora).where(where);
+		return { editoras, total };
+	} catch (err) {
+		return error(500, { message: 'Falha ao carregar a lista de editoras' });
 	}
 };
