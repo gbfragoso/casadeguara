@@ -1,9 +1,10 @@
 import { Lucia } from "lucia";
-import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
-import { prisma } from '$lib/server/prisma';
+import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
+import { db } from '$lib/database/connection';
+import { User, Session } from '$lib/database/schema';
 import { dev } from "$app/environment";
 
-const adapter = new PrismaAdapter(prisma.session, prisma.user);
+const adapter = new DrizzlePostgreSQLAdapter(db, Session, User);
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {

@@ -1,5 +1,7 @@
 import { lucia } from "$lib/server/auth";
-import { prisma } from '$lib/server/prisma';
+import { db } from '$lib/database/connection';
+import { User } from '$lib/database/schema';
+import { eq } from "drizzle-orm";
 import { fail, redirect } from "@sveltejs/kit";
 import { verify } from "argon2";
 import type { Actions } from "./$types";
@@ -18,35 +20,30 @@ export const actions: Actions = {
 			return fail(400, { invalidPassword: true });
 		}
 
-		const existingUser = await prisma.user.findFirst({
-			where: {
-				username: email.toLowerCase()
-			}
-		});
-
+		const existingUser = await db.select().from(User).where(eq(User.username, email.toLowerCase()));
 		if (!existingUser) {
 			return fail(400, { failedLogin: true });
 		}
 
-		const validPassword = await verify(existingUser.password_hash, password);
+		const validPassword = await verify(existingUser[0].password_hash, password);
 		if (!validPassword) {
 			return fail(400, { failedLogin: true });
 		}
 
-		const session = await lucia.createSession(existingUser.id, {});
+		const session = await lucia.createSession(existingUser[0].id, {});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: ".",
 			...sessionCookie.attributes
 		});
 
-		if (existingUser.roles.includes('biblioteca')) {
+		if (existingUser[0].roles.includes('biblioteca')) {
 			redirect(302, "/biblioteca");
 		}
-		if (existingUser.roles.includes('financeiro')) {
+		if (existingUser[0].roles.includes('financeiro')) {
 			redirect(302, "/financeiro");
 		}
-		if (existingUser.roles.includes('gestao')) {
+		if (existingUser[0].roles.includes('gestao')) {
 			redirect(302, "/gestao");
 		}
 		redirect(302, "/");

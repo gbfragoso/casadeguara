@@ -1,20 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { autor } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const autor = await prisma.autor.findUnique({
-		where: {
-			idautor: Number(params.id)
+export const load: PageServerLoad = async ({ locals, params}) => {
+	if (!locals.user) redirect(302, "/login");
+	try {
+		const resultado = await db.select().from(autor).where(eq(autor.idautor, Number(params.id)));
+		if (!resultado) {
+			throw fail(404, { message: 'Autor não encontrado' });
 		}
-	});
-
-	if (!autor) {
-		throw error(404, 'Autor não encontrado');
+		return { resultado };
+	} catch (err) {
+		return error(500, { message: 'Falha ao baixar os dados do autor' });
 	}
-	return { autor };
 };
 
 export const actions: Actions = {
@@ -24,14 +26,7 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.autor.update({
-				data: {
-					nome: nome.toUpperCase()
-				},
-				where: {
-					idautor: Number(params.id)
-				}
-			});
+			await db.update(autor).set({ nome: nome.toUpperCase() }).where(eq(autor.idautor, Number(params.id)));
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados do autor' });
 		}

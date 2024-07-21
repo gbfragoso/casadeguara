@@ -1,4 +1,3 @@
-import { prisma } from '$lib/server/prisma';
 import { error } from '@sveltejs/kit';
 
 import type { Actions } from './$types';

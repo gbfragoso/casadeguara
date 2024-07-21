@@ -1,19 +1,19 @@
-import { prisma } from '$lib/server/prisma';
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const exemplar = await prisma.exemplar.findUnique({
-		where: {
-			idexemplar: Number(params.id)
-		}
-	});
+	const exemplar = undefined;
+	// const exemplar = await prisma.exemplar.findUnique({
+	// 	where: {
+	// 		idexemplar: Number(params.id)
+	// 	}
+	// });
 
-	if (!exemplar) {
-		throw error(404, 'Exemplar não encontrado');
-	}
+	// if (!exemplar) {
+	// 	throw error(404, 'Exemplar não encontrado');
+	// }
 	return { exemplar };
 };
 
@@ -24,14 +24,14 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.exemplar.update({
-				data: {
-					status: status
-				},
-				where: {
-					idexemplar: Number(params.id)
-				}
-			});
+			// await prisma.exemplar.update({
+			// 	data: {
+			// 		status: status
+			// 	},
+			// 	where: {
+			// 		idexemplar: Number(params.id)
+			// 	}
+			// });
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados do exemplar' });
 		}

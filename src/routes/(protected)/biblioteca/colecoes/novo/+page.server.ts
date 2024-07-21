@@ -1,7 +1,12 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { serie } from "$lib/database/schema";
+import { db } from '$lib/database/connection';
+import { error, redirect } from '@sveltejs/kit';
 
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
+
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/login");
+}
 
 export const actions: Actions = {
 	default: async ({ request }) => {
@@ -10,11 +15,7 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.serie.create({
-				data: {
-					nome: nome.toUpperCase()
-				}
-			});
+			await db.insert(serie).values({ nome: nome.toUpperCase() });
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar uma nova coleção' });
 		}

@@ -1,13 +1,11 @@
-import { prisma } from '$lib/server/prisma';
+import { autor } from "$lib/database/schema";
+import { db } from '$lib/database/connection';
 import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user) redirect(302, "/login");
-	return {
-		username: event.locals.user.username
-	};
+export const load: PageServerLoad = async ({locals}) => {
+	if (!locals.user) redirect(302, "/login");
 };
 
 export const actions: Actions = {
@@ -17,11 +15,7 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.autor.create({
-				data: {
-					nome: nome.toUpperCase()
-				}
-			});
+			await db.insert(autor).values( { nome: nome.toUpperCase() });
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar um novo autor' });
 		}

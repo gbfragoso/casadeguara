@@ -1,20 +1,22 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { serie } from "$lib/database/schema";
+import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { error, fail, redirect } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	const colecao = await prisma.serie.findUnique({
-		where: {
-			idserie: Number(params.id)
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/login");
+
+	try {
+		const colecao = await db.select().from(serie).where(eq(serie.idserie, Number(params.id)));
+		if (!colecao) {
+			throw fail(404, { message: 'Coleção não encontrada' });
 		}
-	});
-
-	if (!colecao) {
-		throw error(404, 'Coleção não encontrada');
+		return { colecao };
+	} catch (err) {
+		return error(500, { message: 'Falha ao recuperar os dados da coleção' });
 	}
-	return { colecao };
 };
 
 export const actions: Actions = {
@@ -24,14 +26,7 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.serie.update({
-				data: {
-					nome: nome.toUpperCase()
-				},
-				where: {
-					idserie: Number(params.id)
-				}
-			});
+			await db.update(serie).set({ nome: nome.toUpperCase() }).where(eq(serie.idserie, Number(params.id)));
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados da coleção' });
 		}

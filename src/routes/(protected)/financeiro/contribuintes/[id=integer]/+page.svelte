@@ -9,7 +9,7 @@
 </script>
 
 <hgroup>
-	<h2 class="pico-color-azure-500">Entradas</h2>
+	<h2 class="pico-color-azure-500">Contribuinte</h2>
 	<p>Atualizar os dados do contribuinte</p>
 </hgroup>
 

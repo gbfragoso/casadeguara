@@ -1,4 +1,3 @@
-import { prisma } from '$lib/server/prisma';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -26,12 +25,14 @@ export const load: PageServerLoad = async ({ url }) => {
 		}
 	};
 
-	const saidas = await prisma.saidas.findMany({
-		skip: (page - 1) * 10,
-		take: 10,
-		where: where
-	});
-	const total = await prisma.saidas.count( { where });
+	const saidas = undefined;
+	// await prisma.saidas.findMany({
+	// 	skip: (page - 1) * 10,
+	// 	take: 10,
+	// 	where: where
+	// });
+	const total = undefined;
+	// await prisma.saidas.count( { where });
 
 	return {
 		saidas: JSON.parse(JSON.stringify(saidas)),

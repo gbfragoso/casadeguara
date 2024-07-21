@@ -1,7 +1,12 @@
-import { prisma } from '$lib/server/prisma';
-import { error } from '@sveltejs/kit';
+import { keyword } from "$lib/database/schema";
+import { db } from '$lib/database/connection';
+import { error, redirect } from '@sveltejs/kit';
 
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
+
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) redirect(302, "/login");
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {
@@ -10,17 +15,10 @@ export const actions: Actions = {
 		};
 
 		try {
-			await prisma.keyword.create({
-				data: {
-					chave: chave.toUpperCase()
-				}
-			});
+			await db.insert(keyword).values({ chave: chave.toUpperCase() });
+			return { status: 201 }
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar uma nova palavra-chave' });
+			return error(500, { message: 'Falha ao criar um nova palavra-chave' });
 		}
-
-		return {
-			status: 201
-		};
 	}
 } satisfies Actions;
