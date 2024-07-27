@@ -7,7 +7,7 @@ import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params}) => {
-	if (!locals.user) redirect(302, "/login");
+	if (!locals.user) redirect(302, "/");
 	try {
 		const resultado = await db.select().from(autor).where(eq(autor.idautor, Number(params.id)));
 		if (!resultado) {

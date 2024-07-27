@@ -6,7 +6,7 @@ import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-	if (!locals.user) redirect(302, "/login");
+	if (!locals.user) redirect(302, "/");
 	
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') + "%" || undefined;

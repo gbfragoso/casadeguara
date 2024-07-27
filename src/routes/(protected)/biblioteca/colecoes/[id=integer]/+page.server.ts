@@ -6,7 +6,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/login");
+	if (!locals.user) redirect(302, "/");
 
 	try {
 		const colecao = await db.select().from(serie).where(eq(serie.idserie, Number(params.id)));

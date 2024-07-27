@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Pagination from "$lib/components/Pagination.svelte";
-	import type { PageServerData } from './$types';
+	import type { PageServerData } from "./$types";
 	export let data: PageServerData;
 
 	$: ({ colecoes, total } = data);
@@ -9,10 +9,12 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-		  <li><a href="/biblioteca">Biblioteca</a></li>
-		  <li class="is-active"><a href="/biblioteca/colecoes" aria-current="page">Coleções</a></li>
+			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li class="is-active">
+				<a href="/biblioteca/colecoes" aria-current="page">Coleções</a>
+			</li>
 		</ul>
-	  </nav>
+	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold">Consulta de coleções</h1>
 </div>
 
@@ -45,14 +47,14 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content table-container">
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th>Nome</th>
-				<th>Ações</th>
-			</thead>
-			<tbody>
+	<div class="card">
+		<div class="card-content table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Nome</th>
+					<th>Ações</th>
+				</thead>
+				<tbody>
 				{#await colecoes}
 					<tr>Carregando coleções...</tr>
 				{:then}
@@ -69,8 +71,8 @@
 				{:catch error}
 					<tr>Erro ao carregar os resultados: {error.message}</tr>
 				{/await}
-			</tbody>
-		</table>
+				</tbody>
+			</table>
 		<Pagination total={total}></Pagination>
 	</div>
 </div>
