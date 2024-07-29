@@ -1,9 +1,21 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation'
+	import { autor } from "$lib/database/schema";
 	import Pagination from "$lib/components/Pagination.svelte";
-	import type { PageServerData } from "./$types";
-	export let data: PageServerData;
 
-	$: ({ autores, total } = data);
+	let autores: (typeof autor)[];
+	let total = 1;
+
+	const getAutores = async function (e: Event) {
+		const form = e.target as HTMLFormElement;
+		const data = new FormData(form);
+		await fetch(`/api/autores?nome=${data.get("nome")}`)
+			.then((res) => res.json())
+			.then((data) => {
+				(autores = data.autores), (total = data.total);
+			});
+		await invalidateAll()
+	}
 </script>
 
 <div class="mb-2">
@@ -20,7 +32,7 @@
 	</h1>
 </div>
 
-<form class="card" action="/biblioteca/autores" method="GET">
+<form class="card" action='/api/autores' on:submit|preventDefault={getAutores} method="GET">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do autor</label>
@@ -36,7 +48,7 @@
 		</div>
 		<div class="field is-grouped">
 			<div class="control">
-				<button class="button is-primary px-5" type="submit">
+				<button class="button is-primary px-5">
 					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
 				</button>
 			</div>
@@ -48,18 +60,15 @@
 		</div>
 	</div>
 </form>
-
-	<div class="card">
-		<div class="card-content table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>Nome</th>
-					<th>Ações</th>
-				</thead>
-				<tbody>
-				{#await autores}
-					<tr>Carregando autores...</tr>
-				{:then}
+<div class="card">
+	<div class="card-content table-container">
+		<table class="table is-striped is-hoverable is-fullwidth">
+			<thead>
+				<th>Nome</th>
+				<th>Ações</th>
+			</thead>
+			<tbody>
+				{#if autores}
 					{#each autores as autor}
 						<tr>
 							<td>{autor.nome}</td>
@@ -70,11 +79,9 @@
 							</td>
 						</tr>
 					{/each}
-				{:catch error}
-					<tr>Erro ao carregar os resultados: {error.message}</tr>
-				{/await}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
-		</div>
+				{/if}
+			</tbody>
+		</table>
+		<Pagination {total}></Pagination>
 	</div>
+</div>
