@@ -48,7 +48,7 @@
 		</div>
 	</div>
 </form>
-
+{#if autores}
 	<div class="card">
 		<div class="card-content table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
@@ -57,9 +57,6 @@
 					<th>Ações</th>
 				</thead>
 				<tbody>
-				{#await autores}
-					<tr>Carregando autores...</tr>
-				{:then}
 					{#each autores as autor}
 						<tr>
 							<td>{autor.nome}</td>
@@ -70,11 +67,9 @@
 							</td>
 						</tr>
 					{/each}
-				{:catch error}
-					<tr>Erro ao carregar os resultados: {error.message}</tr>
-				{/await}
 				</tbody>
 			</table>
 			<Pagination {total}></Pagination>
 		</div>
 	</div>
+{/if}
