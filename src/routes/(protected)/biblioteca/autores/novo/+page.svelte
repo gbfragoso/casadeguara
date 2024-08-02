@@ -3,13 +3,40 @@
 	export let form: ActionData;
 </script>
 
-<h2>Cadastro de autores</h2>
+<div class="mb-2">
+	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+		<ul>
+			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li class="is-active">
+				<a href="/biblioteca/autores" aria-current="page">Autores</a>
+			</li>
+		</ul>
+	</nav>
+	<h1 class="is-size-3 has-text-weight-semibold is-primary">
+		Cadastro de autores
+	</h1>
+</div>
 
-<form method="POST" role="group">
-	<input type="text" name="nome" id="nome" placeholder="Digite o nome do autor" />
-	<button>Cadastrar</button>
+<form class="card" action="?/update" method="POST">
+	<div class="card-content">
+		<div class="field">
+			<label class="label" for="nome">Nome do autor</label>
+			<div class="control">
+				<input
+					class="input"
+					type="text"
+					name="nome"
+					id="nome"
+					placeholder="Digite o nome do autor"
+				/>
+			</div>
+		</div>
+		<button class="button is-primary px-5" type="submit">Cadastrar</button>
+	</div>
 </form>
 
-{#if form?.status === 201}
-	<p>Autor cadastrado com sucesso!</p>
+{#if form?.status === 200}
+	<div class="notification is-success">
+		<p>Autor cadastrado com sucesso!</p>
+	</div>
 {/if}
