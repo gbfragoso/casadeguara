@@ -11,9 +11,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') + "%" || undefined;
 	const where = nome !== undefined ? ilike(autor.nome, nome) : undefined;
-	
+
 	try {
-		const autores = await db.select().from(autor).offset((page - 1) * 10).where(where).limit(10);
+		const autores = await db.select().from(autor).offset((page - 1) * 10).where(where).orderBy(autor.nome).limit(10);
 		const counter = await db.select({ count: count() }).from(autor).where(where);
 		const total = counter[0].count;
 		return { autores, total };

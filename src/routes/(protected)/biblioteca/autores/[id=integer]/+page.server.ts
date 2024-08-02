@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, params}) => {
 		if (!resultado) {
 			throw fail(404, { message: 'Autor não encontrado' });
 		}
-		return { resultado };
+		return { autor : resultado[0] };
 	} catch (err) {
 		return error(500, { message: 'Falha ao baixar os dados do autor' });
 	}
