@@ -18,14 +18,43 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
 	default: async ({ request }) => {
-		const { nome, descricao, valor, data_entrada } = Object.fromEntries(
-			await request.formData()
-		) as {
-			nome: string;
-			descricao: string;
-			valor: string;
-			data_entrada: string;
-		};
+		const form = await request.formData();
+		const nome = form.get('nome') as string;
+		const descricao = form.get('descricao') as string;
+		const valor = form.get('valor') as string;
+		const data_entrada = form.get('data_entrada') as string;
+
+		if (!nome || nome.length === 0 || /^\s*$/.test(nome)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do contribuinte é obrigatório'
+			}
+		}
+
+		if (/^\d+$/.test(nome)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do contribuinte não pode ser somente números'
+			}
+		}
+
+		if (!descricao || descricao.length === 0 || /^\s*$/.test(descricao)) {
+			return {
+				status: 400,
+				field: 'descricao',
+				message: 'Descrição do recebimento é obrigatória'
+			}
+		}
+
+		if (/^\d+$/.test(descricao)) {
+			return {
+				status: 400,
+				field: 'descricao',
+				message: 'Descrição do recebimento não pode ser somente números'
+			}
+		}
 
 		try {
 			const contribuinte = await db.select({ idleitor: leitor.idleitor }).from(leitor).where(eq(leitor.nome, nome.toUpperCase()));
@@ -48,7 +77,5 @@ export const actions: Actions = {
 		} catch (err) {
 			return error(500, { message: 'Falha ao cadastrar uma nova doação' });
 		}
-
-		
 	}
 } satisfies Actions;

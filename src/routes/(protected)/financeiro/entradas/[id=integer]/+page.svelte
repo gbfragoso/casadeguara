@@ -1,32 +1,88 @@
 <script lang="ts">
-	import { isodate } from '$lib/js/date';
-	import type { PageServerData, ActionData } from './$types';
+	import dayjs from "dayjs";
+	import utc from "dayjs/plugin/utc";
+	import type { PageServerData, ActionData } from "./$types";
 
 	export let data: PageServerData;
 	export let form: ActionData;
 
 	$: ({ entrada } = data);
+	dayjs.extend(utc);
 </script>
 
-<hgroup>
-	<h2 class="pico-color-azure-500">Entradas</h2>
-	<p>Atualizar os dados da doação</p>
-</hgroup>
+<div class="mb-2">
+	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+		<ul>
+			<li><a href="/financeiro">Financeiro</a></li>
+			<li class="is-active">
+				<a href="/financeiro/entradas" aria-current="page">Entradas</a>
+			</li>
+		</ul>
+	</nav>
+	<h1 class="is-size-3 has-text-weight-semibold is-primary">
+		Atualizar os dados da doação
+	</h1>
+</div>
 
-<form action="?/update" method="POST">
-	<div class="flex-container">
-		<label>
-			Valor
-			<input type="number" name="valor" id="valor" value={entrada.valor} />
-		</label>
-		<label>
-			Data do recebimento
-			<input type="date" name="data_entrada" value={isodate(entrada.data_entrada)} />
-		</label>
+<form class="card" action="?/update" method="POST">
+	<div class="card-content">
+		<div class="field">
+			<label class="label" for="descricao">Descrição</label>
+			<div class="control">
+				<input
+					class="input"
+					type="text"
+					name="descricao"
+					id="descricao"
+					value="{entrada.descricao}"
+				/>
+				{#if form?.field === "descricao"}
+					<p class="help is-danger">{form?.message}</p>
+				{/if}
+			</div>
+		</div>
+		<div class="columns">
+			<div class="field column">
+				<label class="label" for="valor">Valor</label>
+				<div class="control">
+					<input
+						class="input"
+						type="number"
+						name="valor"
+						id="valor"
+						value="{entrada.valor}"
+						step=".01"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="data_entrada"
+					>Data do recebimento</label
+				>
+				<div class="control">
+					<input
+						class="input"
+						type="date"
+						name="data_entrada"
+						value={dayjs
+							.utc(entrada.data_entrada)
+							.format("YYYY-MM-DD")}
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="field">
+			<div class="control">
+				<button class="button is-primary px-5" type="submit"
+					>Atualizar</button
+				>
+			</div>
+		</div>
 	</div>
-	<button type="submit" style="width: auto">Atualizar</button>
 </form>
 
 {#if form?.status === 200}
-	<p>Doação atualizada com sucesso!</p>
+	<div class="notification is-success">
+		<p>Doação atualizada com sucesso!</p>
+	</div>
 {/if}

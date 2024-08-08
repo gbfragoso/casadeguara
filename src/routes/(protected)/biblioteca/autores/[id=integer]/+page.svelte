@@ -32,7 +32,11 @@
 					id="nome"
 					value={autor.nome}
 					placeholder="Digite o nome do autor"
+					required
 				/>
+				{#if form?.field === "nome"}
+					<p class="help is-danger">{form?.message}</p>
+				{/if}
 			</div>
 		</div>
 		<button class="button is-primary px-5" type="submit">Atualizar</button>
