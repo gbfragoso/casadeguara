@@ -1,12 +1,12 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
-	import utc from 'dayjs/plugin/utc';
+	import dayjs from "dayjs";
+	import utc from "dayjs/plugin/utc";
 	import Pagination from "$lib/components/Pagination.svelte";
-	
+
 	import type { PageServerData } from "./$types";
 	export let data: PageServerData;
 
-	$: ({ entradas, total } = data);
+	$: ({ resultados, total } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -77,61 +77,54 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content table-container">
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th scope="col">Contribuinte</th>
-				<th scope="col">Tipo</th>
-				<th scope="col">Valor</th>
-				<th scope="col">Descrição</th>
-				<th scope="col">Data</th>
-				<th scope="col">Ações</th>
-			</thead>
-			<tbody>
-				{#await entradas}
-					<tr>Carregando resultados...</tr>
-				{:then entradas}
-					{#each entradas as entrada}
+{#if resultados}
+	<div class="card">
+		<div class="card-content table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Contribuinte</th>
+					<th scope="col">Tipo</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Descrição</th>
+					<th scope="col">Data</th>
+					<th scope="col">Ações</th>
+				</thead>
+				<tbody>
+					{#each resultados as resultado}
 						<tr>
 							<td>
 								<a
-									href="/financeiro/contribuinte/{entrada
-										.contribuinte.idcontribuinte}"
+									href="/financeiro/contribuinte/{resultado
+										.idcontribuinte}"
 								>
-									{entrada.contribuinte.nome}
+									{resultado.contribuinte}
 								</a>
 							</td>
-							{#if entrada.contribuinte.trabalhador}
+							{#if resultado.trabalhador}
 								<td>Trabalhador</td>
 							{:else}
 								<td>Eventual</td>
 							{/if}
+							<td>{resultado.entradas.valor}</td>
+							<td>{resultado.entradas.descricao}</td>
 							<td
-								>{Number(entrada.valor).toLocaleString(
-									"pt-BR",
-									{
-										style: "currency",
-										currency: "BRL",
-									},
-								)}</td
+								>{dayjs
+									.utc(resultado.entradas.data_entrada)
+									.format("DD/MM/YYYY")}</td
 							>
-							<td>{entrada.descricao}</td>
-							<td>{dayjs.utc(entrada.data_entrada).format("DD/MM/YYYY")}</td>
 							<td>
 								<a
-									href="/financeiro/entradas/{entrada.identrada}"
+									href="/financeiro/entradas/{resultado
+										.entradas.identrada}"
 								>
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							</td>
 						</tr>
 					{/each}
-				{:catch error}
-					<tr>Erro ao carregar os resultados: {error.message}</tr>
-				{/await}
-			</tbody>
-		</table>
-		<Pagination {total}></Pagination>
+				</tbody>
+			</table>
+			<Pagination {total}></Pagination>
+		</div>
 	</div>
-</div>
+{/if}

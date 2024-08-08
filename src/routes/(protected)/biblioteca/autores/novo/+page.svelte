@@ -28,6 +28,7 @@
 					name="nome"
 					id="nome"
 					placeholder="Digite o nome do autor"
+					required
 				/>
 			</div>
 		</div>

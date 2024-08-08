@@ -163,7 +163,7 @@ export const entradas = pgTable("entradas", {
 	descricao: varchar("descricao", { length: 200 }).notNull(),
 	valor: numeric("valor").notNull(),
 	data_entrada: date("data_entrada", { mode: 'date' }).defaultNow().notNull(),
-	idcontribuinte: integer("idcontribuinte").notNull().references(() => contribuinte.idcontribuinte),
+	idcontribuinte: integer("idcontribuinte").notNull().references(() => leitor.idleitor),
 	user_cadastro: smallint("user_cadastro"),
 	user_alteracao: smallint("user_alteracao"),
 });

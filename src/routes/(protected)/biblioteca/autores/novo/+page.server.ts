@@ -10,9 +10,24 @@ export const load: PageServerLoad = async ({locals}) => {
 
 export const actions: Actions = {
 	default: async ({ request }) => {
-		const { nome } = Object.fromEntries(await request.formData()) as {
-			nome: string;
-		};
+		const form = await request.formData();
+		const nome = form.get('nome') as string;
+
+		if (!nome || nome.length === 0 || /^\s*$/.test(nome)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do autor é obrigatório'
+			}
+		}
+
+		if (/^\d+$/.test(nome)) {
+			return {
+				status: 400,
+				field: 'descricao',
+				message: 'Nome do autor não pode ser somente números'
+			}
+		}
 
 		try {
 			await db.insert(autor).values( { nome: nome.toUpperCase() });
