@@ -13,7 +13,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = nome !== undefined ? ilike(leitor.nome, nome) : undefined;
 
 	try {
-		const contribuintes = await db.select().from(leitor).offset((page - 1) * 10).where(where).limit(10);
+		const contribuintes = await db.select().from(leitor).offset((page - 1) * 10).where(where)
+			.orderBy(leitor.nome).limit(10);
+
 		const total = await db.select({ count: count() }).from(leitor).where(where);
 		return { contribuintes, total };
 	} catch (err) {

@@ -1,9 +1,10 @@
 import { entradas } from "$lib/database/schema";
 import { eq } from "drizzle-orm";
-import { db } from '$lib/database/connection';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from "$lib/database/connection";
+import { error, fail, redirect } from "@sveltejs/kit";
+import validator from 'validator';
 
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from "./$types";
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, "/");
@@ -27,7 +28,7 @@ export const actions: Actions = {
 		const valor = form.get('valor') as string;
 		const data_entrada = form.get('data_entrada') as string;
 
-		if (!descricao || descricao.length === 0 || /^\s*$/.test(descricao)) {
+		if (validator.isEmpty(descricao, { ignore_whitespace: true })) {
 			return {
 				status: 400,
 				field: 'descricao',
@@ -35,7 +36,7 @@ export const actions: Actions = {
 			}
 		}
 
-		if (/^\d+$/.test(descricao)) {
+		if (validator.isNumeric(descricao)) {
 			return {
 				status: 400,
 				field: 'descricao',

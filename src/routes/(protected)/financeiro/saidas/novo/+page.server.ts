@@ -1,30 +1,46 @@
-import { error } from '@sveltejs/kit';
+import { saidas } from "$lib/database/schema";
+import { db } from '$lib/database/connection';
+import { error, redirect } from '@sveltejs/kit';
+import validator from 'validator';
 
-import type { Actions } from './$types';
+import type { PageServerLoad, Actions } from './$types';
+
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) redirect(302, "/");
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {
-		const { descricao, valor, data_saida } = Object.fromEntries(await request.formData()) as {
-			descricao: string;
-			valor: string;
-			data_saida: string;
-		};
+		const form = await request.formData();
+		const descricao = form.get('descricao') as string;
+		const valor = form.get('valor') as string;
+		const data_saida = form.get('data_saida') as string;
 
-		try {
-			// await prisma.saidas.create({
-			// 	data: {
-			// 		valor: valor,
-			// 		descricao: descricao,
-			// 		data_saida: new Date(data_saida)
-			// 	}
-			// });
-		} catch (err) {
-			console.error(err);
-			return error(500, { message: 'Falha ao cadastrar um novo pagamento' });
+		if (validator.isEmpty(descricao, { ignore_whitespace: true })) {
+			return {
+				status: 400,
+				field: 'descricao',
+				message: 'Descrição do pagamento é obrigatória'
+			}
 		}
 
-		return {
-			status: 201
-		};
+		if (validator.isNumeric(descricao)) {
+			return {
+				status: 400,
+				field: 'descricao',
+				message: 'Descrição do pagamento não pode ser somente números'
+			}
+		}
+
+		try {			
+			await db.insert(saidas).values({
+				descricao: descricao,
+				valor: valor,
+				data_saida: new Date(data_saida)
+			});
+			return { status: 201 }
+		} catch (err) {
+			return error(500, { message: 'Falha ao cadastrar uma nova despesa' });
+		}
 	}
 } satisfies Actions;
