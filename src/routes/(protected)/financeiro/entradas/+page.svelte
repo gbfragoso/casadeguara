@@ -13,9 +13,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
+			<li><a data-sveltekit-reload href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a href="/financeiro/entradas" aria-current="page">Entradas</a>
+				<a data-sveltekit-reload href="/financeiro/entradas" aria-current="page">Entradas</a>
 			</li>
 		</ul>
 	</nav>
@@ -77,7 +77,7 @@
 	</div>
 </form>
 
-{#if resultados}
+{#if resultados.length > 0}
 	<div class="card">
 		<div class="card-content table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
@@ -94,8 +94,7 @@
 						<tr>
 							<td>
 								<a
-									href="/financeiro/contribuinte/{resultado
-										.idcontribuinte}"
+									href="/financeiro/contribuinte/{resultado.idcontribuinte}"
 								>
 									{resultado.contribuinte}
 								</a>
@@ -114,6 +113,7 @@
 							>
 							<td>
 								<a
+									data-sveltekit-reload
 									href="/financeiro/entradas/{resultado
 										.entradas.identrada}"
 								>

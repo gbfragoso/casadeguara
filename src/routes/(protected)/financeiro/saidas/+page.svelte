@@ -1,6 +1,6 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
-	import utc from 'dayjs/plugin/utc';
+	import dayjs from "dayjs";
+	import utc from "dayjs/plugin/utc";
 	import Pagination from "$lib/components/Pagination.svelte";
 	import type { PageServerData } from "./$types";
 
@@ -31,7 +31,7 @@
 					type="text"
 					name="descricao"
 					id="descricao"
-					placeholder="Digite o nome do descricao"
+					placeholder="Descrição da despesa"
 				/>
 			</div>
 		</div>
@@ -68,7 +68,10 @@
 				</button>
 			</div>
 			<div class="control">
-				<a class="button px-6" href="/financeiro/saidas/novo"
+				<a
+					data-sveltekit-reload
+					class="button px-6"
+					href="/financeiro/saidas/novo"
 					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
 				>
 			</div>
@@ -76,36 +79,39 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content">
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th scope="col">Descrição</th>
-				<th scope="col">Valor</th>
-				<th scope="col">Data</th>
-				<th scope="col">Ações</th>
-			</thead>
-			<tbody>
-				{#await saidas}
-					<tr>Carregando resultados</tr>
-				{:then}
+{#if saidas.length > 0}
+	<div class="card">
+		<div class="card-content">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Descrição</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Data</th>
+					<th scope="col">Ações</th>
+				</thead>
+				<tbody>
 					{#each saidas as saida}
 						<tr>
 							<td>{saida.descricao}</td>
 							<td>R$ {saida.valor}</td>
-							<td>{dayjs.utc(saida.data_saida).format("DD/MM/YYYY")}</td>
+							<td
+								>{dayjs
+									.utc(saida.data_saida)
+									.format("DD/MM/YYYY")}</td
+							>
 							<td>
-								<a href="/financeiro/saidas/{saida.idsaida}">
+								<a
+									data-sveltekit-reload
+									href="/financeiro/saidas/{saida.idsaida}"
+								>
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							</td>
 						</tr>
 					{/each}
-				{:catch error}
-					<tr>Erro ao carregar os resultados: {error.message}</tr>
-				{/await}
-			</tbody>
-		</table>
-		<Pagination {total}></Pagination>
+				</tbody>
+			</table>
+			<Pagination {total}></Pagination>
+		</div>
 	</div>
-</div>
+{/if}

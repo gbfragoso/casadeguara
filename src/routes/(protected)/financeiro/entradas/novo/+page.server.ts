@@ -2,6 +2,7 @@ import { leitor, entradas } from "$lib/database/schema";
 import { eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
 import { error, fail, redirect } from '@sveltejs/kit';
+import validator from 'validator';
 
 import type { PageServerLoad, Actions } from './$types';
 
@@ -24,7 +25,7 @@ export const actions: Actions = {
 		const valor = form.get('valor') as string;
 		const data_entrada = form.get('data_entrada') as string;
 
-		if (!nome || nome.length === 0 || /^\s*$/.test(nome)) {
+		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
 			return {
 				status: 400,
 				field: 'nome',
@@ -32,7 +33,7 @@ export const actions: Actions = {
 			}
 		}
 
-		if (/^\d+$/.test(nome)) {
+		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
 				field: 'nome',
@@ -40,7 +41,7 @@ export const actions: Actions = {
 			}
 		}
 
-		if (!descricao || descricao.length === 0 || /^\s*$/.test(descricao)) {
+		if (validator.isEmpty(descricao, { ignore_whitespace: true })) {
 			return {
 				status: 400,
 				field: 'descricao',
@@ -48,7 +49,7 @@ export const actions: Actions = {
 			}
 		}
 
-		if (/^\d+$/.test(descricao)) {
+		if (validator.isNumeric(descricao)) {
 			return {
 				status: 400,
 				field: 'descricao',
@@ -59,20 +60,21 @@ export const actions: Actions = {
 		try {
 			const contribuinte = await db.select({ idleitor: leitor.idleitor }).from(leitor).where(eq(leitor.nome, nome.toUpperCase()));
 
-			if (contribuinte) {
-				await db.insert(entradas).values({
-					idcontribuinte: Number(contribuinte[0].idleitor),
-					descricao: descricao,
-					valor: valor,
-					data_entrada: new Date(data_entrada)
-				});
-			} else {
+			if (!contribuinte) {
 				return {
 					status: 400,
 					field: 'nome',
 					message: 'Contribuinte não encontrado'
 				}
+				
 			}
+			
+			await db.insert(entradas).values({
+				idcontribuinte: Number(contribuinte[0].idleitor),
+				descricao: descricao,
+				valor: valor,
+				data_entrada: new Date(data_entrada)
+			});
 			return { status: 201 }
 		} catch (err) {
 			return error(500, { message: 'Falha ao cadastrar uma nova doação' });

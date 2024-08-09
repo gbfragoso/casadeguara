@@ -172,7 +172,7 @@ export const saidas = pgTable("saidas", {
 	idsaida: serial("idsaida").primaryKey().notNull(),
 	descricao: varchar("descricao", { length: 200 }).notNull(),
 	valor: numeric("valor").notNull(),
-	data_saida: date("data_saida").defaultNow().notNull(),
+	data_saida: date("data_saida", { mode: 'date' }).defaultNow().notNull(),
 	user_cadastro: smallint("user_cadastro"),
 	user_alteracao: smallint("user_alteracao"),
 });
