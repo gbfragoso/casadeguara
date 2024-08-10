@@ -1,61 +1,64 @@
 <script lang="ts">
-	import type { PageServerData, ActionData } from './$types';
-	export let data: PageServerData;
+	import type { ActionData } from "./$types";
 	export let form: ActionData;
-
-	$: ({ contribuintes } = data);
 </script>
 
-<hgroup>
-	<h2 class="pico-color-azure-500">Entradas</h2>
-	<p>Lançamento de doações e valores recebidos</p>
-</hgroup>
+<div class="mb-2">
+	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+		<ul>
+			<li><a href="/financeiro">Financeiro</a></li>
+			<li class="is-active">
+				<a href="/financeiro/contribuintes" aria-current="page"
+					>Contribuintes</a
+				>
+			</li>
+		</ul>
+	</nav>
+	<h1 class="is-size-3 has-text-weight-semibold">
+		Cadastrar novo contribuinte
+	</h1>
+</div>
 
-<form method="POST">
-	<label
-		>Doador
-		<input
-			type="text"
-			name="nome"
-			placeholder="Digite o nome do doador"
-			list="contribuintes"
-			aria-invalid={form?.field === 'nome' ? 'true' : undefined}
-			aria-describedby={form?.field === 'nome' ? 'nome-error' : undefined}
-		/>
-		{#if form?.field === 'nome'}
-			<small id="nome-error">{form?.message}</small>
-		{/if}
-		<datalist id="contribuintes">
-			{#await contribuintes then contribuintes}
-				{#each contribuintes as contribuinte}
-					<option value={contribuinte.nome}></option>
-				{/each}
-			{/await}
-		</datalist>
-	</label>
-	<label
-		>Descrição
-		<input
-			type="text"
-			name="descricao"
-			min="1"
-			step="any"
-			placeholder="Discriminação do valor recebido"
-		/>
-	</label>
-	<div class="flex-container">
-		<label
-			>Valor
-			<input type="number" name="valor" min="1" step="any" placeholder="Digite o valor da doação" />
-		</label>
-		<label>
-			Data do recebimento
-			<input type="date" name="data_entrada" aria-label="Date" />
-		</label>
+<form class="card" method="POST">
+	<div class="card-content">
+		<div class="field">
+			<label class="label" for="nome">Nome</label>
+			<div class="control">
+				<input
+					class="input"
+					type="text"
+					name="nome"
+					id="nome"
+					placeholder="Digite o nome do contribuinte"
+					aria-invalid={form?.field === "nome" ? "true" : undefined}
+				/>
+				{#if form?.field === "nome"}
+					<p class="help is-danger">{form?.message}</p>
+				{/if}
+			</div>
+		</div>
+		<div class="field">
+			<label class="checkbox" for="trabalhador">
+				<input
+					type="checkbox"
+					name="trabalhador"
+					id="trabalhador"
+				/>
+				Trabalhador</label
+			>
+		</div>
+		<div class="field">
+			<div class="control">
+				<button class="button is-primary px-5" type="submit"
+					>Cadastrar</button
+				>
+			</div>
+		</div>
 	</div>
-	<button type="submit">Cadastrar</button>
 </form>
 
 {#if form?.status === 201}
-	<p>Doação cadastrada com sucesso!</p>
+	<div class="notification is-success">
+		<p>Contribuinte cadastrado com sucesso!</p>
+	</div>
 {/if}

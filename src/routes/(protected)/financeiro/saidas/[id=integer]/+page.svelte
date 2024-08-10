@@ -60,17 +60,13 @@
 				</div>
 			</div>
 			<div class="field column">
-				<label class="label" for="data_saida"
-					>Data do pagamento</label
-				>
+				<label class="label" for="data_saida">Data do pagamento</label>
 				<div class="control">
 					<input
 						class="input"
 						type="date"
 						name="data_saida"
-						value={dayjs
-							.utc(saida.data_saida)
-							.format("YYYY-MM-DD")}
+						value={dayjs.utc(saida.data_saida).format("YYYY-MM-DD")}
 					/>
 				</div>
 			</div>
@@ -86,5 +82,7 @@
 </form>
 
 {#if form?.status === 200}
-	<p>Pagamento atualizada com sucesso!</p>
+	<div class="notification is-success">
+		<p>Pagamento atualizado com sucesso!</p>
+	</div>
 {/if}
