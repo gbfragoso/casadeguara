@@ -24,6 +24,12 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item">
+					<a data-sveltekit-reload href="/financeiro">
+						<i class="fa-solid fa-house"></i>
+						<span class="item-description">Home</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
 					<a data-sveltekit-reload href="/financeiro/entradas">
 						<i class="fa-solid fa-wallet fa-fw"></i>
 						<span class="item-description">Entradas</span>
