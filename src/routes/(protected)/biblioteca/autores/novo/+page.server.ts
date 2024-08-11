@@ -1,6 +1,7 @@
 import { autor } from "$lib/database/schema";
 import { db } from '$lib/database/connection';
 import { error, redirect } from '@sveltejs/kit';
+import validator from 'validator';
 
 import type { PageServerLoad, Actions } from './$types';
 
@@ -13,30 +14,27 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
 
-		if (!nome || nome.length === 0 || /^\s*$/.test(nome)) {
+		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do autor é obrigatório'
+				message: 'Nome do nome é obrigatório'
 			}
 		}
 
-		if (/^\d+$/.test(nome)) {
+		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
-				field: 'descricao',
+				field: 'nome',
 				message: 'Nome do autor não pode ser somente números'
 			}
 		}
 
 		try {
 			await db.insert(autor).values( { nome: nome.toUpperCase() });
+			return { status: 201 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar um novo autor' });
 		}
-
-		return {
-			status: 201
-		};
 	}
 } satisfies Actions;

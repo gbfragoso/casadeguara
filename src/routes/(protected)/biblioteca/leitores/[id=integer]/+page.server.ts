@@ -13,14 +13,14 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		if (!resultado) {
 			throw fail(404, { message: 'Leitor não encontrado' });
 		}
-		return { resultado };
+		return { leitor : resultado[0] };
 	} catch (err) {
 		return error(500, { message: 'Falha ao recuperar os dados do leitor' });
 	}
 };
 
 export const actions: Actions = {
-	update: async ({ request, params }) => {
+	default: async ({ request, params }) => {
 		const { nome } = Object.fromEntries(await request.formData()) as {
 			nome: string;
 		};

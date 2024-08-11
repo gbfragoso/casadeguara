@@ -15,8 +15,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	try {
 		const contribuintes = await db.select().from(leitor).offset((page - 1) * 10).where(where)
 			.orderBy(leitor.nome).limit(10);
-
-		const total = await db.select({ count: count() }).from(leitor).where(where);
+		const counter = await db.select({ count: count() }).from(leitor).where(where);
+		const total = counter[0].count; 
 		return { contribuintes, total };
 	} catch (err) {
 		return error(500, { message: 'Falha ao carregar a lista de contribuintes' });

@@ -39,7 +39,7 @@
 				</button>
 			</p>
 			<p class="control">
-				<a class="button px-6" href="/biblioteca/leitor/novo"
+				<a class="button px-6" href="/biblioteca/leitores/novo"
 					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
 				>
 			</p>
@@ -47,44 +47,42 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content table-container">
-		<table class="table is-striped is-hoverable is-fullwidth">
-		<thead>
-			<th>Nome</th>
-			<th>Trabalhador</th>
-			<th>Status</th>
-			<th>Ações</th>
-		</thead>
-		<tbody>
-			{#await leitores}
-				<tr>Carregando lista de leitores...</tr>
-			{:then leitores}
-				{#each leitores as leitor}
-					<tr>
-						<td>{leitor.nome}</td>
-						{#if leitor.trab}
-							<td>Sim</td>
-						{:else}
-							<td>Não</td>
-						{/if}
-						{#if leitor.status}
-							<td>Ativo</td>
-						{:else}
-							<td>Inativo</td>
-						{/if}
-						<td>
-							<a href="/biblioteca/leitores/{leitor.idleitor}">
-								<i class="fa-solid fa-pen-to-square"></i>
-							</a>
-						</td>
-					</tr>
-				{/each}
-			{:catch error}
-				<tr>Erro ao carregar os resultados: {error.message}</tr>
-			{/await}
-		</tbody>
-	</table>
-	<Pagination {total}></Pagination>
+{#if leitores && leitores.length > 0}
+	<div class="card">
+		<div class="card-content table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Nome</th>
+					<th>Trabalhador</th>
+					<th>Status</th>
+					<th>Ações</th>
+				</thead>
+				<tbody>
+					{#each leitores as leitor}
+						<tr>
+							<td>{leitor.nome}</td>
+							{#if leitor.trab}
+								<td>Sim</td>
+							{:else}
+								<td>Não</td>
+							{/if}
+							{#if leitor.status}
+								<td>Ativo</td>
+							{:else}
+								<td>Inativo</td>
+							{/if}
+							<td>
+								<a
+									href="/biblioteca/leitores/{leitor.idleitor}"
+								>
+									<i class="fa-solid fa-pen-to-square"></i>
+								</a>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+			<Pagination {total}></Pagination>
+		</div>
 	</div>
-</div>
+{/if}

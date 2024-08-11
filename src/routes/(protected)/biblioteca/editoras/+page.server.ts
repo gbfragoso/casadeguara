@@ -13,8 +13,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = nome !== undefined ? ilike(editora.nome, nome) : undefined;
 
 	try {
-		const editoras = await db.select().from(editora).offset((page - 1) * 10).where(where).limit(10);
-		const total = await db.select({ count: count() }).from(editora).where(where);
+		const editoras = await db.select().from(editora).offset((page - 1) * 10).where(where).orderBy(editora.nome).limit(10);
+		const counter = await db.select({ count: count() }).from(editora).where(where);
+		const total = counter[0].count;
 		return { editoras, total };
 	} catch (err) {
 		return error(500, { message: 'Falha ao carregar a lista de editoras' });

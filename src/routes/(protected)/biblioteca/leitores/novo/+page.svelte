@@ -1,43 +1,177 @@
-<form method="POST">
-	<fieldset>
-		<label for="nome">Nome</label>
-		<input type="text" name="nome" id="nome" />
+<script lang="ts">
+	import type { ActionData } from "./$types";
+	export let form: ActionData;
+</script>
 
-		<label for="rg">RG</label>
-		<input type="text" name="rg" id="rg" />
+<div class="mb-2">
+	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+		<ul>
+			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li class="is-active">
+				<a href="/biblioteca/leitores" aria-current="page">Leitor</a>
+			</li>
+		</ul>
+	</nav>
+	<h1 class="is-size-3 has-text-weight-semibold">Cadastrar leitor</h1>
+</div>
 
-		<label for="rg">CPF</label>
-		<input type="text" name="cpf" id="cpf" />
-
-		<label for="email">E-mail</label>
-		<input type="email" name="email" id="email" />
-
-		<label for="telefone">Telefone</label>
-		<input type="text" name="telefone" id="telefone" />
-
-		<label for="celular">Celular</label>
-		<input type="text" name="celular" id="celular" />
-
-		<label for="logradouro">Logradouro</label>
-		<input type="text" name="logradouro" id="logradouro" />
-
-		<label for="bairro">Bairro</label>
-		<input type="text" name="bairro" id="bairro" />
-
-		<label for="complemento">Complemento</label>
-		<input type="text" name="complemento" id="complemento" />
-
-		<label for="cidade">Cidade</label>
-		<input type="text" name="cidade" id="cidade" />
-
-		<label for="cep">CEP</label>
-		<input type="text" name="cep" id="cep" />
-
-		<span>
-			<input type="checkbox" name="trab" id="trab" />Trabalhador
-			<input type="checkbox" name="status" id="status" />Ativo
-		</span>
-	</fieldset>
-
-	<button>Cadastrar</button>
+<form class="card" method="POST">
+	<div class="card-content">
+		<div class="columns">
+			<div class="field column is-three-fifths">
+				<label class="label" for="nome">Nome</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="nome"
+						id="nome"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="rg">RG</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="rg"
+						id="rg"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="rg">CPF</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="cpf"
+						id="cpf"
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="columns">
+			<div class="field column">
+				<label class="label" for="email">E-mail</label>
+				<div class="control">
+					<input
+						class="input"
+						type="email"
+						name="email"
+						id="email"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="celular">Celular</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="celular"
+						id="celular"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="telefone">Whatsapp</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="telefone"
+						id="telefone"
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="columns">
+			<div class="field column is-half">
+				<label class="label" for="logradouro">Logradouro</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="logradouro"
+						id="logradouro"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="bairro">Bairro</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="bairro"
+						id="bairro"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="complemento">Complemento</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="complemento"
+						id="complemento"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="cidade">Cidade</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="cidade"
+						id="cidade"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="cep">CEP</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="cep"
+						id="cep"
+					/>
+				</div>
+			</div>
+		</div>
+		<div class="field is-grouped">
+			<label for="trab" class="checkbox">
+				<input
+					type="checkbox"
+					name="trab"
+					id="trab"
+				/>
+				Trabalhador
+			</label>
+			<label for="status" class="checkbox">
+				<input
+					type="checkbox"
+					name="status"
+					id="status"
+				/>
+				Ativo
+			</label>
+		</div>
+		<div class="control">
+			<button class="button is-primary px-5" type="submit"
+				>Cadastrar</button
+			>
+		</div>
+	</div>
 </form>
+
+{#if form?.status === 200}
+	<div class="notification is-success">
+		<p>Leitor cadastrado com sucesso!</p>
+	</div>
+{/if}

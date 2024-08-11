@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') + "%" || undefined;
-	const where = nome !== undefined ? ilike(autor.nome, nome) : undefined;
+	const where = nome ? ilike(autor.nome, nome) : undefined;
 
 	try {
 		const autores = await db.select().from(autor).offset((page - 1) * 10).where(where).orderBy(autor.nome).limit(10);
