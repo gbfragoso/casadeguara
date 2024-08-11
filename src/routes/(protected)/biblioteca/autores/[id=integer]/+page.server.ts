@@ -2,6 +2,7 @@ import { autor } from "$lib/database/schema";
 import { eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
 import { error, fail, redirect } from '@sveltejs/kit';
+import validator from 'validator';
 
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
@@ -21,34 +22,31 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-	update: async ({ request, params }) => {
+	default: async ({ request, params }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
 
-		if (!nome || nome.length === 0 || /^\s*$/.test(nome)) {
+		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do nome é obrigatório'
+				message: 'Nome do autor é obrigatório'
 			}
 		}
 
-		if (/^\d+$/.test(nome)) {
+		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
-				field: 'descricao',
+				field: 'nome',
 				message: 'Nome do autor não pode ser somente números'
 			}
 		}
 
 		try {
 			await db.update(autor).set({ nome: nome.toUpperCase() }).where(eq(autor.idautor, Number(params.id)));
+			return { status: 200 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao atualizar os dados do autor' });
 		}
-
-		return {
-			status: 200
-		};
 	}
 };

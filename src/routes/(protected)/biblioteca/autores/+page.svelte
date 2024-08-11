@@ -48,7 +48,7 @@
 		</div>
 	</div>
 </form>
-{#if autores}
+{#if autores && autores.length > 0}
 	<div class="card">
 		<div class="card-content table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">

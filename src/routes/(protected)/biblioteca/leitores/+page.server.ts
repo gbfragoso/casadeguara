@@ -10,11 +10,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') + "%" || undefined;
-	const where = nome !== undefined ? ilike(leitor.nome, nome) : undefined;
+	const where = nome ? ilike(leitor.nome, nome) : undefined;
 
 	try {
-		const leitores = await db.select().from(leitor).offset((page - 1) * 10).where(where).limit(10);
-		const total = await db.select({ count: count() }).from(leitor).where(where);
+		const leitores = await db.select().from(leitor).offset((page - 1) * 10).where(where).orderBy(leitor.nome).limit(10);
+		const counter = await db.select({ count: count() }).from(leitor).where(where);
+		const total = counter[0].count;
 		return { leitores, total };
 	} catch (err) {
 		return error(500, { message: 'Falha ao carregar a lista de leitores' });

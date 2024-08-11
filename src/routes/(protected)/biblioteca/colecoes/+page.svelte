@@ -33,20 +33,21 @@
 			</div>
 		</div>
 		<div class="field is-grouped">
-			<p class="control">
+			<div class="control">
 				<button class="button is-primary px-5" type="submit">
 					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
 				</button>
-			</p>
-			<p class="control">
+			</div>
+			<div class="control">
 				<a class="button px-6" href="/biblioteca/colecoes/novo"
 					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
 				>
-			</p>
+			</div>
 		</div>
 	</div>
 </form>
 
+{#if colecoes && colecoes.length > 0}
 	<div class="card">
 		<div class="card-content table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
@@ -55,24 +56,21 @@
 					<th>Ações</th>
 				</thead>
 				<tbody>
-				{#await colecoes}
-					<tr>Carregando coleções...</tr>
-				{:then}
 					{#each colecoes as colecao}
 						<tr>
 							<td>{colecao.nome}</td>
 							<td>
-								<a href="/biblioteca/colecoes/{colecao.idserie}">
+								<a
+									href="/biblioteca/colecoes/{colecao.idserie}"
+								>
 									<i class="fa-solid fa-pen-to-square"></i>
 								</a>
 							</td>
 						</tr>
 					{/each}
-				{:catch error}
-					<tr>Erro ao carregar os resultados: {error.message}</tr>
-				{/await}
 				</tbody>
 			</table>
-		<Pagination total={total}></Pagination>
+			<Pagination {total}></Pagination>
+		</div>
 	</div>
-</div>
+{/if}

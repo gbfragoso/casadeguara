@@ -20,7 +20,7 @@
 	</h1>
 </div>
 
-<form class="card" action="?/update" method="POST">
+<form class="card" method="POST">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do autor</label>
@@ -34,12 +34,16 @@
 					placeholder="Digite o nome do autor"
 					required
 				/>
-				{#if form?.field === "nome"}
-					<p class="help is-danger">{form?.message}</p>
-				{/if}
 			</div>
+			{#if form?.field === "nome"}
+				<p class="help is-danger">{form?.message}</p>
+			{/if}
 		</div>
-		<button class="button is-primary px-5" type="submit">Atualizar</button>
+		<div class="control">
+			<button class="button is-primary px-5" type="submit"
+				>Atualizar</button
+			>
+		</div>
 	</div>
 </form>
 

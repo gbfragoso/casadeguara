@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
+	import type { ActionData } from "./$types";
 	export let form: ActionData;
 </script>
 
@@ -17,7 +17,7 @@
 	</h1>
 </div>
 
-<form class="card" action="?/update" method="POST">
+<form class="card" method="POST">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do autor</label>
@@ -31,8 +31,15 @@
 					required
 				/>
 			</div>
+			{#if form?.field === "nome"}
+				<p class="help is-danger">{form?.message}</p>
+			{/if}
 		</div>
-		<button class="button is-primary px-5" type="submit">Cadastrar</button>
+		<div class="control">
+			<button class="button is-primary px-5" type="submit"
+				>Cadastrar</button
+			>
+		</div>
 	</div>
 </form>
 

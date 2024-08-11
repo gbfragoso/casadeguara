@@ -16,12 +16,9 @@ export const actions: Actions = {
 				nome: nome.toUpperCase()
 			}
 			);
+			return { status: 201 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar um novo leitor' });
 		}
-
-		return {
-			status: 201
-		};
 	}
 } satisfies Actions;

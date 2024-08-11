@@ -1,6 +1,7 @@
 import { serie } from "$lib/database/schema";
 import { db } from '$lib/database/connection';
 import { error, redirect } from '@sveltejs/kit';
+import validator from "validator";
 
 import type { PageServerLoad, Actions } from './$types';
 
@@ -10,18 +11,30 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 export const actions: Actions = {
 	default: async ({ request }) => {
-		const { nome } = Object.fromEntries(await request.formData()) as {
-			nome: string;
-		};
+		const form = await request.formData();
+		const nome = form.get('nome') as string;
+
+		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome da coleção é obrigatório'
+			}
+		}
+
+		if (validator.isNumeric(nome)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do coleção não pode ser somente números'
+			}
+		}
 
 		try {
 			await db.insert(serie).values({ nome: nome.toUpperCase() });
+			return { status: 201 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar uma nova coleção' });
 		}
-
-		return {
-			status: 201
-		};
 	}
 } satisfies Actions;

@@ -13,8 +13,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = nome !== undefined ? ilike(serie.nome, nome) : undefined;
 
 	try {
-		const colecoes = await db.select().from(serie).offset((page - 1) * 10).where(where).limit(10);
-		const total = await db.select({ count: count() }).from(serie).where(where);
+		const colecoes = await db.select().from(serie).offset((page - 1) * 10).where(where).orderBy(serie.nome).limit(10);
+		const counter = await db.select({ count: count() }).from(serie).where(where);
+		const total = counter[0].count;
 		return { colecoes, total };
 	} catch (err) {
 		return error(500, { message: 'Falha ao carregar a lista de coleções' });

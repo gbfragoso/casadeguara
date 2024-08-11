@@ -2,6 +2,7 @@ import { editora } from "$lib/database/schema";
 import { eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
 import { error, fail, redirect } from '@sveltejs/kit';
+import validator from "validator";
 
 import type { PageServerLoad, Actions } from './$types';
 
@@ -13,17 +14,32 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		if (!resultado) {
 			throw fail(404, { message: 'Editora não encontrada' });
 		}
-		return { resultado };
+		return { editora : resultado[0] };
 	} catch (err) {
 		throw error(500, 'Falha ao buscar os dados da editora');
 	}
 };
 
 export const actions: Actions = {
-	update: async ({ request, params }) => {
-		const { nome } = Object.fromEntries(await request.formData()) as {
-			nome: string;
-		};
+	default: async ({ request, params }) => {
+		const form = await request.formData();
+		const nome = form.get('nome') as string;
+
+		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome da editora é obrigatório'
+			}
+		}
+
+		if (validator.isNumeric(nome)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do editora não pode ser somente números'
+			}
+		}
 
 		try {
 			await db.update(editora).set({ nome: nome.toUpperCase()}).where(eq(editora.ideditora, Number(params.id)));
