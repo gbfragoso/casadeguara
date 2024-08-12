@@ -73,7 +73,7 @@ export const emprestimo = pgTable("emprestimo", {
 	idemp: serial("idemp").primaryKey().notNull(),
 	leitor: smallint("leitor").notNull().references(() => leitor.idleitor),
 	exemplar: smallint("exemplar").notNull().references(() => exemplar.idexemplar, { onDelete: "cascade" } ),
-	data_emprestimo: date("data_emprestimo"),
+	data_emprestimo: date("data_emprestimo", { mode: 'date'} ),
 	data_devolucao: date("data_devolucao"),
 	cobranca: timestamp("cobranca", { mode: 'string' }),
 	renovacoes: smallint("renovacoes").default(0),
