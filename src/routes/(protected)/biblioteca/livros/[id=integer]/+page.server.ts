@@ -1,9 +1,10 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ locals, params }) => {
+	if (!locals.user) redirect(302, "/");
 	// const exemplar = await prisma.exemplar.findUnique({
 	// 	where: {
 	// 		idexemplar: Number(params.id)
