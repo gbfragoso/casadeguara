@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') + "%" || undefined;
-	const where = nome !== undefined ? ilike(serie.nome, nome) : undefined;
+	const where = nome ? ilike(serie.nome, nome) : undefined;
 
 	try {
 		const colecoes = await db.select().from(serie).offset((page - 1) * 10).where(where).orderBy(serie.nome).limit(10);

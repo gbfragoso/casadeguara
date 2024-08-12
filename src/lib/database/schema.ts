@@ -87,7 +87,7 @@ export const exemplar = pgTable("exemplar", {
 	livro: smallint("livro").notNull().references(() => livro.idlivro, { onDelete: "cascade" } ),
 	numero: smallint("numero").notNull(),
 	status: varchar("status", { length: 15 }),
-	data_cadastro: date("data_cadastro"),
+	data_cadastro: date("data_cadastro", { mode: 'date' }).default(sql`CURRENT_DATE`),
 });
 
 export const keyword = pgTable("keyword", {
