@@ -38,7 +38,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do autor não pode ser somente números'
+				message: 'Nome do autor não pode conter somente números'
 			}
 		}
 

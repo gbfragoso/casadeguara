@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	//export let data: PageServerData;
 
-	$: ({ exemplar } = data);
+	//$: ({ exemplar } = data);
 </script>
 
 <form action="?/update" method="POST">

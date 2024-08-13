@@ -38,7 +38,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do contribuinte não pode ser somente números'
+				message: 'Nome do contribuinte não pode conter somente números'
 			}
 		}
 

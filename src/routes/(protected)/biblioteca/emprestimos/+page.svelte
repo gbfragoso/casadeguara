@@ -36,75 +36,81 @@
 				/>
 			</div>
 		</div>
-		<div class="field">
-			<label class="label" for="titulo">Títuto</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="titulo"
-					id="titulo"
-					placeholder="Digite o título da obra"
-				/>
+		<div class="columns">
+			<div class="field column">
+				<label class="label" for="titulo">Tombo</label>
+				<div class="control">
+					<input
+						class="input"
+						type="number"
+						name="tombo"
+						id="tombo"
+						placeholder="Digite o tombo"
+					/>
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="titulo">Títuto</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="titulo"
+						id="titulo"
+						placeholder="Digite o título da obra"
+					/>
+				</div>
 			</div>
 		</div>
-		<div class="field">
+		<div class="field is-grouped">
+			<label class="checkbox">
+				<input type="checkbox" name="ativos" id="ativos" />
+				Somente ativos
+			</label>
 			<label class="checkbox">
 				<input type="checkbox" name="atrasados" id="atrasados" />
 				Somente atrasados
 			</label>
 		</div>
 		<div class="field is-grouped">
-			<p class="control">
+			<div class="control">
 				<button class="button is-primary px-5" type="submit">
 					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
 				</button>
-			</p>
-			<p class="control">
+			</div>
+			<div class="control">
 				<a class="button px-6" href="/biblioteca/editoras/novo"
 					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
 				>
-			</p>
+			</div>
 		</div>
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content table-container">
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th>Leitor</th>
-				<th>Título</th>
-				<th>Ex</th>
-				<th>Empréstimo</th>
-				<th>Prazo</th>
-			</thead>
-			<tbody>
-				{#await emprestimos}
-					<tr>Carregando lista de empréstimos</tr>
-				{:then emprestimos}
+{#if emprestimos && emprestimos.length > 0}
+	<div class="card">
+		<div class="card-content table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Leitor</th>
+					<th>Título</th>
+					<th>Ex</th>
+					<th>Empréstimo</th>
+					<th>Prazo</th>
+					<th>Ações</th>
+				</thead>
+				<tbody>
 					{#each emprestimos as emprestimo}
 						<tr>
 							<td>
 								<a
-									href="/biblioteca/leitores/{emprestimo
-										.leitor_emprestimo_leitorToleitor
-										.idleitor}"
+									href="/biblioteca/leitores/{emprestimo.idleitor}"
 								>
-									{emprestimo.leitor_emprestimo_leitorToleitor
-										.nome}
+									{emprestimo.leitor}
 								</a>
 							</td>
-							<td
-								>{emprestimo
-									.exemplar_emprestimo_exemplarToexemplar
-									.livro_exemplar_livroTolivro.titulo}</td
-							>
-							<td
-								>{emprestimo
-									.exemplar_emprestimo_exemplarToexemplar
-									.numero}</td
-							>
+							<td>{emprestimo.titulo}</td>
+							<td>{emprestimo.numero}</td>
 							<td
 								>{dayjs
 									.utc(emprestimo.data_emprestimo)
@@ -115,12 +121,32 @@
 									.utc(emprestimo.data_devolucao)
 									.format("DD/MM/YYYY")}</td
 							>
+							<td>
+								<div class="field is-grouped">
+									<form
+										action="?/renovar&id={emprestimo.idemp}"
+										method="POST"
+									>
+										<button class="button"
+											><i class="fa-solid fa-repeat"
+											></i>&nbsp;Renovar</button
+										>
+									</form>
+									<form
+										action="?/devolver&id={emprestimo.idemp}"
+										method="POST"
+									>
+										<button class="button is-danger"
+											><i class="fa-regular fa-repeat"
+											></i>&nbsp;Devolver</button
+										>
+									</form>
+								</div>
+							</td>
 						</tr>
 					{/each}
-				{:catch error}
-					<tr>Erro ao carregar os resultados: {error.message}</tr>
-				{/await}
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 	</div>
-</div>
+{/if}
