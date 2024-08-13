@@ -28,7 +28,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do pagamento não pode ser somente números'
+				message: 'Descrição do pagamento não pode conter somente números'
 			}
 		}
 
