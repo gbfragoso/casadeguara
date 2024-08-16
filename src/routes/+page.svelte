@@ -6,10 +6,10 @@
 
 <main>
 	<section class="section">
-		<div class="container card">
+		<div class="container card mt-6" style="max-width:400px">
 			<div class="card-content">
 				<div class="is-primary">
-					<p class="pb-3 is-size-3 has-text-weight-semibold has-text-primary">
+					<p class="pb-3 is-size-3 has-text-weight-semibold has-text-primary has-text-centered">
 						Bem-vindo(a)
 					</p>
 				</div>
@@ -42,9 +42,9 @@
 							{/if}
 						</div>
 					</div>
-					<div class="field is-grouped">
+					<div class="field pt-3">
 						<div class="control">
-							<button class="button is-primary is-outlined px-5"
+							<button class="button is-primary is-fullwidth"
 								>Entrar</button
 							>
 						</div>

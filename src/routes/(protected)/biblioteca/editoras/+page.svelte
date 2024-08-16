@@ -32,14 +32,14 @@
 				/>
 			</div>
 		</div>
-		<div class="field is-grouped">
-			<div class="control">
-				<button class="button is-primary px-5" type="submit">
+		<div class="columns">
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+				<button class="button is-primary is-fullwidth" type="submit">
 					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div class="control">
-				<a class="button px-6" href="/biblioteca/editoras/novo"
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+				<a data-sveltekit-reload class="button is-fullwidth" href="/biblioteca/editoras/novo"
 					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
 				>
 			</div>
