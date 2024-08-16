@@ -43,9 +43,7 @@
 		{#if form?.status === 201}
 			<p class="help is-success">Exemplar adicionado com sucesso!</p>
 		{:else if form?.status === 200}
-			<p class="help is-success">Exemplar adicionado com sucesso!</p>
-		{:else}
-			<p class="help is-danger">{form?.message}</p>
+			<p class="help is-success">Exemplar excluído com sucesso!</p>
 		{/if}
 	</div>
 </form>
