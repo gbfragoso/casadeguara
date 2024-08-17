@@ -37,28 +37,32 @@
 			</div>
 		</div>
 		<div class="columns">
-			<div class="field column">
-				<label class="label" for="titulo">Tombo</label>
-				<div class="control">
-					<input
-						class="input"
-						type="number"
-						name="tombo"
-						id="tombo"
-						placeholder="Digite o tombo"
-					/>
+			<div class="column">
+				<div class="field">
+					<label class="label" for="titulo">Tombo</label>
+					<div class="control">
+						<input
+							class="input"
+							type="number"
+							name="tombo"
+							id="tombo"
+							placeholder="Digite o tombo"
+						/>
+					</div>
 				</div>
 			</div>
-			<div class="field column">
-				<label class="label" for="titulo">Títuto</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="titulo"
-						id="titulo"
-						placeholder="Digite o título da obra"
-					/>
+			<div class="column">
+				<div class="field">
+					<label class="label" for="titulo">Títuto</label>
+					<div class="control">
+						<input
+							class="input"
+							type="text"
+							name="titulo"
+							id="titulo"
+							placeholder="Digite o título da obra"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -73,13 +77,22 @@
 			</label>
 		</div>
 		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
 				<button class="button is-primary is-fullwidth" type="submit">
 					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a data-sveltekit-reload class="button is-fullwidth" href="/biblioteca/editoras/novo"
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
+				<a
+					data-sveltekit-reload
+					class="button is-fullwidth"
+					href="/biblioteca/emprestimos/novo"
 					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
 				>
 			</div>
@@ -137,8 +150,17 @@
 										method="POST"
 									>
 										<button class="button is-danger"
-											><i class="fa-regular fa-repeat"
+											><i class="fa-solid fa-reply"
 											></i>&nbsp;Devolver</button
+										>
+									</form>
+									<form
+										action="?/recibo&leitor={emprestimo.leitor}"
+										method="POST"
+									>
+										<button class="button"
+											><i class="fa-solid fa-receipt"
+											></i>&nbsp;Recibo</button
 										>
 									</form>
 								</div>
