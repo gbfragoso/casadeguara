@@ -4,6 +4,7 @@ body {
     font-variation-settings: normal;
     min-height: 100vh !important;
     background-color: #f3f4f6 !important;
+    overflow: auto;
     color: #1B254B !important;
 }
 
