@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const author = url.searchParams.get('autor') || undefined;
 
 	const tituloFilter = titulo ? ilike(livro.titulo, titulo + "%") : undefined;
-	const tomboFilter = tombo ? eq(livro.tombo, tombo + "%") : undefined;
+	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 	const editoraFilter = editor ? ilike(editora.nome, editor + "%") : undefined;
 	let autorFilter = undefined;
 
