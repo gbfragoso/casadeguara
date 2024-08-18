@@ -24,9 +24,21 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item">
+					<a data-sveltekit-reload href="/biblioteca">
+						<i class="fa-solid fa-house"></i>
+						<span class="item-description">Home</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
 					<a data-sveltekit-reload href="/biblioteca/autores">
 						<i class="fa-solid fa-user-pen fa-fw"></i>
 						<span class="item-description">Autores</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a data-sveltekit-reload href="/biblioteca/avisos">
+						<i class="fa-solid fa-inbox fa-fw"></i>
+						<span class="item-description">Avisos</span>
 					</a>
 				</li>
 				<li class="sidebar-item">

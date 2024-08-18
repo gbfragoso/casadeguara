@@ -15,7 +15,9 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Atualizar dados do leitor</h1>
+	<h1 class="is-size-3 has-text-weight-semibold">
+		Atualizar dados do leitor
+	</h1>
 </div>
 
 <form class="card" method="POST">
@@ -32,6 +34,9 @@
 						value={leitor.nome}
 					/>
 				</div>
+				{#if form?.field === "nome"}
+					<p class="help is-danger">{form?.message}</p>
+				{/if}
 			</div>
 			<div class="field column">
 				<label class="label" for="rg">RG</label>

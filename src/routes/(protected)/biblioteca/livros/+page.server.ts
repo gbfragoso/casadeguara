@@ -10,19 +10,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const page = Number(url.searchParams.get('page') || 1);
 	const tombo = url.searchParams.get('tombo') || undefined;
-	const titulo = url.searchParams.get('titulo') + "%" || undefined;
-	const editor = url.searchParams.get('editora') + "%" || undefined;
-	const author = url.searchParams.get('autor') + "%" || undefined;
+	const titulo = url.searchParams.get('titulo') || undefined;
+	const editor = url.searchParams.get('editora') || undefined;
+	const author = url.searchParams.get('autor') || undefined;
 
-	const tituloFilter = titulo ? ilike(livro.titulo, titulo) : undefined;
-	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
-	const editoraFilter = editor ? ilike(editora.nome, editor) : undefined;
+	const tituloFilter = titulo ? ilike(livro.titulo, titulo + "%") : undefined;
+	const tomboFilter = tombo ? eq(livro.tombo, tombo + "%") : undefined;
+	const editoraFilter = editor ? ilike(editora.nome, editor + "%") : undefined;
 	let autorFilter = undefined;
 
 	if (author) {
 		const resultados = await db.select({ idlivro: autor_has_livro.livro }).from(autor_has_livro)
 			.innerJoin(autor, eq(autor.idautor, autor_has_livro.autor))
-			.where(ilike(autor.nome, author));
+			.where(ilike(autor.nome, author + '%'));
 
 		autorFilter = inArray(livro.idlivro, resultados.flatMap(v => v.idlivro));
 	}
