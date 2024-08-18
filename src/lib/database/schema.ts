@@ -13,6 +13,7 @@ export const aviso = pgTable("aviso", {
 	idaviso: smallserial("idaviso").primaryKey().notNull(),
 	data_cadastro: date("data_cadastro").default(sql`CURRENT_DATE`),
 	texto: varchar("texto", { length: 300 }).notNull(),
+	username: varchar("username", { length: 30 })
 });
 
 export const configuracao = pgTable("configuracao", {

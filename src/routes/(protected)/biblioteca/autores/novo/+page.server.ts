@@ -18,7 +18,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do nome é obrigatório'
+				message: 'Nome do autor é obrigatório'
 			}
 		}
 
