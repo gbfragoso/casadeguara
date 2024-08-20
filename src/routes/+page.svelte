@@ -44,7 +44,7 @@
 					</div>
 					<div class="field pt-3">
 						<div class="control">
-							<button class="button is-primary is-fullwidth"
+							<button class="button is-primary is-fullwidth has-text-weight-semibold"
 								>Entrar</button
 							>
 						</div>

@@ -54,7 +54,7 @@
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/emprestimos?ativos=on">
+					<a data-sveltekit-reload href="/biblioteca/emprestimos">
 						<i class="fa-solid fa-hand-holding fa-fw"></i>
 						<span class="item-description">Empréstimos</span>
 					</a>

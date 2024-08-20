@@ -8,14 +8,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, "/");
 
 	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('leitor') + "%" || undefined;
-	const titulo = url.searchParams.get('titulo') + "%" || undefined;
+	const nome = url.searchParams.get('leitor') || undefined;
+	const titulo = url.searchParams.get('titulo') || undefined;
 	const tombo = url.searchParams.get('tombo') || undefined;
 	const atrasados = url.searchParams.get('atrasados') || undefined;
 	const ativos = url.searchParams.get('ativos') || undefined;
-	
-	const nomeFilter = nome ? ilike(leitor.nome, nome) : undefined;
-	const tituloFilter = titulo ? ilike(livro.titulo, titulo) : undefined;
+
+	const nomeFilter = nome ? ilike(leitor.nome, nome + "%") : undefined;
+	const tituloFilter = titulo ? ilike(livro.titulo, titulo + "%") : undefined;
 	const atrasadosFilter = atrasados ? and(gte(emprestimo.data_devolucao, new Date()), isNull(emprestimo.data_devolvido)) : undefined;
 	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 	const ativosFilter = ativos ? isNull(emprestimo.data_devolvido) : undefined;

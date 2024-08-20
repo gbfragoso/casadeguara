@@ -25,7 +25,7 @@
 			</div>
 			<div class="field is-grouped">
 				<div class="control">
-					<button class="button is-primary px-5">Continuar</button>
+					<button class="button  is-primary has-text-weight-semibold">Continuar</button>
 				</div>
 			</div>
 		</form>
