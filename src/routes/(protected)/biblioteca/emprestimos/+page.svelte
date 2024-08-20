@@ -82,7 +82,8 @@
 				style="min-width: 200px"
 			>
 				<button class="button is-primary is-fullwidth" type="submit">
-					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
+					>Pesquisar
 				</button>
 			</div>
 			<div
@@ -93,7 +94,7 @@
 					data-sveltekit-reload
 					class="button is-fullwidth"
 					href="/biblioteca/emprestimos/novo"
-					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
 			</div>
 		</div>
@@ -102,73 +103,78 @@
 
 {#if emprestimos && emprestimos.length > 0}
 	<div class="card">
-		<div class="card-content table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>Leitor</th>
-					<th>Título</th>
-					<th>Ex</th>
-					<th>Empréstimo</th>
-					<th>Prazo</th>
-					<th>Ações</th>
-				</thead>
-				<tbody>
-					{#each emprestimos as emprestimo}
-						<tr>
-							<td>
-								<a
-									href="/biblioteca/leitores/{emprestimo.idleitor}"
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th>Leitor</th>
+						<th>Título</th>
+						<th>Ex</th>
+						<th>Empréstimo</th>
+						<th>Prazo</th>
+						<th>Ações</th>
+					</thead>
+					<tbody>
+						{#each emprestimos as emprestimo}
+							<tr>
+								<td>
+									<a
+										href="/biblioteca/leitores/{emprestimo.idleitor}"
+									>
+										{emprestimo.leitor}
+									</a>
+								</td>
+								<td>{emprestimo.titulo}</td>
+								<td>{emprestimo.numero}</td>
+								<td
+									>{dayjs
+										.utc(emprestimo.data_emprestimo)
+										.format("DD/MM/YYYY")}</td
 								>
-									{emprestimo.leitor}
-								</a>
-							</td>
-							<td>{emprestimo.titulo}</td>
-							<td>{emprestimo.numero}</td>
-							<td
-								>{dayjs
-									.utc(emprestimo.data_emprestimo)
-									.format("DD/MM/YYYY")}</td
-							>
-							<td
-								>{dayjs
-									.utc(emprestimo.data_devolucao)
-									.format("DD/MM/YYYY")}</td
-							>
-							<td>
-								<div class="field is-grouped">
-									<form
-										action="?/renovar&id={emprestimo.idemp}"
-										method="POST"
-									>
-										<button class="button"
-											><i class="fa-solid fa-repeat"
-											></i>&nbsp;Renovar</button
+								<td
+									>{dayjs
+										.utc(emprestimo.data_devolucao)
+										.format("DD/MM/YYYY")}</td
+								>
+								<td>
+									<div class="field is-grouped">
+										<form
+											action="?/renovar&id={emprestimo.idemp}"
+											method="POST"
 										>
-									</form>
-									<form
-										action="?/devolver&id={emprestimo.idemp}"
-										method="POST"
-									>
-										<button class="button is-danger"
-											><i class="fa-solid fa-reply"
-											></i>&nbsp;Devolver</button
+											<button class="button"
+												><i
+													class="fa-solid fa-repeat fa-fw"
+												></i>&nbsp;Renovar</button
+											>
+										</form>
+										<form
+											action="?/devolver&id={emprestimo.idemp}"
+											method="POST"
 										>
-									</form>
-									<form
-										action="?/recibo&leitor={emprestimo.leitor}"
-										method="POST"
-									>
-										<button class="button"
-											><i class="fa-solid fa-receipt"
-											></i>&nbsp;Recibo</button
+											<button class="button is-danger"
+												><i
+													class="fa-solid fa-reply fa-fw"
+												></i>&nbsp;Devolver</button
+											>
+										</form>
+										<form
+											action="?/recibo&leitor={emprestimo.leitor}"
+											method="POST"
 										>
-									</form>
-								</div>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
+											<button class="button"
+												><i
+													class="fa-solid fa-receipt fa-fw"
+												></i>&nbsp;Recibo</button
+											>
+										</form>
+									</div>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 {/if}

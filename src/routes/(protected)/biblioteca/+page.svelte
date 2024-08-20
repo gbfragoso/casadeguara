@@ -24,7 +24,7 @@
 <div class="mt-2 columns">
     <div class="column">
         <div class="box has-text-weight-semibold">
-            <i class="fa-solid fa-arrow-right">&nbsp;</i>Empréstimos
+            <i class="fa-solid fa-arrow-right fa-fw">&nbsp;</i>Empréstimos
             <h2 class="is-size-3 has-text-primary">
                 {emprestimos}
             </h2>
@@ -32,7 +32,7 @@
     </div>
     <div class="column">
         <div class="box has-text-weight-semibold">
-            <i class="fa-solid fa-arrow-left">&nbsp;</i>Devoluções
+            <i class="fa-solid fa-arrow-left fa-fw">&nbsp;</i>Devoluções
             <h2 class="is-size-3 has-text-primary">
                 {devolucoes}
             </h2>
@@ -40,7 +40,7 @@
     </div>
     <div class="column">
         <div class="box has-text-weight-semibold">
-            <i class="fa-solid fa-repeat">&nbsp;</i>Renovações
+            <i class="fa-solid fa-repeat fa-fw">&nbsp;</i>Renovações
             <h2 class="is-size-3 has-text-primary">
                 {renovacoes}
             </h2>

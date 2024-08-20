@@ -35,14 +35,24 @@
 			</div>
 		</div>
 		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
 				<button class="button is-primary is-fullwidth" type="submit">
-					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
+					>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a data-sveltekit-reload class="button is-fullwidth" href="/financeiro/contribuintes/novo"
-					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
+				<a
+					data-sveltekit-reload
+					class="button is-fullwidth"
+					href="/financeiro/contribuintes/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
 			</div>
 		</div>
@@ -51,37 +61,40 @@
 
 {#if contribuintes}
 	<div class="card">
-		<div class="card-content table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th scope="col">Contribuinte</th>
-					<th scope="col">Tipo</th>
-					<th scope="col">Ações</th>
-				</thead>
-				<tbody>
-					{#each contribuintes as contribuinte}
-						<tr>
-							<td>{contribuinte.nome}</td>
-							{#if contribuinte.trab}
-								<td>Trabalhador</td>
-							{:else}
-								<td>Eventual</td>
-							{/if}
-							<td>
-								<form method="POST">
-									<a
-										href="/financeiro/contribuintes/{contribuinte.idleitor}"
-									>
-										<i class="fa-solid fa-pen-to-square"
-										></i>
-									</a>
-								</form>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th scope="col">Contribuinte</th>
+						<th scope="col">Tipo</th>
+						<th scope="col">Ações</th>
+					</thead>
+					<tbody>
+						{#each contribuintes as contribuinte}
+							<tr>
+								<td>{contribuinte.nome}</td>
+								{#if contribuinte.trab}
+									<td>Trabalhador</td>
+								{:else}
+									<td>Eventual</td>
+								{/if}
+								<td>
+									<form method="POST">
+										<a
+											href="/financeiro/contribuintes/{contribuinte.idleitor}"
+										>
+											<i
+												class="fa-solid fa-pen-to-square fa-fw"
+											></i>
+										</a>
+									</form>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<Pagination {total}></Pagination>
+			</div>
 		</div>
 	</div>
 {/if}

@@ -9,11 +9,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, "/");
 
 	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('nome') + "%" || undefined;
-	const where = nome ? ilike(editora.nome, nome) : undefined;
+	const nome = url.searchParams.get('nome') || undefined;
+	const where = nome ? ilike(editora.nome, nome  + "%") : undefined;
 
 	try {
-		const editoras = await db.select().from(editora).offset((page - 1) * 10).where(where).orderBy(editora.nome).limit(10);
+		const editoras = await db.select().from(editora).offset((page - 1) * 5).where(where).orderBy(editora.nome).limit(5);
 		const counter = await db.select({ count: count() }).from(editora).where(where);
 		const total = counter[0].count;
 		return { editoras, total };

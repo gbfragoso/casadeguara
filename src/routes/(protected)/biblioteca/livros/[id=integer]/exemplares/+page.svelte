@@ -3,7 +3,7 @@
 	export let data: PageServerData;
 	export let form: ActionData;
 
-	$: ({ exemplares } = data);
+	$: ({ exemplares, role } = data);
 </script>
 
 <div class="mb-2">
@@ -48,43 +48,49 @@
 	</div>
 </form>
 <div class="card">
-	<div class="card-content table-container">
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th>Ex</th>
-				<th>Status</th>
-				<th>Ações</th>
-			</thead>
-			<tbody>
-				{#each exemplares as exemplar}
-					<tr>
-						<td>{exemplar.numero}</td>
-						<td>
-							{#if exemplar.status === "Disponível"}
-								<span class="tag is-success"
-									>{exemplar.status}</span
-								>
-							{:else}
-								<span class="tag is-danger"
-									>{exemplar.status}</span
-								>
-							{/if}
-						</td>
-						<td>
-							<div class="field is-grouped">
-								<form
-									action="?/excluir&exemplar={exemplar.idexemplar}"
-									method="POST"
-								>
-									<button>
-										<i class="fa-regular fa-trash-can"></i>
-									</button>
-								</form>
-							</div>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Ex</th>
+					<th>Status</th>
+					<th>Ações</th>
+				</thead>
+				<tbody>
+					{#each exemplares as exemplar}
+						<tr>
+							<td>{exemplar.numero}</td>
+							<td>
+								{#if exemplar.status === "Disponível"}
+									<span class="tag is-success"
+										>{exemplar.status}</span
+									>
+								{:else}
+									<span class="tag is-danger"
+										>{exemplar.status}</span
+									>
+								{/if}
+							</td>
+							<td>
+								{#if role.includes("admin")}
+									<div class="field is-grouped">
+										<form
+											action="?/excluir&exemplar={exemplar.idexemplar}"
+											method="POST"
+										>
+											<button>
+												<i
+													class="fa-regular fa-trash-can fa-fw"
+												></i>
+											</button>
+										</form>
+									</div>
+								{/if}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

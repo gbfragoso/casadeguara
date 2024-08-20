@@ -15,7 +15,11 @@
 		<ul>
 			<li><a data-sveltekit-reload href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a data-sveltekit-reload href="/financeiro/entradas" aria-current="page">Entradas</a>
+				<a
+					data-sveltekit-reload
+					href="/financeiro/entradas"
+					aria-current="page">Entradas</a
+				>
 			</li>
 		</ul>
 	</nav>
@@ -63,14 +67,24 @@
 			</div>
 		</div>
 		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
 				<button class="button is-primary is-fullwidth" type="submit">
-					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
+					>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a data-sveltekit-reload class="button is-fullwidth" href="/financeiro/entradas/novo"
-					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
+				<a
+					data-sveltekit-reload
+					class="button is-fullwidth"
+					href="/financeiro/entradas/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
 			</div>
 		</div>
@@ -79,52 +93,56 @@
 
 {#if resultados.length > 0}
 	<div class="card">
-		<div class="card-content table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th scope="col">Contribuinte</th>
-					<th scope="col">Tipo</th>
-					<th scope="col">Valor</th>
-					<th scope="col">Descrição</th>
-					<th scope="col">Data</th>
-					<th scope="col">Ações</th>
-				</thead>
-				<tbody>
-					{#each resultados as resultado}
-						<tr>
-							<td>
-								<a
-									href="/financeiro/contribuinte/{resultado.idcontribuinte}"
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th scope="col">Contribuinte</th>
+						<th scope="col">Tipo</th>
+						<th scope="col">Valor</th>
+						<th scope="col">Descrição</th>
+						<th scope="col">Data</th>
+						<th scope="col">Ações</th>
+					</thead>
+					<tbody>
+						{#each resultados as resultado}
+							<tr>
+								<td>
+									<a
+										href="/financeiro/contribuinte/{resultado.idcontribuinte}"
+									>
+										{resultado.contribuinte}
+									</a>
+								</td>
+								{#if resultado.trabalhador}
+									<td>Trabalhador</td>
+								{:else}
+									<td>Eventual</td>
+								{/if}
+								<td>{resultado.entradas.valor}</td>
+								<td>{resultado.entradas.descricao}</td>
+								<td
+									>{dayjs
+										.utc(resultado.entradas.data_entrada)
+										.format("DD/MM/YYYY")}</td
 								>
-									{resultado.contribuinte}
-								</a>
-							</td>
-							{#if resultado.trabalhador}
-								<td>Trabalhador</td>
-							{:else}
-								<td>Eventual</td>
-							{/if}
-							<td>{resultado.entradas.valor}</td>
-							<td>{resultado.entradas.descricao}</td>
-							<td
-								>{dayjs
-									.utc(resultado.entradas.data_entrada)
-									.format("DD/MM/YYYY")}</td
-							>
-							<td>
-								<a
-									data-sveltekit-reload
-									href="/financeiro/entradas/{resultado
-										.entradas.identrada}"
-								>
-									<i class="fa-solid fa-pen-to-square"></i>
-								</a>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+								<td>
+									<a
+										data-sveltekit-reload
+										href="/financeiro/entradas/{resultado
+											.entradas.identrada}"
+									>
+										<i
+											class="fa-solid fa-pen-to-square fa-fw"
+										></i>
+									</a>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<Pagination {total}></Pagination>
+			</div>
 		</div>
 	</div>
 {/if}

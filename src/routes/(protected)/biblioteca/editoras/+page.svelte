@@ -33,14 +33,24 @@
 			</div>
 		</div>
 		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
 				<button class="button is-primary is-fullwidth" type="submit">
-					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
+					>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a data-sveltekit-reload class="button is-fullwidth" href="/biblioteca/editoras/novo"
-					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
+				<a
+					data-sveltekit-reload
+					class="button is-fullwidth"
+					href="/biblioteca/editoras/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
 			</div>
 		</div>
@@ -49,28 +59,32 @@
 
 {#if editoras && editoras.length > 0}
 	<div class="card">
-		<div class="card-content table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>Nome</th>
-					<th>Ações</th>
-				</thead>
-				<tbody>
-					{#each editoras as editora}
-						<tr>
-							<td>{editora.nome}</td>
-							<td>
-								<a
-									href="/biblioteca/editoras/{editora.ideditora}"
-								>
-									<i class="fa-solid fa-pen-to-square"></i>
-								</a>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th>Nome</th>
+						<th>Ações</th>
+					</thead>
+					<tbody>
+						{#each editoras as editora}
+							<tr>
+								<td>{editora.nome}</td>
+								<td>
+									<a
+										href="/biblioteca/editoras/{editora.ideditora}"
+									>
+										<i
+											class="fa-solid fa-pen-to-square fa-fw"
+										></i>
+									</a>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<Pagination {total}></Pagination>
+			</div>
 		</div>
 	</div>
 {/if}

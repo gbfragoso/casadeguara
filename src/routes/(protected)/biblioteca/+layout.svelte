@@ -25,7 +25,7 @@
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item">
 					<a data-sveltekit-reload href="/biblioteca">
-						<i class="fa-solid fa-house"></i>
+						<i class="fa-solid fa-house fa-fw"></i>
 						<span class="item-description">Home</span>
 					</a>
 				</li>
