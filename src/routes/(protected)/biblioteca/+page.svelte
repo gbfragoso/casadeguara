@@ -17,7 +17,7 @@
             </li>
         </ul>
     </nav>
-    <h1 class="is-size-3 has-text-weight-semibold">
+    <h1 class="is-size-3 has-text-weight-semibold has-text-primary">
         Balanço do mês {dayjs.utc(new Date()).format("MM/YYYY")}
     </h1>
 </div>

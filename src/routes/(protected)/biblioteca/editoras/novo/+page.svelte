@@ -12,7 +12,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Cadastrar editora</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastrar editora</h1>
 </div>
 
 <form class="card" method="POST">

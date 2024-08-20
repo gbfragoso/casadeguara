@@ -18,7 +18,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Saídas</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Saídas</h1>
 </div>
 
 <form class="card" action="/financeiro/saidas" method="GET">

@@ -15,7 +15,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Atualizar editora</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar editora</h1>
 </div>
 
 <form class="card" method="POST">
