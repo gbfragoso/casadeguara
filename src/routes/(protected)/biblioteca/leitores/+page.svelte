@@ -37,7 +37,7 @@
 				class="column is-full-mobile is-2-tablet"
 				style="min-width: 200px"
 			>
-				<button class="button is-primary is-fullwidth" type="submit">
+				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
 					>Pesquisar
 				</button>
@@ -48,7 +48,7 @@
 			>
 				<a
 					data-sveltekit-reload
-					class="button is-fullwidth"
+					class="button is-fullwidth has-text-weight-semibold"
 					href="/biblioteca/leitores/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>

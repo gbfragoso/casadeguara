@@ -12,7 +12,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold is-primary">
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
 		Lançamento de despesas
 	</h1>
 </div>
@@ -68,7 +68,7 @@
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button is-primary px-5" type="submit"
+				<button class="button  is-primary has-text-weight-semibold" type="submit"
 					>Cadastrar</button
 				>
 			</div>

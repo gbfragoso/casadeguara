@@ -81,7 +81,7 @@
 				class="column is-full-mobile is-2-tablet"
 				style="min-width: 200px"
 			>
-				<button class="button is-primary is-fullwidth" type="submit">
+				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
 					>Pesquisar
 				</button>
@@ -92,7 +92,7 @@
 			>
 				<a
 					data-sveltekit-reload
-					class="button is-fullwidth"
+					class="button is-fullwidth has-text-weight-semibold"
 					href="/biblioteca/emprestimos/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
@@ -142,30 +142,30 @@
 											action="?/renovar&id={emprestimo.idemp}"
 											method="POST"
 										>
-											<button class="button"
+											<button class="control"
 												><i
 													class="fa-solid fa-repeat fa-fw"
-												></i>&nbsp;Renovar</button
+												></i>&nbsp;</button
 											>
 										</form>
 										<form
 											action="?/devolver&id={emprestimo.idemp}"
 											method="POST"
 										>
-											<button class="button is-danger"
+											<button class="control has-text-danger"
 												><i
 													class="fa-solid fa-reply fa-fw"
-												></i>&nbsp;Devolver</button
+												></i>&nbsp;</button
 											>
 										</form>
 										<form
 											action="?/recibo&leitor={emprestimo.leitor}"
 											method="POST"
 										>
-											<button class="button"
+											<button class="control"
 												><i
-													class="fa-solid fa-receipt fa-fw"
-												></i>&nbsp;Recibo</button
+													class="fa-regular fa-file-lines fa-fw"
+												></i>&nbsp;</button
 											>
 										</form>
 									</div>

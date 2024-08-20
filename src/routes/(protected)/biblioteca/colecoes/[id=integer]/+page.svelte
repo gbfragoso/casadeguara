@@ -38,7 +38,7 @@
 			{/if}
 		</div>
 		<div class="control">
-			<button class="button is-primary px-5" type="submit"
+			<button class="button  is-primary has-text-weight-semibold" type="submit"
 				>Atualizar</button
 			>
 		</div>
