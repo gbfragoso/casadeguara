@@ -27,7 +27,8 @@
 <div class="mt-2 columns">
 	<div class="column">
 		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-hand-holding-dollar">&nbsp;</i>Valor recebido
+			<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor
+			recebido
 			<h2 class="is-size-3 has-text-primary">
 				{moeda(Number(entradaMesAtual))}
 			</h2>
@@ -35,7 +36,7 @@
 	</div>
 	<div class="column">
 		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-money-bill-transfer">&nbsp;</i>Despesas
+			<i class="fa-solid fa-money-bill-transfer fa-fw">&nbsp;</i>Despesas
 			<h2 class="is-size-3 has-text-danger">
 				{moeda(Number(saidaMesAtual))}
 			</h2>
@@ -43,7 +44,7 @@
 	</div>
 	<div class="column">
 		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-sack-dollar">&nbsp;</i>Saldo
+			<i class="fa-solid fa-sack-dollar fa-fw">&nbsp;</i>Saldo
 			{#if saldoMesAtual >= 1}
 				<h2 class="is-size-3 has-text-success">
 					{moeda(saldoMesAtual)}
@@ -57,55 +58,63 @@
 	</div>
 </div>
 <div class="card">
-	<div class="card-content table-container">
+	<div class="card-content">
 		<p class="is-size-4 mb-4 has-text-weight-semibold">
 			Últimas contribuições
 		</p>
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th scope="col">Contribuinte</th>
-				<th scope="col">Descrição</th>
-				<th scope="col">Valor</th>
-				<th scope="col">Data</th>
-			</thead>
-			<tbody>
-				{#each entradas as entrada}
-					<tr>
-						<td>{entrada.contribuinte}</td>
-						<td>{entrada.descricao}</td>
-						<td>{moeda(Number(entrada.valor))}</td>
-						<td>{dayjs.utc(entrada.data).format("DD/MM/YYYY")}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Contribuinte</th>
+					<th scope="col">Descrição</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Data</th>
+				</thead>
+				<tbody>
+					{#each entradas as entrada}
+						<tr>
+							<td>{entrada.contribuinte}</td>
+							<td>{entrada.descricao}</td>
+							<td>{moeda(Number(entrada.valor))}</td>
+							<td
+								>{dayjs
+									.utc(entrada.data)
+									.format("DD/MM/YYYY")}</td
+							>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 
 <div class="card">
-	<div class="card-content table-container">
+	<div class="card-content">
 		<p class="is-size-4 mb-4 has-text-weight-semibold">
 			Últimos pagamentos
 		</p>
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th scope="col">Descrição</th>
-				<th scope="col">Valor</th>
-				<th scope="col">Data</th>
-			</thead>
-			<tbody>
-				{#each saidas as saida}
-					<tr>
-						<td>{saida.descricao}</td>
-						<td>{moeda(Number(saida.valor))}</td>
-						<td
-							>{dayjs
-								.utc(saida.data_saida)
-								.format("DD/MM/YYYY")}</td
-						>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Descrição</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Data</th>
+				</thead>
+				<tbody>
+					{#each saidas as saida}
+						<tr>
+							<td>{saida.descricao}</td>
+							<td>{moeda(Number(saida.valor))}</td>
+							<td
+								>{dayjs
+									.utc(saida.data_saida)
+									.format("DD/MM/YYYY")}</td
+							>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

@@ -8,14 +8,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, "/");
 
 	const page = Number(url.searchParams.get('page') || 1);
-	const descricao = url.searchParams.get('descricao') + "%" || undefined;
+	const descricao = url.searchParams.get('descricao') || undefined;
 	const dataInicio = url.searchParams.get('dataInicio') || undefined;
 	const dataFim = url.searchParams.get('dataFim') || undefined;
 
 	try {
 		const dataInicioFilter = dataInicio ? gte(saidas.data_saida, new Date(dataInicio)) : undefined;
 		const dataFimFilter = dataFim ? lte(saidas.data_saida, new Date(dataFim)) : undefined;
-		const descricaoFilter = descricao ? ilike(saidas.descricao, descricao) : undefined;
+		const descricaoFilter = descricao ? ilike(saidas.descricao, descricao + "%") : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, descricaoFilter);
 
 		const resultados = await db.select().from(saidas).where(where).orderBy(desc(saidas.data_saida))

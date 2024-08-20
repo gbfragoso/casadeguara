@@ -1,4 +1,4 @@
-import { autor, autor_has_livro, livro, editora } from "$lib/database/schema";
+import { autor, autor_has_livro, livro, editora, serie } from "$lib/database/schema";
 import { and, count, eq, inArray, ilike } from "drizzle-orm";
 import { db } from '$lib/database/connection';
 import { error, fail, redirect } from '@sveltejs/kit';
@@ -12,11 +12,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const tombo = url.searchParams.get('tombo') || undefined;
 	const titulo = url.searchParams.get('titulo') || undefined;
 	const editor = url.searchParams.get('editora') || undefined;
+	const colecao = url.searchParams.get('serie') || undefined;
 	const author = url.searchParams.get('autor') || undefined;
 
 	const tituloFilter = titulo ? ilike(livro.titulo, titulo + "%") : undefined;
 	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 	const editoraFilter = editor ? ilike(editora.nome, editor + "%") : undefined;
+	const colecaoFilter = colecao ? ilike(serie.nome, colecao + "%") : undefined;
 	let autorFilter = undefined;
 
 	if (author) {
@@ -27,19 +29,20 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		autorFilter = inArray(livro.idlivro, resultados.flatMap(v => v.idlivro));
 	}
 
-	const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter);
-
+	const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter);
 	const livros = await db.select({ idlivro: livro.idlivro, tombo: livro.tombo, titulo: livro.titulo, editora: editora.nome })
 		.from(livro).innerJoin(editora, eq(livro.editora, editora.ideditora))
-		.where(where).orderBy(livro.titulo).offset((page - 1) * 10).limit(10);
+		.leftJoin(serie, eq(livro.serie, serie.idserie))
+		.where(where).orderBy(colecao ? livro.ordem : livro.titulo).offset((page - 1) * 5).limit(5);
 
 	const counter = await db.select({ count: count() }).from(livro)
 		.innerJoin(editora, eq(livro.editora, editora.ideditora))
+		.leftJoin(serie, eq(livro.serie, serie.idserie))
 		.where(where);
 
 	const total = counter[0].count;
 
-	return { livros, total };
+	return { livros, total, role : locals.user.roles };
 };
 
 export const actions: Actions = {

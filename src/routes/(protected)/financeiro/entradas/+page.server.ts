@@ -8,14 +8,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, "/");
 
 	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('contribuinte')?.toUpperCase() + "%" || undefined;
+	const nome = url.searchParams.get('contribuinte') || undefined;
 	const dataInicio = url.searchParams.get('dataInicio') || undefined;
 	const dataFim = url.searchParams.get('dataFim') || undefined;
 
 	try {
 		const dataInicioFilter = dataInicio ? gte(entradas.data_entrada, new Date(dataInicio)) : undefined;
 		const dataFimFilter = dataFim ? lte(entradas.data_entrada, new Date(dataFim)) : undefined;
-		const nameFilter = nome ? ilike(leitor.nome, nome) : undefined;
+		const nameFilter = nome ? ilike(leitor.nome, nome.toUpperCase() + "%") : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, nameFilter);
 
 		const resultados = await db.select({ entradas, contribuinte: leitor.nome, idcontribuinte: leitor.idleitor, trabalhador: leitor.trab })

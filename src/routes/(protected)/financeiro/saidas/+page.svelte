@@ -62,14 +62,24 @@
 			</div>
 		</div>
 		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
 				<button class="button is-primary is-fullwidth" type="submit">
-					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
+					>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a data-sveltekit-reload class="button is-fullwidth" href="/financeiro/saidas/novo"
-					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
+				<a
+					data-sveltekit-reload
+					class="button is-fullwidth"
+					href="/financeiro/saidas/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
 			</div>
 		</div>
@@ -79,36 +89,40 @@
 {#if saidas.length > 0}
 	<div class="card">
 		<div class="card-content">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th scope="col">Descrição</th>
-					<th scope="col">Valor</th>
-					<th scope="col">Data</th>
-					<th scope="col">Ações</th>
-				</thead>
-				<tbody>
-					{#each saidas as saida}
-						<tr>
-							<td>{saida.descricao}</td>
-							<td>R$ {saida.valor}</td>
-							<td
-								>{dayjs
-									.utc(saida.data_saida)
-									.format("DD/MM/YYYY")}</td
-							>
-							<td>
-								<a
-									data-sveltekit-reload
-									href="/financeiro/saidas/{saida.idsaida}"
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th scope="col">Descrição</th>
+						<th scope="col">Valor</th>
+						<th scope="col">Data</th>
+						<th scope="col">Ações</th>
+					</thead>
+					<tbody>
+						{#each saidas as saida}
+							<tr>
+								<td>{saida.descricao}</td>
+								<td>R$ {saida.valor}</td>
+								<td
+									>{dayjs
+										.utc(saida.data_saida)
+										.format("DD/MM/YYYY")}</td
 								>
-									<i class="fa-solid fa-pen-to-square"></i>
-								</a>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+								<td>
+									<a
+										data-sveltekit-reload
+										href="/financeiro/saidas/{saida.idsaida}"
+									>
+										<i
+											class="fa-solid fa-pen-to-square fa-fw"
+										></i>
+									</a>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<Pagination {total}></Pagination>
+			</div>
 		</div>
 	</div>
 {/if}

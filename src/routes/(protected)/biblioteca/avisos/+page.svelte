@@ -36,31 +36,34 @@
 				style="min-width: 200px"
 			>
 				<button class="button is-fullwidth" type="submit">
-					<i class="fa-solid fa-plus">&nbsp;</i>Novo
+					<i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo
 				</button>
 			</div>
 		</div>
 	</div>
 </form>
 <div class="card">
-	<div class="card-content table-container">
-		<table class="table is-striped is-hoverable is-fullwidth">
-			<thead>
-				<th>Texto</th>
-				<th>Ações</th>
-			</thead>
-			<tbody>
-				{#each avisos as aviso}
-					<tr>
-						<td>{aviso.texto}</td>
-						<td>
-							<a href="/biblioteca/avisos/{aviso.idaviso}">
-								<i class="fa-solid fa-pen-to-square"></i>
-							</a>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Texto</th>
+					<th>Ações</th>
+				</thead>
+				<tbody>
+					{#each avisos as aviso}
+						<tr>
+							<td>{aviso.texto}</td>
+							<td>
+								<a href="/biblioteca/avisos/{aviso.idaviso}">
+									<i class="fa-solid fa-pen-to-square fa-fw"
+									></i>
+								</a>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

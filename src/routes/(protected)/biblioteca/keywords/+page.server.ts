@@ -9,11 +9,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, "/");
 
 	const page = Number(url.searchParams.get('page') || 1);
-	const chave = url.searchParams.get('chave') + "%" || undefined;
-	const where = chave !== undefined ? ilike(keyword.chave, chave) : undefined;
+	const chave = url.searchParams.get('chave') || undefined;
+	const where = chave !== undefined ? ilike(keyword.chave, chave + "%") : undefined;
 
 	try {
-		const keywords = await db.select().from(keyword).where(where).offset((page - 1) * 10).orderBy(keyword.chave).limit(10);
+		const keywords = await db.select().from(keyword).where(where).offset((page - 1) * 5).orderBy(keyword.chave).limit(5);
 		const counter = await db.select({ count: count() }).from(keyword).where(where);
 		const total = counter[0].count;
 

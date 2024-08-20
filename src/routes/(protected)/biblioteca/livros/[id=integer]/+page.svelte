@@ -70,6 +70,9 @@
 						{/if}
 					{/each}
 				</select>
+				{#if form?.field === "editora"}
+				<p class="help is-danger">{form?.message}</p>
+			{/if}
 			</div>
 		</div>
 		<div class="columns">

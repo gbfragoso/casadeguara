@@ -3,7 +3,7 @@
 	import type { PageServerData } from "./$types";
 	export let data: PageServerData;
 
-	$: ({ livros, total } = data);
+	$: ({ livros, total, role } = data);
 </script>
 
 <div class="mb-2">
@@ -85,14 +85,24 @@
 			</div>
 		</div>
 		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
 				<button class="button is-primary is-fullwidth" type="submit">
-					<i class="fa-solid fa-magnifying-glass">&nbsp;</i>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
+					>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a data-sveltekit-reload class="button is-fullwidth" href="/biblioteca/livros/novo"
-					><i class="fa-solid fa-plus">&nbsp;</i>Novo</a
+			<div
+				class="column is-full-mobile is-2-tablet"
+				style="min-width: 200px"
+			>
+				<a
+					data-sveltekit-reload
+					class="button is-fullwidth"
+					href="/biblioteca/livros/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
 				>
 			</div>
 		</div>
@@ -101,52 +111,67 @@
 
 {#if livros && livros.length > 0}
 	<div class="card">
-		<div class="card-content table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>Tombo</th>
-					<th>Título</th>
-					<th>Ações</th>
-				</thead>
-				<tbody>
-					{#each livros as livro}
-						<tr>
-							<td>{livro.tombo}</td>
-							<td>{livro.titulo}</td>
-							<td>
-								<div class="field is-grouped">
-									<a
-										data-sveltekit-reload
-										class="control"
-										href="/biblioteca/livros/{livro.idlivro}"
-									>
-										<i class="fa-solid fa-pen-to-square"
-										></i>
-									</a>
-									<a
-										data-sveltekit-reload
-										class="control"
-										href="/biblioteca/livros/{livro.idlivro}/exemplares"
-									>
-										<i class="fa-solid fa-book"
-										></i>
-									</a>
-									<form
-										action="?/excluir&id={livro.idlivro}"
-										method="POST"
-									>
-										<button class="control"
-											><i class="fa-regular fa-trash-can"
-											></i></button
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th>Tombo</th>
+						<th>Título</th>
+						<th>Ações</th>
+					</thead>
+					<tbody>
+						{#each livros as livro}
+							<tr>
+								<td>{livro.tombo}</td>
+								<td>{livro.titulo}</td>
+								<td>
+									<div class="field is-grouped">
+										<a
+											data-sveltekit-reload
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}"
 										>
-									</form>
-								</div>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+											<i
+												class="fa-solid fa-pen-to-square fa-fw"
+											></i>
+										</a>
+										<a
+											data-sveltekit-reload
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}/exemplares"
+										>
+											<i class="fa-solid fa-book fa-fw"
+											></i>
+										</a>
+										<a
+											data-sveltekit-reload
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}/autores"
+										>
+											<i
+												class="fa-solid fa-user-pen fa-fw"
+											></i>
+										</a>
+										{#if role.includes("admin")}
+											<form
+												action="?/excluir&id={livro.idlivro}"
+												method="POST"
+											>
+												<button class="control"
+													><i
+														class="fa-regular fa-trash-can fa-fw"
+													></i></button
+												>
+											</form>
+										{/if}
+									</div>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+				<Pagination {total}></Pagination>
+			</div>
 		</div>
 	</div>
 {/if}
