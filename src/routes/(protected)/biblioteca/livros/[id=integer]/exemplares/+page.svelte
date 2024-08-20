@@ -18,7 +18,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Consulta de exemplares</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de exemplares</h1>
 </div>
 
 <form class="card" action="?/adicionar" method="POST">

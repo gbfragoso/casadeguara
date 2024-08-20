@@ -18,7 +18,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
 		Atualizar informações do contribuinte
 	</h1>
 </div>

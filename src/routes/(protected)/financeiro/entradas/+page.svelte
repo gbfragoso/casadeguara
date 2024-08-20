@@ -23,7 +23,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Entradas</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Entradas</h1>
 </div>
 
 <form class="card" action="/financeiro/entradas" method="GET">

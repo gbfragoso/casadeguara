@@ -15,7 +15,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Consulta de coleções</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de coleções</h1>
 </div>
 
 <form class="card" action="/biblioteca/colecoes" method="GET">

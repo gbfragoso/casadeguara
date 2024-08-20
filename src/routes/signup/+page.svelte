@@ -4,7 +4,7 @@
 
 <div class="card container mt-6 mx-auto">
 	<div class="card-content">
-		<h1 class="is-size-3 has-text-weight-semibold">Cadastrar</h1>
+		<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastrar</h1>
 		<form method="post" use:enhance>
 			<div class="field">
 				<label class="label" for="username">Usuário</label>

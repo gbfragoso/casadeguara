@@ -19,7 +19,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold">Consulta de empréstimos</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de empréstimos</h1>
 </div>
 
 <form class="card" action="/biblioteca/emprestimos" method="GET">
@@ -142,7 +142,7 @@
 											action="?/renovar&id={emprestimo.idemp}"
 											method="POST"
 										>
-											<button class="control"
+											<button title="renovar" class="control"
 												><i
 													class="fa-solid fa-repeat fa-fw"
 												></i>&nbsp;</button
@@ -152,7 +152,7 @@
 											action="?/devolver&id={emprestimo.idemp}"
 											method="POST"
 										>
-											<button class="control has-text-danger"
+											<button title="devolver" class="control has-text-danger"
 												><i
 													class="fa-solid fa-reply fa-fw"
 												></i>&nbsp;</button
@@ -162,7 +162,7 @@
 											action="?/recibo&leitor={emprestimo.leitor}"
 											method="POST"
 										>
-											<button class="control"
+											<button title="recibo" class="control"
 												><i
 													class="fa-regular fa-file-lines fa-fw"
 												></i>&nbsp;</button
