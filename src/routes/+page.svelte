@@ -50,7 +50,10 @@
 						</div>
 					</div>
 					{#if form?.failedLogin}
-						<p class="help is-danger">Email ou senha inválida</p>
+						<p class="help is-danger">Email ou senha inválidos</p>
+					{/if}
+					{#if form?.message}
+						<p class="help is-danger">{form.message}</p>
 					{/if}
 				</form>
 			</div>

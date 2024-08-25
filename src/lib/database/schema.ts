@@ -113,7 +113,7 @@ export const leitor = pgTable("leitor", {
 	paciente: boolean("paciente"),
 	incompleto: boolean("incompleto"),
 	status: boolean("status").default(true),
-	aniversario: char("aniversario", { length: 5 }),
+	aniversario: date("aniversario", { mode: 'date' }),
 	rg: varchar("rg", { length: 12 }),
 	cpf: varchar("cpf", { length: 15 }),
 },
