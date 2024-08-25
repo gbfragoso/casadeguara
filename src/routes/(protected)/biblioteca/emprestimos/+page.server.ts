@@ -1,7 +1,8 @@
-import { error, redirect } from '@sveltejs/kit';
-import { emprestimo, exemplar, leitor, livro } from "$lib/database/schema";
-import { and, count, eq, desc, ilike, isNull, gte } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { ulike } from '$lib/database/functions';
+import { emprestimo, exemplar, leitor, livro } from "$lib/database/schema";
+import { error, redirect } from '@sveltejs/kit';
+import { and, count, desc, eq, gte, isNull } from "drizzle-orm";
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -14,8 +15,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const atrasados = url.searchParams.get('atrasados') || undefined;
 	const ativos = url.searchParams.get('ativos') || undefined;
 
-	const nomeFilter = nome ? ilike(leitor.nome, nome + "%") : undefined;
-	const tituloFilter = titulo ? ilike(livro.titulo, titulo + "%") : undefined;
+	const nomeFilter = nome ? ulike(leitor.nome, nome + "%") : undefined;
+	const tituloFilter = titulo ? ulike(livro.titulo, titulo + "%") : undefined;
 	const atrasadosFilter = atrasados ? and(gte(emprestimo.data_devolucao, new Date()), isNull(emprestimo.data_devolvido)) : undefined;
 	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 	const ativosFilter = ativos ? isNull(emprestimo.data_devolvido) : undefined;

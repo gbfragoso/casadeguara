@@ -1,9 +1,9 @@
-import { serie } from "$lib/database/schema";
 import { db } from '$lib/database/connection';
+import { serie } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
 import validator from "validator";
 
-import type { PageServerLoad, Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, "/");

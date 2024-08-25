@@ -1,9 +1,9 @@
-import { leitor } from "$lib/database/schema";
-import { eq, sql } from "drizzle-orm";
 import { db } from '$lib/database/connection';
 import { unaccent } from '$lib/database/functions';
+import { leitor } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
 import dayjs from "dayjs";
+import { eq } from "drizzle-orm";
 
 import type { PageServerLoad } from './$types';
 

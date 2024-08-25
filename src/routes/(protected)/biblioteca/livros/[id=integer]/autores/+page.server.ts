@@ -1,7 +1,7 @@
-import { error, fail, redirect } from '@sveltejs/kit';
-import { autor, autor_has_livro } from "$lib/database/schema";
-import { and, eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { autor, autor_has_livro } from "$lib/database/schema";
+import { error, fail, redirect } from '@sveltejs/kit';
+import { and, eq } from "drizzle-orm";
 
 import type { Actions, PageServerLoad } from './$types';
 

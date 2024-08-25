@@ -1,7 +1,6 @@
 import { error } from '@sveltejs/kit';
 
-import type { PageServerLoad } from './$types';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const exemplar = undefined;

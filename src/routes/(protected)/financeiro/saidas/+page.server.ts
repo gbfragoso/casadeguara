@@ -1,7 +1,8 @@
-import { saidas } from "$lib/database/schema";
-import { and, lte, gte, desc, ilike, count } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { ulike } from '$lib/database/functions';
+import { saidas } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
+import { and, count, desc, gte, lte } from "drizzle-orm";
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -15,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	try {
 		const dataInicioFilter = dataInicio ? gte(saidas.data_saida, new Date(dataInicio)) : undefined;
 		const dataFimFilter = dataFim ? lte(saidas.data_saida, new Date(dataFim)) : undefined;
-		const descricaoFilter = descricao ? ilike(saidas.descricao, descricao + "%") : undefined;
+		const descricaoFilter = descricao ? ulike(saidas.descricao, descricao + "%") : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, descricaoFilter);
 
 		const resultados = await db.select().from(saidas).where(where).orderBy(desc(saidas.data_saida))
