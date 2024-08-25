@@ -182,17 +182,19 @@ tr td {
         display: none !important;
     }
 
-    #printable-content {
-        background-color: white;
-        border-radius: 0;
-        box-shadow: none;
-        margin: 0;
-        padding: 0;
+    .card {
+        --bulma-card-background-color: transparent !important;
+        --bulma-card-shadow: none !important;
+        --bulma-card-radius: 0 !important;
+        --bulma-card-content-background-color: transparent;
+        --bulma-card-content-padding: 0 !important;
     }
 
-    #printable-content .card-content {
-        margin: 0;
-        padding: 0;
+    .section {
+        --bulma-section-padding: 0 !important;
+        --bulma-section-padding-desktop: 0 !important;
+        --bulma-section-padding-medium: 0 !important;
+        --bulma-section-padding-large: 0 !important;
     }
 
     #printable-title {
@@ -203,5 +205,9 @@ tr td {
         background-color: #f3f4f6 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+    }
+
+    .table {
+        --bulma-table-cell-padding: 0 !important;
     }
 }

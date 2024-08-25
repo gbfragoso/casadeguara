@@ -1,8 +1,8 @@
-import { error, redirect } from '@sveltejs/kit';
-import { autor } from "$lib/database/schema";
-import { count } from "drizzle-orm";
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
+import { autor } from "$lib/database/schema";
+import { error, redirect } from '@sveltejs/kit';
+import { count } from "drizzle-orm";
 
 import type { PageServerLoad } from './$types';
 

@@ -1,7 +1,7 @@
-import { aviso, emprestimo } from "$lib/database/schema";
-import { and, gte, lte, isNotNull, count, sum, desc } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { aviso, emprestimo } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
+import { and, count, desc, gte, isNotNull, lte, sum } from "drizzle-orm";
 
 import type { PageServerLoad } from './$types';
 

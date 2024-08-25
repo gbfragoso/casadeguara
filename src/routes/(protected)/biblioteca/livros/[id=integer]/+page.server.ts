@@ -1,7 +1,7 @@
-import { livro, editora, serie } from "$lib/database/schema";
-import { eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { editora, livro, serie } from "$lib/database/schema";
 import { error, fail, redirect } from '@sveltejs/kit';
+import { eq } from "drizzle-orm";
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';

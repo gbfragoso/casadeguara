@@ -1,10 +1,10 @@
-import { leitor } from "$lib/database/schema";
-import { eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { leitor } from "$lib/database/schema";
 import { error, fail, redirect } from '@sveltejs/kit';
+import { eq } from "drizzle-orm";
 import validator from 'validator';
 
-import type { PageServerLoad, Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, "/");

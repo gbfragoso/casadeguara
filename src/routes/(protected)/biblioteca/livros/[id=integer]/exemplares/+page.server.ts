@@ -1,7 +1,7 @@
-import { exemplar } from "$lib/database/schema";
-import { eq } from "drizzle-orm";
 import { db } from '$lib/database/connection';
-import { fail, error, redirect } from '@sveltejs/kit';
+import { exemplar } from "$lib/database/schema";
+import { error, fail, redirect } from '@sveltejs/kit';
+import { eq } from "drizzle-orm";
 
 import type { Actions, PageServerLoad } from './$types';
 

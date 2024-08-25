@@ -1,9 +1,9 @@
+import { db } from '$lib/database/connection';
+import { User } from '$lib/database/schema';
 import { lucia } from "$lib/server/auth";
 import { fail, redirect } from "@sveltejs/kit";
 import { hash } from "argon2";
 import { generateIdFromEntropySize } from 'lucia';
-import { db } from '$lib/database/connection';
-import { User } from '$lib/database/schema';
 import type { Actions } from "./$types";
 
 export const actions: Actions = {

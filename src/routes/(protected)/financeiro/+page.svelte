@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { moeda } from "$lib/js/currency";
 	import dayjs from "dayjs";
 	import utc from "dayjs/plugin/utc";
-	import { moeda } from "$lib/js/currency";
 
 	import type { PageServerData } from "./$types";
 	export let data: PageServerData;

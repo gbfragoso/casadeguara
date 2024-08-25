@@ -1,7 +1,7 @@
-import { entradas, saidas, leitor } from "$lib/database/schema";
-import { and, eq, desc, gte, lte, sum } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { entradas, leitor, saidas } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
+import { and, desc, eq, gte, lte, sum } from "drizzle-orm";
 
 import type { PageServerLoad } from './$types';
 

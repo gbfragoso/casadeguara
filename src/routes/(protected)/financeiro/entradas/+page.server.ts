@@ -1,7 +1,8 @@
-import { leitor, entradas } from "$lib/database/schema";
-import { eq, and, lte, gte, desc, ilike, count } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { ulike } from '$lib/database/functions';
+import { entradas, leitor } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
+import { and, count, desc, eq, gte, lte } from "drizzle-orm";
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -15,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	try {
 		const dataInicioFilter = dataInicio ? gte(entradas.data_entrada, new Date(dataInicio)) : undefined;
 		const dataFimFilter = dataFim ? lte(entradas.data_entrada, new Date(dataFim)) : undefined;
-		const nameFilter = nome ? ilike(leitor.nome, nome.toUpperCase() + "%") : undefined;
+		const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + "%") : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, nameFilter);
 
 		const resultados = await db.select({ entradas, contribuinte: leitor.nome, idcontribuinte: leitor.idleitor, trabalhador: leitor.trab })

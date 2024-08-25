@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Pagination from "$lib/components/Pagination.svelte";
 	import dayjs from "dayjs";
 	import utc from "dayjs/plugin/utc";
-	import Pagination from "$lib/components/Pagination.svelte";
 
 	import type { PageServerData } from "./$types";
 	export let data: PageServerData;

@@ -1,5 +1,5 @@
-import { livro, editora, serie } from "$lib/database/schema";
 import { db } from '$lib/database/connection';
+import { editora, livro, serie } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
 import validator from 'validator';
 

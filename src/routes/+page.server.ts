@@ -1,9 +1,9 @@
-import { lucia } from "$lib/server/auth";
 import { db } from '$lib/database/connection';
 import { User } from '$lib/database/schema';
-import { eq } from "drizzle-orm";
+import { lucia } from "$lib/server/auth";
 import { fail, redirect } from "@sveltejs/kit";
 import { verify } from "argon2";
+import { eq } from "drizzle-orm";
 import type { Actions } from "./$types";
 
 export const actions: Actions = {

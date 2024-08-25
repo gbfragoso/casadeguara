@@ -1,7 +1,7 @@
 <script lang="ts">
 	import dayjs from "dayjs";
 	import utc from "dayjs/plugin/utc";
-	import type { PageServerData, ActionData } from "./$types";
+	import type { ActionData, PageServerData } from "./$types";
 
 	export let data: PageServerData;
 	export let form: ActionData;

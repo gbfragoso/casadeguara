@@ -1,7 +1,7 @@
-import { leitor } from "$lib/database/schema";
-import { ilike, count } from "drizzle-orm";
 import { db } from '$lib/database/connection';
+import { leitor } from "$lib/database/schema";
 import { error, redirect } from '@sveltejs/kit';
+import { count, ilike } from "drizzle-orm";
 
 import type { PageServerLoad } from './$types';
 
