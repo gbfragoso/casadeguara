@@ -5,7 +5,7 @@ import { error, redirect } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
     if (!locals.user) redirect(302, "/");
 
     try {
@@ -20,6 +20,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
         return { avisos, emprestimos: emprestimosMesAtual[0].counter, devolucoes: devolucoesMesAtual[0].counter, renovacoes: emprestimosMesAtual[0].sum };
     } catch (err) {
-        return error(500, { message: 'Falha ao carregar a lista de contribuintes' });
+        return error(500, { message: 'Falha ao carregar as informações da biblioteca' });
     }
 };

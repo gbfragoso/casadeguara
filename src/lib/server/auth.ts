@@ -1,4 +1,4 @@
-import { Lucia } from "lucia";
+import { Lucia, TimeSpan } from "lucia";
 import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { db } from '$lib/database/connection';
 import { User, Session } from '$lib/database/schema';
@@ -18,7 +18,8 @@ export const lucia = new Lucia(adapter, {
 			roles: attributes.roles,
 			name: attributes.name
 		};
-	}
+	},
+	sessionExpiresIn: new TimeSpan(30, "m")
 });
 
 declare module "lucia" {

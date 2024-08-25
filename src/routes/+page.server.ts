@@ -37,15 +37,15 @@ export const actions: Actions = {
 			...sessionCookie.attributes
 		});
 
-		if (existingUser[0].roles.includes('biblioteca')) {
+		let role = existingUser[0].roles;
+		if (role.includes('biblioteca')) {
 			redirect(302, "/biblioteca");
-		}
-		if (existingUser[0].roles.includes('financeiro')) {
+		} else if (role.includes('financeiro')) {
 			redirect(302, "/financeiro");
+		} else if (role.includes('secretaria')) {
+			redirect(302, "/secretaria");
+		} else {
+			return fail(400, { message: 'Solicite ao administrador do sistema cadastramento no setor' });
 		}
-		if (existingUser[0].roles.includes('gestao')) {
-			redirect(302, "/gestao");
-		}
-		redirect(302, "/");
 	}
 } satisfies Actions;

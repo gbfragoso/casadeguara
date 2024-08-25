@@ -160,3 +160,48 @@ tr td {
     justify-content: flex-start;
     gap: 1rem;
 }
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important;
+        text-shadow: none !important;
+        filter: none !important;
+        -ms-filter: none !important;
+    }
+
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.4em !important;
+    }
+
+    #sidebar,
+    #breadcrumb,
+    form {
+        display: none !important;
+    }
+
+    #printable-content {
+        background-color: white;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    #printable-content .card-content {
+        margin: 0;
+        padding: 0;
+    }
+
+    #printable-title {
+        display: block !important;
+    }
+
+    #printable-content tr:nth-child(even) td {
+        background-color: #f3f4f6 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
