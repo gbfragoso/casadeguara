@@ -112,10 +112,9 @@
 											<button title="devolver" class="control has-text-danger"
 												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
 										</form>
-										<form action="?/recibo&leitor={emprestimo.leitor}" method="POST">
-											<button title="recibo" class="control"
-												><i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;</button>
-										</form>
+										<a href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo" title="recibo">
+											<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
+										</a>
 									</div>
 								</td>
 							</tr>

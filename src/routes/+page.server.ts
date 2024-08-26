@@ -37,7 +37,7 @@ export const actions: Actions = {
 			...sessionCookie.attributes,
 		});
 
-		let role = existingUser[0].roles;
+		const role = existingUser[0].roles;
 		if (role.includes('biblioteca')) {
 			redirect(302, '/biblioteca');
 		} else if (role.includes('financeiro')) {

@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request }) => {
 		const form = await request.formData();
 		const chave = form.get('chave') as string;
 

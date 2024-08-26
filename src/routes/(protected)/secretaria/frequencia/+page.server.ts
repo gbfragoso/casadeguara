@@ -11,11 +11,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, '/');
 
 	let dataInicial = dayjs(url.searchParams.get('dataInicio'));
-	let dataFinal = dayjs(url.searchParams.get('dataFim'));
-	let dias = url.searchParams.getAll('dias');
-	let datas = [];
+	const dataFinal = dayjs(url.searchParams.get('dataFim'));
+	const dias = url.searchParams.getAll('dias');
+	const datas = [];
 
-	for (var i = 0; dataInicial <= dataFinal; i++) {
+	for (let i = 0; dataInicial <= dataFinal; i++) {
 		if (dias.includes(String(dataInicial.day()))) {
 			datas.push(dataInicial.format('DD'));
 		}

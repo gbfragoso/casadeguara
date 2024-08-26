@@ -5,15 +5,15 @@ import { and, desc, eq, gte, lte, sum } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		var date = new Date(),
-			y = date.getFullYear(),
-			m = date.getMonth();
-		var firstDay = new Date(y, m, 1);
-		var lastDay = new Date(y, m + 1, 0);
+		const date = new Date();
+		const year = date.getFullYear();
+		const month = date.getMonth();
+		const firstDay = new Date(year, month, 1);
+		const lastDay = new Date(year, month + 1, 0);
 
 		const ultimasEntradas = await db
 			.select({
@@ -26,11 +26,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
 			.orderBy(desc(entradas.data_entrada))
 			.limit(5);
+
 		const ultimasSaidas = await db.select().from(saidas).orderBy(desc(saidas.data_saida)).limit(5);
+
 		const entradaMesAtual = await db
 			.select({ value: sum(entradas.valor) })
 			.from(entradas)
 			.where(and(gte(entradas.data_entrada, firstDay), lte(entradas.data_entrada, lastDay)));
+
 		const saidaMesAtual = await db
 			.select({ value: sum(saidas.valor) })
 			.from(saidas)
