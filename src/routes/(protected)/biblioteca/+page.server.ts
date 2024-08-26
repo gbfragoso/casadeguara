@@ -9,11 +9,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		var date = new Date();
-		var	year = date.getFullYear();
-		var	month = date.getMonth();
-		var firstDay = new Date(year, month, 1);
-		var lastDay = new Date(year, month + 1, 0);
+		const date = new Date();
+		const year = date.getFullYear();
+		const month = date.getMonth();
+		const firstDay = new Date(year, month, 1);
+		const lastDay = new Date(year, month + 1, 0);
 		const dateFilter = (gte(emprestimo.data_emprestimo, firstDay), lte(emprestimo.data_emprestimo, lastDay));
 
 		const avisos = await db.select().from(aviso).orderBy(desc(aviso.data_cadastro)).limit(5);

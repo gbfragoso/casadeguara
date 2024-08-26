@@ -6,9 +6,9 @@ import { generateIdFromEntropySize } from 'lucia';
 import validator from 'validator';
 import type { Actions, PageServerLoad } from '../$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
-}
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {

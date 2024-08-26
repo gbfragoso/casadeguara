@@ -101,7 +101,7 @@
 					<tbody>
 						{#each leitores as leitor}
 							<tr>
-								{#each datas as date}
+								{#each datas as _}
 									<td>[&nbsp;&nbsp;]</td>
 								{/each}
 								<td>

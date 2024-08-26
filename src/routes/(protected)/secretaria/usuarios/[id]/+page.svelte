@@ -23,7 +23,7 @@
 		<div class="field">
 			<label class="label" for="username">Usuário</label>
 			<div class="control">
-				<input class="input" name="username" id="username" value={usuario.username}/>
+				<input class="input" name="username" id="username" value={usuario.username} />
 			</div>
 		</div>
 		<div class="field">
@@ -35,7 +35,7 @@
 		<div class="field">
 			<label class="label" for="name">Nome</label>
 			<div class="control">
-				<input class="input" name="name" id="name" value={usuario.name}/>
+				<input class="input" name="name" id="name" value={usuario.name} />
 			</div>
 		</div>
 		<label class="label" for="roles">Setor</label>

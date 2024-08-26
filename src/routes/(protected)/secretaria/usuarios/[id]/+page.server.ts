@@ -9,12 +9,9 @@ import type { Actions, PageServerLoad } from '../$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
-	
+
 	try {
-		const resultado = await db
-			.select()
-			.from(User)
-			.where(eq(User.id, params.id));
+		const resultado = await db.select().from(User).where(eq(User.id, params.id));
 		if (!resultado) {
 			throw fail(404, { message: 'Autor não encontrado' });
 		}
@@ -22,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	} catch (err) {
 		return error(500, { message: 'Falha ao baixar os dados do autor' });
 	}
-}
+};
 
 export const actions: Actions = {
 	default: async ({ request, params }) => {
