@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
+	export let data: PageServerData;
 	export let form: ActionData;
+
+	$: ({ usuario } = data);
 </script>
 
 <div class="mb-2">
@@ -16,29 +18,29 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de usuários</h1>
 </div>
 
-<form class="card" method="post" use:enhance>
+<form class="card" method="post">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="username">Usuário</label>
 			<div class="control">
-				<input class="input" name="username" id="username" />
+				<input class="input" name="username" id="username" value={usuario.username}/>
 			</div>
 		</div>
 		<div class="field">
 			<label class="label" for="password">Senha</label>
 			<div class="control">
-				<input class="input" type="password" name="password" id="password" /><br />
+				<input class="input" type="password" name="password" id="password" />
 			</div>
 		</div>
 		<div class="field">
 			<label class="label" for="name">Nome</label>
 			<div class="control">
-				<input class="input" name="name" id="name" />
+				<input class="input" name="name" id="name" value={usuario.name}/>
 			</div>
 		</div>
 		<label class="label" for="roles">Setor</label>
 		<div class="select mb-4">
-			<select name="roles" id="roles">
+			<select name="roles" id="roles" value={usuario.roles}>
 				<option value="biblioteca">Biblioteca</option>
 				<option value="secretaria">Secretaria</option>
 				<option value="financeiro">Tesouraria</option>

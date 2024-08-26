@@ -52,14 +52,10 @@
 		<div class="field">
 			<label class="label" for="nome">Editora</label>
 			<div class="select is-fullwidth">
-				<select name="editora" id="editora" required>
+				<select name="editora" id="editora" value={livro.editora} required>
 					<option></option>
 					{#each editoras as editora}
-						{#if livro.editora === editora.ideditora}
-							<option value={editora.ideditora} selected>{editora.nome}</option>
-						{:else}
-							<option value={editora.ideditora}>{editora.nome}</option>
-						{/if}
+						<option value={editora.ideditora}>{editora.nome}</option>
 					{/each}
 				</select>
 				{#if form?.field === 'editora'}
@@ -72,14 +68,10 @@
 				<div class="field">
 					<label class="label" for="colecao">Coleção</label>
 					<div class="select is-fullwidth">
-						<select name="colecao" id="colecao">
+						<select name="colecao" id="colecao" value={livro.serie}>
 							<option></option>
 							{#each colecoes as colecao}
-								{#if livro.serie === colecao.idserie}
-									<option value={colecao.idserie} selected>{colecao.nome}</option>
-								{:else}
-									<option value={colecao.idserie}>{colecao.nome}</option>
-								{/if}
+								<option value={colecao.idserie}>{colecao.nome}</option>
 							{/each}
 						</select>
 					</div>
