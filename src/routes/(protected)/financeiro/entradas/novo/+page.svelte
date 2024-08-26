@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageServerData } from "./$types";
+	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
 
@@ -15,9 +15,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Lançamento de doações e valores recebidos
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lançamento de doações e valores recebidos</h1>
 </div>
 
 <form class="card" method="POST">
@@ -31,9 +29,8 @@
 					placeholder="Digite o nome do doador"
 					list="contribuintes"
 					class="input"
-					aria-invalid={form?.field === "nome" ? "true" : undefined}
-					required
-				/>
+					aria-invalid={form?.field === 'nome' ? 'true' : undefined}
+					required />
 				<datalist id="contribuintes">
 					{#await contribuintes then contribuintes}
 						{#each contribuintes as contribuinte}
@@ -41,7 +38,7 @@
 						{/each}
 					{/await}
 				</datalist>
-				{#if form?.field === "nome"}
+				{#if form?.field === 'nome'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}
 			</div>
@@ -56,9 +53,8 @@
 					min="1"
 					step="any"
 					placeholder="Discriminação do valor recebido"
-					required
-				/>
-				{#if form?.field === "descricao"}
+					required />
+				{#if form?.field === 'descricao'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}
 			</div>
@@ -74,30 +70,19 @@
 						min="1"
 						step="any"
 						placeholder="Digite o valor da doação"
-						required
-					/>
+						required />
 				</div>
 			</div>
 			<div class="field column">
-				<label class="label" for="data_entrada">
-					Data do recebimento</label
-				>
+				<label class="label" for="data_entrada"> Data do recebimento</label>
 				<div class="control">
-					<input
-						class="input"
-						type="date"
-						name="data_entrada"
-						aria-label="Date"
-						required
-					/>
+					<input class="input" type="date" name="data_entrada" aria-label="Date" required />
 				</div>
 			</div>
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button  is-primary has-text-weight-semibold" type="submit"
-					>Cadastrar</button
-				>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
 			</div>
 		</div>
 	</div>

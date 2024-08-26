@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData } from "./$types";
+	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
 
@@ -26,17 +26,14 @@
 					id="nome"
 					class="input"
 					placeholder="Digite o nome da editora"
-					required
-				/>
+					required />
 			</div>
-			{#if form?.field === "nome"}
+			{#if form?.field === 'nome'}
 				<p class="help is-danger">{form?.message}</p>
 			{/if}
 		</div>
 		<div class="control">
-			<button class="button  is-primary has-text-weight-semibold" type="submit"
-				>Cadastrar</button
-			>
+			<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
 		</div>
 	</div>
 </form>

@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { leitor } from "$lib/database/schema";
+import { leitor } from '$lib/database/schema';
 import { error } from '@sveltejs/kit';
 
 import type { Actions } from './$types';
@@ -23,12 +23,23 @@ export const actions: Actions = {
 
 		try {
 			await db.insert(leitor).values({
-				nome: nome.toUpperCase(), rg, cpf, email, celular, telefone,
-				logradouro, bairro, complemento, cidade, cep, trab, status
+				nome: nome.toUpperCase(),
+				rg,
+				cpf,
+				email,
+				celular,
+				telefone,
+				logradouro,
+				bairro,
+				complemento,
+				cidade,
+				cep,
+				trab,
+				status,
 			});
 			return { status: 201 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar um novo leitor' });
 		}
-	}
+	},
 } satisfies Actions;

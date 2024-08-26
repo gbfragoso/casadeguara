@@ -1,16 +1,19 @@
-import { db } from "$lib/database/connection";
-import { entradas } from "$lib/database/schema";
-import { error, fail, redirect } from "@sveltejs/kit";
-import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { entradas } from '$lib/database/schema';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
-import type { Actions, PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
-		const entrada = await db.select().from(entradas).where(eq(entradas.identrada, Number(params.id)));
+		const entrada = await db
+			.select()
+			.from(entradas)
+			.where(eq(entradas.identrada, Number(params.id)));
 		if (!entrada) {
 			throw fail(404, { message: 'Entrada não encontrada' });
 		}
@@ -32,26 +35,29 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do recebimento é obrigatória'
-			}
+				message: 'Descrição do recebimento é obrigatória',
+			};
 		}
 
 		if (validator.isNumeric(descricao)) {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do recebimento não pode conter somente números'
-			}
+				message: 'Descrição do recebimento não pode conter somente números',
+			};
 		}
 
 		try {
-			await db.update(entradas)
+			await db
+				.update(entradas)
 				.set({ descricao, valor, data_entrada: new Date(data_entrada) })
 				.where(eq(entradas.identrada, Number(params.id)));
 
 			return { status: 200 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados da entrada' });
+			return error(500, {
+				message: 'Falha ao atualizar os dados da entrada',
+			});
 		}
-	}
+	},
 };

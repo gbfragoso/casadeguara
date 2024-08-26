@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageServerData } from "./$types";
+	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
 
@@ -15,9 +15,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Atualizar palavra-chave
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar palavra-chave</h1>
 </div>
 
 <form class="card" method="POST">
@@ -32,17 +30,14 @@
 					id="chave"
 					value={keyword.chave}
 					placeholder="Digite a palavra-chave"
-					required
-				/>
+					required />
 			</div>
-			{#if form?.field === "chave"}
+			{#if form?.field === 'chave'}
 				<p class="help is-danger">{form?.message}</p>
 			{/if}
 		</div>
 		<div class="control">
-			<button class="button  is-primary has-text-weight-semibold" type="submit"
-				>Atualizar</button
-			>
+			<button class="button is-primary has-text-weight-semibold" type="submit">Atualizar</button>
 		</div>
 	</div>
 </form>

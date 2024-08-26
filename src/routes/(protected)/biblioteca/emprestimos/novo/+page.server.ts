@@ -14,7 +14,7 @@ export const actions: Actions = {
 		}
 
 		return {
-			status: 201
+			status: 201,
 		};
-	}
+	},
 } satisfies Actions;

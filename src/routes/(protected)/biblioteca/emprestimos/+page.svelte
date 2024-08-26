@@ -1,7 +1,7 @@
 <script lang="ts">
-	import dayjs from "dayjs";
-	import utc from "dayjs/plugin/utc";
-	import type { PageServerData } from "./$types";
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
 	$: ({ emprestimos } = data);
@@ -13,9 +13,7 @@
 		<ul>
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos" aria-current="page"
-					>Empréstimos</a
-				>
+				<a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a>
 			</li>
 		</ul>
 	</nav>
@@ -27,13 +25,7 @@
 		<div class="field">
 			<label class="label" for="leitor">Leitor</label>
 			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="leitor"
-					id="leitor"
-					placeholder="Digite o nome do leitor"
-				/>
+				<input class="input" type="text" name="leitor" id="leitor" placeholder="Digite o nome do leitor" />
 			</div>
 		</div>
 		<div class="columns">
@@ -41,13 +33,7 @@
 				<div class="field">
 					<label class="label" for="titulo">Tombo</label>
 					<div class="control">
-						<input
-							class="input"
-							type="number"
-							name="tombo"
-							id="tombo"
-							placeholder="Digite o tombo"
-						/>
+						<input class="input" type="number" name="tombo" id="tombo" placeholder="Digite o tombo" />
 					</div>
 				</div>
 			</div>
@@ -60,8 +46,7 @@
 							type="text"
 							name="titulo"
 							id="titulo"
-							placeholder="Digite o título da obra"
-						/>
+							placeholder="Digite o título da obra" />
 					</div>
 				</div>
 			</div>
@@ -77,25 +62,16 @@
 			</label>
 		</div>
 		<div class="columns">
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
-					>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<a
 					data-sveltekit-reload
 					class="button is-fullwidth has-text-weight-semibold"
-					href="/biblioteca/emprestimos/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
-				>
+					href="/biblioteca/emprestimos/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -118,55 +94,27 @@
 						{#each emprestimos as emprestimo}
 							<tr>
 								<td>
-									<a
-										href="/biblioteca/leitores/{emprestimo.idleitor}"
-									>
+									<a href="/biblioteca/leitores/{emprestimo.idleitor}">
 										{emprestimo.leitor}
 									</a>
 								</td>
 								<td>{emprestimo.titulo}</td>
 								<td>{emprestimo.numero}</td>
-								<td
-									>{dayjs
-										.utc(emprestimo.data_emprestimo)
-										.format("DD/MM/YYYY")}</td
-								>
-								<td
-									>{dayjs
-										.utc(emprestimo.data_devolucao)
-										.format("DD/MM/YYYY")}</td
-								>
+								<td>{dayjs.utc(emprestimo.data_emprestimo).format('DD/MM/YYYY')}</td>
+								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
 								<td>
 									<div class="field is-grouped">
-										<form
-											action="?/renovar&id={emprestimo.idemp}"
-											method="POST"
-										>
+										<form action="?/renovar&id={emprestimo.idemp}" method="POST">
 											<button title="renovar" class="control"
-												><i
-													class="fa-solid fa-repeat fa-fw"
-												></i>&nbsp;</button
-											>
+												><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
 										</form>
-										<form
-											action="?/devolver&id={emprestimo.idemp}"
-											method="POST"
-										>
+										<form action="?/devolver&id={emprestimo.idemp}" method="POST">
 											<button title="devolver" class="control has-text-danger"
-												><i
-													class="fa-solid fa-reply fa-fw"
-												></i>&nbsp;</button
-											>
+												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
 										</form>
-										<form
-											action="?/recibo&leitor={emprestimo.leitor}"
-											method="POST"
-										>
+										<form action="?/recibo&leitor={emprestimo.leitor}" method="POST">
 											<button title="recibo" class="control"
-												><i
-													class="fa-regular fa-file-lines fa-fw"
-												></i>&nbsp;</button
-											>
+												><i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;</button>
 										</form>
 									</div>
 								</td>

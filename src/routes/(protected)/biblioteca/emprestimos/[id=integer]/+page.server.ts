@@ -32,11 +32,13 @@ export const actions: Actions = {
 			// 	}
 			// });
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados do exemplar' });
+			return error(500, {
+				message: 'Falha ao atualizar os dados do exemplar',
+			});
 		}
 
 		return {
-			status: 200
+			status: 200,
 		};
-	}
+	},
 };

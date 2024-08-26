@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageServerData } from "./$types";
+	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
 
@@ -15,9 +15,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Atualizar aviso
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar aviso</h1>
 </div>
 
 <form class="card" method="POST">
@@ -31,17 +29,14 @@
 					id="texto"
 					value={aviso.texto}
 					placeholder="Digite o texto do aviso"
-					required
-				/>
+					required />
 			</div>
-			{#if form?.field === "texto"}
+			{#if form?.field === 'texto'}
 				<p class="help is-danger">{form?.message}</p>
 			{/if}
 		</div>
 		<div class="control">
-			<button class="button  is-primary has-text-weight-semibold" type="submit"
-				>Atualizar</button
-			>
+			<button class="button is-primary has-text-weight-semibold" type="submit">Atualizar</button>
 		</div>
 	</div>
 </form>

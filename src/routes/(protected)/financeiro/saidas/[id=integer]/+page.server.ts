@@ -1,16 +1,19 @@
-import { db } from "$lib/database/connection";
-import { saidas } from "$lib/database/schema";
-import { error, fail, redirect } from "@sveltejs/kit";
-import { eq } from "drizzle-orm";
+import { db } from '$lib/database/connection';
+import { saidas } from '$lib/database/schema';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
-import type { Actions, PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
-		const saida = await db.select().from(saidas).where(eq(saidas.idsaida, Number(params.id)));
+		const saida = await db
+			.select()
+			.from(saidas)
+			.where(eq(saidas.idsaida, Number(params.id)));
 		if (!saida) {
 			throw fail(404, { message: 'Saída não encontrada' });
 		}
@@ -32,26 +35,29 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do pagamento é obrigatória'
-			}
+				message: 'Descrição do pagamento é obrigatória',
+			};
 		}
 
 		if (validator.isNumeric(descricao)) {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do pagamento não pode conter somente números'
-			}
+				message: 'Descrição do pagamento não pode conter somente números',
+			};
 		}
 
 		try {
-			await db.update(saidas)
+			await db
+				.update(saidas)
 				.set({ descricao, valor, data_saida: new Date(data_saida) })
 				.where(eq(saidas.idsaida, Number(params.id)));
 
 			return { status: 200 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados da saida' });
+			return error(500, {
+				message: 'Falha ao atualizar os dados da saida',
+			});
 		}
-	}
+	},
 };

@@ -1,19 +1,21 @@
 import { db } from '$lib/database/connection';
-import { entradas, leitor } from "$lib/database/schema";
+import { entradas, leitor } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from "drizzle-orm";
+import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
 		const contribuintes = await db.select({ nome: leitor.nome }).from(leitor);
 		return { contribuintes };
 	} catch (err) {
-		throw fail(500, { message: 'Falha ao carregar a lista de contribuintes' });
+		throw fail(500, {
+			message: 'Falha ao carregar a lista de contribuintes',
+		});
 	}
 };
 
@@ -29,55 +31,59 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do contribuinte é obrigatório'
-			}
+				message: 'Nome do contribuinte é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do contribuinte não pode conter somente números'
-			}
+				message: 'Nome do contribuinte não pode conter somente números',
+			};
 		}
 
 		if (validator.isEmpty(descricao, { ignore_whitespace: true })) {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do recebimento é obrigatória'
-			}
+				message: 'Descrição do recebimento é obrigatória',
+			};
 		}
 
 		if (validator.isNumeric(descricao)) {
 			return {
 				status: 400,
 				field: 'descricao',
-				message: 'Descrição do recebimento não pode conter somente números'
-			}
+				message: 'Descrição do recebimento não pode conter somente números',
+			};
 		}
 
 		try {
-			const contribuinte = await db.select({ idleitor: leitor.idleitor }).from(leitor).where(eq(leitor.nome, nome.toUpperCase()));
+			const contribuinte = await db
+				.select({ idleitor: leitor.idleitor })
+				.from(leitor)
+				.where(eq(leitor.nome, nome.toUpperCase()));
 
 			if (!contribuinte) {
 				return {
 					status: 400,
 					field: 'nome',
-					message: 'Contribuinte não encontrado'
-				}
-				
+					message: 'Contribuinte não encontrado',
+				};
 			}
-			
+
 			await db.insert(entradas).values({
 				idcontribuinte: Number(contribuinte[0].idleitor),
 				descricao: descricao,
 				valor: valor,
-				data_entrada: new Date(data_entrada)
+				data_entrada: new Date(data_entrada),
 			});
-			return { status: 201 }
+			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao cadastrar uma nova doação' });
+			return error(500, {
+				message: 'Falha ao cadastrar uma nova doação',
+			});
 		}
-	}
+	},
 } satisfies Actions;

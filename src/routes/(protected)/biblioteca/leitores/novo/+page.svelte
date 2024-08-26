@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData } from "./$types";
+	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
 
@@ -21,34 +21,19 @@
 			<div class="field column is-three-fifths">
 				<label class="label" for="nome">Nome</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="nome"
-						id="nome"
-					/>
+					<input class="input" type="text" name="nome" id="nome" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="rg">RG</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="rg"
-						id="rg"
-					/>
+					<input class="input" type="text" name="rg" id="rg" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="rg">CPF</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="cpf"
-						id="cpf"
-					/>
+					<input class="input" type="text" name="cpf" id="cpf" />
 				</div>
 			</div>
 		</div>
@@ -56,34 +41,19 @@
 			<div class="field column">
 				<label class="label" for="email">E-mail</label>
 				<div class="control">
-					<input
-						class="input"
-						type="email"
-						name="email"
-						id="email"
-					/>
+					<input class="input" type="email" name="email" id="email" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="celular">Celular</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="celular"
-						id="celular"
-					/>
+					<input class="input" type="text" name="celular" id="celular" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="telefone">Whatsapp</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="telefone"
-						id="telefone"
-					/>
+					<input class="input" type="text" name="telefone" id="telefone" />
 				</div>
 			</div>
 		</div>
@@ -91,81 +61,46 @@
 			<div class="field column is-half">
 				<label class="label" for="logradouro">Logradouro</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="logradouro"
-						id="logradouro"
-					/>
+					<input class="input" type="text" name="logradouro" id="logradouro" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="bairro">Bairro</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="bairro"
-						id="bairro"
-					/>
+					<input class="input" type="text" name="bairro" id="bairro" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="complemento">Complemento</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="complemento"
-						id="complemento"
-					/>
+					<input class="input" type="text" name="complemento" id="complemento" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="cidade">Cidade</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="cidade"
-						id="cidade"
-					/>
+					<input class="input" type="text" name="cidade" id="cidade" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="cep">CEP</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="cep"
-						id="cep"
-					/>
+					<input class="input" type="text" name="cep" id="cep" />
 				</div>
 			</div>
 		</div>
 		<div class="field is-grouped">
 			<label for="trab" class="checkbox">
-				<input
-					type="checkbox"
-					name="trab"
-					id="trab"
-				/>
+				<input type="checkbox" name="trab" id="trab" />
 				Trabalhador
 			</label>
 			<label for="status" class="checkbox">
-				<input
-					type="checkbox"
-					name="status"
-					id="status"
-				/>
+				<input type="checkbox" name="status" id="status" />
 				Ativo
 			</label>
 		</div>
 		<div class="control">
-			<button class="button  is-primary has-text-weight-semibold" type="submit"
-				>Cadastrar</button
-			>
+			<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
 		</div>
 	</div>
 </form>

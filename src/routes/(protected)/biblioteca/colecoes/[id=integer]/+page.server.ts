@@ -1,22 +1,27 @@
 import { db } from '$lib/database/connection';
-import { serie } from "$lib/database/schema";
+import { serie } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from "drizzle-orm";
-import validator from "validator";
+import { eq } from 'drizzle-orm';
+import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
-		const colecao = await db.select().from(serie).where(eq(serie.idserie, Number(params.id)));
+		const colecao = await db
+			.select()
+			.from(serie)
+			.where(eq(serie.idserie, Number(params.id)));
 		if (!colecao) {
 			throw fail(404, { message: 'Coleção não encontrada' });
 		}
-		return { colecao : colecao[0] };
+		return { colecao: colecao[0] };
 	} catch (err) {
-		return error(500, { message: 'Falha ao recuperar os dados da coleção' });
+		return error(500, {
+			message: 'Falha ao recuperar os dados da coleção',
+		});
 	}
 };
 
@@ -29,23 +34,28 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome da coleção é obrigatório'
-			}
+				message: 'Nome da coleção é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do coleção não pode conter somente números'
-			}
+				message: 'Nome do coleção não pode conter somente números',
+			};
 		}
 
 		try {
-			await db.update(serie).set({ nome: nome.toUpperCase() }).where(eq(serie.idserie, Number(params.id)));
+			await db
+				.update(serie)
+				.set({ nome: nome.toUpperCase() })
+				.where(eq(serie.idserie, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados da coleção' });
+			return error(500, {
+				message: 'Falha ao atualizar os dados da coleção',
+			});
 		}
-	}
+	},
 };

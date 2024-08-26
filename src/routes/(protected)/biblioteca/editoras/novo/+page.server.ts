@@ -1,7 +1,7 @@
 import { db } from '$lib/database/connection';
-import { editora } from "$lib/database/schema";
+import { editora } from '$lib/database/schema';
 import { error } from '@sveltejs/kit';
-import validator from "validator";
+import validator from 'validator';
 
 import type { Actions } from './$types';
 
@@ -14,16 +14,16 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome da editora é obrigatório'
-			}
+				message: 'Nome da editora é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do editora não pode conter somente números'
-			}
+				message: 'Nome do editora não pode conter somente números',
+			};
 		}
 
 		try {
@@ -31,6 +31,6 @@ export const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar uma nova editora' });
-		}	
-	}
+		}
+	},
 } satisfies Actions;

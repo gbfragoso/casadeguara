@@ -13,9 +13,9 @@ const config = {
 				formats: ['image/avif', 'image/webp'],
 				minimumCacheTTL: 300,
 				domains: ['casadeguara.vercel.app'],
-			}
-		})
-	}
+			},
+		}),
+	},
 };
 
 export default config;

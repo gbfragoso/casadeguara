@@ -1,13 +1,13 @@
 import { db } from '$lib/database/connection';
-import { aviso } from "$lib/database/schema";
+import { aviso } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { desc } from "drizzle-orm";
+import { desc } from 'drizzle-orm';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
 		const avisos = await db.select().from(aviso).orderBy(desc(aviso.data_cadastro)).limit(5);
@@ -26,8 +26,8 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'texto',
-				message: 'Texto do aviso é obrigatório'
-			}
+				message: 'Texto do aviso é obrigatório',
+			};
 		}
 
 		try {
@@ -36,5 +36,5 @@ export const actions: Actions = {
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar um novo autor' });
 		}
-	}
+	},
 } satisfies Actions;

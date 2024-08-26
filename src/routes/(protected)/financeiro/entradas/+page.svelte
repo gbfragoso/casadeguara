@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Pagination from "$lib/components/Pagination.svelte";
-	import dayjs from "dayjs";
-	import utc from "dayjs/plugin/utc";
+	import Pagination from '$lib/components/Pagination.svelte';
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
 
-	import type { PageServerData } from "./$types";
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
 	$: ({ resultados, total } = data);
@@ -15,11 +15,7 @@
 		<ul>
 			<li><a data-sveltekit-reload href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a
-					data-sveltekit-reload
-					href="/financeiro/entradas"
-					aria-current="page">Entradas</a
-				>
+				<a data-sveltekit-reload href="/financeiro/entradas" aria-current="page">Entradas</a>
 			</li>
 		</ul>
 	</nav>
@@ -36,56 +32,34 @@
 					type="text"
 					name="contribuinte"
 					id="contribuinte"
-					placeholder="Digite o nome do contribuinte"
-				/>
+					placeholder="Digite o nome do contribuinte" />
 			</div>
 		</div>
 		<div class="columns">
 			<div class="field column">
 				<label class="label" for="dataInicio">Data inicial</label>
 				<div class="control">
-					<input
-						class="input"
-						type="date"
-						name="dataInicio"
-						id="dataInicio"
-						aria-label="Date"
-					/>
+					<input class="input" type="date" name="dataInicio" id="dataInicio" aria-label="Date" />
 				</div>
 			</div>
 			<div class="field column">
 				<label class="label" for="dataFim">Data Final</label>
 				<div class="control">
-					<input
-						class="input"
-						type="date"
-						name="dataFim"
-						id="dataFim"
-						aria-label="Date"
-					/>
+					<input class="input" type="date" name="dataFim" id="dataFim" aria-label="Date" />
 				</div>
 			</div>
 		</div>
 		<div class="columns">
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
-					>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<a
 					data-sveltekit-reload
 					class="button is-fullwidth has-text-weight-semibold"
-					href="/financeiro/entradas/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
-				>
+					href="/financeiro/entradas/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -108,9 +82,7 @@
 						{#each resultados as resultado}
 							<tr>
 								<td>
-									<a
-										href="/financeiro/contribuinte/{resultado.idcontribuinte}"
-									>
+									<a href="/financeiro/contribuinte/{resultado.idcontribuinte}">
 										{resultado.contribuinte}
 									</a>
 								</td>
@@ -121,20 +93,10 @@
 								{/if}
 								<td>{resultado.entradas.valor}</td>
 								<td>{resultado.entradas.descricao}</td>
-								<td
-									>{dayjs
-										.utc(resultado.entradas.data_entrada)
-										.format("DD/MM/YYYY")}</td
-								>
+								<td>{dayjs.utc(resultado.entradas.data_entrada).format('DD/MM/YYYY')}</td>
 								<td>
-									<a
-										data-sveltekit-reload
-										href="/financeiro/entradas/{resultado
-											.entradas.identrada}"
-									>
-										<i
-											class="fa-solid fa-pen-to-square fa-fw"
-										></i>
+									<a data-sveltekit-reload href="/financeiro/entradas/{resultado.entradas.identrada}">
+										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>
 							</tr>

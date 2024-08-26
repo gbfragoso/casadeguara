@@ -1,16 +1,19 @@
 import { db } from '$lib/database/connection';
-import { exemplar } from "$lib/database/schema";
+import { exemplar } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from "drizzle-orm";
+import { eq } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 
-
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
-		const exemplares = await db.select().from(exemplar).where(eq(exemplar.livro, Number(params.id))).orderBy(exemplar.numero);
+		const exemplares = await db
+			.select()
+			.from(exemplar)
+			.where(eq(exemplar.livro, Number(params.id)))
+			.orderBy(exemplar.numero);
 		return { exemplares, role: locals.user.roles };
 	} catch (err) {
 		return error(500, { message: 'Falha ao carregar a lista de autores' });
@@ -24,7 +27,12 @@ export const actions: Actions = {
 		const numero = Number(form.get('numero'));
 
 		try {
-			await db.insert(exemplar).values({ livro: id, numero, status: 'Disponível', data_cadastro: new Date() });
+			await db.insert(exemplar).values({
+				livro: id,
+				numero,
+				status: 'Disponível',
+				data_cadastro: new Date(),
+			});
 			return { status: 201 };
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar um novo autor' });
@@ -33,7 +41,9 @@ export const actions: Actions = {
 	excluir: async ({ url }) => {
 		const id = url.searchParams.get('exemplar');
 		if (!id) {
-			return fail(400, { message: 'Nenhum exemplar foi selecionada para exclusão' });
+			return fail(400, {
+				message: 'Nenhum exemplar foi selecionada para exclusão',
+			});
 		}
 
 		try {
@@ -42,5 +52,5 @@ export const actions: Actions = {
 		} catch (err) {
 			return error(500, { message: 'Falha ao excluir o exemplar' });
 		}
-	}
+	},
 };

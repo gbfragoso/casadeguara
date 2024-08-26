@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Pagination from "$lib/components/Pagination.svelte";
-	import type { PageServerData } from "./$types";
+	import Pagination from '$lib/components/Pagination.svelte';
+	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
 	$: ({ contribuintes, total } = data);
@@ -11,9 +11,7 @@
 		<ul>
 			<li><a href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a href="/financeiro/contribuintes" aria-current="page"
-					>Contribuintes</a
-				>
+				<a href="/financeiro/contribuintes" aria-current="page">Contribuintes</a>
 			</li>
 		</ul>
 	</nav>
@@ -25,35 +23,20 @@
 		<div class="field">
 			<label class="label" for="nome">Nome do contribuinte</label>
 			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="nome"
-					id="nome"
-					placeholder="Digite o nome do contribuinte"
-				/>
+				<input class="input" type="text" name="nome" id="nome" placeholder="Digite o nome do contribuinte" />
 			</div>
 		</div>
 		<div class="columns">
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
-					>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<a
 					data-sveltekit-reload
 					class="button is-fullwidth has-text-weight-semibold"
-					href="/financeiro/contribuintes/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
-				>
+					href="/financeiro/contribuintes/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -80,12 +63,8 @@
 								{/if}
 								<td>
 									<form method="POST">
-										<a
-											href="/financeiro/contribuintes/{contribuinte.idleitor}"
-										>
-											<i
-												class="fa-solid fa-pen-to-square fa-fw"
-											></i>
+										<a href="/financeiro/contribuintes/{contribuinte.idleitor}">
+											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
 									</form>
 								</td>

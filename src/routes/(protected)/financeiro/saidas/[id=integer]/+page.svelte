@@ -1,7 +1,7 @@
 <script lang="ts">
-	import dayjs from "dayjs";
-	import utc from "dayjs/plugin/utc";
-	import type { ActionData, PageServerData } from "./$types";
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
+	import type { ActionData, PageServerData } from './$types';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -15,17 +15,11 @@
 		<ul>
 			<li><a data-sveltekit-reload href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a
-					data-sveltekit-reload
-					href="/financeiro/saidas"
-					aria-current="page">saidas</a
-				>
+				<a data-sveltekit-reload href="/financeiro/saidas" aria-current="page">saidas</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Atualizar os dados do pagamento
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar os dados do pagamento</h1>
 </div>
 
 <form class="card" action="?/update" method="POST">
@@ -33,14 +27,8 @@
 		<div class="field">
 			<label class="label" for="descricao">Descrição</label>
 			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="descricao"
-					id="descricao"
-					value={saida.descricao}
-				/>
-				{#if form?.field === "descricao"}
+				<input class="input" type="text" name="descricao" id="descricao" value={saida.descricao} />
+				{#if form?.field === 'descricao'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}
 			</div>
@@ -49,14 +37,7 @@
 			<div class="field column">
 				<label class="label" for="valor">Valor</label>
 				<div class="control">
-					<input
-						class="input"
-						type="number"
-						name="valor"
-						id="valor"
-						value={saida.valor}
-						step=".01"
-					/>
+					<input class="input" type="number" name="valor" id="valor" value={saida.valor} step=".01" />
 				</div>
 			</div>
 			<div class="field column">
@@ -66,16 +47,13 @@
 						class="input"
 						type="date"
 						name="data_saida"
-						value={dayjs.utc(saida.data_saida).format("YYYY-MM-DD")}
-					/>
+						value={dayjs.utc(saida.data_saida).format('YYYY-MM-DD')} />
 				</div>
 			</div>
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button  is-primary has-text-weight-semibold" type="submit"
-					>Atualizar</button
-				>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Atualizar</button>
 			</div>
 		</div>
 	</div>
