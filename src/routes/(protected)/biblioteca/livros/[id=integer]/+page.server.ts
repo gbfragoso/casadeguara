@@ -1,16 +1,19 @@
 import { db } from '$lib/database/connection';
-import { editora, livro, serie } from "$lib/database/schema";
+import { editora, livro, serie } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from "drizzle-orm";
+import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
-		const resultado = await db.select().from(livro).where(eq(livro.idlivro, Number(params.id)));
+		const resultado = await db
+			.select()
+			.from(livro)
+			.where(eq(livro.idlivro, Number(params.id)));
 		if (!resultado) {
 			throw fail(404, { message: 'Livro não encontrado' });
 		}
@@ -35,34 +38,43 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Título da obra é obrigatório'
-			}
+				message: 'Título da obra é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(titulo)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Título da obra não pode conter somente números'
-			}
+				message: 'Título da obra não pode conter somente números',
+			};
 		}
 
 		if (!editora) {
 			return {
 				status: 400,
 				field: 'editora',
-				message: 'Editora da obra é obrigatório'
-			}
+				message: 'Editora da obra é obrigatório',
+			};
 		}
 
 		try {
-			await db.update(livro)
-				.set({ tombo, titulo, editora: Number(editora), serie: (serie ? Number(serie) : null), ordem: (ordem ? Number(ordem) : null) })
+			await db
+				.update(livro)
+				.set({
+					tombo,
+					titulo,
+					editora: Number(editora),
+					serie: serie ? Number(serie) : null,
+					ordem: ordem ? Number(ordem) : null,
+				})
 				.where(eq(livro.idlivro, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
-			console.log(err)
-			return error(500, { message: 'Falha ao atualizar os dados do livro' });
+			console.log(err);
+			return error(500, {
+				message: 'Falha ao atualizar os dados do livro',
+			});
 		}
-	}
+	},
 };

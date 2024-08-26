@@ -1,12 +1,12 @@
 import { db } from '$lib/database/connection';
-import { editora, livro, serie } from "$lib/database/schema";
+import { editora, livro, serie } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
 		const editoras = await db.select().from(editora).orderBy(editora.nome);
@@ -30,16 +30,16 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Título da obra é obrigatório'
-			}
+				message: 'Título da obra é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(titulo)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Título da obra não pode conter somente números'
-			}
+				message: 'Título da obra não pode conter somente números',
+			};
 		}
 
 		try {
@@ -48,5 +48,5 @@ export const actions: Actions = {
 		} catch (err) {
 			return error(500, { message: 'Falha ao cadastrar um novo livro' });
 		}
-	}
+	},
 } satisfies Actions;

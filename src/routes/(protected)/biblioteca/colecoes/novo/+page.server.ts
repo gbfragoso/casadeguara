@@ -1,13 +1,13 @@
 import { db } from '$lib/database/connection';
-import { serie } from "$lib/database/schema";
+import { serie } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import validator from "validator";
+import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
-}
+	if (!locals.user) redirect(302, '/');
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {
@@ -18,16 +18,16 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome da coleção é obrigatório'
-			}
+				message: 'Nome da coleção é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do coleção não pode conter somente números'
-			}
+				message: 'Nome do coleção não pode conter somente números',
+			};
 		}
 
 		try {
@@ -36,5 +36,5 @@ export const actions: Actions = {
 		} catch (err) {
 			return error(500, { message: 'Falha ao criar uma nova coleção' });
 		}
-	}
+	},
 } satisfies Actions;

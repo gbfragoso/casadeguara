@@ -1,21 +1,22 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { LayoutServerData } from "./$types";
+	import type { LayoutServerData } from './$types';
 	export let data: LayoutServerData;
 
 	let open = false;
-	$:({ name } = data);
+	$: ({ name } = data);
 </script>
 
 <main class="is-flex">
-	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between {open === true? 'open-sidebar' : ''}">
+	<nav
+		id="sidebar"
+		class="is-flex is-flex-direction-column is-justify-content-space-between {open === true ? 'open-sidebar' : ''}">
 		<div class="p-3">
 			<div class="mb-5 is-flex is-2 is-align-content-center">
 				<img
 					src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
 					id="user-avatar"
-					alt="Avatar"
-				/>
+					alt="Avatar" />
 
 				<p id="user-info">
 					<span class="item-description pl-2 is-size-6">Bem vindo</span>
@@ -48,7 +49,7 @@
 					</a>
 				</li>
 			</ul>
-			<button id="sidebar-button" class="is-hidden-mobile" on:click={() => open = !open}>
+			<button id="sidebar-button" class="is-hidden-mobile" on:click={() => (open = !open)}>
 				<i id="sidebar-button-icon" class="fa-solid fa-chevron-right fa-fw"></i>
 			</button>
 		</div>

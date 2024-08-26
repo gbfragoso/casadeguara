@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
-	import type { ActionData } from "./$types";
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
 
@@ -17,12 +17,7 @@
 					<div class="field">
 						<label class="label" for="email">Email</label>
 						<div class="control">
-							<input
-								class="input"
-								type="email"
-								name="email"
-								id="email"
-							/>
+							<input class="input" type="email" name="email" id="email" />
 							{#if form?.invalidEmail}
 								<p class="help is-danger">E-mail inválido</p>
 							{/if}
@@ -31,12 +26,7 @@
 					<div class="field">
 						<label class="label" for="password">Senha</label>
 						<div class="control">
-							<input
-								class="input"
-								type="password"
-								name="password"
-								id="password"
-							/>
+							<input class="input" type="password" name="password" id="password" />
 							{#if form?.invalidPassword}
 								<p class="help is-danger">Senha inválida</p>
 							{/if}
@@ -44,9 +34,7 @@
 					</div>
 					<div class="field pt-3">
 						<div class="control">
-							<button class="button is-primary is-fullwidth has-text-weight-semibold"
-								>Entrar</button
-							>
+							<button class="button is-primary is-fullwidth has-text-weight-semibold">Entrar</button>
 						</div>
 					</div>
 					{#if form?.failedLogin}

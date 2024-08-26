@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { moeda } from "$lib/js/currency";
-	import dayjs from "dayjs";
-	import utc from "dayjs/plugin/utc";
+	import { moeda } from '$lib/js/currency';
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
 
-	import type { PageServerData } from "./$types";
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
 	$: ({ entradas, saidas, entradaMesAtual, saidaMesAtual } = data);
@@ -21,14 +21,13 @@
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Balanço do mês {dayjs.utc(new Date()).format("MM/YYYY")}
+		Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
 	</h1>
 </div>
 <div class="mt-2 columns">
 	<div class="column">
 		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor
-			recebido
+			<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor recebido
 			<h2 class="is-size-3 has-text-primary">
 				{moeda(Number(entradaMesAtual))}
 			</h2>
@@ -59,9 +58,7 @@
 </div>
 <div class="card">
 	<div class="card-content">
-		<p class="is-size-4 mb-4 has-text-weight-semibold">
-			Últimas contribuições
-		</p>
+		<p class="is-size-4 mb-4 has-text-weight-semibold">Últimas contribuições</p>
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
@@ -76,11 +73,7 @@
 							<td>{entrada.contribuinte}</td>
 							<td>{entrada.descricao}</td>
 							<td>{moeda(Number(entrada.valor))}</td>
-							<td
-								>{dayjs
-									.utc(entrada.data)
-									.format("DD/MM/YYYY")}</td
-							>
+							<td>{dayjs.utc(entrada.data).format('DD/MM/YYYY')}</td>
 						</tr>
 					{/each}
 				</tbody>
@@ -91,9 +84,7 @@
 
 <div class="card">
 	<div class="card-content">
-		<p class="is-size-4 mb-4 has-text-weight-semibold">
-			Últimos pagamentos
-		</p>
+		<p class="is-size-4 mb-4 has-text-weight-semibold">Últimos pagamentos</p>
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
@@ -106,11 +97,7 @@
 						<tr>
 							<td>{saida.descricao}</td>
 							<td>{moeda(Number(saida.valor))}</td>
-							<td
-								>{dayjs
-									.utc(saida.data_saida)
-									.format("DD/MM/YYYY")}</td
-							>
+							<td>{dayjs.utc(saida.data_saida).format('DD/MM/YYYY')}</td>
 						</tr>
 					{/each}
 				</tbody>

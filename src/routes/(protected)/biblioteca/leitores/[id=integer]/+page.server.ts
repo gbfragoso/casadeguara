@@ -1,16 +1,19 @@
 import { db } from '$lib/database/connection';
-import { leitor } from "$lib/database/schema";
+import { leitor } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from "drizzle-orm";
-import validator from "validator";
+import { eq } from 'drizzle-orm';
+import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, "/");
+	if (!locals.user) redirect(302, '/');
 
 	try {
-		const resultado = await db.select().from(leitor).where(eq(leitor.idleitor, Number(params.id)));
+		const resultado = await db
+			.select()
+			.from(leitor)
+			.where(eq(leitor.idleitor, Number(params.id)));
 		if (!resultado) {
 			throw fail(404, { message: 'Leitor não encontrado' });
 		}
@@ -28,16 +31,16 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do leitor é obrigatório'
-			}
+				message: 'Nome do leitor é obrigatório',
+			};
 		}
 
 		if (validator.isNumeric(nome)) {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do leitor não pode conter somente números'
-			}
+				message: 'Nome do leitor não pode conter somente números',
+			};
 		}
 
 		const rg = form.get('rg') as string;
@@ -54,13 +57,29 @@ export const actions: Actions = {
 		const status = Boolean(form.get('status'));
 
 		try {
-			await db.update(leitor).set({
-				nome: nome.toUpperCase(), rg, cpf, email, celular, telefone,
-				logradouro, bairro, complemento, cidade, cep, trab, status
-			}).where(eq(leitor.idleitor, Number(params.id)));
+			await db
+				.update(leitor)
+				.set({
+					nome: nome.toUpperCase(),
+					rg,
+					cpf,
+					email,
+					celular,
+					telefone,
+					logradouro,
+					bairro,
+					complemento,
+					cidade,
+					cep,
+					trab,
+					status,
+				})
+				.where(eq(leitor.idleitor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao atualizar os dados do leitor' });
+			return error(500, {
+				message: 'Falha ao atualizar os dados do leitor',
+			});
 		}
-	}
+	},
 };

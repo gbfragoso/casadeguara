@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageServerData } from "./$types";
+	import type { ActionData, PageServerData } from './$types';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -12,15 +12,11 @@
 		<ul>
 			<li><a href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a href="/financeiro/contribuintes" aria-current="page"
-					>Contribuintes</a
-				>
+				<a href="/financeiro/contribuintes" aria-current="page">Contribuintes</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Atualizar informações do contribuinte
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar informações do contribuinte</h1>
 </div>
 
 <form class="card" action="?/update" method="POST">
@@ -34,29 +30,20 @@
 					name="nome"
 					id="nome"
 					placeholder="Digite o nome do contribuinte"
-					value={contribuinte.nome}
-				/>
+					value={contribuinte.nome} />
 			</div>
-			{#if form?.field === "nome"}
+			{#if form?.field === 'nome'}
 				<p class="help is-danger">{form?.message}</p>
 			{/if}
 		</div>
 		<div class="field">
 			<label class="checkbox" for="trabalhador">
-				<input
-					type="checkbox"
-					name="trabalhador"
-					id="trabalhador"
-					checked={contribuinte.trab}
-				/>
-				Trabalhador</label
-			>
+				<input type="checkbox" name="trabalhador" id="trabalhador" checked={contribuinte.trab} />
+				Trabalhador</label>
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button  is-primary has-text-weight-semibold" type="submit"
-					>Atualizar</button
-				>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Atualizar</button>
 			</div>
 		</div>
 	</div>

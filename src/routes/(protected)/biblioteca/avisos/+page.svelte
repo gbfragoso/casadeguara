@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageServerData } from "./$types";
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
 	$: ({ avisos } = data);
@@ -22,19 +22,11 @@
 		<div class="field">
 			<label class="label" for="texto">Texto do aviso</label>
 			<div class="control">
-				<textarea
-					class="textarea has-fixed-size"
-					name="texto"
-					id="texto"
-					placeholder="Digite a mensagem"
-				/>
+				<textarea class="textarea has-fixed-size" name="texto" id="texto" placeholder="Digite a mensagem" />
 			</div>
 		</div>
 		<div class="columns">
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button class="button is-fullwidth has-text-weight-semibold" type="submit">
 					<i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo
 				</button>
@@ -56,8 +48,7 @@
 							<td>{aviso.texto}</td>
 							<td>
 								<a href="/biblioteca/avisos/{aviso.idaviso}">
-									<i class="fa-solid fa-pen-to-square fa-fw"
-									></i>
+									<i class="fa-solid fa-pen-to-square fa-fw"></i>
 								</a>
 							</td>
 						</tr>

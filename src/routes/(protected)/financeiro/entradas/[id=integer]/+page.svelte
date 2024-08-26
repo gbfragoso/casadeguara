@@ -1,7 +1,7 @@
 <script lang="ts">
-	import dayjs from "dayjs";
-	import utc from "dayjs/plugin/utc";
-	import type { ActionData, PageServerData } from "./$types";
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
+	import type { ActionData, PageServerData } from './$types';
 
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -19,9 +19,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Atualizar os dados da doação
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar os dados da doação</h1>
 </div>
 
 <form class="card" action="?/update" method="POST">
@@ -29,14 +27,8 @@
 		<div class="field">
 			<label class="label" for="descricao">Descrição</label>
 			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="descricao"
-					id="descricao"
-					value="{entrada.descricao}"
-				/>
-				{#if form?.field === "descricao"}
+				<input class="input" type="text" name="descricao" id="descricao" value={entrada.descricao} />
+				{#if form?.field === 'descricao'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}
 			</div>
@@ -45,37 +37,23 @@
 			<div class="field column">
 				<label class="label" for="valor">Valor</label>
 				<div class="control">
-					<input
-						class="input"
-						type="number"
-						name="valor"
-						id="valor"
-						value="{entrada.valor}"
-						step=".01"
-					/>
+					<input class="input" type="number" name="valor" id="valor" value={entrada.valor} step=".01" />
 				</div>
 			</div>
 			<div class="field column">
-				<label class="label" for="data_entrada"
-					>Data do recebimento</label
-				>
+				<label class="label" for="data_entrada">Data do recebimento</label>
 				<div class="control">
 					<input
 						class="input"
 						type="date"
 						name="data_entrada"
-						value={dayjs
-							.utc(entrada.data_entrada)
-							.format("YYYY-MM-DD")}
-					/>
+						value={dayjs.utc(entrada.data_entrada).format('YYYY-MM-DD')} />
 				</div>
 			</div>
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button  is-primary has-text-weight-semibold" type="submit"
-					>Atualizar</button
-				>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Atualizar</button>
 			</div>
 		</div>
 	</div>

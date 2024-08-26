@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData } from "./$types";
+	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
 
@@ -12,9 +12,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Cadastrar palavra-chave
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastrar palavra-chave</h1>
 </div>
 
 <form class="card" method="POST">
@@ -28,17 +26,14 @@
 					name="chave"
 					id="chave"
 					placeholder="Digite a palavra-chave"
-					required
-				/>
+					required />
 			</div>
-			{#if form?.field === "chave"}
+			{#if form?.field === 'chave'}
 				<p class="help is-danger">{form?.message}</p>
 			{/if}
 		</div>
 		<div class="control">
-			<button class="button  is-primary has-text-weight-semibold" type="submit"
-				>Cadastrar</button
-			>
+			<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
 		</div>
 	</div>
 </form>

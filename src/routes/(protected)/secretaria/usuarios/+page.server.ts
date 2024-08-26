@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
-import { serie } from '$lib/database/schema';
+import { User } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { count } from 'drizzle-orm';
 
@@ -11,20 +11,22 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') || undefined;
-	const where = nome ? ulike(serie.nome, nome + '%') : undefined;
+	const where = nome ? ulike(User.name, nome + '%') : undefined;
 
 	try {
-		const colecoes = await db
+		const usuarios = await db
 			.select()
-			.from(serie)
+			.from(User)
 			.offset((page - 1) * 5)
 			.where(where)
-			.orderBy(unaccent(serie.nome))
+			.orderBy(unaccent(User.name))
 			.limit(5);
-		const counter = await db.select({ count: count() }).from(serie).where(where);
+
+		const counter = await db.select({ count: count() }).from(User).where(where);
+
 		const total = counter[0].count;
-		return { colecoes, total };
+		return { usuarios, total };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de coleções' });
+		return error(500, { message: 'Falha ao carregar a lista de usuários' });
 	}
 };

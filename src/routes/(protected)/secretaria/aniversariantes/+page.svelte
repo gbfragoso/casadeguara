@@ -1,8 +1,8 @@
 <script lang="ts">
-	import dayjs from "dayjs";
-	import utc from "dayjs/plugin/utc";
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
 
-	import type { PageServerData } from "./$types";
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 	$: ({ leitores } = data);
 	dayjs.extend(utc);
@@ -13,15 +13,11 @@
 		<ul>
 			<li><a href="/secretaria">Secretaria</a></li>
 			<li class="is-active">
-				<a href="/secretaria/aniversariantes" aria-current="page"
-					>Aniversariantes</a
-				>
+				<a href="/secretaria/aniversariantes" aria-current="page">Aniversariantes</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Lista de aniversariantes
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de aniversariantes</h1>
 </div>
 
 <form class="card" method="GET">
@@ -45,16 +41,9 @@
 					</select>
 				</div>
 			</div>
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
-				<button
-					class="button is-primary is-fullwidth has-text-weight-semibold"
-					type="submit"
-				>
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
-					>Pesquisar
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
 		</div>
@@ -63,11 +52,7 @@
 
 {#if leitores && leitores.length > 0}
 	<div id="printable-content" class="card">
-		<div
-			id="printable-title"
-			class="is-size-4 has-text-weight-semibold has-text-centered"
-			style="display: none"
-		>
+		<div id="printable-title" class="is-size-4 has-text-weight-semibold has-text-centered" style="display: none">
 			Lista de aniversariantes
 		</div>
 		<div class="card-content">
@@ -85,9 +70,7 @@
 								</td>
 								<td>
 									{#if leitor.aniversario}
-										{dayjs
-											.utc(leitor.aniversario)
-											.format("DD/MM")}
+										{dayjs.utc(leitor.aniversario).format('DD/MM')}
 									{/if}
 								</td>
 							</tr>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageServerData } from "./$types";
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 	$: ({ leitores, datas } = data);
 </script>
@@ -9,15 +9,11 @@
 		<ul>
 			<li><a href="/secretaria">Secretaria</a></li>
 			<li class="is-active">
-				<a href="/secretaria/frequencia" aria-current="page"
-					>Frequência</a
-				>
+				<a href="/secretaria/frequencia" aria-current="page">Frequência</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Lista de frequência
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de frequência</h1>
 </div>
 
 <form class="card" method="GET">
@@ -27,14 +23,7 @@
 				<div class="field">
 					<label class="label" for="dataInicio">Data inicial</label>
 					<div class="control">
-						<input
-							class="input"
-							type="date"
-							name="dataInicio"
-							id="dataInicio"
-							aria-label="Date"
-							required
-						/>
+						<input class="input" type="date" name="dataInicio" id="dataInicio" aria-label="Date" required />
 					</div>
 				</div>
 			</div>
@@ -42,14 +31,7 @@
 				<div class="field">
 					<label class="label" for="dataFim">Data final</label>
 					<div class="control">
-						<input
-							class="input"
-							type="date"
-							name="dataFim"
-							id="dataFim"
-							aria-label="Date"
-							required
-						/>
+						<input class="input" type="date" name="dataFim" id="dataFim" aria-label="Date" required />
 					</div>
 				</div>
 			</div>
@@ -91,16 +73,9 @@
 			</label>
 		</div>
 		<div class="columns">
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
-				<button
-					class="button is-primary is-fullwidth has-text-weight-semibold"
-					type="submit"
-				>
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
-					>Pesquisar
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
 		</div>
@@ -109,11 +84,7 @@
 
 {#if datas && datas.length > 0 && leitores && leitores.length > 0}
 	<div id="printable-content" class="card">
-		<div
-			id="printable-title"
-			class="is-size-4 has-text-weight-semibold has-text-centered"
-			style="display: none"
-		>
+		<div id="printable-title" class="is-size-4 has-text-weight-semibold has-text-centered" style="display: none">
 			Lista de frequência
 		</div>
 		<div class="card-content">

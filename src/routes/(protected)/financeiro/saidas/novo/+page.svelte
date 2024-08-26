@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData } from "./$types";
+	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
 
@@ -12,9 +12,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Lançamento de despesas
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lançamento de despesas</h1>
 </div>
 
 <form class="card" method="POST">
@@ -29,9 +27,8 @@
 					min="1"
 					step="any"
 					placeholder="Discriminação da despesa"
-					required
-				/>
-				{#if form?.field === "descricao"}
+					required />
+				{#if form?.field === 'descricao'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}
 			</div>
@@ -47,30 +44,19 @@
 						min="1"
 						step="any"
 						placeholder="Digite o valor do pagamento"
-						required
-					/>
+						required />
 				</div>
 			</div>
 			<div class="field column">
-				<label class="label" for="data_saida">
-					Data do pagamento</label
-				>
+				<label class="label" for="data_saida"> Data do pagamento</label>
 				<div class="control">
-					<input
-						class="input"
-						type="date"
-						name="data_saida"
-						aria-label="Date"
-						required
-					/>
+					<input class="input" type="date" name="data_saida" aria-label="Date" required />
 				</div>
 			</div>
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button  is-primary has-text-weight-semibold" type="submit"
-					>Cadastrar</button
-				>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
 			</div>
 		</div>
 	</div>

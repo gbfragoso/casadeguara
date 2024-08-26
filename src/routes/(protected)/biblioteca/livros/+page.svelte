@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Pagination from "$lib/components/Pagination.svelte";
-	import type { PageServerData } from "./$types";
+	import Pagination from '$lib/components/Pagination.svelte';
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
 	$: ({ livros, total, role } = data);
@@ -24,25 +24,13 @@
 			<div class="column is-2">
 				<label class="label" for="tombo">Tombo</label>
 				<div class="control">
-					<input
-						class="input"
-						type="number"
-						name="tombo"
-						id="tombo"
-						placeholder="Digite o tombo do livro"
-					/>
+					<input class="input" type="number" name="tombo" id="tombo" placeholder="Digite o tombo do livro" />
 				</div>
 			</div>
 			<div class="column">
 				<label class="label" for="titulo">Título</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="titulo"
-						id="titulo"
-						placeholder="Digite o título do livro"
-					/>
+					<input class="input" type="text" name="titulo" id="titulo" placeholder="Digite o título do livro" />
 				</div>
 			</div>
 		</div>
@@ -50,13 +38,7 @@
 			<div class="column">
 				<label class="label" for="autor">Autor</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="autor"
-						id="autor"
-						placeholder="Digite o nome do autor"
-					/>
+					<input class="input" type="text" name="autor" id="autor" placeholder="Digite o nome do autor" />
 				</div>
 			</div>
 			<div class="column">
@@ -67,43 +49,27 @@
 						type="text"
 						name="editora"
 						id="editora"
-						placeholder="Digite o nome da editora"
-					/>
+						placeholder="Digite o nome da editora" />
 				</div>
 			</div>
 			<div class="column">
 				<label class="label" for="serie">Coleção</label>
 				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="serie"
-						id="serie"
-						placeholder="Digite o nome da coleção"
-					/>
+					<input class="input" type="text" name="serie" id="serie" placeholder="Digite o nome da coleção" />
 				</div>
 			</div>
 		</div>
 		<div class="columns">
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i
-					>Pesquisar
+					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div
-				class="column is-full-mobile is-2-tablet"
-				style="min-width: 200px"
-			>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<a
 					data-sveltekit-reload
 					class="button is-fullwidth has-text-weight-semibold"
-					href="/biblioteca/livros/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a
-				>
+					href="/biblioteca/livros/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -129,39 +95,25 @@
 										<a
 											data-sveltekit-reload
 											class="control"
-											href="/biblioteca/livros/{livro.idlivro}"
-										>
-											<i
-												class="fa-solid fa-pen-to-square fa-fw"
-											></i>
+											href="/biblioteca/livros/{livro.idlivro}">
+											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
 										<a
 											data-sveltekit-reload
 											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/exemplares"
-										>
-											<i class="fa-solid fa-book fa-fw"
-											></i>
+											href="/biblioteca/livros/{livro.idlivro}/exemplares">
+											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
 										<a
 											data-sveltekit-reload
 											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/autores"
-										>
-											<i
-												class="fa-solid fa-user-pen fa-fw"
-											></i>
+											href="/biblioteca/livros/{livro.idlivro}/autores">
+											<i class="fa-solid fa-user-pen fa-fw"></i>
 										</a>
-										{#if role.includes("admin")}
-											<form
-												action="?/excluir&id={livro.idlivro}"
-												method="POST"
-											>
+										{#if role.includes('admin')}
+											<form action="?/excluir&id={livro.idlivro}" method="POST">
 												<button class="control"
-													><i
-														class="fa-regular fa-trash-can fa-fw"
-													></i></button
-												>
+													><i class="fa-regular fa-trash-can fa-fw"></i></button>
 											</form>
 										{/if}
 									</div>

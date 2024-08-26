@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageServerData } from "./$types";
+	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
 
@@ -12,9 +12,7 @@
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li><a href="/biblioteca/livros" aria-current="page">Livros</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros/exemplares" aria-current="page"
-					>Exemplares</a
-				>
+				<a href="/biblioteca/livros/exemplares" aria-current="page">Exemplares</a>
 			</li>
 		</ul>
 	</nav>
@@ -26,18 +24,10 @@
 		<label class="label" for="numero">Número do exemplar</label>
 		<div class="field has-addons">
 			<div class="control is-expanded">
-				<input
-					class="input"
-					type="number"
-					name="numero"
-					id="numero"
-					step="1"
-				/>
+				<input class="input" type="number" name="numero" id="numero" step="1" />
 			</div>
 			<div class="control">
-				<button class="button  is-primary has-text-weight-semibold" type="submit"
-					>Adicionar</button
-				>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Adicionar</button>
 			</div>
 		</div>
 		{#if form?.status === 201}
@@ -61,27 +51,18 @@
 						<tr>
 							<td>{exemplar.numero}</td>
 							<td>
-								{#if exemplar.status === "Disponível"}
-									<span class="tag is-success"
-										>{exemplar.status}</span
-									>
+								{#if exemplar.status === 'Disponível'}
+									<span class="tag is-success">{exemplar.status}</span>
 								{:else}
-									<span class="tag is-danger"
-										>{exemplar.status}</span
-									>
+									<span class="tag is-danger">{exemplar.status}</span>
 								{/if}
 							</td>
 							<td>
-								{#if role.includes("admin")}
+								{#if role.includes('admin')}
 									<div class="field is-grouped">
-										<form
-											action="?/excluir&exemplar={exemplar.idexemplar}"
-											method="POST"
-										>
+										<form action="?/excluir&exemplar={exemplar.idexemplar}" method="POST">
 											<button>
-												<i
-													class="fa-regular fa-trash-can fa-fw"
-												></i>
+												<i class="fa-regular fa-trash-can fa-fw"></i>
 											</button>
 										</form>
 									</div>

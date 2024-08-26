@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageServerData } from "./$types";
+	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
 	$: ({ autores, autoresLivro, role } = data);
@@ -11,15 +11,11 @@
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li><a href="/biblioteca/livros">Livros</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros/autores" aria-current="page"
-					>Autores</a
-				>
+				<a href="/biblioteca/livros/autores" aria-current="page">Autores</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Consulta de autores
-	</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de autores</h1>
 </div>
 
 <form class="card" action="?/adicionar" method="POST">
@@ -36,9 +32,7 @@
 			</div>
 		</div>
 		<div class="control">
-			<button class="button  is-primary has-text-weight-semibold" type="submit"
-				>Adicionar</button
-			>
+			<button class="button is-primary has-text-weight-semibold" type="submit">Adicionar</button>
 		</div>
 	</div>
 </form>
@@ -56,16 +50,11 @@
 							<tr>
 								<td>{autor.nome}</td>
 								<td>
-									{#if role.includes("admin")}
+									{#if role.includes('admin')}
 										<div class="field is-grouped">
-											<form
-												action="?/excluir&autor={autor.idautor}"
-												method="POST"
-											>
+											<form action="?/excluir&autor={autor.idautor}" method="POST">
 												<button>
-													<i
-														class="fa-regular fa-trash-can fa-fw"
-													></i>
+													<i class="fa-regular fa-trash-can fa-fw"></i>
 												</button>
 											</form>
 										</div>
