@@ -32,7 +32,7 @@
 				</li>
 				<li class="sidebar-item">
 					<a data-sveltekit-reload href="/secretaria/frequencia">
-						<i class="fa-solid fa-user-check fa-fw"></i>
+						<i class="fa-solid fa-list fa-fw"></i>
 						<span class="item-description">Frequência</span>
 					</a>
 				</li>
