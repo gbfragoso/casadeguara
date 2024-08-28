@@ -34,7 +34,10 @@ export const actions: Actions = {
 			await db.insert(serie).values({ nome: nome.toUpperCase() });
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar uma nova coleção' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar uma nova coleção',
+			});
 		}
 	},
 } satisfies Actions;

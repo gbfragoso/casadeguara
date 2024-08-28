@@ -33,6 +33,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			renovacoes: emprestimosMesAtual[0].sum,
 		};
 	} catch (err) {
+		console.error(err);
 		return error(500, {
 			message: 'Falha ao carregar as informações da biblioteca',
 		});

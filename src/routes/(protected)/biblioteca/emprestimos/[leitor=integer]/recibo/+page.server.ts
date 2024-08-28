@@ -33,6 +33,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 		return { emprestimos };
 	} catch (err) {
+		console.error(err);
 		return error(500, {
 			message: 'Falha ao carregar a lista de empréstimos',
 		});

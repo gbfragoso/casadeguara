@@ -76,7 +76,10 @@ export const actions: Actions = {
 			await db.delete(livro).where(eq(livro.idlivro, Number(id)));
 			return { status: 200 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao excluir o livro' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao excluir o livro',
+			});
 		}
 	},
 };

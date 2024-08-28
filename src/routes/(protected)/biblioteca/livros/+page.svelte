@@ -7,7 +7,7 @@
 </script>
 
 <div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
@@ -83,14 +83,14 @@
 					<thead>
 						<th>Tombo</th>
 						<th>Título</th>
-						<th>Ações</th>
+						<th class="table-actions">Ações</th>
 					</thead>
 					<tbody>
 						{#each livros as livro}
 							<tr>
 								<td>{livro.tombo}</td>
 								<td>{livro.titulo}</td>
-								<td>
+								<td class="table-actions">
 									<div class="field is-grouped">
 										<a
 											data-sveltekit-reload

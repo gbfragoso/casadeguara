@@ -30,7 +30,10 @@ export const actions: Actions = {
 			await db.insert(editora).values({ nome: nome.toUpperCase() });
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar uma nova editora' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar uma nova editora',
+			});
 		}
 	},
 } satisfies Actions;

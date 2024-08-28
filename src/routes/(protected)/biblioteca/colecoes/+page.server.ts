@@ -25,6 +25,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		const total = counter[0].count;
 		return { colecoes, total };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de coleções' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de coleções',
+		});
 	}
 };

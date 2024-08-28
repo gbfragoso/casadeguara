@@ -9,7 +9,7 @@
 </script>
 
 <div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
@@ -86,9 +86,9 @@
 						<th>Leitor</th>
 						<th>Título</th>
 						<th>Ex</th>
-						<th>Empréstimo</th>
 						<th>Prazo</th>
-						<th>Ações</th>
+						<th>Status</th>
+						<th class="table-actions">Ações</th>
 					</thead>
 					<tbody>
 						{#each emprestimos as emprestimo}
@@ -100,19 +100,27 @@
 								</td>
 								<td>{emprestimo.titulo}</td>
 								<td>{emprestimo.numero}</td>
-								<td>{dayjs.utc(emprestimo.data_emprestimo).format('DD/MM/YYYY')}</td>
 								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
-								<td>
+								{#if emprestimo.data_devolvido}
+									<td><span class="tag is-success">Devolvido</span></td>
+								{:else if dayjs().isAfter(emprestimo.data_devolucao)}
+									<td><span class="tag is-warning">Atrasado</span></td>
+								{:else}
+									<td><span class="tag is-info">Ativo</span></td>
+								{/if}
+								<td class="table-actions">
 									<div class="field is-grouped">
-										<form action="?/renovar&id={emprestimo.idemp}" method="POST">
-											<button title="renovar" class="control"
-												><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
-										</form>
-										<form action="?/devolver&id={emprestimo.idemp}" method="POST">
-											<button title="devolver" class="control has-text-danger"
-												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
-										</form>
-										<a href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo" title="recibo">
+										{#if !emprestimo.data_devolvido}
+											<form action="?/renovar&id={emprestimo.idemp}" method="POST">
+												<button title="Renovar" class="control"
+													><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
+											</form>
+											<form action="?/devolver&id={emprestimo.idemp}" method="POST">
+												<button title="Devolver" class="control"
+													><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
+											</form>
+										{/if}
+										<a href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo" title="Recibo">
 											<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
 										</a>
 									</div>

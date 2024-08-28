@@ -43,7 +43,7 @@
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
 						<th>Nome</th>
-						<th>Ações</th>
+						<th class="table-actions">Ações</th>
 					</thead>
 					<tbody>
 						{#each autoresLivro as autor}

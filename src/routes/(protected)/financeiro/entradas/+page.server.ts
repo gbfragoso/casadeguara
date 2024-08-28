@@ -43,6 +43,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 		return { resultados, total };
 	} catch (err) {
+		console.error(err);
 		return error(500, {
 			message: 'Falha ao carregar a listagem de doações',
 		});

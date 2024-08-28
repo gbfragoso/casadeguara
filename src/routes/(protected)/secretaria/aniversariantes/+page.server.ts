@@ -19,6 +19,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			.orderBy(sql<number>`extract(day from leitor.aniversario)`);
 		return { leitores };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de leitores' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de leitores',
+		});
 	}
 };

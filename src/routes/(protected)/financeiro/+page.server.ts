@@ -46,6 +46,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			saidaMesAtual: saidaMesAtual[0].value,
 		};
 	} catch (err) {
+		console.error(err);
 		return error(500, {
 			message: 'Falha ao carregar a lista de contribuintes',
 		});

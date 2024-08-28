@@ -13,7 +13,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const avisos = await db.select().from(aviso).orderBy(desc(aviso.data_cadastro)).limit(5);
 		return { avisos };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de avisos' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de avisos',
+		});
 	}
 };
 
@@ -34,7 +37,10 @@ export const actions: Actions = {
 			await db.insert(aviso).values({ texto, username: locals.user?.name });
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar um novo autor' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar um novo autor',
+			});
 		}
 	},
 } satisfies Actions;

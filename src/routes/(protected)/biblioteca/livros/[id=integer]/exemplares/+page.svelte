@@ -44,7 +44,7 @@
 				<thead>
 					<th>Ex</th>
 					<th>Status</th>
-					<th>Ações</th>
+					<th class="table-actions">Ações</th>
 				</thead>
 				<tbody>
 					{#each exemplares as exemplar}
@@ -57,7 +57,7 @@
 									<span class="tag is-danger">{exemplar.status}</span>
 								{/if}
 							</td>
-							<td>
+							<td class="table-actions">
 								{#if role.includes('admin')}
 									<div class="field is-grouped">
 										<form action="?/excluir&exemplar={exemplar.idexemplar}" method="POST">

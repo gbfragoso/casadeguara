@@ -35,6 +35,7 @@ export const actions: Actions = {
 			await db.insert(leitor).values({ nome: nome.toUpperCase(), trab: trabalhador });
 			return { status: 201 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao cadastrar um novo contribuinte',
 			});

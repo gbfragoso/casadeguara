@@ -21,6 +21,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		const colecoes = await db.select().from(serie).orderBy(serie.nome);
 		return { livro: resultado[0], editoras, colecoes };
 	} catch (err) {
+		console.error(err);
 		return error(500, { message: 'Falha ao baixar os dados do livro' });
 	}
 };

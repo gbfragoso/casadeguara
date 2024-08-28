@@ -7,7 +7,7 @@
 </script>
 
 <div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
@@ -49,13 +49,13 @@
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
 						<th>Nome</th>
-						<th>Ações</th>
+						<th class="table-actions">Ações</th>
 					</thead>
 					<tbody>
 						{#each editoras as editora}
 							<tr>
 								<td>{editora.nome}</td>
-								<td>
+								<td class="table-actions">
 									<a href="/biblioteca/editoras/{editora.ideditora}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>

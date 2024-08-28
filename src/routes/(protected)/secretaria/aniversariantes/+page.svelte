@@ -8,8 +8,8 @@
 	dayjs.extend(utc);
 </script>
 
-<div id="breadcrumb" class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+<div class="mb-2">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/secretaria">Secretaria</a></li>
 			<li class="is-active">
@@ -52,9 +52,6 @@
 
 {#if leitores && leitores.length > 0}
 	<div id="printable-content" class="card">
-		<div id="printable-title" class="is-size-4 has-text-weight-semibold has-text-centered" style="display: none">
-			Lista de aniversariantes
-		</div>
 		<div class="card-content">
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">

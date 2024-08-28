@@ -15,11 +15,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.from(aviso)
 			.where(eq(aviso.idaviso, Number(params.id)));
 		if (!resultado) {
-			throw fail(404, { message: 'Aviso não encontrado' });
+			throw fail(404, {
+				message: 'Aviso não encontrado',
+			});
 		}
 		return { aviso: resultado[0] };
 	} catch (err) {
-		return error(500, { message: 'Falha ao baixar os dados do aviso' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao baixar os dados do aviso',
+		});
 	}
 };
 
@@ -43,6 +48,7 @@ export const actions: Actions = {
 				.where(eq(aviso.idaviso, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar o texto do aviso',
 			});

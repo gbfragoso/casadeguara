@@ -25,6 +25,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		const total = counter[0].count;
 		return { autores, total };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de autores' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de autores',
+		});
 	}
 };
