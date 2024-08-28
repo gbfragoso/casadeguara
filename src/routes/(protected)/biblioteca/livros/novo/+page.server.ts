@@ -13,7 +13,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const colecoes = await db.select().from(serie).orderBy(serie.nome);
 		return { editoras, colecoes };
 	} catch (err) {
-		return error(500, { message: 'Falha ao baixar os dados do livro' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao baixar os dados do livro',
+		});
 	}
 };
 
@@ -46,7 +49,10 @@ export const actions: Actions = {
 			await db.insert(livro).values({ tombo, titulo, editora, serie, ordem });
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao cadastrar um novo livro' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao cadastrar um novo livro',
+			});
 		}
 	},
 } satisfies Actions;

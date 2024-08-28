@@ -23,33 +23,41 @@
 {#if emprestimos && emprestimos.length > 0}
 	<div id="printable-content" class="card">
 		<div class="card-content">
-			<hr />
-			<p class="is-size-5 has-text-weight-semibold">Biblioteca Batuíra - Recibo de Empréstimo</p>
-			<hr />
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>Tombo</th>
-						<th>Título</th>
-						<th>Ex.</th>
-						<th>Devolução</th>
-					</thead>
-					<tbody>
-						{#each emprestimos as emprestimo}
-							<tr>
-								<td>{emprestimo.tombo}</td>
-								<td>{emprestimo.titulo.toUpperCase()}</td>
-								<td>{emprestimo.numero}</td>
-								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
+			<hr class="mb-2 mt-0 double" />
+			<div class="is-flex is-flex-direction-row is-justify-content-space-between">
+				<div class="has-text-weight-semibold">Biblioteca Batuíra - Recibo de Empréstimo</div>
+				<div class="has-text-weight-semibold">{dayjs.utc().format('DD/MM/YYYY')}</div>
 			</div>
-			<p class="has-text-centered">____________________________________________________</p>
-			<p class="has-text-centered">{emprestimos[0].leitor}</p>
-			<hr />
-			<p class="has-text-centered">Fora da caridade não há salvação</p>
+			<hr class="mt-2 mb-0 double" />
+			<div class="is-flex is-flex-direction-row is-justify-content-flex-end">
+				<div class="mr-6">Renovado para</div>
+				<div class="mr-6">Recebido por</div>
+			</div>
+			<hr class="mt-2 mb-0" />
+			{#each emprestimos as emprestimo}
+				<div>
+					<div class="is-flex is-flex-direction-row is-justify-content-space-between">
+						<span>{emprestimo.tombo}&nbsp;&nbsp;&nbsp;{emprestimo.titulo.toUpperCase()}</span>
+						<span class="mr-5">_____________________&nbsp;&nbsp;_____________________</span>
+					</div>
+					<div class="is-flex is-flex-direction-row is-justify-content-space-between">
+						<span
+							>Data de devolução: {dayjs
+								.utc(emprestimo.data_devolucao)
+								.format(
+									'DD/MM/YYYY',
+								)}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ex:&nbsp;{emprestimo.numero}</span>
+						<span class="mr-5">_____/_______/_______&nbsp;&nbsp;_____/_______/_______</span>
+					</div>
+				</div>
+			{/each}
+
+			<div id="footer-content" class="mt-6">
+				<p class="has-text-centered">____________________________________________________</p>
+				<p class="has-text-centered">{emprestimos[0].leitor}</p>
+				<hr class="mb-1 mt-3 double" />
+				<p class="has-text-centered">Fora da caridade não há salvação</p>
+			</div>
 		</div>
 	</div>
 {/if}

@@ -34,7 +34,10 @@ export const actions: Actions = {
 			await db.insert(autor).values({ nome: nome.toUpperCase() });
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar um novo autor' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar um novo autor',
+			});
 		}
 	},
 } satisfies Actions;

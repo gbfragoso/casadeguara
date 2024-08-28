@@ -17,6 +17,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		}
 		return { usuario: resultado[0] };
 	} catch (err) {
+		console.error(err);
 		return error(500, { message: 'Falha ao baixar os dados do autor' });
 	}
 };
@@ -46,7 +47,10 @@ export const actions: Actions = {
 			await db.update(User).set({ username, name, password_hash, roles }).where(eq(User.id, params.id));
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar um novo usuário' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar um novo usuário',
+			});
 		}
 	},
 };

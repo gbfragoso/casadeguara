@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { entradas, leitor } from '$lib/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const contribuintes = await db.select({ nome: leitor.nome }).from(leitor);
 		return { contribuintes };
 	} catch (err) {
-		throw fail(500, {
+		console.error(err);
+		throw error(500, {
 			message: 'Falha ao carregar a lista de contribuintes',
 		});
 	}
@@ -81,6 +82,7 @@ export const actions: Actions = {
 			});
 			return { status: 201 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao cadastrar uma nova doação',
 			});

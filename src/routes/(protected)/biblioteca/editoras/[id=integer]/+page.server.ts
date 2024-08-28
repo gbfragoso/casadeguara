@@ -15,11 +15,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.from(editora)
 			.where(eq(editora.ideditora, Number(params.id)));
 		if (!resultado) {
-			throw fail(404, { message: 'Editora não encontrada' });
+			throw fail(404, {
+				message: 'Editora não encontrada',
+			});
 		}
 		return { editora: resultado[0] };
 	} catch (err) {
-		throw error(500, 'Falha ao buscar os dados da editora');
+		console.error(err);
+		throw error(500, {
+			message: 'Falha ao buscar os dados da editora',
+		});
 	}
 };
 
@@ -51,6 +56,7 @@ export const actions: Actions = {
 				.where(eq(editora.ideditora, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados da editora',
 			});

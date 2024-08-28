@@ -15,12 +15,17 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.from(saidas)
 			.where(eq(saidas.idsaida, Number(params.id)));
 		if (!saida) {
-			throw fail(404, { message: 'Saída não encontrada' });
+			throw fail(404, {
+				message: 'Saída não encontrada',
+			});
 		}
 
 		return { saida: JSON.parse(JSON.stringify(saida[0])) };
 	} catch (err) {
-		throw fail(500, { message: 'Falha ao recuperar os dados da saída' });
+		console.error(err);
+		throw error(500, {
+			message: 'Falha ao recuperar os dados da saída',
+		});
 	}
 };
 
@@ -55,6 +60,7 @@ export const actions: Actions = {
 
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados da saida',
 			});

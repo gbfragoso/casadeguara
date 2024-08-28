@@ -19,6 +19,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		}
 		return { contribuinte: contribuinte[0] };
 	} catch (err) {
+		console.error(err);
 		throw fail(500, {
 			message: 'Falha ao recuperar os dados do contribuinte',
 		});
@@ -54,6 +55,7 @@ export const actions: Actions = {
 				.where(eq(leitor.idleitor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados do contribuinte',
 			});

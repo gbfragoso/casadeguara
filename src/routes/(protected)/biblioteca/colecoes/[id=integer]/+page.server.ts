@@ -15,10 +15,13 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.from(serie)
 			.where(eq(serie.idserie, Number(params.id)));
 		if (!colecao) {
-			throw fail(404, { message: 'Coleção não encontrada' });
+			throw fail(404, {
+				message: 'Coleção não encontrada',
+			});
 		}
 		return { colecao: colecao[0] };
 	} catch (err) {
+		console.error(err);
 		return error(500, {
 			message: 'Falha ao recuperar os dados da coleção',
 		});
@@ -53,6 +56,7 @@ export const actions: Actions = {
 				.where(eq(serie.idserie, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados da coleção',
 			});

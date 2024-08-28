@@ -34,6 +34,7 @@ export const actions: Actions = {
 			await db.insert(keyword).values({ chave: chave.toUpperCase() });
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao cadastrar nova palavra-chave',
 			});

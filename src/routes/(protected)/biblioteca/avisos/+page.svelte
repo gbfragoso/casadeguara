@@ -40,13 +40,13 @@
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
 					<th>Texto</th>
-					<th>Ações</th>
+					<th class="table-actions">Ações</th>
 				</thead>
 				<tbody>
 					{#each avisos as aviso}
 						<tr>
 							<td>{aviso.texto}</td>
-							<td>
+							<td class="table-actions">
 								<a href="/biblioteca/avisos/{aviso.idaviso}">
 									<i class="fa-solid fa-pen-to-square fa-fw"></i>
 								</a>

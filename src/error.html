@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Error</title>
+	</head>
+
+	<body>
+		<main>
+			<section class="section">
+				<div class="container card mt-6" style="max-width: 400px">
+					<div class="card-content">
+						<div class="is-primary">
+							<p class="pb-3 is-size-3 has-text-weight-semibold has-text-primary has-text-centered">
+								%sveltekit.status%
+							</p>
+						</div>
+						<div>%sveltekit.error.message%</div>
+					</div>
+				</div>
+			</section>
+		</main>
+	</body>
+</html>

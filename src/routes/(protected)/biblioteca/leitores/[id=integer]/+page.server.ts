@@ -15,11 +15,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.from(leitor)
 			.where(eq(leitor.idleitor, Number(params.id)));
 		if (!resultado) {
-			throw fail(404, { message: 'Leitor não encontrado' });
+			throw fail(404, {
+				message: 'Leitor não encontrado',
+			});
 		}
 		return { leitor: resultado[0] };
 	} catch (err) {
-		return error(500, { message: 'Falha ao recuperar os dados do leitor' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao recuperar os dados do leitor',
+		});
 	}
 };
 
@@ -77,6 +82,7 @@ export const actions: Actions = {
 				.where(eq(leitor.idleitor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados do leitor',
 			});

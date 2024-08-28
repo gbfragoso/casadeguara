@@ -32,6 +32,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			return { leitores, datas };
 		}
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de leitores' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de leitores',
+		});
 	}
 };

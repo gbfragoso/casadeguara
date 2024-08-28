@@ -36,7 +36,10 @@ export const actions: Actions = {
 			await db.insert(User).values({ id, username, name, password_hash, roles });
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar um novo usuário' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar um novo usuário',
+			});
 		}
 	},
 };

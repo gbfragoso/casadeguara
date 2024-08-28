@@ -25,6 +25,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		const total = counter[0].count;
 		return { editoras, total };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de editoras' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de editoras',
+		});
 	}
 };

@@ -10,7 +10,7 @@
 </script>
 
 <div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/financeiro">Financeiro</a></li>
 			<li class="is-active">

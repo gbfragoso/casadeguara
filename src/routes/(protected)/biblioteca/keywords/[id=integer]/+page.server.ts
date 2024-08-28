@@ -15,10 +15,13 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.from(keyword)
 			.where(eq(keyword.idkeyword, Number(params.id)));
 		if (!resultado) {
-			throw fail(404, { message: 'Palavra-chave não encontrada' });
+			throw fail(404, {
+				message: 'Palavra-chave não encontrada',
+			});
 		}
 		return { keyword: resultado[0] };
 	} catch (err) {
+		console.error(err);
 		return error(500, {
 			message: 'Falha ao recuperar os dados dao palavra-chave',
 		});
@@ -53,6 +56,7 @@ export const actions: Actions = {
 				.where(eq(keyword.idkeyword, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados da palavra-chave',
 			});

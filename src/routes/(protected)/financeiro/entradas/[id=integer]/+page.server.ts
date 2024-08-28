@@ -20,7 +20,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 		return { entrada: JSON.parse(JSON.stringify(entrada[0])) };
 	} catch (err) {
-		throw fail(500, { message: 'Falha ao recuperar os dados da entrada' });
+		console.error(err);
+		throw error(500, {
+			message: 'Falha ao recuperar os dados da entrada',
+		});
 	}
 };
 
@@ -55,6 +58,7 @@ export const actions: Actions = {
 
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados da entrada',
 			});

@@ -19,7 +19,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		}
 		return { autor: resultado[0] };
 	} catch (err) {
-		return error(500, { message: 'Falha ao baixar os dados do autor' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao baixar os dados do autor',
+		});
 	}
 };
 
@@ -51,6 +54,7 @@ export const actions: Actions = {
 				.where(eq(autor.idautor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados do autor',
 			});

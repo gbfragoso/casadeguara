@@ -197,10 +197,6 @@ tr td {
 		--bulma-section-padding-large: 0 !important;
 	}
 
-	#printable-title {
-		display: block !important;
-	}
-
 	#printable-content tr:nth-child(even) td {
 		background-color: #f3f4f6 !important;
 		-webkit-print-color-adjust: exact;
@@ -209,5 +205,19 @@ tr td {
 
 	.table {
 		--bulma-table-cell-padding: 0 !important;
+	}
+
+	.table-actions {
+		display: none !important;
+	}
+
+	hr {
+		display: block !important;
+		width: 100% !important;
+		border-top: solid 1px black !important;
+	}
+
+	hr.double {
+		border-bottom: solid 1px black !important;
 	}
 }

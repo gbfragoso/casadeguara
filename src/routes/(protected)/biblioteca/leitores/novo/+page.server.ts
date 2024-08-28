@@ -39,6 +39,7 @@ export const actions: Actions = {
 			});
 			return { status: 201 };
 		} catch (err) {
+			console.error(err);
 			return error(500, { message: 'Falha ao criar um novo leitor' });
 		}
 	},

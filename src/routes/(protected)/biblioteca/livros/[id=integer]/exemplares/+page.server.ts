@@ -16,7 +16,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.orderBy(exemplar.numero);
 		return { exemplares, role: locals.user.roles };
 	} catch (err) {
-		return error(500, { message: 'Falha ao carregar a lista de autores' });
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de autores',
+		});
 	}
 };
 
@@ -35,7 +38,10 @@ export const actions: Actions = {
 			});
 			return { status: 201 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao criar um novo autor' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao criar um novo autor',
+			});
 		}
 	},
 	excluir: async ({ url }) => {
@@ -50,7 +56,10 @@ export const actions: Actions = {
 			await db.delete(exemplar).where(eq(exemplar.idexemplar, Number(id)));
 			return { status: 200 };
 		} catch (err) {
-			return error(500, { message: 'Falha ao excluir o exemplar' });
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao excluir o exemplar',
+			});
 		}
 	},
 };

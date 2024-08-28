@@ -7,7 +7,7 @@
 </script>
 
 <div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
@@ -51,7 +51,7 @@
 						<th>Nome</th>
 						<th>Trabalhador</th>
 						<th>Status</th>
-						<th>Ações</th>
+						<th class="table-actions">Ações</th>
 					</thead>
 					<tbody>
 						{#each leitores as leitor}
@@ -67,7 +67,7 @@
 								{:else}
 									<td>Inativo</td>
 								{/if}
-								<td>
+								<td class="table-actions">
 									<a href="/biblioteca/leitores/{leitor.idleitor}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
