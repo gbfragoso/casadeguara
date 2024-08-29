@@ -1,10 +1,11 @@
 <script lang="ts">
+	import Pagination from '$lib/components/Pagination.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ emprestimos } = data);
+	$: ({ emprestimos, total, isAdmin } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -109,26 +110,46 @@
 									<td><span class="tag is-info">Ativo</span></td>
 								{/if}
 								<td class="table-actions">
-									<div class="field is-grouped">
-										{#if !emprestimo.data_devolvido}
-											<form action="?/renovar&id={emprestimo.idemp}" method="POST">
-												<button title="Renovar" class="control"
-													><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
-											</form>
-											<form action="?/devolver&id={emprestimo.idemp}" method="POST">
-												<button title="Devolver" class="control"
-													><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
-											</form>
-										{/if}
-										<a href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo" title="Recibo">
-											<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
-										</a>
+									<div class="dropdown is-hoverable">
+										<div class="dropdown-trigger">
+											<button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+												<span>Ações</span>
+												<span class="icon is-small">
+													<i class="fas fa-angle-down" aria-hidden="true"></i>
+												</span>
+											</button>
+										</div>
+										<div class="dropdown-menu" id="dropdown-menu" role="menu">
+											<div class="dropdown-content">
+												{#if !emprestimo.data_devolvido}
+													{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
+														<form action="?/renovar&id={emprestimo.idemp}" method="POST">
+															<button class="dropdown-item" title="Renovar"
+																><i class="fa-solid fa-repeat fa-fw"></i
+																>&nbsp;Renovar</button>
+														</form>
+													{/if}
+													<form action="?/devolver&id={emprestimo.idemp}" method="POST">
+														<button class="dropdown-item" title="Devolver"
+															><i class="fa-solid fa-reply fa-fw"></i
+															>&nbsp;Devolver</button>
+													</form>
+												{/if}
+												<a
+													class="dropdown-item"
+													href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo"
+													title="Recibo">
+													<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;Recibo
+												</a>
+											</div>
+										</div>
 									</div>
 								</td>
 							</tr>
 						{/each}
 					</tbody>
 				</table>
+				<Pagination {total}></Pagination>
 			</div>
 		</div>
 	</div>

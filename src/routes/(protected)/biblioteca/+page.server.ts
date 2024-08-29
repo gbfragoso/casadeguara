@@ -14,13 +14,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const month = date.getMonth();
 		const firstDay = new Date(year, month, 1);
 		const lastDay = new Date(year, month + 1, 0);
-		const dateFilter = (gte(emprestimo.data_emprestimo, firstDay), lte(emprestimo.data_emprestimo, lastDay));
+		const dateFilter = and(gte(emprestimo.data_emprestimo, firstDay), lte(emprestimo.data_emprestimo, lastDay));
 
 		const avisos = await db.select().from(aviso).orderBy(desc(aviso.data_cadastro)).limit(5);
 		const emprestimosMesAtual = await db
 			.select({ counter: count(), sum: sum(emprestimo.renovacoes) })
 			.from(emprestimo)
 			.where(dateFilter);
+
 		const devolucoesMesAtual = await db
 			.select({ counter: count() })
 			.from(emprestimo)
