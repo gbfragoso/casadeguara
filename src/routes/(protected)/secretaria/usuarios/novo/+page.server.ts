@@ -18,7 +18,7 @@ export const actions: Actions = {
 		const name = formData.get('name') as string;
 		const roles = formData.get('roles') as string;
 
-		if (validator.isEmail(username)) {
+		if (!validator.isEmail(username)) {
 			return fail(400, {
 				message: 'Invalid username',
 			});

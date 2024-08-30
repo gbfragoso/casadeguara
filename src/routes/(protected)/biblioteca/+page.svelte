@@ -53,7 +53,7 @@
 		<div class="content">
 			<p>
 				<strong class="has-text-primary">Clébio Fragoso</strong>
-				<small>{dayjs.utc(aviso.data_cadastro).format('DD/MM/YYYY')}</small>
+				<small>{dayjs.utc(aviso.dataCadastro).format('DD/MM/YYYY')}</small>
 				<br />
 				{aviso.texto}
 			</p>

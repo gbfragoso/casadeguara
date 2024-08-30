@@ -18,11 +18,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const nomeFilter = nome ? ulike(leitor.nome, nome + '%') : undefined;
 	const tituloFilter = titulo ? ulike(livro.titulo, titulo + '%') : undefined;
 	const atrasadosFilter = atrasados
-		? and(lte(emprestimo.data_devolucao, new Date()), isNull(emprestimo.data_devolvido))
+		? and(lte(emprestimo.dataDevolucao, new Date()), isNull(emprestimo.dataDevolvido))
 		: undefined;
 	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 	const ativosFilter = ativos
-		? and(gte(emprestimo.data_devolucao, new Date()), isNull(emprestimo.data_devolvido))
+		? and(gte(emprestimo.dataDevolucao, new Date()), isNull(emprestimo.dataDevolvido))
 		: undefined;
 
 	const where = and(nomeFilter, tituloFilter, tomboFilter, atrasadosFilter, ativosFilter);
@@ -36,9 +36,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				titulo: livro.titulo,
 				numero: exemplar.numero,
 				renovacoes: emprestimo.renovacoes,
-				data_devolucao: emprestimo.data_devolucao,
-				data_emprestimo: emprestimo.data_emprestimo,
-				data_devolvido: emprestimo.data_devolvido,
+				data_devolucao: emprestimo.dataDevolucao,
+				data_emprestimo: emprestimo.dataEmprestimo,
+				data_devolvido: emprestimo.dataDevolvido,
 			})
 			.from(emprestimo)
 			.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 			.where(where)
 			.offset((page - 1) * 10)
-			.orderBy(desc(emprestimo.data_emprestimo))
+			.orderBy(desc(emprestimo.dataEmprestimo))
 			.limit(10);
 
 		const counter = await db

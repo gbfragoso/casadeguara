@@ -20,16 +20,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				titulo: livro.titulo,
 				numero: exemplar.numero,
 				renovacoes: emprestimo.renovacoes,
-				data_devolucao: emprestimo.data_devolucao,
-				data_emprestimo: emprestimo.data_emprestimo,
-				data_devolvido: emprestimo.data_devolvido,
+				data_devolucao: emprestimo.dataDevolucao,
+				data_emprestimo: emprestimo.dataEmprestimo,
+				data_devolvido: emprestimo.dataDevolvido,
 			})
 			.from(emprestimo)
 			.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
 			.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
 			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 			.where(eq(leitor.idleitor, id))
-			.orderBy(desc(emprestimo.data_emprestimo));
+			.orderBy(desc(emprestimo.dataEmprestimo));
 
 		return { emprestimos };
 	} catch (err) {
