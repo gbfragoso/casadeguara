@@ -29,12 +29,18 @@ export const actions: Actions = {
 		const id = Number(params.id);
 		const numero = Number(form.get('numero'));
 
+		if (!id) {
+			return fail(400, {
+				message: 'Nenhum livro foi selecionada para exclusão',
+			});
+		}
+
 		try {
 			await db.insert(exemplar).values({
 				livro: id,
 				numero,
 				status: 'Disponível',
-				data_cadastro: new Date(),
+				dataCadastro: new Date(),
 			});
 			return { status: 201 };
 		} catch (err) {

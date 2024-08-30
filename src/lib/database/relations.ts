@@ -1,26 +1,30 @@
 import { relations } from 'drizzle-orm/relations';
 import {
-	editora,
 	livro,
-	serie,
 	exemplar,
+	editora,
+	serie,
 	emprestimo,
 	leitor,
-	User,
-	Session,
-	contribuinte,
-	entradas,
-	autor,
-	autor_has_livro,
 	keyword,
-	livro_has_keyword,
+	livroHasKeyword,
+	autor,
+	autorHasLivro,
 	acesso,
-	usuario_has_acesso,
+	usuarioHasAcesso,
 	usuario,
-	reserva,
 } from './schema';
 
+export const exemplarRelations = relations(exemplar, ({ one, many }) => ({
+	livro: one(livro, {
+		fields: [exemplar.livro],
+		references: [livro.idlivro],
+	}),
+	emprestimos: many(emprestimo),
+}));
+
 export const livroRelations = relations(livro, ({ one, many }) => ({
+	exemplars: many(exemplar),
 	editora: one(editora, {
 		fields: [livro.editora],
 		references: [editora.ideditora],
@@ -29,9 +33,8 @@ export const livroRelations = relations(livro, ({ one, many }) => ({
 		fields: [livro.serie],
 		references: [serie.idserie],
 	}),
-	exemplars: many(exemplar),
-	autor_has_livros: many(autor_has_livro),
-	livro_has_keywords: many(livro_has_keyword),
+	livroHasKeywords: many(livroHasKeyword),
+	autorHasLivros: many(autorHasLivro),
 }));
 
 export const editoraRelations = relations(editora, ({ many }) => ({
@@ -53,93 +56,55 @@ export const emprestimoRelations = relations(emprestimo, ({ one }) => ({
 	}),
 }));
 
-export const exemplarRelations = relations(exemplar, ({ one, many }) => ({
-	emprestimos: many(emprestimo),
-	livro: one(livro, {
-		fields: [exemplar.livro],
-		references: [livro.idlivro],
-	}),
-}));
-
 export const leitorRelations = relations(leitor, ({ many }) => ({
 	emprestimos: many(emprestimo),
-	reservas: many(reserva),
 }));
 
-export const SessionRelations = relations(Session, ({ one }) => ({
-	User: one(User, {
-		fields: [Session.userId],
-		references: [User.id],
-	}),
-}));
-
-export const UserRelations = relations(User, ({ many }) => ({
-	Sessions: many(Session),
-}));
-
-export const entradasRelations = relations(entradas, ({ one }) => ({
-	contribuinte: one(contribuinte, {
-		fields: [entradas.idcontribuinte],
-		references: [contribuinte.idcontribuinte],
-	}),
-}));
-
-export const contribuinteRelations = relations(contribuinte, ({ many }) => ({
-	entradas: many(entradas),
-}));
-
-export const autor_has_livroRelations = relations(autor_has_livro, ({ one }) => ({
-	autor: one(autor, {
-		fields: [autor_has_livro.autor],
-		references: [autor.idautor],
-	}),
-	livro: one(livro, {
-		fields: [autor_has_livro.livro],
-		references: [livro.idlivro],
-	}),
-}));
-
-export const autorRelations = relations(autor, ({ many }) => ({
-	autor_has_livros: many(autor_has_livro),
-}));
-
-export const livro_has_keywordRelations = relations(livro_has_keyword, ({ one }) => ({
+export const livroHasKeywordRelations = relations(livroHasKeyword, ({ one }) => ({
 	keyword: one(keyword, {
-		fields: [livro_has_keyword.keyword],
+		fields: [livroHasKeyword.keyword],
 		references: [keyword.idkeyword],
 	}),
 	livro: one(livro, {
-		fields: [livro_has_keyword.livro],
+		fields: [livroHasKeyword.livro],
 		references: [livro.idlivro],
 	}),
 }));
 
 export const keywordRelations = relations(keyword, ({ many }) => ({
-	livro_has_keywords: many(livro_has_keyword),
+	livroHasKeywords: many(livroHasKeyword),
 }));
 
-export const usuario_has_acessoRelations = relations(usuario_has_acesso, ({ one }) => ({
+export const autorHasLivroRelations = relations(autorHasLivro, ({ one }) => ({
+	autor: one(autor, {
+		fields: [autorHasLivro.autor],
+		references: [autor.idautor],
+	}),
+	livro: one(livro, {
+		fields: [autorHasLivro.livro],
+		references: [livro.idlivro],
+	}),
+}));
+
+export const autorRelations = relations(autor, ({ many }) => ({
+	autorHasLivros: many(autorHasLivro),
+}));
+
+export const usuarioHasAcessoRelations = relations(usuarioHasAcesso, ({ one }) => ({
 	acesso: one(acesso, {
-		fields: [usuario_has_acesso.acesso],
+		fields: [usuarioHasAcesso.acesso],
 		references: [acesso.idacesso],
 	}),
 	usuario: one(usuario, {
-		fields: [usuario_has_acesso.usuario],
+		fields: [usuarioHasAcesso.usuario],
 		references: [usuario.idusuario],
 	}),
 }));
 
 export const acessoRelations = relations(acesso, ({ many }) => ({
-	usuario_has_acessos: many(usuario_has_acesso),
+	usuarioHasAcessos: many(usuarioHasAcesso),
 }));
 
 export const usuarioRelations = relations(usuario, ({ many }) => ({
-	usuario_has_acessos: many(usuario_has_acesso),
-}));
-
-export const reservaRelations = relations(reserva, ({ one }) => ({
-	leitor: one(leitor, {
-		fields: [reserva.leitor],
-		references: [leitor.idleitor],
-	}),
+	usuarioHasAcessos: many(usuarioHasAcesso),
 }));

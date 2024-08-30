@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { autor, autor_has_livro } from '$lib/database/schema';
+import { autor, autorHasLivro } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
@@ -12,9 +12,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		const autores = await db.select().from(autor).orderBy(autor.nome);
 		const autoresLivro = await db
 			.select({ idautor: autor.idautor, nome: autor.nome })
-			.from(autor_has_livro)
-			.innerJoin(autor, eq(autor_has_livro.autor, autor.idautor))
-			.where(eq(autor_has_livro.livro, Number(params.id)))
+			.from(autorHasLivro)
+			.innerJoin(autor, eq(autorHasLivro.autor, autor.idautor))
+			.where(eq(autorHasLivro.livro, Number(params.id)))
 			.orderBy(autor.nome);
 
 		return { autores, autoresLivro, role: locals.user.roles };
@@ -33,7 +33,7 @@ export const actions: Actions = {
 		const autor = Number(form.get('autor'));
 
 		try {
-			await db.insert(autor_has_livro).values({ autor, livro });
+			await db.insert(autorHasLivro).values({ autor, livro });
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
@@ -53,8 +53,8 @@ export const actions: Actions = {
 
 		try {
 			await db
-				.delete(autor_has_livro)
-				.where(and(eq(autor_has_livro.livro, livro), eq(autor_has_livro.autor, Number(autor))));
+				.delete(autorHasLivro)
+				.where(and(eq(autorHasLivro.livro, livro), eq(autorHasLivro.autor, Number(autor))));
 			return { status: 200 };
 		} catch (err) {
 			console.log(err);

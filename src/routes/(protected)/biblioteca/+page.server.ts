@@ -14,9 +14,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const month = date.getMonth();
 		const firstDay = new Date(year, month, 1);
 		const lastDay = new Date(year, month + 1, 0);
-		const dateFilter = and(gte(emprestimo.data_emprestimo, firstDay), lte(emprestimo.data_emprestimo, lastDay));
+		const dateFilter = and(gte(emprestimo.dataEmprestimo, firstDay), lte(emprestimo.dataEmprestimo, lastDay));
 
-		const avisos = await db.select().from(aviso).orderBy(desc(aviso.data_cadastro)).limit(5);
+		const avisos = await db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
 		const emprestimosMesAtual = await db
 			.select({ counter: count(), sum: sum(emprestimo.renovacoes) })
 			.from(emprestimo)
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const devolucoesMesAtual = await db
 			.select({ counter: count() })
 			.from(emprestimo)
-			.where(and(dateFilter, isNotNull(emprestimo.data_devolvido)));
+			.where(and(dateFilter, isNotNull(emprestimo.dataDevolvido)));
 
 		return {
 			avisos,

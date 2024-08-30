@@ -3,6 +3,7 @@ import {
 	boolean,
 	char,
 	date,
+	foreignKey,
 	integer,
 	numeric,
 	pgTable,
@@ -17,30 +18,123 @@ import {
 	varchar,
 } from 'drizzle-orm/pg-core';
 
-export const acervo = pgTable('acervo', {
-	idexemplar: smallint('idexemplar'),
-	numero: smallint('numero'),
-	tombo: integer('tombo'),
-	titulo: varchar('titulo', { length: 80 }),
-	status: varchar('status', { length: 15 }),
-});
-
 export const aviso = pgTable('aviso', {
 	idaviso: smallserial('idaviso').primaryKey().notNull(),
-	data_cadastro: date('data_cadastro').default(sql`CURRENT_DATE`),
+	dataCadastro: date('data_cadastro', { mode: 'date' }).default(sql`CURRENT_DATE`),
 	texto: varchar('texto', { length: 300 }).notNull(),
 	username: varchar('username', { length: 30 }),
+});
+
+export const keyword = pgTable('keyword', {
+	idkeyword: smallserial('idkeyword').primaryKey().notNull(),
+	chave: varchar('chave', { length: 30 }).notNull(),
+});
+
+export const exemplar = pgTable(
+	'exemplar',
+	{
+		idexemplar: smallserial('idexemplar').primaryKey().notNull(),
+		livro: smallint('livro').notNull(),
+		numero: smallint('numero').notNull(),
+		status: varchar('status', { length: 15 }),
+		dataCadastro: date('data_cadastro', { mode: 'date' }),
+	},
+	(table) => {
+		return {
+			fkLivro: foreignKey({
+				columns: [table.livro],
+				foreignColumns: [livro.idlivro],
+				name: 'fk_livro',
+			}),
+		};
+	},
+);
+
+export const livro = pgTable(
+	'livro',
+	{
+		idlivro: smallserial('idlivro').primaryKey().notNull(),
+		tombo: varchar('tombo', { length: 8 }).notNull(),
+		titulo: varchar('titulo', { length: 80 }).notNull(),
+		editora: integer('editora'),
+		dataCadastro: date('data_cadastro'),
+		serie: smallint('serie'),
+		ordem: smallint('ordem'),
+	},
+	(table) => {
+		return {
+			fkEditora: foreignKey({
+				columns: [table.editora],
+				foreignColumns: [editora.ideditora],
+				name: 'fk_editora',
+			}),
+			fkSerie: foreignKey({
+				columns: [table.serie],
+				foreignColumns: [serie.idserie],
+				name: 'fk_serie',
+			}),
+			tomboUnico: unique('tombo_unico').on(table.tombo),
+		};
+	},
+);
+
+export const autor = pgTable('autor', {
+	idautor: smallserial('idautor').primaryKey().notNull(),
+	nome: varchar('nome', { length: 60 }).notNull(),
+	dataCadastro: date('data_cadastro'),
 });
 
 export const configuracao = pgTable('configuracao', {
 	idconf: smallserial('idconf').primaryKey().notNull(),
 	chave: char('chave', { length: 128 }).notNull(),
-	duracao_emprestimo: smallint('duracao_emprestimo'),
-	duracao_renovacao: smallint('duracao_renovacao'),
-	limite_emprestimo: smallint('limite_emprestimo'),
-	limite_renovacao: smallint('limite_renovacao'),
-	intervalo_emprestimo: smallint('intervalo_emprestimo'),
+	duracaoEmprestimo: smallint('duracao_emprestimo'),
+	duracaoRenovacao: smallint('duracao_renovacao'),
+	limiteEmprestimo: smallint('limite_emprestimo'),
+	limiteRenovacao: smallint('limite_renovacao'),
+	intervaloEmprestimo: smallint('intervalo_emprestimo'),
 	cobranca: text('cobranca'),
+});
+
+export const serie = pgTable('serie', {
+	idserie: smallserial('idserie').primaryKey().notNull(),
+	nome: varchar('nome', { length: 60 }).notNull(),
+	dataCadastro: date('data_cadastro'),
+});
+
+export const emprestimo = pgTable(
+	'emprestimo',
+	{
+		idemp: serial('idemp').primaryKey().notNull(),
+		leitor: smallint('leitor').notNull(),
+		exemplar: smallint('exemplar').notNull(),
+		dataEmprestimo: date('data_emprestimo', { mode: 'date' }),
+		dataDevolucao: date('data_devolucao', { mode: 'date' }),
+		cobranca: timestamp('cobranca', { mode: 'string' }),
+		renovacoes: smallint('renovacoes').default(0),
+		dataDevolvido: date('data_devolvido', { mode: 'date' }),
+		userEmprestimo: smallint('user_emprestimo'),
+		userDevolucao: smallint('user_devolucao'),
+	},
+	(table) => {
+		return {
+			fkExemplar: foreignKey({
+				columns: [table.exemplar],
+				foreignColumns: [exemplar.idexemplar],
+				name: 'fk_exemplar',
+			}).onDelete('cascade'),
+			fkLeitor: foreignKey({
+				columns: [table.leitor],
+				foreignColumns: [leitor.idleitor],
+				name: 'fk_leitor',
+			}),
+		};
+	},
+);
+
+export const editora = pgTable('editora', {
+	ideditora: smallserial('ideditora').primaryKey().notNull(),
+	nome: varchar('nome', { length: 60 }).notNull(),
+	dataCadastro: date('data_cadastro'),
 });
 
 export const usuario = pgTable('usuario', {
@@ -49,76 +143,8 @@ export const usuario = pgTable('usuario', {
 	login: varchar('login', { length: 20 }).notNull(),
 	senha: char('senha', { length: 128 }).notNull(),
 	tipo: varchar('tipo', { length: 15 }),
-	data_cadastro: date('data_cadastro'),
+	dataCadastro: date('data_cadastro'),
 	status: boolean('status').default(true),
-});
-
-export const vw_cobrancas = pgTable('vw_cobrancas', {
-	leitor: varchar('leitor', { length: 60 }),
-	email: varchar('email', { length: 60 }),
-	livros: text('livros'),
-});
-
-export const autor = pgTable('autor', {
-	idautor: smallserial('idautor').primaryKey().notNull(),
-	nome: varchar('nome', { length: 60 }).notNull(),
-	data_cadastro: date('data_cadastro'),
-});
-
-export const editora = pgTable('editora', {
-	ideditora: smallserial('ideditora').primaryKey().notNull(),
-	nome: varchar('nome', { length: 60 }).notNull(),
-	data_cadastro: date('data_cadastro'),
-});
-
-export const livro = pgTable(
-	'livro',
-	{
-		idlivro: smallserial('idlivro').primaryKey().notNull(),
-		tombo: varchar('tombo', { length: 8 }).notNull(),
-		titulo: varchar('titulo', { length: 80 }).notNull(),
-		editora: integer('editora').references(() => editora.ideditora),
-		data_cadastro: date('data_cadastro'),
-		serie: smallint('serie').references(() => serie.idserie),
-		ordem: smallint('ordem'),
-	},
-	(table) => {
-		return {
-			tombo_unico: unique('tombo_unico').on(table.tombo),
-		};
-	},
-);
-
-export const emprestimo = pgTable('emprestimo', {
-	idemp: serial('idemp').primaryKey().notNull(),
-	leitor: smallint('leitor')
-		.notNull()
-		.references(() => leitor.idleitor),
-	exemplar: smallint('exemplar')
-		.notNull()
-		.references(() => exemplar.idexemplar, { onDelete: 'cascade' }),
-	data_emprestimo: date('data_emprestimo', { mode: 'date' }),
-	data_devolucao: date('data_devolucao', { mode: 'date' }),
-	cobranca: timestamp('cobranca', { mode: 'string' }),
-	renovacoes: smallint('renovacoes').default(0),
-	user_emprestimo: smallint('user_emprestimo'),
-	user_devolucao: smallint('user_devolucao'),
-	data_devolvido: date('data_devolvido', { mode: 'date' }),
-});
-
-export const exemplar = pgTable('exemplar', {
-	idexemplar: smallserial('idexemplar').primaryKey().notNull(),
-	livro: smallint('livro')
-		.notNull()
-		.references(() => livro.idlivro, { onDelete: 'cascade' }),
-	numero: smallint('numero').notNull(),
-	status: varchar('status', { length: 15 }),
-	data_cadastro: date('data_cadastro', { mode: 'date' }).default(sql`CURRENT_DATE`),
-});
-
-export const keyword = pgTable('keyword', {
-	idkeyword: smallserial('idkeyword').primaryKey().notNull(),
-	chave: varchar('chave', { length: 30 }).notNull(),
 });
 
 export const leitor = pgTable(
@@ -134,19 +160,19 @@ export const leitor = pgTable(
 		complemento: varchar('complemento'),
 		cep: varchar('cep', { length: 11 }),
 		sexo: varchar('sexo', { length: 10 }),
-		data_cadastro: date('data_cadastro'),
+		dataCadastro: date('data_cadastro'),
 		trab: boolean('trab').default(false),
 		cidade: varchar('cidade'),
 		paciente: boolean('paciente'),
 		incompleto: boolean('incompleto'),
 		status: boolean('status').default(true),
-		aniversario: date('aniversario', { mode: 'date' }),
+		aniversario: char('aniversario', { length: 5 }),
 		rg: varchar('rg', { length: 12 }),
 		cpf: varchar('cpf', { length: 15 }),
 	},
 	(table) => {
 		return {
-			unique_leitor: unique('unique_leitor').on(table.nome),
+			uniqueLeitor: unique('unique_leitor').on(table.nome),
 		};
 	},
 );
@@ -156,17 +182,74 @@ export const acesso = pgTable('acesso', {
 	conteudo: varchar('conteudo', { length: 40 }),
 });
 
-export const serie = pgTable('serie', {
-	idserie: smallserial('idserie').primaryKey().notNull(),
-	nome: varchar('nome', { length: 60 }).notNull(),
-	data_cadastro: date('data_cadastro'),
-});
+export const livroHasKeyword = pgTable(
+	'livro_has_keyword',
+	{
+		livro: integer('livro').notNull(),
+		keyword: integer('keyword').notNull(),
+	},
+	(table) => {
+		return {
+			fkKeyword: foreignKey({
+				columns: [table.keyword],
+				foreignColumns: [keyword.idkeyword],
+				name: 'fk_keyword',
+			}).onDelete('cascade'),
+			fkLivro: foreignKey({
+				columns: [table.livro],
+				foreignColumns: [livro.idlivro],
+				name: 'fk_livro',
+			}).onDelete('cascade'),
+			pkLivroKeyword: primaryKey({ columns: [table.livro, table.keyword], name: 'pk_livro_keyword' }),
+		};
+	},
+);
 
-export const contribuinte = pgTable('contribuinte', {
-	idcontribuinte: smallserial('idcontribuinte').primaryKey().notNull(),
-	nome: varchar('nome', { length: 200 }).notNull(),
-	trabalhador: boolean('trabalhador').notNull(),
-});
+export const autorHasLivro = pgTable(
+	'autor_has_livro',
+	{
+		autor: integer('autor').notNull(),
+		livro: integer('livro').notNull(),
+	},
+	(table) => {
+		return {
+			fkAutor: foreignKey({
+				columns: [table.autor],
+				foreignColumns: [autor.idautor],
+				name: 'fk_autor',
+			}).onDelete('cascade'),
+			fkLivro: foreignKey({
+				columns: [table.livro],
+				foreignColumns: [livro.idlivro],
+				name: 'fk_livro',
+			}).onDelete('cascade'),
+			pkAutorLivro: primaryKey({ columns: [table.autor, table.livro], name: 'pk_autor_livro' }),
+		};
+	},
+);
+
+export const usuarioHasAcesso = pgTable(
+	'usuario_has_acesso',
+	{
+		usuario: integer('usuario').notNull(),
+		acesso: integer('acesso').notNull(),
+	},
+	(table) => {
+		return {
+			fkAcesso: foreignKey({
+				columns: [table.acesso],
+				foreignColumns: [acesso.idacesso],
+				name: 'fk_acesso',
+			}).onUpdate('cascade'),
+			fkUsuario: foreignKey({
+				columns: [table.usuario],
+				foreignColumns: [usuario.idusuario],
+				name: 'fk_usuario',
+			}).onDelete('cascade'),
+			pkUsuarioAcesso: primaryKey({ columns: [table.usuario, table.acesso], name: 'pk_usuario_acesso' }),
+		};
+	},
+);
 
 export const Session = pgTable('Session', {
 	id: text('id').primaryKey().notNull(),
@@ -215,82 +298,3 @@ export const saidas = pgTable('saidas', {
 	user_cadastro: smallint('user_cadastro'),
 	user_alteracao: smallint('user_alteracao'),
 });
-
-export const autor_has_livro = pgTable(
-	'autor_has_livro',
-	{
-		autor: integer('autor')
-			.notNull()
-			.references(() => autor.idautor, { onDelete: 'cascade' }),
-		livro: integer('livro')
-			.notNull()
-			.references(() => livro.idlivro, { onDelete: 'cascade' }),
-	},
-	(table) => {
-		return {
-			pk_autor_livro: primaryKey({
-				columns: [table.autor, table.livro],
-				name: 'pk_autor_livro',
-			}),
-		};
-	},
-);
-
-export const livro_has_keyword = pgTable(
-	'livro_has_keyword',
-	{
-		livro: integer('livro')
-			.notNull()
-			.references(() => livro.idlivro, { onDelete: 'cascade' }),
-		keyword: integer('keyword')
-			.notNull()
-			.references(() => keyword.idkeyword, { onDelete: 'cascade' }),
-	},
-	(table) => {
-		return {
-			pk_livro_keyword: primaryKey({
-				columns: [table.livro, table.keyword],
-				name: 'pk_livro_keyword',
-			}),
-		};
-	},
-);
-
-export const usuario_has_acesso = pgTable(
-	'usuario_has_acesso',
-	{
-		usuario: integer('usuario')
-			.notNull()
-			.references(() => usuario.idusuario, { onDelete: 'cascade' }),
-		acesso: integer('acesso')
-			.notNull()
-			.references(() => acesso.idacesso, { onUpdate: 'cascade' }),
-	},
-	(table) => {
-		return {
-			pk_usuario_acesso: primaryKey({
-				columns: [table.usuario, table.acesso],
-				name: 'pk_usuario_acesso',
-			}),
-		};
-	},
-);
-
-export const reserva = pgTable(
-	'reserva',
-	{
-		leitor: integer('leitor')
-			.notNull()
-			.references(() => leitor.idleitor),
-		livro: integer('livro').notNull(),
-		data_expira: timestamp('data_expira', { mode: 'string' }),
-	},
-	(table) => {
-		return {
-			pk_leitor_exemplar: primaryKey({
-				columns: [table.leitor, table.livro],
-				name: 'pk_leitor_exemplar',
-			}),
-		};
-	},
-);

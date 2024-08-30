@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
-import { autor, autor_has_livro, editora, livro, serie } from '$lib/database/schema';
+import { autor, autorHasLivro, editora, livro, serie } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, count, eq, inArray } from 'drizzle-orm';
 
@@ -24,9 +24,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	if (author) {
 		const resultados = await db
-			.select({ idlivro: autor_has_livro.livro })
-			.from(autor_has_livro)
-			.innerJoin(autor, eq(autor.idautor, autor_has_livro.autor))
+			.select({ idlivro: autorHasLivro.livro })
+			.from(autorHasLivro)
+			.innerJoin(autor, eq(autor.idautor, autorHasLivro.autor))
 			.where(ulike(autor.nome, author + '%'));
 
 		autorFilter = inArray(
