@@ -2,8 +2,8 @@ import { db } from '$lib/database/connection';
 import { ulike } from '$lib/database/functions';
 import { emprestimo, exemplar, leitor, livro } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, count, desc, eq, gte, lte, isNull } from 'drizzle-orm';
-import type { PageServerLoad } from './$types';
+import { and, count, desc, eq, gte, isNull, lte, sql } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, '/');
@@ -67,3 +67,48 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		});
 	}
 };
+
+export const actions: Actions = {
+	renovar: async ({ locals, url }) => {
+		const id = url.searchParams.get('id');
+		const where = eq(emprestimo.idemp, Number(id));
+		const resultado = await db.select({ renovacoes: emprestimo.renovacoes }).from(emprestimo).where(where);
+		const renovacoes = Number(resultado[0].renovacoes);
+		if (renovacoes > 1 && !locals.user?.roles.includes(':admin')) {
+			return {
+				status: 400,
+				message: 'Limite de renovações excedido',
+			};
+		}
+
+		const duracao = Number(14 + (renovacoes + 1) * 14);
+
+		try {
+			await db.execute(
+				sql`update emprestimo set data_devolucao = data_emprestimo + ${duracao}::int, renovacoes = renovacoes + 1 where idemp = ${id}`,
+			);
+			return { status: 201 };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao renovar o empréstimo',
+			});
+		}
+	},
+	devolver: async ({ url }) => {
+		const id = url.searchParams.get('id');
+
+		try {
+			await db
+				.update(emprestimo)
+				.set({ dataDevolvido: new Date() })
+				.where(eq(emprestimo.idemp, Number(id)));
+			return { status: 201 };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao devolver o empréstimo',
+			});
+		}
+	},
+} satisfies Actions;

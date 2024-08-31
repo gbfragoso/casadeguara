@@ -3,6 +3,7 @@ import { leitor } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
+import { cpf, rg } from '$lib/js/mask';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -14,11 +15,16 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.select()
 			.from(leitor)
 			.where(eq(leitor.idleitor, Number(params.id)));
+
 		if (!resultado) {
 			throw fail(404, {
 				message: 'Leitor não encontrado',
 			});
 		}
+
+		resultado[0].cpf = cpf(resultado[0].cpf);
+		resultado[0].rg = rg(resultado[0].rg);
+
 		return { leitor: resultado[0] };
 	} catch (err) {
 		console.error(err);
@@ -62,24 +68,27 @@ export const actions: Actions = {
 		const status = Boolean(form.get('status'));
 
 		try {
-			await db
-				.update(leitor)
-				.set({
-					nome: nome.toUpperCase(),
-					rg,
-					cpf,
-					email,
-					celular,
-					telefone,
-					logradouro,
-					bairro,
-					complemento,
-					cidade,
-					cep,
-					trab,
-					status,
-				})
-				.where(eq(leitor.idleitor, Number(params.id)));
+			console.log(
+				db
+					.update(leitor)
+					.set({
+						nome: nome.toUpperCase(),
+						rg: rg && !rg.includes('*') ? rg : undefined,
+						cpf: cpf && !cpf.includes('*') ? cpf : undefined,
+						email,
+						celular: celular.replace(/\D/g, ''),
+						telefone: telefone.replace(/\D/g, ''),
+						logradouro,
+						bairro,
+						complemento,
+						cidade,
+						cep: cep.replace(/\D/g, ''),
+						trab,
+						status,
+					})
+					.where(eq(leitor.idleitor, Number(params.id)))
+					.toSQL(),
+			);
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);

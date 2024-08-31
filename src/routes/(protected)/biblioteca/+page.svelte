@@ -52,7 +52,7 @@
 	<div class="box">
 		<div class="content">
 			<p>
-				<strong class="has-text-primary">Clébio Fragoso</strong>
+				<strong class="has-text-primary">{aviso.username}</strong>
 				<small>{dayjs.utc(aviso.dataCadastro).format('DD/MM/YYYY')}</small>
 				<br />
 				{aviso.texto}

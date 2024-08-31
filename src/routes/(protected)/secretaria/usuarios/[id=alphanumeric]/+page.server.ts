@@ -5,13 +5,16 @@ import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
-import type { Actions, PageServerLoad } from '../$types';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const resultado = await db.select().from(User).where(eq(User.id, params.id));
+		const resultado = await db
+			.select()
+			.from(User)
+			.where(eq(User.id, String(params.id)));
 		if (!resultado) {
 			throw fail(404, { message: 'Autor não encontrado' });
 		}
