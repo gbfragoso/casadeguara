@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	try {
 		const contribuintes = await db
-			.select()
+			.select({ idleitor: leitor.idleitor, nome: leitor.nome, trab: leitor.trab })
 			.from(leitor)
 			.offset((page - 1) * 5)
 			.where(where)

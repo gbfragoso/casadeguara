@@ -33,14 +33,14 @@
 					<input class="input" type="text" name="titulo" id="titulo" placeholder="Digite o título do livro" />
 				</div>
 			</div>
-		</div>
-		<div class="field columns">
 			<div class="column">
 				<label class="label" for="autor">Autor</label>
 				<div class="control">
 					<input class="input" type="text" name="autor" id="autor" placeholder="Digite o nome do autor" />
 				</div>
 			</div>
+		</div>
+		<div class="field columns">
 			<div class="column">
 				<label class="label" for="editora">Editora</label>
 				<div class="control">
@@ -56,6 +56,17 @@
 				<label class="label" for="serie">Coleção</label>
 				<div class="control">
 					<input class="input" type="text" name="serie" id="serie" placeholder="Digite o nome da coleção" />
+				</div>
+			</div>
+			<div class="column">
+				<label class="label" for="autor">Palavra-chave</label>
+				<div class="control">
+					<input
+						class="input"
+						type="text"
+						name="keyword"
+						id="keyword"
+						placeholder="Digite uma palavr-chave" />
 				</div>
 			</div>
 		</div>

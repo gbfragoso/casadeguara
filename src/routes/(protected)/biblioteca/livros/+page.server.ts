@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
-import { autor, autorHasLivro, editora, livro, serie } from '$lib/database/schema';
+import { autor, autorHasLivro, editora, livro, livroHasKeyword, serie, keyword } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, count, eq, inArray } from 'drizzle-orm';
 
@@ -14,14 +14,15 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const titulo = url.searchParams.get('titulo') || undefined;
 	const editor = url.searchParams.get('editora') || undefined;
 	const colecao = url.searchParams.get('serie') || undefined;
+	const key = url.searchParams.get('keyword') || undefined;
 	const author = url.searchParams.get('autor') || undefined;
 
 	const tituloFilter = titulo ? ulike(livro.titulo, titulo + '%') : undefined;
 	const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 	const editoraFilter = editor ? ulike(editora.nome, editor + '%') : undefined;
 	const colecaoFilter = colecao ? ulike(serie.nome, colecao + '%') : undefined;
-	let autorFilter = undefined;
 
+	let autorFilter = undefined;
 	if (author) {
 		const resultados = await db
 			.select({ idlivro: autorHasLivro.livro })
@@ -35,7 +36,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		);
 	}
 
-	const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter);
+	let keywordFilter = undefined;
+	if (key) {
+		const resultados = await db
+			.select({ idlivro: livroHasKeyword.livro })
+			.from(livroHasKeyword)
+			.innerJoin(keyword, eq(keyword.idkeyword, livroHasKeyword.keyword))
+			.where(ulike(keyword.chave, key + '%'));
+
+		keywordFilter = inArray(
+			livro.idlivro,
+			resultados.flatMap((v) => v.idlivro),
+		);
+	}
+
+	const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
 	const livros = await db
 		.select({
 			idlivro: livro.idlivro,
