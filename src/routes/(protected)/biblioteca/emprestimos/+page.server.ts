@@ -33,6 +33,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				idemp: emprestimo.idemp,
 				idleitor: leitor.idleitor,
 				leitor: leitor.nome,
+				telefone: leitor.telefone,
 				titulo: livro.titulo,
 				numero: exemplar.numero,
 				renovacoes: emprestimo.renovacoes,

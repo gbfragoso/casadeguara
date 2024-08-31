@@ -8,6 +8,19 @@
 
 	$: ({ emprestimos, total, isAdmin } = data);
 	dayjs.extend(utc);
+
+	function whatsappText(leitor: string, titulo: string, data: string) {
+		return (
+			'Estimado(a) ' +
+			leitor +
+			', O prazo para devolução do livro ' +
+			titulo +
+			' expirou em ' +
+			data +
+			', se possível dirigir-se à biblioteca para regularização.' +
+			'Atenciosamente,Clébio Fragoso'
+		);
+	}
 </script>
 
 <div class="mb-2">
@@ -121,7 +134,7 @@
 											</button>
 										</div>
 										<div class="dropdown-menu" id="dropdown-menu" role="menu">
-											<div class="dropdown-content">
+											<div class="dropdown-content" style="max-height:100px;overflow: auto">
 												{#if !emprestimo.data_devolvido}
 													{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
 														<form action="?/renovar&id={emprestimo.idemp}" method="POST">
@@ -135,6 +148,21 @@
 															><i class="fa-solid fa-reply fa-fw"></i
 															>&nbsp;Devolver</button>
 													</form>
+													{#if dayjs().isAfter(emprestimo.data_devolucao)}
+														<a
+															class="dropdown-item"
+															href="https://wa.me/{emprestimo.telefone}?text={whatsappText(
+																emprestimo.leitor,
+																emprestimo.titulo,
+																dayjs
+																	.utc(emprestimo.data_devolucao)
+																	.format('DD/MM/YYYY'),
+															)}"
+															title="Cobrança"
+															target="_blank">
+															<i class="fa-brands fa-whatsapp fa-fw"></i>&nbsp;Cobrança
+														</a>
+													{/if}
 												{/if}
 												<a
 													class="dropdown-item"

@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	try {
 		const contribuinte = await db
-			.select()
+			.select({ nome: leitor.nome, trab: leitor.trab })
 			.from(leitor)
 			.where(eq(leitor.idleitor, Number(params.id)));
 		if (!contribuinte) {
