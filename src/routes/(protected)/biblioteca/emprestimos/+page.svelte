@@ -2,8 +2,9 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
-	import type { PageServerData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
+	export let form: ActionData;
 
 	$: ({ emprestimos, total, isAdmin } = data);
 	dayjs.extend(utc);
@@ -145,6 +146,9 @@
 										</div>
 									</div>
 								</td>
+								{#if form?.status === 400 && form?.message}
+									<p class="help is-danger">{form.message}</p>
+								{/if}
 							</tr>
 						{/each}
 					</tbody>
