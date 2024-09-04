@@ -6,21 +6,8 @@
 	export let data: PageServerData;
 	export let form: ActionData;
 
-	$: ({ emprestimos, total, isAdmin } = data);
+	$: ({ emprestimos, counter, isAdmin } = data);
 	dayjs.extend(utc);
-
-	function whatsappText(leitor: string, titulo: string, data: string) {
-		return (
-			'Estimado(a) ' +
-			leitor +
-			', O prazo para devolução do livro ' +
-			titulo +
-			' expirou em ' +
-			data +
-			', se possível dirigir-se à biblioteca para regularização.' +
-			'Atenciosamente,Clébio Fragoso'
-		);
-	}
 </script>
 
 <div class="mb-2">
@@ -83,30 +70,47 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/biblioteca/emprestimos/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/biblioteca/emprestimos/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
 </form>
 
-{#if emprestimos && emprestimos.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>Leitor</th>
-						<th>Título</th>
-						<th>Ex</th>
-						<th>Prazo</th>
-						<th>Status</th>
-						<th class="table-actions">Ações</th>
-					</thead>
-					<tbody>
-						{#each emprestimos as emprestimo}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Leitor</th>
+					<th>Título</th>
+					<th>Ex</th>
+					<th>Prazo</th>
+					<th>Status</th>
+					<th class="table-actions">Ações</th>
+				</thead>
+				<tbody
+					>{#await emprestimos}
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+					{:then item}
+						{#each item as emprestimo}
 							<tr>
 								<td>
 									<a href="/biblioteca/leitores/{emprestimo.idleitor}">
@@ -148,21 +152,6 @@
 															><i class="fa-solid fa-reply fa-fw"></i
 															>&nbsp;Devolver</button>
 													</form>
-													{#if dayjs().isAfter(emprestimo.data_devolucao)}
-														<a
-															class="dropdown-item"
-															href="https://wa.me/{emprestimo.telefone}?text={whatsappText(
-																emprestimo.leitor,
-																emprestimo.titulo,
-																dayjs
-																	.utc(emprestimo.data_devolucao)
-																	.format('DD/MM/YYYY'),
-															)}"
-															title="Cobrança"
-															target="_blank">
-															<i class="fa-brands fa-whatsapp fa-fw"></i>&nbsp;Cobrança
-														</a>
-													{/if}
 												{/if}
 												<a
 													class="dropdown-item"
@@ -179,10 +168,14 @@
 								{/if}
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

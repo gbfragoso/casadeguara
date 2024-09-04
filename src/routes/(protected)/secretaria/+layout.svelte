@@ -25,25 +25,25 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria">
+					<a href="/secretaria">
 						<i class="fa-solid fa-house fa-fw"></i>
 						<span class="item-description">Home</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria/frequencia">
+					<a href="/secretaria/frequencia">
 						<i class="fa-solid fa-list fa-fw"></i>
 						<span class="item-description">Frequência</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria/aniversariantes">
+					<a href="/secretaria/aniversariantes">
 						<i class="fa-solid fa-cake-candles fa-fw"></i>
 						<span class="item-description">Aniversariantes</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria/usuarios">
+					<a href="/secretaria/usuarios">
 						<i class="fa-solid fa-user fa-fw"></i>
 						<span class="item-description">Usuários</span>
 					</a>

@@ -28,39 +28,41 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = and(nomeFilter, tituloFilter, tomboFilter, atrasadosFilter, ativosFilter);
 
 	try {
-		const emprestimos = await db
-			.select({
-				idemp: emprestimo.idemp,
-				idleitor: leitor.idleitor,
-				leitor: leitor.nome,
-				telefone: leitor.telefone,
-				titulo: livro.titulo,
-				numero: exemplar.numero,
-				renovacoes: emprestimo.renovacoes,
-				data_devolucao: emprestimo.dataDevolucao,
-				data_emprestimo: emprestimo.dataEmprestimo,
-				data_devolvido: emprestimo.dataDevolvido,
-			})
-			.from(emprestimo)
-			.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
-			.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
-			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
-			.where(where)
-			.offset((page - 1) * 10)
-			.orderBy(desc(emprestimo.dataEmprestimo))
-			.limit(10);
+		const emprestimos = async () => {
+			return db
+				.select({
+					idemp: emprestimo.idemp,
+					idleitor: leitor.idleitor,
+					leitor: leitor.nome,
+					telefone: leitor.telefone,
+					titulo: livro.titulo,
+					numero: exemplar.numero,
+					renovacoes: emprestimo.renovacoes,
+					data_devolucao: emprestimo.dataDevolucao,
+					data_emprestimo: emprestimo.dataEmprestimo,
+					data_devolvido: emprestimo.dataDevolvido,
+				})
+				.from(emprestimo)
+				.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
+				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
+				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
+				.where(where)
+				.offset((page - 1) * 10)
+				.orderBy(desc(emprestimo.dataEmprestimo))
+				.limit(10);
+		};
 
-		const counter = await db
-			.select({ count: count() })
-			.from(emprestimo)
-			.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
-			.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
-			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
-			.where(where);
+		const counter = async () => {
+			return db
+				.select({ count: count() })
+				.from(emprestimo)
+				.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
+				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
+				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
+				.where(where);
+		};
 
-		const total = counter[0].count;
-
-		return { emprestimos, total, isAdmin: locals.user.roles.includes(':admin') };
+		return { emprestimos: emprestimos(), counter: counter(), isAdmin: locals.user.roles.includes(':admin') };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

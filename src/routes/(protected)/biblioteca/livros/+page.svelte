@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ livros, total, role } = data);
+	$: ({ livros, counter, role } = data);
 </script>
 
 <div class="mb-2">
@@ -77,48 +77,47 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/biblioteca/livros/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/biblioteca/livros/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
 </form>
 
-{#if livros && livros.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>Tombo</th>
-						<th>Título</th>
-						<th class="table-actions">Ações</th>
-					</thead>
-					<tbody>
-						{#each livros as livro}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Tombo</th>
+					<th>Título</th>
+					<th class="table-actions">Ações</th>
+				</thead>
+				<tbody>
+					{#await livros}
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+					{:then item}
+						{#each item as livro}
 							<tr>
 								<td>{livro.tombo}</td>
 								<td>{livro.titulo}</td>
 								<td class="table-actions">
 									<div class="field is-grouped">
-										<a
-											data-sveltekit-reload
-											class="control"
-											href="/biblioteca/livros/{livro.idlivro}">
+										<a class="control" href="/biblioteca/livros/{livro.idlivro}">
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
-										<a
-											data-sveltekit-reload
-											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/exemplares">
+										<a class="control" href="/biblioteca/livros/{livro.idlivro}/exemplares">
 											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
-										<a
-											data-sveltekit-reload
-											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/autores">
+										<a class="control" href="/biblioteca/livros/{livro.idlivro}/autores">
 											<i class="fa-solid fa-user-pen fa-fw"></i>
 										</a>
 										{#if role.includes('admin')}
@@ -131,10 +130,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

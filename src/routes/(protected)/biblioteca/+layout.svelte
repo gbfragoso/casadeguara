@@ -25,55 +25,61 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca">
+					<a href="/biblioteca">
 						<i class="fa-solid fa-house fa-fw"></i>
 						<span class="item-description">Home</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/autores">
+					<a href="/biblioteca/autores">
 						<i class="fa-solid fa-user-pen fa-fw"></i>
 						<span class="item-description">Autores</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/avisos">
+					<a href="/biblioteca/avisos">
 						<i class="fa-solid fa-inbox fa-fw"></i>
 						<span class="item-description">Avisos</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/colecoes">
+					<a href="/biblioteca/cobrancas">
+						<i class="fa-solid fa-envelopes-bulk fa-fw"></i>
+						<span class="item-description">Cobranças</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a href="/biblioteca/colecoes">
 						<i class="fa-solid fa-layer-group fa-fw"></i>
 						<span class="item-description">Coleções</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/editoras">
+					<a href="/biblioteca/editoras">
 						<i class="fa-solid fa-landmark-flag fa-fw"></i>
 						<span class="item-description">Editoras</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/emprestimos">
+					<a href="/biblioteca/emprestimos">
 						<i class="fa-solid fa-hand-holding fa-fw"></i>
 						<span class="item-description">Empréstimos</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/leitores">
+					<a href="/biblioteca/leitores">
 						<i class=" fa-solid fa-book-open-reader fa-fw"></i>
 						<span class="item-description">Leitores</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/livros">
+					<a href="/biblioteca/livros">
 						<i class="fa-solid fa-book fa-fw"></i>
 						<span class="item-description">Livros</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/biblioteca/keywords">
+					<a href="/biblioteca/keywords">
 						<i class="fa-solid fa-key fa-fw"></i>
 						<span class="item-description">Palavras-chave</span>
 					</a>

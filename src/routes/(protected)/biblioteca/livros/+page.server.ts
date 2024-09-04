@@ -51,31 +51,41 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
-	const livros = await db
-		.select({
-			idlivro: livro.idlivro,
-			tombo: livro.tombo,
-			titulo: livro.titulo,
-			editora: editora.nome,
-		})
-		.from(livro)
-		.innerJoin(editora, eq(livro.editora, editora.ideditora))
-		.leftJoin(serie, eq(livro.serie, serie.idserie))
-		.where(where)
-		.orderBy(colecao ? livro.ordem : unaccent(livro.titulo))
-		.offset((page - 1) * 5)
-		.limit(5);
 
-	const counter = await db
-		.select({ count: count() })
-		.from(livro)
-		.innerJoin(editora, eq(livro.editora, editora.ideditora))
-		.leftJoin(serie, eq(livro.serie, serie.idserie))
-		.where(where);
+	try {
+		const livros = async () => {
+			return db
+				.select({
+					idlivro: livro.idlivro,
+					tombo: livro.tombo,
+					titulo: livro.titulo,
+					editora: editora.nome,
+				})
+				.from(livro)
+				.innerJoin(editora, eq(livro.editora, editora.ideditora))
+				.leftJoin(serie, eq(livro.serie, serie.idserie))
+				.where(where)
+				.orderBy(colecao ? livro.ordem : unaccent(livro.titulo))
+				.offset((page - 1) * 5)
+				.limit(5);
+		};
 
-	const total = counter[0].count;
+		const counter = async () => {
+			return db
+				.select({ count: count() })
+				.from(livro)
+				.innerJoin(editora, eq(livro.editora, editora.ideditora))
+				.leftJoin(serie, eq(livro.serie, serie.idserie))
+				.where(where);
+		};
 
-	return { livros, total, role: locals.user.roles };
+		return { livros: livros(), counter: counter(), role: locals.user.roles };
+	} catch (err) {
+		console.error(err);
+		return error(500, {
+			message: 'Falha ao carregar a lista de autores',
+		});
+	}
 };
 
 export const actions: Actions = {

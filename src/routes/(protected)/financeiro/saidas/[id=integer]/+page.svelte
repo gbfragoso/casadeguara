@@ -13,9 +13,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a data-sveltekit-reload href="/financeiro">Financeiro</a></li>
+			<li><a href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a data-sveltekit-reload href="/financeiro/saidas" aria-current="page">saidas</a>
+				<a href="/financeiro/saidas" aria-current="page">saidas</a>
 			</li>
 		</ul>
 	</nav>

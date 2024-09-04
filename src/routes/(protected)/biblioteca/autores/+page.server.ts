@@ -14,16 +14,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = nome ? ulike(autor.nome, nome + '%') : undefined;
 
 	try {
-		const autores = await db
-			.select()
-			.from(autor)
-			.offset((page - 1) * 5)
-			.where(where)
-			.orderBy(unaccent(autor.nome))
-			.limit(5);
-		const counter = await db.select({ count: count() }).from(autor).where(where);
-		const total = counter[0].count;
-		return { autores, total };
+		const autores = async () => {
+			return db
+				.select()
+				.from(autor)
+				.offset((page - 1) * 5)
+				.where(where)
+				.orderBy(unaccent(autor.nome))
+				.limit(5);
+		};
+		const counter = async () => {
+			return db.select({ count: count() }).from(autor).where(where);
+		};
+		return { autores: autores(), counter: counter() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

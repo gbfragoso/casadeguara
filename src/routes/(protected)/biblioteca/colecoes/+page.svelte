@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ colecoes, total } = data);
+	$: ({ colecoes, counter } = data);
 </script>
 
 <div class="mb-2">
@@ -33,26 +33,31 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/biblioteca/colecoes/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/biblioteca/colecoes/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
 </form>
 
-{#if colecoes && colecoes.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>Nome</th>
-						<th class="table-actions">Ações</th>
-					</thead>
-					<tbody>
-						{#each colecoes as colecao}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Nome</th>
+					<th class="table-actions">Ações</th>
+				</thead>
+				<tbody>
+					{#await colecoes}
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+					{:then item}
+						{#each item as colecao}
 							<tr>
 								<td>{colecao.nome}</td>
 								<td class="table-actions">
@@ -62,10 +67,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

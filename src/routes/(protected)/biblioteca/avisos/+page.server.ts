@@ -10,8 +10,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const avisos = await db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
-		return { avisos };
+		const avisos = async () => {
+			return db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
+		};
+		return { avisos: avisos() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

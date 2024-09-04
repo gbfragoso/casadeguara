@@ -50,10 +50,8 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/financeiro/saidas/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/financeiro/saidas/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -77,7 +75,7 @@
 								<td>R$ {saida.valor}</td>
 								<td>{dayjs.utc(saida.data_saida).format('DD/MM/YYYY')}</td>
 								<td>
-									<a data-sveltekit-reload href="/financeiro/saidas/{saida.idsaida}">
+									<a href="/financeiro/saidas/{saida.idsaida}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

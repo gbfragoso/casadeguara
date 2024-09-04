@@ -4,7 +4,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ avisos, emprestimos, devolucoes, renovacoes } = data);
+	$: ({ avisos, emprestimos, devolucoes } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -26,7 +26,13 @@
 		<div class="box has-text-weight-semibold">
 			<i class="fa-solid fa-arrow-right fa-fw">&nbsp;</i>Empréstimos
 			<h2 class="is-size-3 has-text-primary">
-				{emprestimos}
+				{#await emprestimos}
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				{:then emprestimo}
+					{emprestimo[0].counter}
+				{/await}
 			</h2>
 		</div>
 	</div>
@@ -34,7 +40,13 @@
 		<div class="box has-text-weight-semibold">
 			<i class="fa-solid fa-arrow-left fa-fw">&nbsp;</i>Devoluções
 			<h2 class="is-size-3 has-text-primary">
-				{devolucoes}
+				{#await devolucoes}
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				{:then devolucao}
+					{devolucao[0].counter}
+				{/await}
 			</h2>
 		</div>
 	</div>
@@ -42,21 +54,35 @@
 		<div class="box has-text-weight-semibold">
 			<i class="fa-solid fa-repeat fa-fw">&nbsp;</i>Renovações
 			<h2 class="is-size-3 has-text-primary">
-				{renovacoes}
+				{#await emprestimos}
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				{:then emprestimo}
+					{emprestimo[0].renovacoes || 0}
+				{/await}
 			</h2>
 		</div>
 	</div>
 </div>
 <p class="is-size-4 mb-4 has-text-weight-semibold">Mural de avisos</p>
-{#each avisos as aviso}
-	<div class="box">
-		<div class="content">
-			<p>
-				<strong class="has-text-primary">{aviso.username}</strong>
-				<small>{dayjs.utc(aviso.dataCadastro).format('DD/MM/YYYY')}</small>
-				<br />
-				{aviso.texto}
-			</p>
+{#await avisos}
+	<div class="skeleton-block"></div>
+	<div class="skeleton-block"></div>
+	<div class="skeleton-block"></div>
+	<div class="skeleton-block"></div>
+	<div class="skeleton-block"></div>
+{:then lista}
+	{#each lista as aviso}
+		<div class="box">
+			<div class="content">
+				<p>
+					<strong class="has-text-primary">{aviso.username}</strong>
+					<small>{dayjs.utc(aviso.dataCadastro).format('DD/MM/YYYY')}</small>
+					<br />
+					{aviso.texto}
+				</p>
+			</div>
 		</div>
-	</div>
-{/each}
+	{/each}
+{/await}
