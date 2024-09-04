@@ -25,25 +25,25 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro">
+					<a href="/financeiro">
 						<i class="fa-solid fa-house fa-fw"></i>
 						<span class="item-description">Home</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro/entradas">
+					<a href="/financeiro/entradas">
 						<i class="fa-solid fa-wallet fa-fw"></i>
 						<span class="item-description">Entradas</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro/saidas">
+					<a href="/financeiro/saidas">
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
 						<span class="item-description">Saídas</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro/contribuintes">
+					<a href="/financeiro/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>
 						<span class="item-description">Contribuintes</span>
 					</a>

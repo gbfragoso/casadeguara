@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ keywords, total } = data);
+	$: ({ keywords, counter } = data);
 </script>
 
 <div class="mb-2">
@@ -33,26 +33,31 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/biblioteca/keywords/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/biblioteca/keywords/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
 </form>
 
-{#if keywords && keywords.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>chave</th>
-						<th class="table-actions">Ações</th>
-					</thead>
-					<tbody>
-						{#each keywords as keyword}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>chave</th>
+					<th class="table-actions">Ações</th>
+				</thead>
+				<tbody>
+					{#await keywords}
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+					{:then item}
+						{#each item as keyword}
 							<tr>
 								<td>{keyword.chave}</td>
 								<td class="table-actions">
@@ -62,10 +67,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

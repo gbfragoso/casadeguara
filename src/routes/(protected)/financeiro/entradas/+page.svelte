@@ -13,9 +13,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a data-sveltekit-reload href="/financeiro">Financeiro</a></li>
+			<li><a href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a data-sveltekit-reload href="/financeiro/entradas" aria-current="page">Entradas</a>
+				<a href="/financeiro/entradas" aria-current="page">Entradas</a>
 			</li>
 		</ul>
 	</nav>
@@ -56,10 +56,8 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/financeiro/entradas/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/financeiro/entradas/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -95,7 +93,7 @@
 								<td>{resultado.entradas.descricao}</td>
 								<td>{dayjs.utc(resultado.entradas.data_entrada).format('DD/MM/YYYY')}</td>
 								<td>
-									<a data-sveltekit-reload href="/financeiro/entradas/{resultado.entradas.identrada}">
+									<a href="/financeiro/entradas/{resultado.entradas.identrada}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

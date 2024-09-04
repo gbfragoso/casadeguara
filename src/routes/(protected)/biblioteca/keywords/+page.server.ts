@@ -14,17 +14,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = chave !== undefined ? ulike(keyword.chave, chave + '%') : undefined;
 
 	try {
-		const keywords = await db
-			.select()
-			.from(keyword)
-			.where(where)
-			.offset((page - 1) * 5)
-			.orderBy(unaccent(keyword.chave))
-			.limit(5);
-		const counter = await db.select({ count: count() }).from(keyword).where(where);
-		const total = counter[0].count;
+		const keywords = async () => {
+			return db
+				.select()
+				.from(keyword)
+				.where(where)
+				.offset((page - 1) * 5)
+				.orderBy(unaccent(keyword.chave))
+				.limit(5);
+		};
 
-		return { keywords, total };
+		const counter = async () => {
+			return db.select({ count: count() }).from(keyword).where(where);
+		};
+
+		return { keywords: keywords(), counter: counter() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

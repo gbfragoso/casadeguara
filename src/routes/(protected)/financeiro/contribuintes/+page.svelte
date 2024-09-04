@@ -33,10 +33,8 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					data-sveltekit-reload
-					class="button is-fullwidth has-text-weight-semibold"
-					href="/financeiro/contribuintes/novo"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a class="button is-fullwidth has-text-weight-semibold" href="/financeiro/contribuintes/novo"
+					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>

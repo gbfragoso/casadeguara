@@ -13,16 +13,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = nome ? ilike(leitor.nome, nome + '%') : undefined;
 
 	try {
-		const leitores = await db
-			.select()
-			.from(leitor)
-			.offset((page - 1) * 5)
-			.where(where)
-			.orderBy(leitor.nome)
-			.limit(5);
-		const counter = await db.select({ count: count() }).from(leitor).where(where);
-		const total = counter[0].count;
-		return { leitores, total };
+		const leitores = async () => {
+			return db
+				.select()
+				.from(leitor)
+				.offset((page - 1) * 5)
+				.where(where)
+				.orderBy(leitor.nome)
+				.limit(5);
+		};
+
+		const counter = async () => {
+			return db.select({ count: count() }).from(leitor).where(where);
+		};
+
+		return { leitores: leitores(), counter: counter() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

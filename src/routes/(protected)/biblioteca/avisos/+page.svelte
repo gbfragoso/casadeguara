@@ -43,16 +43,25 @@
 					<th class="table-actions">Ações</th>
 				</thead>
 				<tbody>
-					{#each avisos as aviso}
-						<tr>
-							<td>{aviso.texto}</td>
-							<td class="table-actions">
-								<a href="/biblioteca/avisos/{aviso.idaviso}">
-									<i class="fa-solid fa-pen-to-square fa-fw"></i>
-								</a>
-							</td>
-						</tr>
-					{/each}
+					{#await avisos}
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+						<td>
+							<div class="skeleton-lines"></div>
+						</td>
+					{:then item}
+						{#each item as aviso}
+							<tr>
+								<td>{aviso.texto}</td>
+								<td class="table-actions">
+									<a href="/biblioteca/avisos/{aviso.idaviso}">
+										<i class="fa-solid fa-pen-to-square fa-fw"></i>
+									</a>
+								</td>
+							</tr>
+						{/each}
+					{/await}
 				</tbody>
 			</table>
 		</div>

@@ -16,22 +16,28 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const lastDay = new Date(year, month + 1, 0);
 		const dateFilter = and(gte(emprestimo.dataEmprestimo, firstDay), lte(emprestimo.dataEmprestimo, lastDay));
 
-		const avisos = await db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
-		const emprestimosMesAtual = await db
-			.select({ counter: count(), sum: sum(emprestimo.renovacoes) })
-			.from(emprestimo)
-			.where(dateFilter);
+		const avisos = async () => {
+			return db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
+		};
 
-		const devolucoesMesAtual = await db
-			.select({ counter: count() })
-			.from(emprestimo)
-			.where(and(dateFilter, isNotNull(emprestimo.dataDevolvido)));
+		const emprestimosMesAtual = async () => {
+			return db
+				.select({ counter: count(), renovacoes: sum(emprestimo.renovacoes) })
+				.from(emprestimo)
+				.where(dateFilter);
+		};
+
+		const devolucoesMesAtual = async () => {
+			return db
+				.select({ counter: count() })
+				.from(emprestimo)
+				.where(and(dateFilter, isNotNull(emprestimo.dataDevolvido)));
+		};
 
 		return {
-			avisos,
-			emprestimos: emprestimosMesAtual[0].counter,
-			devolucoes: devolucoesMesAtual[0].counter,
-			renovacoes: emprestimosMesAtual[0].sum,
+			avisos: avisos(),
+			emprestimos: emprestimosMesAtual(),
+			devolucoes: devolucoesMesAtual(),
 		};
 	} catch (err) {
 		console.error(err);
