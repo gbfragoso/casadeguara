@@ -65,6 +65,7 @@ export const actions: Actions = {
 		const cidade = form.get('cidade') as string;
 		const cep = form.get('cep') as string;
 		const trab = Boolean(form.get('trab'));
+		const aniversario = form.get('aniversario') as string;
 
 		try {
 			await db
@@ -82,6 +83,7 @@ export const actions: Actions = {
 					cidade,
 					cep: cep.replace(/\D/g, ''),
 					trab,
+					aniversario: aniversario ? new Date(aniversario) : undefined,
 				})
 				.where(eq(leitor.idleitor, Number(params.id)));
 			return { status: 200 };

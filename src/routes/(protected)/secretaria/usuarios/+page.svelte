@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ usuarios, counter } = data);
+	$: ({ usuarios, total } = data);
 </script>
 
 <div class="mb-2">
@@ -71,11 +71,7 @@
 					{/await}
 				</tbody>
 			</table>
-			{#await counter}
-				<Pagination total="1"></Pagination>
-			{:then total}
-				<Pagination total={total[0].count}></Pagination>
-			{/await}
+			<Pagination {total}></Pagination>
 		</div>
 	</div>
 </div>

@@ -23,10 +23,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.orderBy(unaccent(autor.nome))
 				.limit(5);
 		};
-		const counter = async () => {
-			return db.select({ count: count() }).from(autor).where(where);
-		};
-		return { autores: autores(), counter: counter() };
+
+		const counter = await db.select({ count: count() }).from(autor).where(where);
+		const total = counter[0].count;
+
+		return { autores: autores(), total };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

@@ -5,7 +5,7 @@
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
-	$: ({ saidas, counter } = data);
+	$: ({ saidas, total } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -99,11 +99,7 @@
 					{/await}
 				</tbody>
 			</table>
-			{#await counter}
-				<Pagination total="1"></Pagination>
-			{:then total}
-				<Pagination total={total[0].count}></Pagination>
-			{/await}
+			<Pagination {total}></Pagination>
 		</div>
 	</div>
 </div>

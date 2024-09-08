@@ -6,7 +6,7 @@
 	export let data: PageServerData;
 	export let form: ActionData;
 
-	$: ({ emprestimos, counter, isAdmin } = data);
+	$: ({ emprestimos, total, isAdmin } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -173,11 +173,7 @@
 					{/await}
 				</tbody>
 			</table>
-			{#await counter}
-				<Pagination total="1"></Pagination>
-			{:then total}
-				<Pagination total={total[0].count}></Pagination>
-			{/await}
+			<Pagination {total}></Pagination>
 		</div>
 	</div>
 </div>

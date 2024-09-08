@@ -52,17 +52,17 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.limit(10);
 		};
 
-		const counter = async () => {
-			return db
-				.select({ count: count() })
-				.from(emprestimo)
-				.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
-				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
-				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
-				.where(where);
-		};
+		const counter = await db
+			.select({ count: count() })
+			.from(emprestimo)
+			.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
+			.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
+			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
+			.where(where);
 
-		return { emprestimos: emprestimos(), counter: counter(), isAdmin: locals.user.roles.includes(':admin') };
+		const total = counter[0].count;
+
+		return { emprestimos: emprestimos(), total, isAdmin: locals.user.roles.includes(':admin') };
 	} catch (err) {
 		console.error(err);
 		return error(500, {
