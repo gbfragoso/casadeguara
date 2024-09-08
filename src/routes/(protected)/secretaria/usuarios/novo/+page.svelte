@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
@@ -16,7 +16,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de usuários</h1>
 </div>
 
-<form class="card" method="post" use:enhance>
+<form class="card" method="POST">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="username">Usuário</label>
@@ -46,14 +46,12 @@
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button is-primary has-text-weight-semibold">Cadastrar</button>
+				<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
 			</div>
 		</div>
 	</div>
 </form>
 
 {#if form?.status === 200}
-	<div class="notification is-success">
-		<p>Usuário cadastrado com sucesso!</p>
-	</div>
+	<Notification class="is-success">Usuário cadastrado com sucesso!</Notification>
 {/if}

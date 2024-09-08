@@ -1,9 +1,9 @@
 import { db } from '$lib/database/connection';
 import { leitor } from '$lib/database/schema';
+import { cpf, rg } from '$lib/js/mask';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
-import { cpf, rg } from '$lib/js/mask';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -25,11 +25,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 		resultado[0].cpf = cpf(resultado[0].cpf);
 		resultado[0].rg = rg(resultado[0].rg);
 
-		return { leitor: resultado[0] };
+		return { trabalhador: resultado[0] };
 	} catch (err) {
 		console.error(err);
 		return error(500, {
-			message: 'Falha ao recuperar os dados do leitor',
+			message: 'Falha ao recuperar os dados do trabalhador',
 		});
 	}
 };
@@ -42,7 +42,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do leitor é obrigatório',
+				message: 'Nome do trabalhador é obrigatório',
 			};
 		}
 
@@ -50,7 +50,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'nome',
-				message: 'Nome do leitor não pode conter somente números',
+				message: 'Nome do trabalhador não pode conter somente números',
 			};
 		}
 
@@ -65,7 +65,6 @@ export const actions: Actions = {
 		const cidade = form.get('cidade') as string;
 		const cep = form.get('cep') as string;
 		const trab = Boolean(form.get('trab'));
-		const status = Boolean(form.get('status'));
 
 		try {
 			await db
@@ -83,15 +82,13 @@ export const actions: Actions = {
 					cidade,
 					cep: cep.replace(/\D/g, ''),
 					trab,
-					status,
 				})
 				.where(eq(leitor.idleitor, Number(params.id)));
-
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
 			return error(500, {
-				message: 'Falha ao atualizar os dados do leitor',
+				message: 'Falha ao atualizar os dados do trabalhador',
 			});
 		}
 	},

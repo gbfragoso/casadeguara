@@ -91,24 +91,26 @@
 				</thead>
 				<tbody
 					>{#await emprestimos}
-						<td>
-							<div class="skeleton-lines"></div>
-						</td>
-						<td>
-							<div class="skeleton-lines"></div>
-						</td>
-						<td>
-							<div class="skeleton-lines"></div>
-						</td>
-						<td>
-							<div class="skeleton-lines"></div>
-						</td>
-						<td>
-							<div class="skeleton-lines"></div>
-						</td>
-						<td>
-							<div class="skeleton-lines"></div>
-						</td>
+						<tr>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+						</tr>
 					{:then item}
 						{#each item as emprestimo}
 							<tr>

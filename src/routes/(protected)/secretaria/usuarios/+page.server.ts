@@ -14,18 +14,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const where = nome ? ulike(User.name, nome + '%') : undefined;
 
 	try {
-		const usuarios = await db
-			.select()
-			.from(User)
-			.offset((page - 1) * 5)
-			.where(where)
-			.orderBy(unaccent(User.name))
-			.limit(5);
+		const usuarios = async () => {
+			return db
+				.select()
+				.from(User)
+				.offset((page - 1) * 5)
+				.where(where)
+				.orderBy(unaccent(User.name))
+				.limit(5);
+		};
 
-		const counter = await db.select({ count: count() }).from(User).where(where);
+		const counter = async () => {
+			return db.select({ count: count() }).from(User).where(where);
+		};
 
-		const total = counter[0].count;
-		return { usuarios, total };
+		return { usuarios: usuarios(), counter: counter() };
 	} catch (err) {
 		console.error(err);
 		return error(500, { message: 'Falha ao carregar a lista de usuários' });

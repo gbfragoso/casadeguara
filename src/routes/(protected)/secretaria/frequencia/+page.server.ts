@@ -29,6 +29,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.from(leitor)
 				.where(eq(leitor.trab, true))
 				.orderBy(unaccent(leitor.nome));
+
 			return { leitores, datas };
 		}
 	} catch (err) {

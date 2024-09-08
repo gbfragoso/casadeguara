@@ -6,7 +6,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ resultados, total } = data);
+	$: ({ resultados, counter } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -63,21 +63,42 @@
 	</div>
 </form>
 
-{#if resultados.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th scope="col">Contribuinte</th>
-						<th scope="col">Tipo</th>
-						<th scope="col">Valor</th>
-						<th scope="col">Descrição</th>
-						<th scope="col">Data</th>
-						<th scope="col">Ações</th>
-					</thead>
-					<tbody>
-						{#each resultados as resultado}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Contribuinte</th>
+					<th scope="col">Tipo</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Descrição</th>
+					<th scope="col">Data</th>
+					<th scope="col">Ações</th>
+				</thead>
+				<tbody>
+					{#await resultados}
+						<tr>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+						</tr>
+					{:then item}
+						{#each item as resultado}
 							<tr>
 								<td>
 									<a href="/financeiro/contribuinte/{resultado.idcontribuinte}">
@@ -99,10 +120,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

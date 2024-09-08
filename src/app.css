@@ -87,7 +87,7 @@ tr td {
 }
 
 .sidebar-item.active a {
-	color: #e3e9f7;
+	color: #e3e9f7 !important;
 }
 
 .sidebar-item a i {

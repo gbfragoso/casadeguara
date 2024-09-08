@@ -14,6 +14,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.select()
 			.from(aviso)
 			.where(eq(aviso.idaviso, Number(params.id)));
+
 		if (!resultado) {
 			throw fail(404, {
 				message: 'Aviso não encontrado',

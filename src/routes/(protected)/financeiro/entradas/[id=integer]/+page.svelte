@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/Notification.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
@@ -60,7 +61,5 @@
 </form>
 
 {#if form?.status === 200}
-	<div class="notification is-success">
-		<p>Doação atualizada com sucesso!</p>
-	</div>
+	<Notification class="is-success">Doação atualizada com sucesso!</Notification>
 {/if}

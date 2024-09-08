@@ -50,17 +50,26 @@
 	</div>
 </form>
 
-{#if leitores && leitores.length > 0}
-	<div id="printable-content" class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>Nome</th>
-						<th>Data</th>
-					</thead>
-					<tbody>
-						{#each leitores as leitor}
+<div id="printable-content" class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Nome</th>
+					<th>Data</th>
+				</thead>
+				<tbody>
+					{#await leitores}
+						<tr>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+						</tr>
+					{:then item}
+						{#each item as leitor}
 							<tr>
 								<td>
 									{leitor.nome.toUpperCase()}
@@ -72,9 +81,9 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-			</div>
+					{/await}
+				</tbody>
+			</table>
 		</div>
 	</div>
-{/if}
+</div>

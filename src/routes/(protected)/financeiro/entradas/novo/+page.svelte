@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -32,8 +33,8 @@
 					aria-invalid={form?.field === 'nome' ? 'true' : undefined}
 					required />
 				<datalist id="contribuintes">
-					{#await contribuintes then contribuintes}
-						{#each contribuintes as contribuinte}
+					{#await contribuintes then item}
+						{#each item as contribuinte}
 							<option value={contribuinte.nome}></option>
 						{/each}
 					{/await}
@@ -89,7 +90,5 @@
 </form>
 
 {#if form?.status === 201}
-	<div class="notification is-success">
-		<p>Doação cadastrada com sucesso!</p>
-	</div>
+	<Notification class="is-success">Doação cadastrada com sucesso!</Notification>
 {/if}

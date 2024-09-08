@@ -12,12 +12,16 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	try {
 		const mesFilter = mes ? eq(sql<string>`extract(month from leitor.aniversario)`, mes) : undefined;
-		const leitores = await db
-			.select({ nome: leitor.nome, aniversario: leitor.aniversario })
-			.from(leitor)
-			.where(and(eq(leitor.trab, true), mesFilter))
-			.orderBy(sql<number>`extract(day from leitor.aniversario)`);
-		return { leitores };
+
+		const leitores = async () => {
+			return db
+				.select({ nome: leitor.nome, aniversario: leitor.aniversario })
+				.from(leitor)
+				.where(and(eq(leitor.trab, true), mesFilter))
+				.orderBy(sql<number>`extract(day from leitor.aniversario)`);
+		};
+
+		return { leitores: leitores() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

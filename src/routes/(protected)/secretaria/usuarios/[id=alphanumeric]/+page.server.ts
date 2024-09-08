@@ -15,9 +15,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.select()
 			.from(User)
 			.where(eq(User.id, String(params.id)));
+
 		if (!resultado) {
 			throw fail(404, { message: 'Autor não encontrado' });
 		}
+
 		return { usuario: resultado[0] };
 	} catch (err) {
 		console.error(err);
