@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ leitores, counter } = data);
+	$: ({ leitores, total } = data);
 </script>
 
 <div class="mb-2">
@@ -33,7 +33,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold" href="/secretaria/leitores/novo"
+				<a class="button is-fullwidth has-text-weight-semibold" href="/secretaria/trabalhadores/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
@@ -72,11 +72,7 @@
 					{/await}
 				</tbody>
 			</table>
-			{#await counter}
-				<Pagination total="1"></Pagination>
-			{:then total}
-				<Pagination total={total[0].count}></Pagination>
-			{/await}
+			<Pagination {total}></Pagination>
 		</div>
 	</div>
 </div>

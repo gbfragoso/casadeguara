@@ -35,15 +35,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.limit(5);
 		};
 
-		const counter = async () => {
-			return db
+		const counter = await db
 				.select({ count: count() })
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
 				.where(where);
-		};
+				const total = counter[0].count;
 
-		return { resultados: resultados(), counter: counter() };
+		return { resultados: resultados(), total };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

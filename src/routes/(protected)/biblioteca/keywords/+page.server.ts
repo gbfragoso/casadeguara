@@ -24,11 +24,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.limit(5);
 		};
 
-		const counter = async () => {
-			return db.select({ count: count() }).from(keyword).where(where);
-		};
+		const counter = await db.select({ count: count() }).from(keyword).where(where);
+		const total = counter[0].count;
 
-		return { keywords: keywords(), counter: counter() };
+		return { keywords: keywords(), total };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

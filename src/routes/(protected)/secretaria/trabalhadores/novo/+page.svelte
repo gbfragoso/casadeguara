@@ -37,6 +37,12 @@
 					<input class="input" type="text" name="cpf" id="cpf" />
 				</div>
 			</div>
+			<div class="field column">
+				<label class="label" for="aniversario">Aniversário</label>
+				<div class="control">
+					<input class="input" type="date" name="aniversario" id="aniversario" aria-label="Date" />
+				</div>
+			</div>
 		</div>
 		<div class="columns">
 			<div class="field column">

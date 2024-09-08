@@ -18,6 +18,7 @@ export const actions: Actions = {
 		const complemento = form.get('complemento') as string;
 		const cidade = form.get('cidade') as string;
 		const cep = form.get('cep') as string;
+		const aniversario = form.get('aniversario') as string;
 		const trab = Boolean(form.get('trab'));
 
 		try {
@@ -34,6 +35,7 @@ export const actions: Actions = {
 				cidade,
 				cep,
 				trab,
+				aniversario: aniversario ? new Date(aniversario) : undefined,
 			});
 			return { status: 201 };
 		} catch (err) {

@@ -70,16 +70,16 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.limit(5);
 		};
 
-		const counter = async () => {
-			return db
-				.select({ count: count() })
-				.from(livro)
-				.innerJoin(editora, eq(livro.editora, editora.ideditora))
-				.leftJoin(serie, eq(livro.serie, serie.idserie))
-				.where(where);
-		};
+		const counter = await db
+			.select({ count: count() })
+			.from(livro)
+			.innerJoin(editora, eq(livro.editora, editora.ideditora))
+			.leftJoin(serie, eq(livro.serie, serie.idserie))
+			.where(where);
 
-		return { livros: livros(), counter: counter(), role: locals.user.roles };
+		const total = counter[0].count;
+
+		return { livros: livros(), total, role: locals.user.roles };
 	} catch (err) {
 		console.error(err);
 		return error(500, {
