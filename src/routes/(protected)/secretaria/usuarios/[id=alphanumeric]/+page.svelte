@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -18,7 +19,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de usuários</h1>
 </div>
 
-<form class="card" method="post">
+<form class="card" method="POST">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="username">Usuário</label>
@@ -55,7 +56,5 @@
 </form>
 
 {#if form?.status === 200}
-	<div class="notification is-success">
-		<p>Usuário cadastrado com sucesso!</p>
-	</div>
+	<Notification class="is-success">Usuário cadastrado com sucesso!</Notification>
 {/if}

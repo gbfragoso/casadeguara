@@ -10,8 +10,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const contribuintes = await db.select({ nome: leitor.nome }).from(leitor);
-		return { contribuintes };
+		const contribuintes = async () => {
+			return db.select({ nome: leitor.nome }).from(leitor);
+		};
+
+		return { contribuintes: contribuintes() };
 	} catch (err) {
 		console.error(err);
 		throw error(500, {

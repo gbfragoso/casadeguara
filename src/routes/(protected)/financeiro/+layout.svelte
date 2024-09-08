@@ -54,7 +54,7 @@
 			</button>
 		</div>
 		<div id="logout">
-			<form action="/logout" method="post" use:enhance>
+			<form action="/logout" method="POST" use:enhance>
 				<button id="logout-button">
 					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
 					<span class="item-description">Sair</span>

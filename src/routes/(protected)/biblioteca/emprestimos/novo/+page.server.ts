@@ -10,23 +10,24 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const leitores = await db
-			.select({ idleitor: leitor.idleitor, nome: leitor.nome })
-			.from(leitor)
-			.orderBy(leitor.nome);
+		const leitores = async () => {
+			return db.select({ idleitor: leitor.idleitor, nome: leitor.nome }).from(leitor).orderBy(leitor.nome);
+		};
 
-		const exemplares = await db
-			.select({
-				idexemplar: exemplar.idexemplar,
-				numero: exemplar.numero,
-				titulo: livro.titulo,
-				tombo: livro.tombo,
-			})
-			.from(exemplar)
-			.innerJoin(livro, eq(livro.idlivro, exemplar.livro))
-			.where(eq(exemplar.status, 'Disponível'));
+		const exemplares = async () => {
+			return db
+				.select({
+					idexemplar: exemplar.idexemplar,
+					numero: exemplar.numero,
+					titulo: livro.titulo,
+					tombo: livro.tombo,
+				})
+				.from(exemplar)
+				.innerJoin(livro, eq(livro.idlivro, exemplar.livro))
+				.where(eq(exemplar.status, 'Disponível'));
+		};
 
-		return { leitores, exemplares };
+		return { leitores: leitores(), exemplares: exemplares() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

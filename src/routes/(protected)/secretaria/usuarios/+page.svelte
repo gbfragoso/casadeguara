@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ usuarios, total } = data);
+	$: ({ usuarios, counter } = data);
 </script>
 
 <div class="mb-2">
@@ -39,17 +39,26 @@
 		</div>
 	</div>
 </form>
-{#if usuarios && usuarios.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th>Nome</th>
-						<th class="table-actions">Ações</th>
-					</thead>
-					<tbody>
-						{#each usuarios as usuario}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th>Nome</th>
+					<th class="table-actions">Ações</th>
+				</thead>
+				<tbody>
+					{#await usuarios}
+						<tr>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+						</tr>
+					{:then item}
+						{#each item as usuario}
 							<tr>
 								<td>{usuario.name}</td>
 								<td class="table-actions">
@@ -59,10 +68,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

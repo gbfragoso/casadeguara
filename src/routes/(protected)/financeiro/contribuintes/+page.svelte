@@ -3,7 +3,7 @@
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
-	$: ({ contribuintes, total } = data);
+	$: ({ contribuintes, counter } = data);
 </script>
 
 <div class="mb-2">
@@ -40,18 +40,30 @@
 	</div>
 </form>
 
-{#if contribuintes}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th scope="col">Contribuinte</th>
-						<th scope="col">Tipo</th>
-						<th scope="col">Ações</th>
-					</thead>
-					<tbody>
-						{#each contribuintes as contribuinte}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Contribuinte</th>
+					<th scope="col">Tipo</th>
+					<th scope="col">Ações</th>
+				</thead>
+				<tbody>
+					{#await contribuintes}
+						<tr>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+						</tr>
+					{:then item}
+						{#each item as contribuinte}
 							<tr>
 								<td>{contribuinte.nome}</td>
 								{#if contribuinte.trab}
@@ -68,10 +80,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

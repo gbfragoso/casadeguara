@@ -7,7 +7,6 @@
 	export let data: PageServerData;
 
 	$: ({ entradas, saidas, entradaMesAtual, saidaMesAtual } = data);
-	$: saldoMesAtual = Number(entradaMesAtual) - Number(saidaMesAtual);
 	dayjs.extend(utc);
 </script>
 
@@ -29,7 +28,13 @@
 		<div class="box has-text-weight-semibold">
 			<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor recebido
 			<h2 class="is-size-3 has-text-primary">
-				{moeda(Number(entradaMesAtual))}
+				{#await entradaMesAtual}
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				{:then valor}
+					{moeda(Number(valor[0].value))}
+				{/await}
 			</h2>
 		</div>
 	</div>
@@ -37,22 +42,36 @@
 		<div class="box has-text-weight-semibold">
 			<i class="fa-solid fa-money-bill-transfer fa-fw">&nbsp;</i>Despesas
 			<h2 class="is-size-3 has-text-danger">
-				{moeda(Number(saidaMesAtual))}
+				{#await saidaMesAtual}
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				{:then valor}
+					{moeda(Number(valor[0].value))}
+				{/await}
 			</h2>
 		</div>
 	</div>
 	<div class="column">
 		<div class="box has-text-weight-semibold">
 			<i class="fa-solid fa-sack-dollar fa-fw">&nbsp;</i>Saldo
-			{#if saldoMesAtual >= 1}
-				<h2 class="is-size-3 has-text-success">
-					{moeda(saldoMesAtual)}
-				</h2>
-			{:else}
-				<h2 class="is-size-3 has-text-danger">
-					{moeda(saldoMesAtual)}
-				</h2>
-			{/if}
+			{#await entradaMesAtual}
+				<div class="skeleton-lines">
+					<div></div>
+				</div>
+			{:then entrada}
+				{#await saidaMesAtual then saida}
+					{#if Number(entrada[0].value) - Number(saida[0].value) >= 1}
+						<h2 class="is-size-3 has-text-success">
+							{moeda(Number(entrada[0].value) - Number(saida[0].value))}
+						</h2>
+					{:else}
+						<h2 class="is-size-3 has-text-danger">
+							{moeda(Number(entrada[0].value) - Number(saida[0].value))}
+						</h2>
+					{/if}
+				{/await}
+			{/await}
 		</div>
 	</div>
 </div>
@@ -68,14 +87,39 @@
 					<th scope="col">Data</th>
 				</thead>
 				<tbody>
-					{#each entradas as entrada}
+					{#await entradas}
 						<tr>
-							<td>{entrada.contribuinte}</td>
-							<td>{entrada.descricao}</td>
-							<td>{moeda(Number(entrada.valor))}</td>
-							<td>{dayjs.utc(entrada.data).format('DD/MM/YYYY')}</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
 						</tr>
-					{/each}
+					{:then item}
+						{#each item as entrada}
+							<tr>
+								<td>{entrada.contribuinte}</td>
+								<td>{entrada.descricao}</td>
+								<td>{moeda(Number(entrada.valor))}</td>
+								<td>{dayjs.utc(entrada.data).format('DD/MM/YYYY')}</td>
+							</tr>
+						{/each}
+					{/await}
 				</tbody>
 			</table>
 		</div>
@@ -93,13 +137,33 @@
 					<th scope="col">Data</th>
 				</thead>
 				<tbody>
-					{#each saidas as saida}
+					{#await saidas}
 						<tr>
-							<td>{saida.descricao}</td>
-							<td>{moeda(Number(saida.valor))}</td>
-							<td>{dayjs.utc(saida.data_saida).format('DD/MM/YYYY')}</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
 						</tr>
-					{/each}
+					{:then item}
+						{#each item as saida}
+							<tr>
+								<td>{saida.descricao}</td>
+								<td>{moeda(Number(saida.valor))}</td>
+								<td>{dayjs.utc(saida.data_saida).format('DD/MM/YYYY')}</td>
+							</tr>
+						{/each}
+					{/await}
 				</tbody>
 			</table>
 		</div>

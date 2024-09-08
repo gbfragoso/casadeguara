@@ -3,7 +3,7 @@
 	import type { LayoutServerData } from './$types';
 	export let data: LayoutServerData;
 
-	let open = false;
+	let open = true;
 	$: ({ name } = data);
 </script>
 
@@ -27,61 +27,61 @@
 				<li class="sidebar-item">
 					<a href="/biblioteca">
 						<i class="fa-solid fa-house fa-fw"></i>
-						<span class="item-description">Home</span>
+						<span class="item-description has-text-weight-bold">Home</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/autores">
 						<i class="fa-solid fa-user-pen fa-fw"></i>
-						<span class="item-description">Autores</span>
+						<span class="item-description has-text-weight-bold">Autores</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/avisos">
 						<i class="fa-solid fa-inbox fa-fw"></i>
-						<span class="item-description">Avisos</span>
+						<span class="item-description has-text-weight-bold">Avisos</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/cobrancas">
 						<i class="fa-solid fa-envelopes-bulk fa-fw"></i>
-						<span class="item-description">Cobranças</span>
+						<span class="item-description has-text-weight-bold">Cobranças</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/colecoes">
 						<i class="fa-solid fa-layer-group fa-fw"></i>
-						<span class="item-description">Coleções</span>
+						<span class="item-description has-text-weight-bold">Coleções</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/editoras">
 						<i class="fa-solid fa-landmark-flag fa-fw"></i>
-						<span class="item-description">Editoras</span>
+						<span class="item-description has-text-weight-bold">Editoras</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/emprestimos">
 						<i class="fa-solid fa-hand-holding fa-fw"></i>
-						<span class="item-description">Empréstimos</span>
+						<span class="item-description has-text-weight-bold">Empréstimos</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/leitores">
 						<i class=" fa-solid fa-book-open-reader fa-fw"></i>
-						<span class="item-description">Leitores</span>
+						<span class="item-description has-text-weight-bold">Leitores</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/livros">
 						<i class="fa-solid fa-book fa-fw"></i>
-						<span class="item-description">Livros</span>
+						<span class="item-description has-text-weight-bold">Livros</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a href="/biblioteca/keywords">
 						<i class="fa-solid fa-key fa-fw"></i>
-						<span class="item-description">Palavras-chave</span>
+						<span class="item-description has-text-weight-bold">Palavras-chave</span>
 					</a>
 				</li>
 			</ul>
@@ -90,10 +90,10 @@
 			</button>
 		</div>
 		<div id="logout">
-			<form action="/logout" method="post" use:enhance>
+			<form action="/logout" method="POST" use:enhance>
 				<button id="logout-button">
 					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
-					<span class="item-description">Sair</span>
+					<span class="item-description has-text-weight-bold">Sair</span>
 				</button>
 			</form>
 		</div>

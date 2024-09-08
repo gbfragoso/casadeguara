@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
 </script>
@@ -39,7 +40,5 @@
 </form>
 
 {#if form?.status === 201}
-	<div class="notification is-success">
-		<p>Coleção cadastrada com sucesso!</p>
-	</div>
+	<Notification class="is-success">Coleção cadastrada com sucesso!</Notification>
 {/if}

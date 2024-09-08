@@ -19,18 +19,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		const descricaoFilter = descricao ? ulike(saidas.descricao, descricao + '%') : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, descricaoFilter);
 
-		const resultados = await db
-			.select()
-			.from(saidas)
-			.where(where)
-			.orderBy(desc(saidas.data_saida))
-			.offset((page - 1) * 5)
-			.limit(5);
+		const resultados = async () => {
+			return db
+				.select()
+				.from(saidas)
+				.where(where)
+				.orderBy(desc(saidas.data_saida))
+				.offset((page - 1) * 5)
+				.limit(5);
+		};
 
-		const counter = await db.select({ count: count() }).from(saidas).where(where);
-		const total = counter[0].count;
+		const counter = async () => {
+			return db.select({ count: count() }).from(saidas).where(where);
+		};
 
-		return { saidas: resultados, total };
+		return { saidas: resultados(), counter: counter() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

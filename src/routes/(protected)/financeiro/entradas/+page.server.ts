@@ -19,29 +19,31 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, nameFilter);
 
-		const resultados = await db
-			.select({
-				entradas,
-				contribuinte: leitor.nome,
-				idcontribuinte: leitor.idleitor,
-				trabalhador: leitor.trab,
-			})
-			.from(entradas)
-			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-			.where(where)
-			.orderBy(desc(entradas.data_entrada))
-			.offset((page - 1) * 5)
-			.limit(5);
+		const resultados = async () => {
+			return db
+				.select({
+					entradas,
+					contribuinte: leitor.nome,
+					idcontribuinte: leitor.idleitor,
+					trabalhador: leitor.trab,
+				})
+				.from(entradas)
+				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+				.where(where)
+				.orderBy(desc(entradas.data_entrada))
+				.offset((page - 1) * 5)
+				.limit(5);
+		};
 
-		const counter = await db
-			.select({ count: count() })
-			.from(entradas)
-			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-			.where(where);
+		const counter = async () => {
+			return db
+				.select({ count: count() })
+				.from(entradas)
+				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+				.where(where);
+		};
 
-		const total = counter[0].count;
-
-		return { resultados, total };
+		return { resultados: resultados(), counter: counter() };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

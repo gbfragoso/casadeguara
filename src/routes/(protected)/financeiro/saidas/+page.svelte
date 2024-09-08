@@ -5,7 +5,7 @@
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
-	$: ({ saidas, total } = data);
+	$: ({ saidas, counter } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -57,19 +57,34 @@
 	</div>
 </form>
 
-{#if saidas.length > 0}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<th scope="col">Descrição</th>
-						<th scope="col">Valor</th>
-						<th scope="col">Data</th>
-						<th scope="col">Ações</th>
-					</thead>
-					<tbody>
-						{#each saidas as saida}
+<div class="card">
+	<div class="card-content">
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					<th scope="col">Descrição</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Data</th>
+					<th scope="col">Ações</th>
+				</thead>
+				<tbody>
+					{#await saidas}
+						<tr>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+							<td>
+								<div class="skeleton-lines"><div></div></div>
+							</td>
+						</tr>
+					{:then item}
+						{#each item as saida}
 							<tr>
 								<td>{saida.descricao}</td>
 								<td>R$ {saida.valor}</td>
@@ -81,10 +96,14 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-				<Pagination {total}></Pagination>
-			</div>
+					{/await}
+				</tbody>
+			</table>
+			{#await counter}
+				<Pagination total="1"></Pagination>
+			{:then total}
+				<Pagination total={total[0].count}></Pagination>
+			{/await}
 		</div>
 	</div>
-{/if}
+</div>

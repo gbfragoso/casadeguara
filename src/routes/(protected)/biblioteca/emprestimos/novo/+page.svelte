@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
@@ -26,13 +27,12 @@
 				<div class="select is-fullwidth">
 					<select name="leitor" id="leitor" required>
 						<option>Selecione um leitor</option>
-						{#each leitores as leitor}
-							<option value={leitor.idleitor}>{leitor.nome}</option>
-						{/each}
+						{#await leitores then item}
+							{#each item as leitor}
+								<option value={leitor.idleitor}>{leitor.nome}</option>
+							{/each}
+						{/await}
 					</select>
-					{#if form?.field === 'leitor'}
-						<p class="help is-danger">{form?.message}</p>
-					{/if}
 				</div>
 			</div>
 			<div class="column">
@@ -40,14 +40,13 @@
 				<div class="select is-fullwidth">
 					<select name="exemplar" id="exemplar" required>
 						<option>Selecione o exemplar</option>
-						{#each exemplares as exemplar}
-							<option value={exemplar.idexemplar}
-								>{exemplar.tombo} - {exemplar.titulo} - Ex: {exemplar.numero}</option>
-						{/each}
+						{#await exemplares then item}
+							{#each item as exemplar}
+								<option value={exemplar.idexemplar}
+									>{exemplar.tombo} - {exemplar.titulo} - Ex: {exemplar.numero}</option>
+							{/each}
+						{/await}
 					</select>
-					{#if form?.field === 'exemplar'}
-						<p class="help is-danger">{form?.message}</p>
-					{/if}
 				</div>
 			</div>
 		</div>
@@ -56,3 +55,6 @@
 		</div>
 	</div>
 </form>
+{#if form?.status === 400}
+	<Notification class="is-danger">{form?.message}</Notification>
+{/if}

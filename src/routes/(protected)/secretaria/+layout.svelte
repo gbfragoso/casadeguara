@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { LayoutServerData } from './$types';
 	export let data: LayoutServerData;
 
@@ -43,6 +42,12 @@
 					</a>
 				</li>
 				<li class="sidebar-item">
+					<a href="/secretaria/trabalhadores">
+						<i class="fa-solid fa-handshake-angle fa-fw"></i>
+						<span class="item-description">Trabalhadores</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
 					<a href="/secretaria/usuarios">
 						<i class="fa-solid fa-user fa-fw"></i>
 						<span class="item-description">Usuários</span>
@@ -54,7 +59,7 @@
 			</button>
 		</div>
 		<div id="logout">
-			<form action="/logout" method="post" use:enhance>
+			<form action="/logout" method="POST">
 				<button id="logout-button">
 					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
 					<span class="item-description">Sair</span>

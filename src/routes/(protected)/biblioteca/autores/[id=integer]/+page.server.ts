@@ -14,6 +14,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 			.select()
 			.from(autor)
 			.where(eq(autor.idautor, Number(params.id)));
+
 		if (!resultado) {
 			throw fail(404, { message: 'Autor não encontrado' });
 		}
