@@ -36,7 +36,7 @@
 						.utc(new Date())
 						.format('MM/YYYY')}
 					<h2 class="is-size-3 has-text-primary">
-						{((engajamento[0].counter / (leitores[0].counter * 2)) * 100).toFixed(2)} %
+						{((engajamento[0].counter / (leitores[0].counter * 2 * 4)) * 100).toFixed(2)} %
 					</h2>
 				</div>
 			</div>
