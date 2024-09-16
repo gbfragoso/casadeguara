@@ -182,6 +182,16 @@ tr td {
 		display: none !important;
 	}
 
+	.is-hidden-print {
+		display: none !important;
+	}
+
+	textarea {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
 	.card {
 		--bulma-card-background-color: transparent !important;
 		--bulma-card-shadow: none !important;

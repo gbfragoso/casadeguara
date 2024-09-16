@@ -112,7 +112,7 @@
 								{/if}
 								<td>{resultado.entradas.valor}</td>
 								<td>{resultado.entradas.descricao}</td>
-								<td>{dayjs.utc(resultado.entradas.data_entrada).format('DD/MM/YYYY')}</td>
+								<td>{dayjs.utc(resultado.entradas.dataEntrada).format('DD/MM/YYYY')}</td>
 								<td>
 									<a href="/financeiro/entradas/{resultado.entradas.identrada}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>

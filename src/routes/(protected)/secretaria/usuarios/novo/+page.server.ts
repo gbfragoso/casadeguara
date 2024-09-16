@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { User } from '$lib/database/schema';
+import { user } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { generateIdFromEntropySize } from 'lucia';
@@ -30,10 +30,10 @@ export const actions: Actions = {
 		}
 
 		const id = generateIdFromEntropySize(10);
-		const password_hash = await hash(password);
+		const passwordHash = await hash(password);
 
 		try {
-			await db.insert(User).values({ id, username, name, password_hash, roles });
+			await db.insert(user).values({ id, username, name, passwordHash, roles });
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);

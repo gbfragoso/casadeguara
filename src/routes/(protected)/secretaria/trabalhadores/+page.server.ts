@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		};
 
 		const counter = await db.select({ count: count() }).from(leitor).where(where);
-		const total = counter[0].count
+		const total = counter[0].count;
 
 		return { leitores: leitores(), total };
 	} catch (err) {

@@ -23,15 +23,15 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	try {
-		if (datas.length > 0) {
-			const leitores = await db
+		const leitores = async () => {
+			return db
 				.select({ nome: leitor.nome })
 				.from(leitor)
 				.where(eq(leitor.trab, true))
 				.orderBy(unaccent(leitor.nome));
+		};
 
-			return { leitores, datas };
-		}
+		return { leitores: leitores(), datas };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

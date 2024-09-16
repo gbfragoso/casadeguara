@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { User } from '$lib/database/schema';
+import { user } from '$lib/database/schema';
 import { lucia } from '$lib/server/auth';
 import { fail, redirect } from '@sveltejs/kit';
 import { verify } from 'argon2';
@@ -20,12 +20,12 @@ export const actions: Actions = {
 			return fail(400, { invalidPassword: true });
 		}
 
-		const existingUser = await db.select().from(User).where(eq(User.username, email.toLowerCase()));
+		const existingUser = await db.select().from(user).where(eq(user.username, email.toLowerCase()));
 		if (!existingUser) {
 			return fail(400, { failedLogin: true });
 		}
 
-		const validPassword = await verify(existingUser[0].password_hash, password);
+		const validPassword = await verify(existingUser[0].passwordHash, password);
 		if (!validPassword) {
 			return fail(400, { failedLogin: true });
 		}

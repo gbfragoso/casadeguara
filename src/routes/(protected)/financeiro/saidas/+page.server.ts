@@ -14,8 +14,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const dataFim = url.searchParams.get('dataFim') || undefined;
 
 	try {
-		const dataInicioFilter = dataInicio ? gte(saidas.data_saida, new Date(dataInicio)) : undefined;
-		const dataFimFilter = dataFim ? lte(saidas.data_saida, new Date(dataFim)) : undefined;
+		const dataInicioFilter = dataInicio ? gte(saidas.dataSaida, new Date(dataInicio)) : undefined;
+		const dataFimFilter = dataFim ? lte(saidas.dataSaida, new Date(dataFim)) : undefined;
 		const descricaoFilter = descricao ? ulike(saidas.descricao, descricao + '%') : undefined;
 		const where = and(dataInicioFilter, dataFimFilter, descricaoFilter);
 
@@ -24,13 +24,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.select()
 				.from(saidas)
 				.where(where)
-				.orderBy(desc(saidas.data_saida))
+				.orderBy(desc(saidas.dataSaida))
 				.offset((page - 1) * 5)
 				.limit(5);
 		};
 
 		const counter = await db.select({ count: count() }).from(saidas).where(where);
-			const total = counter[0].count;
+		const total = counter[0].count;
 
 		return { saidas: resultados(), total };
 	} catch (err) {

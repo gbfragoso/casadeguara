@@ -48,7 +48,7 @@
 						class="input"
 						type="date"
 						name="data_entrada"
-						value={dayjs.utc(entrada.data_entrada).format('YYYY-MM-DD')} />
+						value={dayjs.utc(entrada.dataEntrada).format('YYYY-MM-DD')} />
 				</div>
 			</div>
 		</div>

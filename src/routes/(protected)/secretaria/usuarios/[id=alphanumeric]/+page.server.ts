@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { User } from '$lib/database/schema';
+import { user } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
@@ -13,8 +13,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	try {
 		const resultado = await db
 			.select()
-			.from(User)
-			.where(eq(User.id, String(params.id)));
+			.from(user)
+			.where(eq(user.id, String(params.id)));
 
 		if (!resultado) {
 			throw fail(404, { message: 'Autor não encontrado' });
@@ -46,10 +46,10 @@ export const actions: Actions = {
 			});
 		}
 
-		const password_hash = await hash(password);
+		const passwordHash = await hash(password);
 
 		try {
-			await db.update(User).set({ username, name, password_hash, roles }).where(eq(User.id, params.id));
+			await db.update(user).set({ username, name, passwordHash, roles }).where(eq(user.id, params.id));
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
