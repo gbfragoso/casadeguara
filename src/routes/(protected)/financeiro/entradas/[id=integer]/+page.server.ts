@@ -53,7 +53,7 @@ export const actions: Actions = {
 		try {
 			await db
 				.update(entradas)
-				.set({ descricao, valor, data_entrada: new Date(data_entrada) })
+				.set({ descricao, valor, dataEntrada: new Date(data_entrada) })
 				.where(eq(entradas.identrada, Number(params.id)));
 
 			return { status: 200 };

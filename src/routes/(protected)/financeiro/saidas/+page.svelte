@@ -88,7 +88,7 @@
 							<tr>
 								<td>{saida.descricao}</td>
 								<td>R$ {saida.valor}</td>
-								<td>{dayjs.utc(saida.data_saida).format('DD/MM/YYYY')}</td>
+								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
 								<td>
 									<a href="/financeiro/saidas/{saida.idsaida}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>

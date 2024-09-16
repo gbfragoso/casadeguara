@@ -48,7 +48,7 @@
 						class="input"
 						type="date"
 						name="data_saida"
-						value={dayjs.utc(saida.data_saida).format('YYYY-MM-DD')} />
+						value={dayjs.utc(saida.dataSaida).format('YYYY-MM-DD')} />
 				</div>
 			</div>
 		</div>

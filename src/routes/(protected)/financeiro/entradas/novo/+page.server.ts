@@ -81,7 +81,7 @@ export const actions: Actions = {
 				idcontribuinte: Number(contribuinte[0].idleitor),
 				descricao: descricao,
 				valor: valor,
-				data_entrada: new Date(data_entrada),
+				dataEntrada: new Date(data_entrada),
 			});
 			return { status: 201 };
 		} catch (err) {

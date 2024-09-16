@@ -20,31 +20,31 @@ export const load: PageServerLoad = async ({ locals }) => {
 				.select({
 					valor: entradas.valor,
 					descricao: entradas.descricao,
-					data: entradas.data_entrada,
+					data: entradas.dataEntrada,
 					contribuinte: leitor.nome,
 				})
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-				.orderBy(desc(entradas.data_entrada))
+				.orderBy(desc(entradas.dataEntrada))
 				.limit(5);
 		};
 
 		const ultimasSaidas = async () => {
-			return db.select().from(saidas).orderBy(desc(saidas.data_saida)).limit(5);
+			return db.select().from(saidas).orderBy(desc(saidas.dataSaida)).limit(5);
 		};
 
 		const entradaMesAtual = async () => {
 			return db
 				.select({ value: sum(entradas.valor) })
 				.from(entradas)
-				.where(and(gte(entradas.data_entrada, firstDay), lte(entradas.data_entrada, lastDay)));
+				.where(and(gte(entradas.dataEntrada, firstDay), lte(entradas.dataEntrada, lastDay)));
 		};
 
 		const saidaMesAtual = async () => {
 			return db
 				.select({ value: sum(saidas.valor) })
 				.from(saidas)
-				.where(and(gte(saidas.data_saida, firstDay), lte(saidas.data_saida, lastDay)));
+				.where(and(gte(saidas.dataSaida, firstDay), lte(saidas.dataSaida, lastDay)));
 		};
 
 		return {

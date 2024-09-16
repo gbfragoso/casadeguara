@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
+
 	$: ({ leitores, datas } = data);
 </script>
 
@@ -13,7 +14,7 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de frequência</h1>
+	<h1 class="is-size-3 is-hidden-print has-text-weight-semibold has-text-primary">Lista de frequência</h1>
 </div>
 
 <form class="card" method="GET">
@@ -33,6 +34,15 @@
 					<div class="control">
 						<input class="input" type="date" name="dataFim" id="dataFim" aria-label="Date" required />
 					</div>
+				</div>
+			</div>
+			<div class="column">
+				<label class="label" for="nome">Setor</label>
+				<div class="select is-fullwidth">
+					<select name="setor" id="setor">
+						<option value="0">Geral</option>
+						<option value="1">Mediúnica</option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -82,21 +92,32 @@
 	</div>
 </form>
 
-{#if datas && datas.length > 0 && leitores && leitores.length > 0}
-	<div id="printable-content" class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
+<div id="printable-content" class="card">
+	<div class="card-content">
+		<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered" rows="3"></textarea>
+		<div class="table-container">
+			<table class="table is-striped is-hoverable is-fullwidth">
+				<thead>
+					{#if datas}
 						{#each datas as date}
 							<th>
 								{date}
 							</th>
 						{/each}
-						<th>Nome</th>
-					</thead>
-					<tbody>
-						{#each leitores as leitor}
+					{/if}
+					<th>Nome</th>
+				</thead>
+				<tbody>
+					{#await leitores}
+						<tr>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
+						</tr>
+					{:then item}
+						{#each item as leitor}
 							<tr>
 								{#each datas as _}
 									<td id={_}>[&nbsp;&nbsp;]</td>
@@ -106,9 +127,9 @@
 								</td>
 							</tr>
 						{/each}
-					</tbody>
-				</table>
-			</div>
+					{/await}
+				</tbody>
+			</table>
 		</div>
 	</div>
-{/if}
+</div>

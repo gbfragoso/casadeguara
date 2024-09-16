@@ -36,7 +36,7 @@ export const actions: Actions = {
 			await db.insert(saidas).values({
 				descricao: descricao,
 				valor: valor,
-				data_saida: new Date(data_saida),
+				dataSaida: new Date(data_saida),
 			});
 			return { status: 201 };
 		} catch (err) {

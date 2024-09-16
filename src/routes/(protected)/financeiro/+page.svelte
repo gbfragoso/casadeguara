@@ -160,7 +160,7 @@
 							<tr>
 								<td>{saida.descricao}</td>
 								<td>{moeda(Number(saida.valor))}</td>
-								<td>{dayjs.utc(saida.data_saida).format('DD/MM/YYYY')}</td>
+								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
 							</tr>
 						{/each}
 					{/await}
