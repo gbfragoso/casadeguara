@@ -36,6 +36,15 @@
 					</div>
 				</div>
 			</div>
+			<div class="column">
+				<label class="label" for="nome">Setor</label>
+				<div class="select is-fullwidth">
+					<select name="setor" id="setor">
+						<option value="0">Geral</option>
+						<option value="1">Mediúnica</option>
+					</select>
+				</div>
+			</div>
 		</div>
 		<div class="mb-3 checkboxes">
 			<label class="checkbox">
