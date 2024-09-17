@@ -1,9 +1,22 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { LayoutServerData } from './$types';
 	export let data: LayoutServerData;
 
 	let open = false;
+	let isHidden = true;
+
+	function showMenu() {
+		let menu = document.getElementById('sidebar');
+		if (menu) {
+			if (menu.classList.contains('is-hidden-touch')) {
+				menu.classList.remove('is-hidden-touch');
+				isHidden = false;
+			} else {
+				menu.classList.add('is-hidden-touch');
+				isHidden = true;
+			}
+		}
+	}
 	$: ({ name } = data);
 </script>
 
@@ -54,7 +67,7 @@
 			</button>
 		</div>
 		<div id="logout">
-			<form action="/logout" method="POST" use:enhance>
+			<form action="/logout" method="POST">
 				<button id="logout-button">
 					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
 					<span class="item-description">Sair</span>
@@ -63,6 +76,17 @@
 		</div>
 	</nav>
 	<section class="section is-flex-grow-1">
+		<button
+			class="mb-2 navbar-burger {isHidden ? '' : 'is-active'}"
+			style="background-color: white"
+			aria-label="menu"
+			aria-expanded="false"
+			on:click={showMenu}>
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+		</button>
 		<slot />
 	</section>
 </main>

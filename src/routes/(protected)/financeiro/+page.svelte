@@ -24,43 +24,27 @@
 	</h1>
 </div>
 <div class="mt-2 columns">
-	<div class="column">
-		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor recebido
-			<h2 class="is-size-3 has-text-primary">
-				{#await entradaMesAtual}
-					<div class="skeleton-lines">
-						<div></div>
-					</div>
-				{:then valor}
-					{moeda(Number(valor[0].value))}
-				{/await}
-			</h2>
-		</div>
-	</div>
-	<div class="column">
-		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-money-bill-transfer fa-fw">&nbsp;</i>Despesas
-			<h2 class="is-size-3 has-text-danger">
-				{#await saidaMesAtual}
-					<div class="skeleton-lines">
-						<div></div>
-					</div>
-				{:then valor}
-					{moeda(Number(valor[0].value))}
-				{/await}
-			</h2>
-		</div>
-	</div>
-	<div class="column">
-		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-sack-dollar fa-fw">&nbsp;</i>Saldo
-			{#await entradaMesAtual}
-				<div class="skeleton-lines">
-					<div></div>
+	{#await entradaMesAtual then entrada}
+		{#await saidaMesAtual then saida}
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor recebido
+					<h2 class="is-size-3 has-text-primary">
+						{moeda(Number(entrada[0].value))}
+					</h2>
 				</div>
-			{:then entrada}
-				{#await saidaMesAtual then saida}
+			</div>
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-money-bill-transfer fa-fw">&nbsp;</i>Despesas
+					<h2 class="is-size-3 has-text-danger">
+						{moeda(Number(saida[0].value))}
+					</h2>
+				</div>
+			</div>
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-sack-dollar fa-fw">&nbsp;</i>Saldo
 					{#if Number(entrada[0].value) - Number(saida[0].value) >= 1}
 						<h2 class="is-size-3 has-text-success">
 							{moeda(Number(entrada[0].value) - Number(saida[0].value))}
@@ -70,11 +54,12 @@
 							{moeda(Number(entrada[0].value) - Number(saida[0].value))}
 						</h2>
 					{/if}
-				{/await}
-			{/await}
-		</div>
-	</div>
+				</div>
+			</div>
+		{/await}
+	{/await}
 </div>
+
 <div class="card">
 	<div class="card-content">
 		<p class="is-size-4 mb-4 has-text-weight-semibold">Últimas contribuições</p>

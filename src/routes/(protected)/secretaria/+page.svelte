@@ -1,10 +1,11 @@
 <script lang="ts">
+	import Chart from '$lib/components/Chart.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
 
-	$: ({ leitores, engajamento } = data);
+	$: ({ leitores, engajamento, frequency } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -43,6 +44,9 @@
 		{/await}
 	{/await}
 </div>
-<div class="box">
-	<h2>Gráfico de frequência mensal</h2>
+
+<div class="box" style="position: relative; height:50vh;">
+	{#await frequency then lista}
+		<Chart dataset={lista} />
+	{/await}
 </div>

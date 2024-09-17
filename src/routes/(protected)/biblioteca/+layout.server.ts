@@ -9,6 +9,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	}
 	const name = {
 		name: locals.user.name,
+		isAdmin: locals.user.roles.includes(':admin'),
 	};
 	return name;
 };

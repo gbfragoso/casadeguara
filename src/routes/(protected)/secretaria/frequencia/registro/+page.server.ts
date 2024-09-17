@@ -32,12 +32,12 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const leitores = form.getAll('leitor');
 		const data = form.get('data') as string;
-		let array: { trabalhador: number, dataPresenca: Date }[] = [];
+		let array: { trabalhador: number; dataPresenca: Date }[] = [];
 
 		leitores.forEach((e) => {
 			var item = {
 				trabalhador: Number(e),
-				dataPresenca: new Date(data)
+				dataPresenca: new Date(data),
 			};
 			array.push(item);
 		});
