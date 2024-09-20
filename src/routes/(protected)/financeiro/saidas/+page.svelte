@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Pagination from '$lib/components/Pagination.svelte';
+	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -87,7 +88,7 @@
 						{#each item as saida}
 							<tr>
 								<td>{saida.descricao}</td>
-								<td>R$ {saida.valor}</td>
+								<td>{moeda(Number(saida.valor))}</td>
 								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
 								<td>
 									<a href="/financeiro/saidas/{saida.idsaida}">
