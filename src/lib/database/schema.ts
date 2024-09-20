@@ -232,6 +232,7 @@ export const entradas = pgTable(
 	{
 		identrada: serial('identrada').primaryKey().notNull(),
 		descricao: varchar('descricao', { length: 200 }).notNull(),
+		uuid: varchar('uuid', { length: 36 }).notNull(),
 		valor: numeric('valor').notNull(),
 		dataEntrada: date('data_entrada', { mode: 'date' }).defaultNow().notNull(),
 		idcontribuinte: integer('idcontribuinte').notNull(),

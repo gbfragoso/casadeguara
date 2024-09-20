@@ -2,6 +2,7 @@ import { db } from '$lib/database/connection';
 import { entradas, leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
+import { v7 as uuidv7 } from 'uuid';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -80,6 +81,7 @@ export const actions: Actions = {
 			await db.insert(entradas).values({
 				idcontribuinte: Number(contribuinte[0].idleitor),
 				descricao: descricao,
+				uuid: uuidv7(),
 				valor: valor,
 				dataEntrada: new Date(data_entrada),
 			});

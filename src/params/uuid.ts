@@ -1,6 +1,6 @@
 import type { ParamMatcher } from '@sveltejs/kit';
-import validator from 'validator';
+import { validate } from 'uuid';
 
 export const match: ParamMatcher = (param) => {
-	return validator.isNumeric(param);
+	return validate(param);
 };

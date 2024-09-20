@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Pagination from '$lib/components/Pagination.svelte';
+	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 
@@ -110,12 +111,15 @@
 								{:else}
 									<td>Eventual</td>
 								{/if}
-								<td>{resultado.entradas.valor}</td>
+								<td>{moeda(Number(resultado.entradas.valor))}</td>
 								<td>{resultado.entradas.descricao}</td>
 								<td>{dayjs.utc(resultado.entradas.dataEntrada).format('DD/MM/YYYY')}</td>
 								<td>
 									<a href="/financeiro/entradas/{resultado.entradas.identrada}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
+									</a>
+									<a href="/recibo/{resultado.entradas.uuid}" title="Recibo">
+										<i class="fa-regular fa-file-lines fa-fw"></i>
 									</a>
 								</td>
 							</tr>
