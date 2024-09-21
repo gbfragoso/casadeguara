@@ -1,7 +1,10 @@
 <script lang="ts">
 	import Notification from '$lib/components/Notification.svelte';
+	import validator from 'validator';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
+
+	let password = '';
 </script>
 
 <div class="mb-2">
@@ -27,8 +30,15 @@
 		<div class="field">
 			<label class="label" for="password">Senha</label>
 			<div class="control">
-				<input class="input" type="password" name="password" id="password" /><br />
+				<input class="input" type="password" name="password" id="password" bind:value={password} /><br />
 			</div>
+			<span class="help">
+				Força da senha
+				<progress
+					class="progress is-primary is-small"
+					value={validator.isStrongPassword(password, { returnScore: true })}
+					max="50"></progress>
+			</span>
 		</div>
 		<div class="field">
 			<label class="label" for="name">Nome</label>
@@ -52,6 +62,6 @@
 	</div>
 </form>
 
-{#if form?.status === 200}
+{#if form?.status === 201}
 	<Notification class="is-success">Usuário cadastrado com sucesso!</Notification>
 {/if}
