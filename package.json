@@ -47,6 +47,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cloudflare/workers-types": "^4.20240925.0",
 		"@fortawesome/fontawesome-free": "^6.5.2",
 		"@lucia-auth/adapter-drizzle": "^1.0.7",
 		"@types/qrcode": "^1.5.5",
@@ -60,6 +61,7 @@
 		"qrcode": "^1.5.4",
 		"uuid": "^10.0.0",
 		"validator": "^13.12.0",
-		"vercel": "^37.5.4"
+		"vercel": "^37.5.4",
+		"wrangler": "^3.78.12"
 	}
 }
