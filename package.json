@@ -16,7 +16,9 @@
 		"pull": "drizzle-kit pull",
 		"format": "prettier --write .",
 		"generate": "drizzle-kit generate",
-		"migrate": "drizzle-kit migrate"
+		"migrate": "drizzle-kit migrate",
+		"deploy": "npm run build && wrangler pages deploy",
+		"cf-typegen": "wrangler types && move worker-configuration.d.ts src/"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.47.0",
