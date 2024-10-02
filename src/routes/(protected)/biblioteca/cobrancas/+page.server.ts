@@ -4,7 +4,7 @@ import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, isNull, lte } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {

@@ -36,15 +36,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="column">
-				<label class="label" for="nome">Setor</label>
-				<div class="select is-fullwidth">
-					<select name="setor" id="setor">
-						<option value="0">Geral</option>
-						<option value="1">Mediúnica</option>
-					</select>
-				</div>
-			</div>
 		</div>
 		<div class="mb-3 checkboxes">
 			<label class="checkbox">
@@ -104,12 +95,12 @@
 				<thead>
 					{#if datas}
 						{#each datas as date}
-							<th>
+							<th class="print-pr-2">
 								{date}
 							</th>
 						{/each}
 					{/if}
-					<th>Nome</th>
+					<th class="print-pl-6">Nome</th>
 				</thead>
 				<tbody>
 					{#await leitores}
@@ -124,9 +115,9 @@
 						{#each item as leitor}
 							<tr>
 								{#each datas as _}
-									<td id={_}>[&nbsp;&nbsp;]</td>
+									<td id={_} class="print-pr-2">[&nbsp;&nbsp;]</td>
 								{/each}
-								<td>
+								<td class="print-pl-6">
 									{leitor.nome.toUpperCase()}
 								</td>
 							</tr>
