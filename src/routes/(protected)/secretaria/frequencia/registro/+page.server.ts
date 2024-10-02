@@ -35,7 +35,7 @@ export const actions: Actions = {
 		let array: { trabalhador: number; dataPresenca: Date }[] = [];
 
 		leitores.forEach((e) => {
-			var item = {
+			const item = {
 				trabalhador: Number(e),
 				dataPresenca: new Date(data),
 			};
