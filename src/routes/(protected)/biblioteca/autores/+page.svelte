@@ -1,9 +1,6 @@
 <script lang="ts">
-	import Pagination from '$lib/components/Pagination.svelte';
-	import type { PageServerData } from './$types';
-	export let data: PageServerData;
-
-	$: ({ autores, total } = data);
+	import type { ActionData } from './$types';
+	export let form: ActionData;
 </script>
 
 <div class="mb-2">
@@ -18,7 +15,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de autores</h1>
 </div>
 
-<form class="card" action="/biblioteca/autores" method="GET">
+<form class="card" method="POST">
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do autor</label>
@@ -40,26 +37,17 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content">
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>Nome</th>
-					<th class="table-actions">Ações</th>
-				</thead>
-				<tbody>
-					{#await autores}
-						<tr>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as autor}
+{#if form?.autores}
+	<div class="card">
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th>Nome</th>
+						<th class="table-actions">Ações</th>
+					</thead>
+					<tbody>
+						{#each form.autores as autor}
 							<tr>
 								<td>{autor.nome}</td>
 								<td class="table-actions">
@@ -69,10 +57,9 @@
 								</td>
 							</tr>
 						{/each}
-					{/await}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}
