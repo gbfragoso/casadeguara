@@ -2,36 +2,27 @@ import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
 import { editora } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { count } from 'drizzle-orm';
 
-import type { PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
-
-	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('nome') || undefined;
-	const where = nome ? ulike(editora.nome, nome + '%') : undefined;
-
-	try {
-		const editoras = async () => {
-			return db
-				.select()
-				.from(editora)
-				.offset((page - 1) * 5)
-				.where(where)
-				.orderBy(unaccent(editora.nome))
-				.limit(5);
-		};
-
-		const counter = await db.select({ count: count() }).from(editora).where(where);
-		const total = counter[0].count;
-
-		return { editoras: editoras(), total };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de editoras',
-		});
-	}
 };
+
+export const actions: Actions = {
+	default: async ({ request }) => {
+		const form = await request.formData();
+		const nome = form.get('nome') as string;
+		const where = nome ? ulike(editora.nome, nome + '%') : undefined;
+
+		try {
+			const editoras = await db.select().from(editora).where(where).orderBy(unaccent(editora.nome)).limit(50);
+			return { editoras };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao carregar a lista de editoras',
+			});
+		}
+	},
+} satisfies Actions;

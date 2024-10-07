@@ -44,19 +44,19 @@
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/financeiro/entradas">
+					<a data-sveltekit-reload href="/financeiro/entradas">
 						<i class="fa-solid fa-wallet fa-fw"></i>
 						<span class="item-description">Entradas</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/financeiro/saidas">
+					<a data-sveltekit-reload href="/financeiro/saidas">
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
 						<span class="item-description">Saídas</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/financeiro/contribuintes">
+					<a data-sveltekit-reload href="/financeiro/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>
 						<span class="item-description">Contribuintes</span>
 					</a>

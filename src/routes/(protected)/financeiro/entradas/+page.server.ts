@@ -2,25 +2,27 @@ import { db } from '$lib/database/connection';
 import { ulike } from '$lib/database/functions';
 import { entradas, leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, count, desc, eq, gte, lte } from 'drizzle-orm';
-import type { PageServerLoad } from './$types';
+import { and, desc, eq, gte, lte } from 'drizzle-orm';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
+};
 
-	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('contribuinte') || undefined;
-	const dataInicio = url.searchParams.get('dataInicio') || undefined;
-	const dataFim = url.searchParams.get('dataFim') || undefined;
+export const actions: Actions = {
+	default: async ({ request }) => {
+		const form = await request.formData();
+		const nome = form.get('contribuinte') as string;
+		const dataInicio = form.get('dataInicio') as string;
+		const dataFim = form.get('dataFim') as string;
 
-	try {
-		const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
-		const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
-		const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
-		const where = and(dataInicioFilter, dataFimFilter, nameFilter);
+		try {
+			const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
+			const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
+			const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
+			const where = and(dataInicioFilter, dataFimFilter, nameFilter);
 
-		const resultados = async () => {
-			return db
+			const resultados = await db
 				.select({
 					entradas,
 					contribuinte: leitor.nome,
@@ -31,22 +33,14 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
 				.where(where)
 				.orderBy(desc(entradas.dataEntrada))
-				.offset((page - 1) * 5)
-				.limit(5);
-		};
+				.limit(50);
 
-		const counter = await db
-			.select({ count: count() })
-			.from(entradas)
-			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-			.where(where);
-		const total = counter[0].count;
-
-		return { resultados: resultados(), total };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a listagem de doações',
-		});
-	}
-};
+			return { resultados };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao carregar a listagem de doações',
+			});
+		}
+	},
+} satisfies Actions;

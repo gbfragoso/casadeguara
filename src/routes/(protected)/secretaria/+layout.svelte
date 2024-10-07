@@ -47,19 +47,19 @@
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/secretaria/frequencia">
+					<a data-sveltekit-reload href="/secretaria/frequencia">
 						<i class="fa-solid fa-list-check fa-fw"></i>
 						<span class="item-description">Frequência</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/secretaria/aniversariantes">
+					<a data-sveltekit-reload href="/secretaria/aniversariantes">
 						<i class="fa-solid fa-cake-candles fa-fw"></i>
 						<span class="item-description">Aniversariantes</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/secretaria/trabalhadores">
+					<a data-sveltekit-reload href="/secretaria/trabalhadores">
 						<i class="fa-solid fa-handshake-angle fa-fw"></i>
 						<span class="item-description">Trabalhadores</span>
 					</a>

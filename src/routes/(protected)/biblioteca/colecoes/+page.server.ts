@@ -2,36 +2,27 @@ import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
 import { serie } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { count } from 'drizzle-orm';
 
-import type { PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
-
-	const page = Number(url.searchParams.get('page') || 1);
-	const nome = url.searchParams.get('nome') || undefined;
-	const where = nome ? ulike(serie.nome, nome + '%') : undefined;
-
-	try {
-		const colecoes = async () => {
-			return db
-				.select()
-				.from(serie)
-				.offset((page - 1) * 5)
-				.where(where)
-				.orderBy(unaccent(serie.nome))
-				.limit(5);
-		};
-
-		const counter = await db.select({ count: count() }).from(serie).where(where);
-		const total = counter[0].count;
-
-		return { colecoes: colecoes(), total };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de coleções',
-		});
-	}
 };
+
+export const actions: Actions = {
+	default: async ({ request }) => {
+		const form = await request.formData();
+		const nome = form.get('nome') as string;
+		const where = nome ? ulike(serie.nome, nome + '%') : undefined;
+
+		try {
+			const colecoes = await db.select().from(serie).where(where).orderBy(unaccent(serie.nome)).limit(50);
+			return { colecoes };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao carregar a lista de coleções',
+			});
+		}
+	},
+} satisfies Actions;

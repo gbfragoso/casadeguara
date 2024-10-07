@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
-
-	import type { PageServerData } from './$types';
-	export let data: PageServerData;
-	$: ({ leitores } = data);
+	import type { ActionData } from './$types';
+	export let form: ActionData;
+	export let loading = false;
 	dayjs.extend(utc);
 </script>
 
@@ -20,7 +20,16 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de aniversariantes</h1>
 </div>
 
-<form class="card" method="GET">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="column is-full-mobile is-10-tablet">
@@ -42,34 +51,28 @@
 				</div>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
+				<button
+					aria-busy={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					type="submit">
+					<i class="fa-solid fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar lista
 				</button>
 			</div>
 		</div>
 	</div>
 </form>
 
-<div id="printable-content" class="card">
-	<div class="card-content">
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>Nome</th>
-					<th>Data</th>
-				</thead>
-				<tbody>
-					{#await leitores}
-						<tr>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as leitor}
+{#if form?.leitores}
+	<div id="printable-content" class="card">
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th>Nome</th>
+						<th>Data</th>
+					</thead>
+					<tbody>
+						{#each form.leitores as leitor}
 							<tr>
 								<td>
 									{leitor.nome.toUpperCase()}
@@ -81,9 +84,9 @@
 								</td>
 							</tr>
 						{/each}
-					{/await}
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}
