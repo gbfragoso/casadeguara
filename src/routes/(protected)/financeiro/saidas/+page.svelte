@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Pagination from '$lib/components/Pagination.svelte';
+	import { enhance } from '$app/forms';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
-	import type { PageServerData } from './$types';
+	import type { ActionData } from './$types';
+	export let form: ActionData;
+	export let loading = false;
 
-	export let data: PageServerData;
-	$: ({ saidas, total } = data);
 	dayjs.extend(utc);
 </script>
 
@@ -22,7 +22,16 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Saídas</h1>
 </div>
 
-<form class="card" action="/financeiro/saidas" method="GET">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="descricao">Descrição</label>
@@ -46,7 +55,10 @@
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
+				<button
+					aria-busy={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
@@ -58,34 +70,19 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content">
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th scope="col">Descrição</th>
-					<th scope="col">Valor</th>
-					<th scope="col">Data</th>
-					<th scope="col">Ações</th>
-				</thead>
-				<tbody>
-					{#await saidas}
-						<tr>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as saida}
+{#if form?.saidas}
+	<div class="card">
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th scope="col">Descrição</th>
+						<th scope="col">Valor</th>
+						<th scope="col">Data</th>
+						<th scope="col">Ações</th>
+					</thead>
+					<tbody>
+						{#each form.saidas as saida}
 							<tr>
 								<td>{saida.descricao}</td>
 								<td>{moeda(Number(saida.valor))}</td>
@@ -97,10 +94,9 @@
 								</td>
 							</tr>
 						{/each}
-					{/await}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}

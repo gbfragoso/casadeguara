@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	export let data: PageServerData;
-
-	$: ({ leitores, datas } = data);
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+	export let form: ActionData;
+	export let loading = false;
 </script>
 
 <div class="mb-2">
@@ -17,7 +17,16 @@
 	<h1 class="is-size-3 is-hidden-print has-text-weight-semibold has-text-primary">Lista de frequência</h1>
 </div>
 
-<form class="card" method="GET">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="column">
@@ -75,8 +84,11 @@
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
+				<button
+					aria-busy={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					type="submit">
+					<i class="fa-regular fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar Lista
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
@@ -87,34 +99,26 @@
 	</div>
 </form>
 
-<div id="printable-content" class="card">
-	<div class="card-content">
-		<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered" rows="3"></textarea>
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					{#if datas}
-						{#each datas as date}
-							<th class="print-pr-2">
-								{date}
-							</th>
-						{/each}
-					{/if}
-					<th class="print-pl-6">Nome</th>
-				</thead>
-				<tbody>
-					{#await leitores}
-						<tr>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as leitor}
+{#if form?.leitores}
+	<div id="printable-content" class="card">
+		<div class="card-content">
+			<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered" rows="3"></textarea>
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						{#if form.datas}
+							{#each form.datas as date}
+								<th class="print-pr-2">
+									{date}
+								</th>
+							{/each}
+						{/if}
+						<th class="print-pl-6">Nome</th>
+					</thead>
+					<tbody>
+						{#each form.leitores as leitor}
 							<tr>
-								{#each datas as _}
+								{#each form.datas as _}
 									<td id={_} class="print-pr-2">[&nbsp;&nbsp;]</td>
 								{/each}
 								<td class="print-pl-6">
@@ -122,9 +126,9 @@
 								</td>
 							</tr>
 						{/each}
-					{/await}
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}

@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Pagination from '$lib/components/Pagination.svelte';
-	import type { PageServerData } from './$types';
-	export let data: PageServerData;
-
-	$: ({ keywords, total } = data);
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+	export let form: ActionData;
+	export let loading = false;
 </script>
 
 <div class="mb-2">
@@ -18,7 +17,16 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de palavras-chave</h1>
 </div>
 
-<form class="card" action="/biblioteca/keywords" method="GET">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="chave">Palavra-chave</label>
@@ -28,7 +36,10 @@
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
+				<button
+					aria-busy={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
@@ -40,26 +51,17 @@
 	</div>
 </form>
 
-<div class="card">
-	<div class="card-content">
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<th>chave</th>
-					<th class="table-actions">Ações</th>
-				</thead>
-				<tbody>
-					{#await keywords}
-						<tr>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as keyword}
+{#if form?.keywords}
+	<div class="card">
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<th>chave</th>
+						<th class="table-actions">Ações</th>
+					</thead>
+					<tbody>
+						{#each form.keywords as keyword}
 							<tr>
 								<td>{keyword.chave}</td>
 								<td class="table-actions">
@@ -69,10 +71,9 @@
 								</td>
 							</tr>
 						{/each}
-					{/await}
-				</tbody>
-			</table>
-			<Pagination {total}></Pagination>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
+{/if}

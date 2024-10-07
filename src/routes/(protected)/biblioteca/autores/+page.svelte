@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
+	export let loading = false;
 </script>
 
 <div class="mb-2">
@@ -15,7 +17,16 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de autores</h1>
 </div>
 
-<form class="card" method="POST">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do autor</label>
@@ -25,7 +36,10 @@
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button class="button is-primary is-fullwidth has-text-weight-semibold" type="submit">
+				<button
+					aria-busy={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>

@@ -44,7 +44,7 @@
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/biblioteca/autores">
+					<a data-sveltekit-reload href="/biblioteca/autores">
 						<i class="fa-solid fa-user-pen fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Autores</span>
 					</a>
@@ -64,37 +64,37 @@
 					</li>
 				{/if}
 				<li class="sidebar-item">
-					<a href="/biblioteca/colecoes">
+					<a data-sveltekit-reload href="/biblioteca/colecoes">
 						<i class="fa-solid fa-layer-group fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Coleções</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/biblioteca/editoras">
+					<a data-sveltekit-reload href="/biblioteca/editoras">
 						<i class="fa-solid fa-landmark-flag fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Editoras</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/biblioteca/emprestimos">
+					<a data-sveltekit-reload href="/biblioteca/emprestimos">
 						<i class="fa-solid fa-hand-holding fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Empréstimos</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/biblioteca/leitores">
+					<a data-sveltekit-reload href="/biblioteca/leitores">
 						<i class=" fa-solid fa-book-open-reader fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Leitores</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/biblioteca/livros">
+					<a data-sveltekit-reload href="/biblioteca/livros">
 						<i class="fa-solid fa-book fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Livros</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a href="/biblioteca/keywords">
+					<a data-sveltekit-reload href="/biblioteca/keywords">
 						<i class="fa-solid fa-key fa-fw"></i>
 						<span class="item-description has-text-weight-bold">Palavras-chave</span>
 					</a>
