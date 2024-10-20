@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 </script>
 
 <div class="mb-2">
@@ -38,7 +38,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -57,9 +58,11 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						<th scope="col">Contribuinte</th>
-						<th scope="col">Tipo</th>
-						<th scope="col">Ações</th>
+						<tr>
+							<th>Contribuinte</th>
+							<th>Tipo</th>
+							<th>Ações</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.contribuintes as contribuinte}
@@ -72,7 +75,7 @@
 								{/if}
 								<td>
 									<form method="POST">
-										<a href="/financeiro/contribuintes/{contribuinte.idleitor}">
+										<a aria-label="editar" href="/financeiro/contribuintes/{contribuinte.idleitor}">
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
 									</form>

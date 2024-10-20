@@ -4,7 +4,7 @@
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 	dayjs.extend(utc);
 </script>
 
@@ -53,7 +53,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-solid fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar lista
 				</button>
@@ -68,8 +69,10 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						<th>Nome</th>
-						<th>Data</th>
+						<tr>
+							<th>Nome</th>
+							<th>Data</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.leitores as leitor}

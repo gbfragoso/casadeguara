@@ -44,8 +44,10 @@
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
-					<th>Nome</th>
-					<th class="table-actions">Ações</th>
+					<tr>
+						<th>Nome</th>
+						<th class="table-actions">Ações</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#await usuarios}
@@ -62,7 +64,7 @@
 							<tr>
 								<td>{usuario.name}</td>
 								<td class="table-actions">
-									<a href="/secretaria/usuarios/{usuario.id}">
+									<a aria-label="editar" href="/secretaria/usuarios/{usuario.id}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

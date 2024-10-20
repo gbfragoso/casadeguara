@@ -3,7 +3,7 @@
 	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 	$: ({ role } = data);
 </script>
 
@@ -85,7 +85,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -104,9 +105,11 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						<th>Tombo</th>
-						<th>Título</th>
-						<th class="table-actions">Ações</th>
+						<tr>
+							<th>Tombo</th>
+							<th>Título</th>
+							<th class="table-actions">Ações</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.livros as livro}
@@ -115,18 +118,27 @@
 								<td>{livro.titulo}</td>
 								<td class="table-actions">
 									<div class="field is-grouped">
-										<a class="control" href="/biblioteca/livros/{livro.idlivro}">
+										<a
+											aria-label="editar"
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}">
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
-										<a class="control" href="/biblioteca/livros/{livro.idlivro}/exemplares">
+										<a
+											aria-label="livros"
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}/exemplares">
 											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
-										<a class="control" href="/biblioteca/livros/{livro.idlivro}/autores">
+										<a
+											aria-label="autores"
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}/autores">
 											<i class="fa-solid fa-user-pen fa-fw"></i>
 										</a>
 										{#if role.includes('admin')}
 											<form action="?/excluir&id={livro.idlivro}" method="POST">
-												<button class="control"
+												<button aria-label="trash" class="control"
 													><i class="fa-regular fa-trash-can fa-fw"></i></button>
 											</form>
 										{/if}

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Notification from '$lib/components/Notification.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 
 	$: ({ isAdmin } = data);
 	dayjs.extend(utc);
@@ -78,7 +79,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -97,12 +99,14 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						<th>Leitor</th>
-						<th>Título</th>
-						<th>Ex</th>
-						<th>Prazo</th>
-						<th>Status</th>
-						<th class="table-actions">Ações</th>
+						<tr>
+							<th>Leitor</th>
+							<th>Título</th>
+							<th>Ex</th>
+							<th>Prazo</th>
+							<th>Status</th>
+							<th class="table-actions">Ações</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.emprestimos as emprestimo}
@@ -136,13 +140,19 @@
 											<div class="dropdown-content" style="max-height:100px;overflow: auto">
 												{#if !emprestimo.data_devolvido}
 													{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
-														<form action="?/renovar&id={emprestimo.idemp}" method="POST">
+														<form
+															action="?/renovar&id={emprestimo.idemp}"
+															method="POST"
+															use:enhance>
 															<button class="dropdown-item" title="Renovar"
 																><i class="fa-solid fa-repeat fa-fw"></i
 																>&nbsp;Renovar</button>
 														</form>
 													{/if}
-													<form action="?/devolver&id={emprestimo.idemp}" method="POST">
+													<form
+														action="?/devolver&id={emprestimo.idemp}"
+														method="POST"
+														use:enhance>
 														<button class="dropdown-item" title="Devolver"
 															><i class="fa-solid fa-reply fa-fw"></i
 															>&nbsp;Devolver</button>
@@ -158,9 +168,6 @@
 										</div>
 									</div>
 								</td>
-								{#if form?.status === 400 && form?.message}
-									<p class="help is-danger">{form.message}</p>
-								{/if}
 							</tr>
 						{/each}
 					</tbody>
@@ -168,4 +175,10 @@
 			</div>
 		</div>
 	</div>
+{/if}
+{#if form?.status === 201}
+	<Notification class="is-success">{form.message}</Notification>
+{/if}
+{#if form?.status === 400 && form?.message}
+	<Notification class="is-danger">{form.message}</Notification>
 {/if}

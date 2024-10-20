@@ -5,7 +5,7 @@
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 
 	dayjs.extend(utc);
 </script>
@@ -57,7 +57,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -76,10 +77,12 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						<th scope="col">Descrição</th>
-						<th scope="col">Valor</th>
-						<th scope="col">Data</th>
-						<th scope="col">Ações</th>
+						<tr>
+							<th>Descrição</th>
+							<th>Valor</th>
+							<th>Data</th>
+							<th>Ações</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.saidas as saida}
@@ -88,7 +91,7 @@
 								<td>{moeda(Number(saida.valor))}</td>
 								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
 								<td>
-									<a href="/financeiro/saidas/{saida.idsaida}">
+									<a aria-label="editar" href="/financeiro/saidas/{saida.idsaida}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

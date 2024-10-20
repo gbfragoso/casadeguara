@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
+	let loading = false;
 </script>
 
 <div class="mb-2">
@@ -16,7 +18,16 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de trabalhadores</h1>
 </div>
 
-<form class="card" method="POST">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="field column is-three-fifths">
@@ -103,7 +114,11 @@
 			</label>
 		</div>
 		<div class="control">
-			<button class="button is-primary has-text-weight-semibold" type="submit">Cadastrar</button>
+			<button
+				aria-busy={loading}
+				class:is-loading={loading}
+				class="button is-primary has-text-weight-semibold"
+				type="submit">Cadastrar</button>
 		</div>
 	</div>
 </form>

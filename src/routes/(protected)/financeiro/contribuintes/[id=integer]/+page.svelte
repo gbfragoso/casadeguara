@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
+
 	export let data: PageServerData;
 	export let form: ActionData;
+	let loading = false;
 
 	$: ({ contribuinte } = data);
 </script>
@@ -19,7 +22,17 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar informações do contribuinte</h1>
 </div>
 
-<form class="card" action="?/update" method="POST">
+<form
+	class="card"
+	action="?/update"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome"> Nome</label>
@@ -43,7 +56,11 @@
 		</div>
 		<div class="field">
 			<div class="control">
-				<button class="button is-primary has-text-weight-semibold" type="submit">Atualizar</button>
+				<button
+					aria-busy={loading}
+					class:is-loading={loading}
+					class="button is-primary has-text-weight-semibold"
+					type="submit">Atualizar</button>
 			</div>
 		</div>
 	</div>

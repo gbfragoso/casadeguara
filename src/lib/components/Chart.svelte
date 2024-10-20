@@ -54,4 +54,4 @@
 	};
 </script>
 
-<canvas use:handleChart={config} />
+<canvas use:handleChart={config}></canvas>

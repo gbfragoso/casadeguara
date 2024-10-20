@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import type { ActionData, PageServerData } from './$types';
 	export let data: PageServerData;
 	export let form: ActionData;
+	let loading = false;
 
 	$: ({ exemplares, role } = data);
 </script>
@@ -19,7 +21,17 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de exemplares</h1>
 </div>
 
-<form class="card" action="?/adicionar" method="POST">
+<form
+	class="card"
+	action="?/adicionar"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<label class="label" for="numero">Número do exemplar</label>
 		<div class="field has-addons">
@@ -27,7 +39,11 @@
 				<input class="input" type="number" name="numero" id="numero" step="1" />
 			</div>
 			<div class="control">
-				<button class="button is-primary has-text-weight-semibold" type="submit">Adicionar</button>
+				<button
+					aria-busy={loading}
+					class:is-loading={loading}
+					class="button is-primary has-text-weight-semibold"
+					type="submit">Adicionar</button>
 			</div>
 		</div>
 		{#if form?.status === 201}
@@ -42,9 +58,11 @@
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
-					<th>Ex</th>
-					<th>Status</th>
-					<th class="table-actions">Ações</th>
+					<tr>
+						<th>Ex</th>
+						<th>Status</th>
+						<th class="table-actions">Ações</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#each exemplares as exemplar}
@@ -60,8 +78,11 @@
 							<td class="table-actions">
 								{#if role.includes('admin')}
 									<div class="field is-grouped">
-										<form action="?/excluir&exemplar={exemplar.idexemplar}" method="POST">
-											<button>
+										<form
+											action="?/excluir&exemplar={exemplar.idexemplar}"
+											method="POST"
+											use:enhance>
+											<button aria-label="trash">
 												<i class="fa-regular fa-trash-can fa-fw"></i>
 											</button>
 										</form>

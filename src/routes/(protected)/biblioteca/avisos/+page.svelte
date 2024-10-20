@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import type { PageServerData } from './$types';
 	export let data: PageServerData;
+	let loading = false;
 
 	$: ({ avisos } = data);
 </script>
@@ -17,17 +19,31 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Avisos</h1>
 </div>
 
-<form class="card" action="/biblioteca/avisos" method="POST">
+<form
+	class="card"
+	method="POST"
+	use:enhance={() => {
+		loading = true;
+		return async ({ update }) => {
+			await update();
+			loading = false;
+		};
+	}}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="texto">Texto do aviso</label>
 			<div class="control">
-				<textarea class="textarea has-fixed-size" name="texto" id="texto" placeholder="Digite a mensagem" />
+				<textarea class="textarea has-fixed-size" name="texto" id="texto" placeholder="Digite a mensagem"
+				></textarea>
 			</div>
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button class="button is-fullwidth has-text-weight-semibold" type="submit">
+				<button
+					aria-busy={loading}
+					class:is-loading={loading}
+					class="button is-fullwidth has-text-weight-semibold"
+					type="submit">
 					<i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo
 				</button>
 			</div>
@@ -39,8 +55,10 @@
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
-					<th>Texto</th>
-					<th class="table-actions">Ações</th>
+					<tr>
+						<th>Texto</th>
+						<th class="table-actions">Ações</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#await avisos}
@@ -57,7 +75,7 @@
 							<tr>
 								<td>{aviso.texto}</td>
 								<td class="table-actions">
-									<a href="/biblioteca/avisos/{aviso.idaviso}">
+									<a aria-label="link" href="/biblioteca/avisos/{aviso.idaviso}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>
