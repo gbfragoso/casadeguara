@@ -79,7 +79,7 @@ export const actions: Actions = {
 			await db.execute(
 				sql`update emprestimo set data_devolucao = data_emprestimo + ${duracao}::int, renovacoes = renovacoes + 1 where idemp = ${id}`,
 			);
-			return { status: 201 };
+			return { status: 201, message: 'Empréstimo renovado com sucesso' };
 		} catch (err) {
 			console.error(err);
 			return error(500, {
@@ -95,7 +95,7 @@ export const actions: Actions = {
 				.update(emprestimo)
 				.set({ dataDevolvido: new Date() })
 				.where(eq(emprestimo.idemp, Number(id)));
-			return { status: 201 };
+			return { status: 201, message: 'Empréstimo devolvido com sucesso' };
 		} catch (err) {
 			console.error(err);
 			return error(500, {

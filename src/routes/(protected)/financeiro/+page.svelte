@@ -66,10 +66,12 @@
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
-					<th scope="col">Contribuinte</th>
-					<th scope="col">Descrição</th>
-					<th scope="col">Valor</th>
-					<th scope="col">Data</th>
+					<tr>
+						<th>Contribuinte</th>
+						<th>Descrição</th>
+						<th>Valor</th>
+						<th>Data</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#await entradas}
@@ -117,9 +119,11 @@
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
-					<th scope="col">Descrição</th>
-					<th scope="col">Valor</th>
-					<th scope="col">Data</th>
+					<tr>
+						<th scope="col">Descrição</th>
+						<th scope="col">Valor</th>
+						<th scope="col">Data</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#await saidas}

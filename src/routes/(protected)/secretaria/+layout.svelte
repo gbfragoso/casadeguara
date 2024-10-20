@@ -71,7 +71,7 @@
 					</a>
 				</li>
 			</ul>
-			<button id="sidebar-button" class="is-hidden-touch" on:click={() => (open = !open)}>
+			<button aria-label="sidebar" id="sidebar-button" class="is-hidden-touch" on:click={() => (open = !open)}>
 				<i id="sidebar-button-icon" class="fa-solid fa-chevron-right fa-fw"></i>
 			</button>
 		</div>

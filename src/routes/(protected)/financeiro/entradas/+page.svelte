@@ -4,8 +4,9 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData } from './$types';
+
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 
 	dayjs.extend(utc);
 </script>
@@ -62,7 +63,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -81,12 +83,14 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						<th scope="col">Contribuinte</th>
-						<th scope="col">Tipo</th>
-						<th scope="col">Valor</th>
-						<th scope="col">Descrição</th>
-						<th scope="col">Data</th>
-						<th scope="col">Ações</th>
+						<tr>
+							<th>Contribuinte</th>
+							<th>Tipo</th>
+							<th>Valor</th>
+							<th>Descrição</th>
+							<th>Data</th>
+							<th>Ações</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.resultados as resultado}
@@ -105,10 +109,10 @@
 								<td>{resultado.entradas.descricao}</td>
 								<td>{dayjs.utc(resultado.entradas.dataEntrada).format('DD/MM/YYYY')}</td>
 								<td>
-									<a href="/financeiro/entradas/{resultado.entradas.identrada}">
+									<a aria-label="editar" href="/financeiro/entradas/{resultado.entradas.identrada}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
-									<a href="/recibo/{resultado.entradas.uuid}" title="Recibo">
+									<a aria-label="entradas" href="/recibo/{resultado.entradas.uuid}" title="Recibo">
 										<i class="fa-regular fa-file-lines fa-fw"></i>
 									</a>
 								</td>

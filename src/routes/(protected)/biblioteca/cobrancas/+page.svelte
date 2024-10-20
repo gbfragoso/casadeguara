@@ -38,12 +38,14 @@
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
-					<th>Leitor</th>
-					<th>Título</th>
-					<th>Ex</th>
-					<th>Prazo</th>
-					<th>Cobrança</th>
-					<th class="table-actions">Ações</th>
+					<tr>
+						<th>Leitor</th>
+						<th>Título</th>
+						<th>Ex</th>
+						<th>Prazo</th>
+						<th>Cobrança</th>
+						<th class="table-actions">Ações</th>
+					</tr>
 				</thead>
 				<tbody>
 					{#await emprestimos}
@@ -84,6 +86,7 @@
 									<div class="field is-grouped">
 										{#if emprestimo.telefone}
 											<a
+												aria-label="link"
 												href="https://wa.me/{emprestimo.telefone}?text={body(
 													emprestimo.leitor,
 													emprestimo.titulo,
@@ -96,6 +99,7 @@
 										{/if}
 										{#if emprestimo.celular}
 											<a
+												aria-label="link"
 												href="https://wa.me/{emprestimo.celular}?text={body(
 													emprestimo.leitor,
 													emprestimo.titulo,
@@ -108,6 +112,7 @@
 										{/if}
 										{#if emprestimo.email}
 											<a
+												aria-label="link"
 												href="mailto:{emprestimo.email}?subject=Prazo para devolução expirado&body={body(
 													emprestimo.leitor,
 													emprestimo.titulo,

@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 	export let form: ActionData;
-	export let loading = false;
+	let loading = false;
 </script>
 
 <div class="mb-2">
@@ -86,7 +86,8 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold {loading ? 'is-loading' : ''}"
+					class:is-loading={loading}
+					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
 					<i class="fa-regular fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar Lista
 				</button>
@@ -106,14 +107,16 @@
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
-						{#if form.datas}
-							{#each form.datas as date}
-								<th class="print-pr-2">
-									{date}
-								</th>
-							{/each}
-						{/if}
-						<th class="print-pl-6">Nome</th>
+						<tr>
+							{#if form.datas}
+								{#each form.datas as date}
+									<th class="print-pr-2">
+										{date}
+									</th>
+								{/each}
+							{/if}
+							<th class="print-pl-6">Nome</th>
+						</tr>
 					</thead>
 					<tbody>
 						{#each form.leitores as leitor}
