@@ -35,6 +35,15 @@ export const load: PageServerLoad = async ({ locals }) => {
 				.orderBy(({ label }) => label)
 				.limit(12);
 		};
+		console.log(db
+			.select({
+				data: count(),
+				label: sql<string>`date_trunc('month', ${frequencia.dataPresenca})`.as('mes'),
+			})
+			.from(frequencia)
+			.groupBy(({ label }) => label)
+			.orderBy(({ label }) => label)
+			.limit(12).toSQL())
 
 		return {
 			leitores: leitores(),

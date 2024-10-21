@@ -9,7 +9,6 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-
 	let { leitores } = $derived(data);
 </script>
 
@@ -38,6 +37,12 @@
 		};
 	}}>
 	<div class="card-content">
+		<div class="field">
+			<label class="label" for="dataFim">Data</label>
+			<div class="control">
+				<input class="input" type="date" name="data" id="data" aria-label="Date" required />
+			</div>
+		</div>
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
@@ -60,7 +65,7 @@
 						{#each item as leitor}
 							<tr>
 								<td>
-									<input type="checkbox" value={leitor.idleitor} name="leitor" id="leitor" checked />
+									<input type="checkbox" value={leitor.idleitor} name="leitor" id="leitor" />
 								</td>
 								<td>
 									{leitor.nome.toUpperCase()}
@@ -70,12 +75,6 @@
 					{/await}
 				</tbody>
 			</table>
-			<div class="field">
-				<label class="label" for="dataFim">Data</label>
-				<div class="control">
-					<input class="input" type="date" name="data" id="data" aria-label="Date" required />
-				</div>
-			</div>
 			<div class="control mt-3">
 				<button
 					aria-busy={loading}

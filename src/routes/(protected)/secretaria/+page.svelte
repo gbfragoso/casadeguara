@@ -8,7 +8,6 @@
 	}
 
 	let { data }: Props = $props();
-
 	let { leitores, engajamento, frequency } = $derived(data);
 	dayjs.extend(utc);
 </script>

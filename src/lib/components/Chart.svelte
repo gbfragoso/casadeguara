@@ -16,26 +16,23 @@
 		maintainAspectRatio: false,
 	};
 
-	let data = $state({
-		labels: ['Aurora', 'Goldon', 'Thornton', 'Colorado Springs'],
-		datasets: [
-			{
-				label: 'Frequência por mês',
-				backgroundColor: ['#3e95cd'],
-				data: [42, 32, 23, 52],
-				tension: 0.32,
-				borderWidth: 3,
-			},
-		],
-	});
-
 	interface Props {
 		dataset: { data: number; label: string }[];
 	}
 
 	let { dataset }: Props = $props();
-	data.labels = dataset.map((x) => x.label.substring(0, 7));
-	data.datasets[0].data = dataset.map((x) => x.data);
+	let data = $derived({
+		labels: dataset.map((x) => x.label.substring(0, 7)),
+		datasets: [
+			{
+				label: 'Frequência por mês',
+				backgroundColor: ['#3e95cd'],
+				data: dataset.map((x) => x.data),
+				tension: 0.32,
+				borderWidth: 3,
+			},
+		],
+	});
 
 	let config = $derived({
 		type: 'line',
