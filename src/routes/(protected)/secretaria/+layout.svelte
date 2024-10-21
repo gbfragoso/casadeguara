@@ -29,35 +29,27 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria'}>
-					<a data-sveltekit-reload aria-label="home" title="Página Inicial" href="/secretaria">
+					<a aria-label="home" title="Página Inicial" href="/secretaria">
 						<i class="fa-solid fa-house fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/frequencia'}>
-					<a data-sveltekit-reload aria-label="frequência" title="Frequência" href="/secretaria/frequencia">
+					<a aria-label="frequência" title="Frequência" href="/secretaria/frequencia">
 						<i class="fa-solid fa-list-check fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/aniversariantes'}>
-					<a
-						data-sveltekit-reload
-						aria-label="aniversariantes"
-						title="Aniversariantes"
-						href="/secretaria/aniversariantes">
+					<a aria-label="aniversariantes" title="Aniversariantes" href="/secretaria/aniversariantes">
 						<i class="fa-solid fa-cake-candles fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/trabalhadores'}>
-					<a
-						data-sveltekit-reload
-						aria-label="trabalhadores"
-						title="Trabalhadores"
-						href="/secretaria/trabalhadores">
+					<a aria-label="trabalhadores" title="Trabalhadores" href="/secretaria/trabalhadores">
 						<i class="fa-solid fa-handshake-angle fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
-					<a data-sveltekit-reload aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
+					<a aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
 						<i class="fa-solid fa-user fa-fw"></i>
 					</a>
 				</li>

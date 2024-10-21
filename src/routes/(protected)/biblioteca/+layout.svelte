@@ -32,58 +32,54 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-content-center">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca'}>
-					<a data-sveltekit-reload aria-label="home" title="Página inicial" href="/biblioteca">
+					<a aria-label="home" title="Página inicial" href="/biblioteca">
 						<i class="fa-solid fa-house fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/autores'}>
-					<a data-sveltekit-reload aria-label="autores" title="Autores" href="/biblioteca/autores">
+					<a aria-label="autores" title="Autores" href="/biblioteca/autores">
 						<i class="fa-solid fa-user-pen fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/avisos'}>
-					<a data-sveltekit-reload aria-label="avisos" title="Avisos" href="/biblioteca/avisos">
+					<a aria-label="avisos" title="Avisos" href="/biblioteca/avisos">
 						<i class="fa-solid fa-inbox fa-fw"></i>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/cobrancas'}>
-						<a data-sveltekit-reload aria-label="cobranças" title="Cobranças" href="/biblioteca/cobrancas">
+						<a aria-label="cobranças" title="Cobranças" href="/biblioteca/cobrancas">
 							<i class="fa-solid fa-envelopes-bulk fa-fw"></i>
 						</a>
 					</li>
 				{/if}
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/colecoes'}>
-					<a data-sveltekit-reload aria-label="coleções" title="Coleções" href="/biblioteca/colecoes">
+					<a aria-label="coleções" title="Coleções" href="/biblioteca/colecoes">
 						<i class="fa-solid fa-layer-group fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/editoras'}>
-					<a data-sveltekit-reload aria-label="editoras" title="Editoras" href="/biblioteca/editoras">
+					<a aria-label="editoras" title="Editoras" href="/biblioteca/editoras">
 						<i class="fa-solid fa-landmark-flag fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/emprestimos'}>
-					<a
-						data-sveltekit-reload
-						aria-label="empréstimos"
-						title="Empréstimos"
-						href="/biblioteca/emprestimos">
+					<a aria-label="empréstimos" title="Empréstimos" href="/biblioteca/emprestimos">
 						<i class="fa-solid fa-hand-holding fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/leitores'}>
-					<a data-sveltekit-reload aria-label="leitores" title="Leitores" href="/biblioteca/leitores">
+					<a aria-label="leitores" title="Leitores" href="/biblioteca/leitores">
 						<i class=" fa-solid fa-book-open-reader fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/livros'}>
-					<a data-sveltekit-reload aria-label="livros" title="Livros" href="/biblioteca/livros">
+					<a aria-label="livros" title="Livros" href="/biblioteca/livros">
 						<i class="fa-solid fa-book fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/keywords'}>
-					<a data-sveltekit-reload aria-label="keywords" title="Palavras-chave" href="/biblioteca/keywords">
+					<a aria-label="keywords" title="Palavras-chave" href="/biblioteca/keywords">
 						<i class="fa-solid fa-key fa-fw"></i>
 					</a>
 				</li>
