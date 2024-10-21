@@ -2,11 +2,14 @@
 	import { enhance } from '$app/forms';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
-	export let data: PageServerData;
-	export let form: ActionData;
-	let loading = false;
+	interface Props {
+		data: PageServerData;
+		form: ActionData;
+	}
 
-	$: ({ livro, editoras, colecoes } = data);
+	let { data, form }: Props = $props();
+	let loading = $state(false);
+	let { livro, editoras, colecoes } = $derived(data);
 </script>
 
 <div class="mb-2">

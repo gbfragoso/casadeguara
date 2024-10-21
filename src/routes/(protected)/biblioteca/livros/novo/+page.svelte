@@ -1,10 +1,13 @@
 <script lang="ts">
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
-	export let data: PageServerData;
-	export let form: ActionData;
+	interface Props {
+		data: PageServerData;
+		form: ActionData;
+	}
 
-	$: ({ editoras, colecoes } = data);
+	let { data, form }: Props = $props();
+	let { editoras, colecoes } = $derived(data);
 </script>
 
 <div class="mb-2">

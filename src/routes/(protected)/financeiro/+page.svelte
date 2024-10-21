@@ -4,9 +4,13 @@
 	import utc from 'dayjs/plugin/utc';
 
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	interface Props {
+		data: PageServerData;
+	}
 
-	$: ({ entradas, saidas, entradaMesAtual, saidaMesAtual } = data);
+	let { data }: Props = $props();
+
+	let { entradas, saidas, entradaMesAtual, saidaMesAtual } = $derived(data);
 	dayjs.extend(utc);
 </script>
 

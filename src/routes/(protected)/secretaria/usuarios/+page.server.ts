@@ -2,7 +2,6 @@ import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
 import { user } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { count } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
@@ -20,14 +19,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.from(user)
 				.offset((page - 1) * 5)
 				.where(where)
-				.orderBy(unaccent(user.name))
-				.limit(5);
+				.orderBy(unaccent(user.name));
 		};
 
-		const counter = await db.select({ count: count() }).from(user).where(where);
-		const total = counter[0].count;
-
-		return { usuarios: usuarios(), total };
+		return { usuarios: usuarios() };
 	} catch (err) {
 		console.error(err);
 		return error(500, { message: 'Falha ao carregar a lista de usuários' });

@@ -3,8 +3,12 @@
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData } from './$types';
 
-	export let form: ActionData;
-	let loading = false;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
+	let loading = $state(false);
 </script>
 
 <div class="mb-2">

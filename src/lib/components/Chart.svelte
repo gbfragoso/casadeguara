@@ -16,7 +16,7 @@
 		maintainAspectRatio: false,
 	};
 
-	let data = {
+	let data = $state({
 		labels: ['Aurora', 'Goldon', 'Thornton', 'Colorado Springs'],
 		datasets: [
 			{
@@ -27,17 +27,21 @@
 				borderWidth: 3,
 			},
 		],
-	};
+	});
 
-	export let dataset: { data: number; label: string }[];
+	interface Props {
+		dataset: { data: number; label: string }[];
+	}
+
+	let { dataset }: Props = $props();
 	data.labels = dataset.map((x) => x.label.substring(0, 7));
 	data.datasets[0].data = dataset.map((x) => x.data);
 
-	$: config = {
+	let config = $derived({
 		type: 'line',
 		data,
 		options,
-	};
+	});
 
 	const handleChart: Action<HTMLCanvasElement, any> = (element, config) => {
 		let theChart = new Chart(element, config);

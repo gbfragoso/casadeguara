@@ -3,9 +3,13 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	interface Props {
+		data: PageServerData;
+	}
 
-	$: ({ leitores, engajamento, frequency } = data);
+	let { data }: Props = $props();
+
+	let { leitores, engajamento, frequency } = $derived(data);
 	dayjs.extend(utc);
 </script>
 

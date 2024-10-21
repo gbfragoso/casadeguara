@@ -2,9 +2,12 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	interface Props {
+		data: PageServerData;
+	}
 
-	$: ({ emprestimos } = data);
+	let { data }: Props = $props();
+	let { emprestimos } = $derived(data);
 	dayjs.extend(utc);
 </script>
 

@@ -7,9 +7,13 @@
 	import extenso from 'extenso';
 
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	interface Props {
+		data: PageServerData;
+	}
 
-	$: ({ entrada } = data);
+	let { data }: Props = $props();
+
+	let { entrada } = $derived(data);
 	dayjs.extend(utc);
 
 	let qrcode = QRCode.toDataURL($page.url.href);
