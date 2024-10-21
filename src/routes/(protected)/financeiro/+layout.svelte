@@ -1,13 +1,10 @@
 <script lang="ts">
-	import type { LayoutServerData } from './$types';
+	import { page } from '$app/stores';
 	interface Props {
-		data: LayoutServerData;
 		children?: import('svelte').Snippet;
 	}
 
-	let { data, children }: Props = $props();
-
-	let open = $state(false);
+	let { children }: Props = $props();
 	let isHidden = $state(true);
 
 	function showMenu() {
@@ -22,60 +19,45 @@
 			}
 		}
 	}
-	let { name } = $derived(data);
 </script>
 
 <main class="is-flex">
-	<nav
-		id="sidebar"
-		class="is-flex is-flex-direction-column is-justify-content-space-between {open === true ? 'open-sidebar' : ''}">
+	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between is-hidden-touch">
 		<div class="p-3">
 			<div class="mb-5 is-flex is-2 is-align-content-center">
-				<img
-					src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
-					id="user-avatar"
-					alt="Avatar" />
-
-				<p id="user-info">
-					<span class="item-description pl-2 is-size-6">Bem vindo</span>
-					<span class="item-description pl-2 is-size-6 has-text-weight-bold">{name}</span>
-				</p>
+				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
-				<li class="sidebar-item">
-					<a href="/financeiro">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro'}>
+					<a data-sveltekit-reload aria-label="home" title="Página Inicial" href="/financeiro">
 						<i class="fa-solid fa-house fa-fw"></i>
-						<span class="item-description">Home</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro/entradas">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/entradas'}>
+					<a data-sveltekit-reload aria-label="entradas" title="Entradas" href="/financeiro/entradas">
 						<i class="fa-solid fa-wallet fa-fw"></i>
-						<span class="item-description">Entradas</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro/saidas">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/saidas'}>
+					<a data-sveltekit-reload aria-label="saídas" title="Saídas" href="/financeiro/saidas">
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
-						<span class="item-description">Saídas</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/financeiro/contribuintes">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuntes'}>
+					<a
+						data-sveltekit-reload
+						aria-label="contribuintes"
+						title="Contribuintes"
+						href="/financeiro/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>
-						<span class="item-description">Contribuintes</span>
 					</a>
 				</li>
 			</ul>
-			<button aria-label="link" id="sidebar-button" class="is-hidden-mobile" onclick={() => (open = !open)}>
-				<i id="sidebar-button-icon" class="fa-solid fa-chevron-right fa-fw"></i>
-			</button>
 		</div>
-		<div id="logout">
+		<div id="logout" class="has-text-centered">
 			<form action="/logout" method="POST">
-				<button id="logout-button">
+				<button aria-label="sair" id="logout-button">
 					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
-					<span class="item-description">Sair</span>
 				</button>
 			</form>
 		</div>
@@ -83,6 +65,7 @@
 	<section class="section is-flex-grow-1">
 		<button
 			class="mb-2 navbar-burger {isHidden ? '' : 'is-active'}"
+			class:is-active={!isHidden}
 			style="background-color: white"
 			aria-label="menu"
 			aria-expanded="false"

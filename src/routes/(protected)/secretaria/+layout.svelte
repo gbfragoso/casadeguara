@@ -1,13 +1,10 @@
 <script lang="ts">
-	import type { LayoutServerData } from './$types';
+	import { page } from '$app/stores';
 	interface Props {
-		data: LayoutServerData;
 		children?: import('svelte').Snippet;
 	}
 
-	let { data, children }: Props = $props();
-
-	let open = $state(false);
+	let { children }: Props = $props();
 	let isHidden = $state(true);
 
 	function showMenu() {
@@ -22,76 +19,62 @@
 			}
 		}
 	}
-
-	let { name } = $derived(data);
 </script>
 
 <main class="is-flex">
-	<nav
-		id="sidebar"
-		class="is-flex is-flex-direction-column is-justify-content-space-between is-hidden-touch {open === true
-			? 'open-sidebar'
-			: ''}">
+	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between is-hidden-touch">
 		<div class="p-3">
 			<div class="mb-5 is-flex is-2 is-align-content-center">
-				<img
-					src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
-					id="user-avatar"
-					alt="Avatar" />
-
-				<p id="user-info">
-					<span class="item-description pl-2 is-size-6">Bem vindo</span>
-					<span class="item-description pl-2 is-size-6 has-text-weight-bold">{name}</span>
-				</p>
+				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
-				<li class="sidebar-item">
-					<a href="/secretaria">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria'}>
+					<a data-sveltekit-reload aria-label="home" title="Página Inicial" href="/secretaria">
 						<i class="fa-solid fa-house fa-fw"></i>
-						<span class="item-description">Home</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria/frequencia">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/frequencia'}>
+					<a data-sveltekit-reload aria-label="frequência" title="Frequência" href="/secretaria/frequencia">
 						<i class="fa-solid fa-list-check fa-fw"></i>
-						<span class="item-description">Frequência</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria/aniversariantes">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/aniversariantes'}>
+					<a
+						data-sveltekit-reload
+						aria-label="aniversariantes"
+						title="Aniversariantes"
+						href="/secretaria/aniversariantes">
 						<i class="fa-solid fa-cake-candles fa-fw"></i>
-						<span class="item-description">Aniversariantes</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a data-sveltekit-reload href="/secretaria/trabalhadores">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/trabalhadores'}>
+					<a
+						data-sveltekit-reload
+						aria-label="trabalhadores"
+						title="Trabalhadores"
+						href="/secretaria/trabalhadores">
 						<i class="fa-solid fa-handshake-angle fa-fw"></i>
-						<span class="item-description">Trabalhadores</span>
 					</a>
 				</li>
-				<li class="sidebar-item">
-					<a href="/secretaria/usuarios">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
+					<a data-sveltekit-reload aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
 						<i class="fa-solid fa-user fa-fw"></i>
-						<span class="item-description">Usuários</span>
 					</a>
 				</li>
 			</ul>
-			<button aria-label="sidebar" id="sidebar-button" class="is-hidden-touch" onclick={() => (open = !open)}>
-				<i id="sidebar-button-icon" class="fa-solid fa-chevron-right fa-fw"></i>
-			</button>
 		</div>
-		<div id="logout">
+		<div id="logout" class="has-text-centered">
 			<form action="/logout" method="POST">
-				<button id="logout-button">
+				<button aria-label="sair" id="logout-button">
 					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
-					<span class="item-description">Sair</span>
 				</button>
 			</form>
 		</div>
 	</nav>
 	<section class="section is-flex-grow-1">
 		<button
-			class="mb-2 navbar-burger {isHidden ? '' : 'is-active'}"
+			class="mb-2 navbar-burger"
+			class:is-active={!isHidden}
 			style="background-color: white"
 			aria-label="menu"
 			aria-expanded="false"
