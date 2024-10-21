@@ -97,7 +97,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold" href="/secretaria/frequencia/registro"
+				<a class="button is-fullwidth has-text-weight-semibold is-danger" href="/secretaria/frequencia/registro"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Registrar</a>
 			</div>
 		</div>

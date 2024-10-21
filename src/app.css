@@ -42,20 +42,9 @@ tr td {
 }
 
 #user-avatar {
-	width: 50px;
-	height: 50px;
+	width: 60px;
+	height: 60px;
 	object-fit: cover;
-	border-radius: 20px;
-}
-
-#user-info {
-	display: flex;
-	flex-direction: column;
-}
-
-#user-info span:last-child {
-	color: #6b6b6b;
-	font-size: 12px;
 }
 
 #sidebar-list {
@@ -105,36 +94,8 @@ tr td {
 
 #logout-button {
 	border: none;
-	padding: 12px;
-	font-size: 14px;
-	display: flex;
-	gap: 20px;
-	align-items: center;
-	border-radius: 8px;
-	text-align: start;
 	cursor: pointer;
 	background-color: transparent;
-}
-
-#sidebar-button {
-	position: absolute;
-	top: 30px;
-	right: -10px;
-	background-color: #017fc0;
-	color: #e3e9f7;
-	border-radius: 100%;
-	width: 20px;
-	height: 20px;
-	border: none;
-	cursor: pointer;
-}
-
-#sidebar-button-icon {
-	transition: transform 0.3s ease;
-}
-
-.open-sidebar #sidebar-button-icon {
-	transform: rotate(180deg);
 }
 
 .item-description {
@@ -145,20 +106,6 @@ tr td {
 	font-size: 14px;
 	transition: width 0.6s;
 	height: 0px;
-}
-
-#sidebar.open-sidebar {
-	min-width: 15%;
-}
-
-#sidebar.open-sidebar .item-description {
-	width: 150px;
-	height: auto;
-}
-
-#sidebar.open-sidebar .sidebar-item a {
-	justify-content: flex-start;
-	gap: 1rem;
 }
 
 @media print {
