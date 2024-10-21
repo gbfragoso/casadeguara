@@ -49,7 +49,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-danger" href="/biblioteca/leitores/novo"
+				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/biblioteca/leitores/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
