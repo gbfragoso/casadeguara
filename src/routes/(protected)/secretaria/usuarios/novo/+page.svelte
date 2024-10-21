@@ -3,10 +3,14 @@
 	import Notification from '$lib/components/Notification.svelte';
 	import validator from 'validator';
 	import type { ActionData } from './$types';
-	export let form: ActionData;
-	let loading = false;
+	interface Props {
+		form: ActionData;
+	}
 
-	let password = '';
+	let { form }: Props = $props();
+	let loading = $state(false);
+
+	let password = $state('');
 </script>
 
 <div class="mb-2">

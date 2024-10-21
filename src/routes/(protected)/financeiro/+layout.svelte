@@ -1,9 +1,14 @@
 <script lang="ts">
 	import type { LayoutServerData } from './$types';
-	export let data: LayoutServerData;
+	interface Props {
+		data: LayoutServerData;
+		children?: import('svelte').Snippet;
+	}
 
-	let open = false;
-	let isHidden = true;
+	let { data, children }: Props = $props();
+
+	let open = $state(false);
+	let isHidden = $state(true);
 
 	function showMenu() {
 		let menu = document.getElementById('sidebar');
@@ -17,7 +22,7 @@
 			}
 		}
 	}
-	$: ({ name } = data);
+	let { name } = $derived(data);
 </script>
 
 <main class="is-flex">
@@ -62,7 +67,7 @@
 					</a>
 				</li>
 			</ul>
-			<button aria-label="link" id="sidebar-button" class="is-hidden-mobile" on:click={() => (open = !open)}>
+			<button aria-label="link" id="sidebar-button" class="is-hidden-mobile" onclick={() => (open = !open)}>
 				<i id="sidebar-button-icon" class="fa-solid fa-chevron-right fa-fw"></i>
 			</button>
 		</div>
@@ -81,12 +86,12 @@
 			style="background-color: white"
 			aria-label="menu"
 			aria-expanded="false"
-			on:click={showMenu}>
+			onclick={showMenu}>
 			<span aria-hidden="true"></span>
 			<span aria-hidden="true"></span>
 			<span aria-hidden="true"></span>
 			<span aria-hidden="true"></span>
 		</button>
-		<slot />
+		{@render children?.()}
 	</section>
 </main>

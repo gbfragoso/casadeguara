@@ -4,11 +4,15 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
-	export let data: PageServerData;
-	export let form: ActionData;
-	let loading = false;
+	interface Props {
+		data: PageServerData;
+		form: ActionData;
+	}
 
-	$: ({ isAdmin } = data);
+	let { data, form }: Props = $props();
+	let loading = $state(false);
+
+	let { isAdmin } = $derived(data);
 	dayjs.extend(utc);
 </script>
 

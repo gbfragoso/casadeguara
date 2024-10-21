@@ -1,9 +1,11 @@
 <script lang="ts">
-	import Pagination from '$lib/components/Pagination.svelte';
 	import type { PageServerData } from './$types';
-	export let data: PageServerData;
+	interface Props {
+		data: PageServerData;
+	}
 
-	$: ({ usuarios, total } = data);
+	let { data }: Props = $props();
+	let { usuarios } = $derived(data);
 </script>
 
 <div class="mb-2">
@@ -73,7 +75,6 @@
 					{/await}
 				</tbody>
 			</table>
-			<Pagination {total}></Pagination>
 		</div>
 	</div>
 </div>

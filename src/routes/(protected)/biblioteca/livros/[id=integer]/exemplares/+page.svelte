@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ActionData, PageServerData } from './$types';
-	export let data: PageServerData;
-	export let form: ActionData;
-	let loading = false;
+	interface Props {
+		data: PageServerData;
+		form: ActionData;
+	}
 
-	$: ({ exemplares, role } = data);
+	let { data, form }: Props = $props();
+	let loading = $state(false);
+	let { exemplares, role } = $derived(data);
 </script>
 
 <div class="mb-2">

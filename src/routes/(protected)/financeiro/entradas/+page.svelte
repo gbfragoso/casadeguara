@@ -5,8 +5,12 @@
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData } from './$types';
 
-	export let form: ActionData;
-	let loading = false;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
+	let loading = $state(false);
 
 	dayjs.extend(utc);
 </script>
