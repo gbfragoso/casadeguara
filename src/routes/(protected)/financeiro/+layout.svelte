@@ -29,26 +29,22 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro'}>
-					<a data-sveltekit-reload aria-label="home" title="Página Inicial" href="/financeiro">
+					<a aria-label="home" title="Página Inicial" href="/financeiro">
 						<i class="fa-solid fa-house fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/entradas'}>
-					<a data-sveltekit-reload aria-label="entradas" title="Entradas" href="/financeiro/entradas">
+					<a aria-label="entradas" title="Entradas" href="/financeiro/entradas">
 						<i class="fa-solid fa-wallet fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/saidas'}>
-					<a data-sveltekit-reload aria-label="saídas" title="Saídas" href="/financeiro/saidas">
+					<a aria-label="saídas" title="Saídas" href="/financeiro/saidas">
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuntes'}>
-					<a
-						data-sveltekit-reload
-						aria-label="contribuintes"
-						title="Contribuintes"
-						href="/financeiro/contribuintes">
+					<a aria-label="contribuintes" title="Contribuintes" href="/financeiro/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>
 					</a>
 				</li>
