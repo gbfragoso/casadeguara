@@ -68,32 +68,47 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each exemplares as exemplar}
+					{#await exemplares}
 						<tr>
-							<td>{exemplar.numero}</td>
 							<td>
-								{#if exemplar.status === 'Disponível'}
-									<span class="tag is-success">{exemplar.status}</span>
-								{:else}
-									<span class="tag is-danger">{exemplar.status}</span>
-								{/if}
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
 							</td>
-							<td class="table-actions">
-								{#if role.includes('admin')}
-									<div class="field is-grouped">
-										<form
-											action="?/excluir&exemplar={exemplar.idexemplar}"
-											method="POST"
-											use:enhance>
-											<button aria-label="trash">
-												<i class="fa-regular fa-trash-can fa-fw"></i>
-											</button>
-										</form>
-									</div>
-								{/if}
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
 							</td>
 						</tr>
-					{/each}
+					{:then item}
+						{#each item as exemplar}
+							<tr>
+								<td>{exemplar.numero}</td>
+								<td>
+									{#if exemplar.status === 'Disponível'}
+										<span class="tag is-success">{exemplar.status}</span>
+									{:else}
+										<span class="tag is-danger">{exemplar.status}</span>
+									{/if}
+								</td>
+								<td class="table-actions">
+									{#if role.includes('admin')}
+										<div class="field is-grouped">
+											<form
+												action="?/excluir&exemplar={exemplar.idexemplar}"
+												method="POST"
+												use:enhance>
+												<button aria-label="trash">
+													<i class="fa-regular fa-trash-can fa-fw"></i>
+												</button>
+											</form>
+										</div>
+									{/if}
+								</td>
+							</tr>
+						{/each}
+					{/await}
 				</tbody>
 			</table>
 		</div>

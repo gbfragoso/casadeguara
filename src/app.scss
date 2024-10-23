@@ -11,3 +11,46 @@
 @use 'bulma/sass/helpers';
 @use 'bulma/sass/layout';
 @use 'bulma/sass/themes';
+
+@media (prefers-color-scheme: dark) {
+	a {
+		color: #f3f4f6 !important;
+	}
+
+	body {
+		background-color: #262a32 !important;
+		color: #f3f4f6 !important;
+	}
+
+	#sidebar {
+		background-color: #14161a;
+	}
+
+	.sidebar-item:hover:not(.active),
+	#logout_btn:hover {
+		background-color: #ffd46f;
+		color: #14161a;
+	}
+}
+
+[data-theme='dark'],
+.theme-dark {
+	a {
+		color: #f3f4f6 !important;
+	}
+
+	body {
+		background-color: #262a32 !important;
+		color: #f3f4f6 !important;
+	}
+
+	#sidebar {
+		background-color: #14161a;
+	}
+
+	.sidebar-item:hover:not(.active),
+	#logout_btn:hover {
+		background-color: #ffd46f;
+		color: #14161a;
+	}
+}

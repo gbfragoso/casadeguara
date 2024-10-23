@@ -3,8 +3,8 @@ body {
 	font-feature-settings: normal;
 	font-variation-settings: normal;
 	min-height: 100vh !important;
-	background-color: #f3f4f6 !important;
 	overflow: auto;
+	background-color: #f3f4f6;
 	color: #1b254b !important;
 }
 
@@ -68,7 +68,7 @@ tr td {
 	align-items: center;
 	justify-content: center;
 	padding: 1rem;
-	color: #0a0a0a;
+	color: #262a32;
 }
 
 .sidebar-item.active a {
@@ -84,7 +84,6 @@ tr td {
 }
 
 #logout {
-	border-top: 1px solid #e3e9f7;
 	padding: 12px;
 }
 

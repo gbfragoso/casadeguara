@@ -13,9 +13,9 @@
 		<div class="container card mt-6" style="max-width:400px">
 			<div class="card-content">
 				<div class="is-primary">
-					<p class="pb-3 is-size-3 has-text-weight-semibold has-text-primary has-text-centered">
-						Bem-vindo(a)
-					</p>
+					<div class="pb-3 has-text-centered">
+						<img src="/logo.png" alt="Avatar" style="width:40%;height:auto" />
+					</div>
 				</div>
 				<form method="POST" use:enhance>
 					<div class="field">

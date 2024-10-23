@@ -43,7 +43,7 @@
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuntes'}>
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuintes'}>
 					<a aria-label="contribuintes" title="Contribuintes" href="/financeiro/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>
 					</a>

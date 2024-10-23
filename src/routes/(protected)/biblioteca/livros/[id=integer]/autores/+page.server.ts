@@ -9,15 +9,19 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const autores = await db.select().from(autor).orderBy(autor.nome);
-		const autoresLivro = await db
-			.select({ idautor: autor.idautor, nome: autor.nome })
-			.from(autorHasLivro)
-			.innerJoin(autor, eq(autorHasLivro.autor, autor.idautor))
-			.where(eq(autorHasLivro.livro, Number(params.id)))
-			.orderBy(autor.nome);
+		const autores = async () => {
+			return db.select().from(autor).orderBy(autor.nome);
+		};
+		const autoresLivro = async () => {
+			return db
+				.select({ idautor: autor.idautor, nome: autor.nome })
+				.from(autorHasLivro)
+				.innerJoin(autor, eq(autorHasLivro.autor, autor.idautor))
+				.where(eq(autorHasLivro.livro, Number(params.id)))
+				.orderBy(autor.nome);
+		};
 
-		return { autores, autoresLivro, role: locals.user.roles };
+		return { autores: autores(), autoresLivro: autoresLivro(), role: locals.user.roles };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

@@ -7,7 +7,7 @@
 
 	let { data }: Props = $props();
 	let loading = $state(false);
-	let { autores, autoresLivro, role } = $derived(data);
+	let { keywords, keywordsLivro, role } = $derived(data);
 </script>
 
 <div class="mb-2">
@@ -16,11 +16,11 @@
 			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li><a href="/biblioteca/livros">Livros</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros/autores" aria-current="page">Autores</a>
+				<a href="/biblioteca/livros/keywords" aria-current="page">Palavras-Chave</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de autores</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de palavras-chave</h1>
 </div>
 
 <form
@@ -36,16 +36,28 @@
 	}}>
 	<div class="card-content">
 		<div class="field">
-			<label class="label" for="nome">Nome do autor</label>
+			<label class="label" for="nome">Palavra-chave</label>
 			<div class="select is-fullwidth">
-				<select name="autor" id="autor" required>
+				<select name="keyword" id="keyword" required>
 					<option></option>
-					{#await autores then item}
-						{#each item as autor}
-							<option value={autor.idautor}>{autor.nome}</option>
+					{#await keywords then item}
+						{#each item as keyword}
+							<option value={keyword.idkeyword}>{keyword.chave}</option>
 						{/each}
 					{/await}
 				</select>
+			</div>
+		</div>
+		<div class="field">
+			<label class="label" for="referencia">Referência</label>
+			<div class="control">
+				<input
+					class="input"
+					type="text"
+					name="referencia"
+					id="referencia"
+					placeholder="Digite o local do livro onde encontramos esse tema"
+					required />
 			</div>
 		</div>
 		<div class="control">
@@ -63,13 +75,19 @@
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
 					<tr>
-						<th>Nome</th>
+						<th>Palavra-chave</th>
+						<th>Referência</th>
 						<th class="table-actions">Ações</th>
 					</tr>
 				</thead>
 				<tbody>
-					{#await autoresLivro}
+					{#await keywordsLivro}
 						<tr>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
 							<td>
 								<div class="skeleton-lines">
 									<div></div>
@@ -82,13 +100,17 @@
 							</td>
 						</tr>
 					{:then item}
-						{#each item as autor}
+						{#each item as keyword}
 							<tr>
-								<td>{autor.nome}</td>
+								<td>{keyword.chave}</td>
+								<td>{keyword.referencia}</td>
 								<td>
 									{#if role.includes('admin')}
 										<div class="field is-grouped">
-											<form action="?/excluir&autor={autor.idautor}" method="POST" use:enhance>
+											<form
+												action="?/excluir&keyword={keyword.idkeyword}"
+												method="POST"
+												use:enhance>
 												<button aria-label="trash">
 													<i class="fa-regular fa-trash-can fa-fw"></i>
 												</button>
