@@ -129,16 +129,22 @@
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
 										<a
-											aria-label="livros"
+											aria-label="autores"
+											class="control"
+											href="/biblioteca/livros/{livro.idlivro}/autores">
+											<i class="fa-solid fa-user-pen fa-fw"></i>
+										</a>
+										<a
+											aria-label="exemplares"
 											class="control"
 											href="/biblioteca/livros/{livro.idlivro}/exemplares">
 											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
 										<a
-											aria-label="autores"
+											aria-label="keywords"
 											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/autores">
-											<i class="fa-solid fa-user-pen fa-fw"></i>
+											href="/biblioteca/livros/{livro.idlivro}/keywords">
+											<i class="fa-solid fa-key fa-fw"></i>
 										</a>
 										{#if role.includes('admin')}
 											<form action="?/excluir&id={livro.idlivro}" method="POST">

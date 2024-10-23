@@ -9,12 +9,14 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const exemplares = await db
-			.select()
-			.from(exemplar)
-			.where(eq(exemplar.livro, Number(params.id)))
-			.orderBy(exemplar.numero);
-		return { exemplares, role: locals.user.roles };
+		const exemplares = async () => {
+			return db
+				.select()
+				.from(exemplar)
+				.where(eq(exemplar.livro, Number(params.id)))
+				.orderBy(exemplar.numero);
+		};
+		return { exemplares: exemplares(), role: locals.user.roles };
 	} catch (err) {
 		console.error(err);
 		return error(500, {
