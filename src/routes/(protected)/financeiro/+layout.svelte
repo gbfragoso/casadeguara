@@ -50,27 +50,47 @@
 				</li>
 			</ul>
 		</div>
-		<div id="logout" class="has-text-centered">
-			<form action="/logout" method="POST">
-				<button aria-label="sair" id="logout-button">
-					<i class="fa-solid fa-right-from-bracket fa-fw"></i>
-				</button>
-			</form>
-		</div>
 	</nav>
 	<section class="section is-flex-grow-1">
-		<button
-			class="mb-2 navbar-burger {isHidden ? '' : 'is-active'}"
-			class:is-active={!isHidden}
-			style="background-color: white"
-			aria-label="menu"
-			aria-expanded="false"
-			onclick={showMenu}>
-			<span aria-hidden="true"></span>
-			<span aria-hidden="true"></span>
-			<span aria-hidden="true"></span>
-			<span aria-hidden="true"></span>
-		</button>
+		<div class="is-flex is-flex-direction-row is-justify-content-end">
+			<div class="box p-0 px-3 py-2">
+				<form action="/logout" method="POST">
+					<div class="field is-grouped">
+						<button
+							type="button"
+							class="navbar-burger"
+							class:is-active={!isHidden}
+							aria-label="menu"
+							aria-expanded="false"
+							onclick={showMenu}>
+							<span aria-hidden="true"></span>
+							<span aria-hidden="true"></span>
+							<span aria-hidden="true"></span>
+							<span aria-hidden="true"></span>
+						</button>
+						<button
+							aria-label="light"
+							type="button"
+							class="is-size-5 mr-2 pb-1"
+							data-theme-toggle
+							onclick={() => document.querySelector('html')?.setAttribute('data-theme', 'light')}>
+							<i class="fa-regular fa-sun fa-fw"></i>
+						</button>
+						<button
+							aria-label="light"
+							type="button"
+							data-theme-toggle
+							class="is-size-5 mr-2 pb-1"
+							onclick={() => document.querySelector('html')?.setAttribute('data-theme', 'dark')}>
+							<i class="fa-regular fa-moon fa-fw"></i>
+						</button>
+						<button class="is-size-5 pb-1" aria-label="sair" type="submit">
+							<i class="fa-solid fa-right-from-bracket fa-fw"></i>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
 		{@render children?.()}
 	</section>
 </main>
