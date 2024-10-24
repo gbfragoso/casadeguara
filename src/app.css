@@ -57,8 +57,7 @@ tr td {
 	background-color: #017fc0;
 }
 
-.sidebar-item:hover:not(.active),
-#logout_btn:hover {
+.sidebar-item:hover:not(.active) {
 	background-color: #e3e9f7;
 }
 
@@ -81,16 +80,6 @@ tr td {
 	justify-content: center;
 	width: 20px;
 	height: 20px;
-}
-
-#logout {
-	padding: 12px;
-}
-
-#logout-button {
-	border: none;
-	cursor: pointer;
-	background-color: transparent;
 }
 
 @media print {
