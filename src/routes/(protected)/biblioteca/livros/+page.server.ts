@@ -2,7 +2,7 @@ import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
 import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -25,57 +25,46 @@ export const actions: Actions = {
 		const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 		const editoraFilter = editor ? ulike(editora.nome, editor + '%') : undefined;
 		const colecaoFilter = colecao ? ulike(serie.nome, colecao + '%') : undefined;
-
-		let autorFilter = undefined;
-		if (author) {
-			const resultados = await db
-				.select({ idlivro: autorHasLivro.livro })
-				.from(autorHasLivro)
-				.innerJoin(autor, eq(autor.idautor, autorHasLivro.autor))
-				.where(ulike(autor.nome, author + '%'));
-
-			autorFilter = inArray(
-				livro.idlivro,
-				resultados.flatMap((v) => v.idlivro),
-			);
-		}
-
-		let keywordFilter = undefined;
-		if (key) {
-			const resultados = await db
-				.select({ idlivro: livroHasKeyword.livro })
-				.from(livroHasKeyword)
-				.innerJoin(keyword, eq(keyword.idkeyword, livroHasKeyword.keyword))
-				.where(ulike(keyword.chave, key + '%'));
-
-			keywordFilter = inArray(
-				livro.idlivro,
-				resultados.flatMap((v) => v.idlivro),
-			);
-		}
-
+		const autorFilter = author ? ulike(autor.nome, author + '%') : undefined;
+		const keywordFilter = key ? ulike(keyword.chave, key) : undefined;
 		const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
 
 		try {
-			const livros = await db
+			let query = db
 				.select({
 					idlivro: livro.idlivro,
 					tombo: livro.tombo,
 					titulo: livro.titulo,
-					editora: editora.nome,
 				})
 				.from(livro)
-				.innerJoin(editora, eq(livro.editora, editora.ideditora))
-				.leftJoin(serie, eq(livro.serie, serie.idserie))
+				.$dynamic()
 				.where(where)
 				.orderBy(colecao ? livro.ordem : unaccent(livro.titulo))
 				.limit(50);
+
+			if (editor) {
+				query = query.leftJoin(editora, eq(livro.editora, editora.ideditora));
+			}
+			if (colecao) {
+				query = query.leftJoin(serie, eq(livro.serie, serie.idserie));
+			}
+			if (author) {
+				query = query
+					.innerJoin(autorHasLivro, eq(autorHasLivro.livro, livro.idlivro))
+					.innerJoin(autor, eq(autorHasLivro.autor, autor.idautor));
+			}
+			if (key) {
+				query = query
+					.leftJoin(livroHasKeyword, eq(livroHasKeyword.livro, livro.idlivro))
+					.innerJoin(keyword, eq(livroHasKeyword.keyword, keyword.idkeyword));
+			}
+			const livros = await query;
 
 			return { livros };
 		} catch (err) {
 			console.error(err);
 			return error(500, {
-				message: 'Falha ao carregar a lista de autores',
+				message: 'Falha ao carregar a lista de livros',
 			});
 		}
 	},
