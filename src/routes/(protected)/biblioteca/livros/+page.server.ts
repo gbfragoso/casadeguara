@@ -2,7 +2,7 @@ import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
 import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -26,7 +26,7 @@ export const actions: Actions = {
 		const editoraFilter = editor ? ulike(editora.nome, editor + '%') : undefined;
 		const colecaoFilter = colecao ? ulike(serie.nome, colecao + '%') : undefined;
 		const autorFilter = author ? ulike(autor.nome, author + '%') : undefined;
-		const keywordFilter = key ? ulike(keyword.chave, key) : undefined;
+		const keywordFilter = key ? ulike(keyword.chave, key + '%') : undefined;
 		const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
 
 		try {
@@ -35,6 +35,8 @@ export const actions: Actions = {
 					idlivro: livro.idlivro,
 					tombo: livro.tombo,
 					titulo: livro.titulo,
+					keyword: key ? sql<string>`"keyword"."chave"` : sql<string>`'' as keyword`,
+					referencia: key ? sql<string>`"livro_has_keyword"."referencia"` : sql<string>`'' as referencia`,
 				})
 				.from(livro)
 				.$dynamic()
