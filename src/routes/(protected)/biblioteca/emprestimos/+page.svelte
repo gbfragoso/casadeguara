@@ -57,7 +57,7 @@
 			</div>
 			<div class="column">
 				<div class="field">
-					<label class="label" for="titulo">Títuto</label>
+					<label class="label" for="titulo">Título</label>
 					<div class="control">
 						<input
 							class="input"

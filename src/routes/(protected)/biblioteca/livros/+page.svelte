@@ -36,7 +36,7 @@
 	}}>
 	<div class="card-content">
 		<div class="field columns">
-			<div class="column is-2">
+			<div class="column">
 				<label class="label" for="tombo">Tombo</label>
 				<div class="control">
 					<input class="input" type="number" name="tombo" id="tombo" placeholder="Digite o tombo do livro" />
@@ -112,6 +112,8 @@
 						<tr>
 							<th>Tombo</th>
 							<th>Título</th>
+							<th>Palavra-chave</th>
+							<th>Referência</th>
 							<th class="table-actions">Ações</th>
 						</tr>
 					</thead>
@@ -120,6 +122,8 @@
 							<tr>
 								<td>{livro.tombo}</td>
 								<td>{livro.titulo}</td>
+								<td>{livro.keyword}</td>
+								<td>{livro.referencia}</td>
 								<td class="table-actions">
 									<div class="field is-grouped">
 										<a
