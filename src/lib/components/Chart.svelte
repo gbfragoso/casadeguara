@@ -1,21 +1,6 @@
 <script lang="ts">
-	import Chart from 'chart.js/auto';
+	import Chart, { type ChartConfiguration } from 'chart.js/auto';
 	import type { Action } from 'svelte/action';
-
-	const options = {
-		animation: false,
-		plugins: {
-			legend: {
-				display: true,
-			},
-			tooltip: {
-				enabled: true,
-			},
-		},
-		responsive: true,
-		maintainAspectRatio: false,
-	};
-
 	interface Props {
 		dataset: { data: number; label: string }[];
 	}
@@ -26,7 +11,7 @@
 		datasets: [
 			{
 				label: 'Frequência por mês',
-				backgroundColor: ['#3e95cd'],
+				color: '#3e95cd',
 				data: dataset.map((x) => x.data),
 				tension: 0.32,
 				borderWidth: 3,
@@ -34,13 +19,25 @@
 		],
 	});
 
-	let config = $derived({
+	const config: ChartConfiguration = $derived({
 		type: 'line',
 		data,
-		options,
+		options: {
+			animation: false,
+			plugins: {
+				legend: {
+					display: true,
+				},
+				tooltip: {
+					enabled: true,
+				},
+			},
+			responsive: true,
+			maintainAspectRatio: false,
+		},
 	});
 
-	const handleChart: Action<HTMLCanvasElement, any> = (element, config) => {
+	const handleChart: Action<HTMLCanvasElement, ChartConfiguration> = (element, config) => {
 		let theChart = new Chart(element, config);
 
 		return {

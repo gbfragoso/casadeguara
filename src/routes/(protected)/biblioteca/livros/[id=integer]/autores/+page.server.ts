@@ -61,7 +61,7 @@ export const actions: Actions = {
 				.where(and(eq(autorHasLivro.livro, livro), eq(autorHasLivro.autor, Number(autor))));
 			return { status: 200 };
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao excluir o autor',
 			});

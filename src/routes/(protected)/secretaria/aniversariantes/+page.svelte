@@ -60,7 +60,7 @@
 					class:is-loading={loading}
 					class="button is-primary is-fullwidth has-text-weight-semibold"
 					type="submit">
-					<i class="fa-solid fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar lista
+					<i class="fa-regular fa-rectangle-list fa-fw"></i>&nbsp;Gerar lista
 				</button>
 			</div>
 		</div>
