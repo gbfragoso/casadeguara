@@ -72,7 +72,7 @@ export const actions: Actions = {
 				.where(eq(livro.idlivro, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao atualizar os dados do livro',
 			});

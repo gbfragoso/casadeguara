@@ -62,7 +62,7 @@ export const actions: Actions = {
 				.where(and(eq(livroHasKeyword.livro, livro), eq(livroHasKeyword.keyword, Number(keyword))));
 			return { status: 200 };
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 			return error(500, {
 				message: 'Falha ao excluir a palavra-chave',
 			});
