@@ -32,6 +32,14 @@ export const actions: Actions = {
 			};
 		}
 
+		if (validator.isLength(descricao, { max: 200 })) {
+			return {
+				status: 400,
+				field: 'descricao',
+				message: 'Descrição do pagamento não pode conter somente números',
+			};
+		}
+
 		try {
 			await db.insert(saidas).values({
 				descricao: descricao,

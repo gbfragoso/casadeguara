@@ -12,11 +12,9 @@
 	}
 
 	let { data }: Props = $props();
-
 	let { entrada } = $derived(data);
-	dayjs.extend(utc);
-
 	let qrcode = QRCode.toDataURL($page.url.href);
+	dayjs.extend(utc);
 </script>
 
 <div id="recibo" style="background-color: white !important;">
@@ -118,12 +116,14 @@
 				</div>
 				<div class="columns py-1 pr-2">
 					<div class="column is-one-quarter py-1">Referente ao mês</div>
-					<div class="column border fit-content py-1">{dayjs.utc(item[0].data).format('MM / YYYY')}</div>
+					<div class="column border fit-content py-1">
+						{dayjs.utc(item[0].dataEntrada).format('MM / YYYY')}
+					</div>
 				</div>
 			</div>
 			<div class="is-flex is-justify-content-space-around pt-3">
 				<div class="column has-text-centered">
-					<div class="has-text-weight-bold">{dayjs.utc(item[0].data).format('DD / MM / YYYY')}</div>
+					<div class="has-text-weight-bold">{dayjs(item[0].dataRegistro).format('DD / MM / YYYY')}</div>
 					<div>Data</div>
 				</div>
 				<div class="column has-text-centered">

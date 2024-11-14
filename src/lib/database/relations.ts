@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm/relations';
 import {
-	acesso,
 	autor,
 	autorHasLivro,
 	editora,
@@ -15,8 +14,6 @@ import {
 	serie,
 	session,
 	user,
-	usuario,
-	usuarioHasAcesso,
 } from './schema';
 
 export const emprestimoRelations = relations(emprestimo, ({ one }) => ({
@@ -104,25 +101,6 @@ export const autorHasLivroRelations = relations(autorHasLivro, ({ one }) => ({
 
 export const autorRelations = relations(autor, ({ many }) => ({
 	autorHasLivros: many(autorHasLivro),
-}));
-
-export const usuarioHasAcessoRelations = relations(usuarioHasAcesso, ({ one }) => ({
-	acesso: one(acesso, {
-		fields: [usuarioHasAcesso.acesso],
-		references: [acesso.idacesso],
-	}),
-	usuario: one(usuario, {
-		fields: [usuarioHasAcesso.usuario],
-		references: [usuario.idusuario],
-	}),
-}));
-
-export const acessoRelations = relations(acesso, ({ many }) => ({
-	usuarioHasAcessos: many(usuarioHasAcesso),
-}));
-
-export const usuarioRelations = relations(usuario, ({ many }) => ({
-	usuarioHasAcessos: many(usuarioHasAcesso),
 }));
 
 export const livroHasKeywordRelations = relations(livroHasKeyword, ({ one }) => ({

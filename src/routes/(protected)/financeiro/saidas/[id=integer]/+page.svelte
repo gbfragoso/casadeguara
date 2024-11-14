@@ -12,7 +12,6 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-
 	let { saida } = $derived(data);
 	dayjs.extend(utc);
 </script>
@@ -44,7 +43,13 @@
 		<div class="field">
 			<label class="label" for="descricao">Descrição</label>
 			<div class="control">
-				<input class="input" type="text" name="descricao" id="descricao" value={saida.descricao} />
+				<input
+					class="input"
+					type="text"
+					name="descricao"
+					id="descricao"
+					maxlength="200"
+					value={saida.descricao} />
 				{#if form?.field === 'descricao'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}

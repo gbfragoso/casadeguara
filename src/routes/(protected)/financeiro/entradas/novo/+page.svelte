@@ -10,7 +10,6 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-
 	let { contribuintes } = $derived(data);
 </script>
 
