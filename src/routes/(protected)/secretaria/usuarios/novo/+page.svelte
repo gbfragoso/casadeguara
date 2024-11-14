@@ -65,8 +65,11 @@
 		<div class="select mb-4">
 			<select name="roles" id="roles">
 				<option value="biblioteca">Biblioteca</option>
+				<option value="biblioteca:admin">Biblioteca - Coordenação</option>
 				<option value="secretaria">Secretaria</option>
+				<option value="secretaria:admin">Secretaria - Coordenação</option>
 				<option value="financeiro">Tesouraria</option>
+				<option value="financeiro:admin">Tesouraria - Coordenação</option>
 			</select>
 		</div>
 		<div class="field">

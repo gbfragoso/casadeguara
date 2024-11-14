@@ -35,26 +35,33 @@ export const actions: Actions = {
 		const name = formData.get('name') as string;
 		const roles = formData.get('roles') as string;
 
-		if (validator.isEmail(username)) {
-			return fail(400, {
-				message: 'Invalid username',
-			});
+		if (!validator.isEmail(username)) {
+			return {
+				status: 400,
+				field: 'username',
+				message: 'E-mail inválido',
+			};
 		}
 		if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-			return fail(400, {
-				message: 'Invalid password',
-			});
+			return {
+				status: 400,
+				field: 'password',
+				message: 'Formato da senha inválido',
+			};
 		}
 
 		const passwordHash = await hash(password);
 
 		try {
-			await db.update(user).set({ username, name, passwordHash, roles }).where(eq(user.id, params.id));
-			return { status: 201 };
+			await db
+				.update(user)
+				.set({ username, name, passwordHash, roles: roles ? roles : undefined })
+				.where(eq(user.id, params.id));
+			return { status: 200 };
 		} catch (err) {
 			console.error(err);
 			return error(500, {
-				message: 'Falha ao criar um novo usuário',
+				message: 'Falha ao atualizar os dados do usuário',
 			});
 		}
 	},
