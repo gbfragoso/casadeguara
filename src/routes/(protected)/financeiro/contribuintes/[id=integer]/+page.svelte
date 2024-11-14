@@ -45,6 +45,7 @@
 					type="text"
 					name="nome"
 					id="nome"
+					maxlength="60"
 					placeholder="Digite o nome do contribuinte"
 					value={contribuinte.nome} />
 			</div>

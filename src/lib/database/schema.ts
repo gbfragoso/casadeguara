@@ -1,7 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
 	boolean,
-	char,
 	date,
 	foreignKey,
 	integer,
@@ -108,27 +107,6 @@ export const serie = pgTable('serie', {
 	dataCadastro: date('data_cadastro', { mode: 'date' }),
 });
 
-export const usuario = pgTable('usuario', {
-	idusuario: smallserial().primaryKey().notNull(),
-	nome: varchar({ length: 50 }),
-	login: varchar({ length: 20 }).notNull(),
-	senha: char({ length: 128 }).notNull(),
-	tipo: varchar({ length: 15 }),
-	dataCadastro: date('data_cadastro', { mode: 'date' }),
-	status: boolean().default(true),
-});
-
-export const configuracao = pgTable('configuracao', {
-	idconf: smallserial().primaryKey().notNull(),
-	chave: char({ length: 128 }).notNull(),
-	duracaoEmprestimo: smallint('duracao_emprestimo'),
-	duracaoRenovacao: smallint('duracao_renovacao'),
-	limiteEmprestimo: smallint('limite_emprestimo'),
-	limiteRenovacao: smallint('limite_renovacao'),
-	intervaloEmprestimo: smallint('intervalo_emprestimo'),
-	cobranca: text(),
-});
-
 export const exemplar = pgTable(
 	'exemplar',
 	{
@@ -156,11 +134,6 @@ export const saidas = pgTable('saidas', {
 	dataSaida: date('data_saida', { mode: 'date' }).defaultNow().notNull(),
 	userCadastro: smallint('user_cadastro'),
 	userAlteracao: smallint('user_alteracao'),
-});
-
-export const acesso = pgTable('acesso', {
-	idacesso: smallserial().primaryKey().notNull(),
-	conteudo: varchar({ length: 40 }),
 });
 
 export const user = pgTable(
@@ -213,7 +186,8 @@ export const entradas = pgTable(
 		identrada: serial().primaryKey().notNull(),
 		descricao: varchar({ length: 200 }).notNull(),
 		valor: numeric().notNull(),
-		dataEntrada: date('data_entrada', { mode: 'date' }).defaultNow().notNull(),
+		dataEntrada: date('data_entrada', { mode: 'date' }).notNull(),
+		dataRegistro: date('data_registro', { mode: 'date' }).defaultNow().notNull(),
 		idcontribuinte: integer().notNull(),
 		userCadastro: smallint('user_cadastro'),
 		userAlteracao: smallint('user_alteracao'),
@@ -289,29 +263,6 @@ export const autorHasLivro = pgTable(
 				name: 'fk_livro',
 			}).onDelete('cascade'),
 			pkAutorLivro: primaryKey({ columns: [table.autor, table.livro], name: 'pk_autor_livro' }),
-		};
-	},
-);
-
-export const usuarioHasAcesso = pgTable(
-	'usuario_has_acesso',
-	{
-		usuario: integer().notNull(),
-		acesso: integer().notNull(),
-	},
-	(table) => {
-		return {
-			fkAcesso: foreignKey({
-				columns: [table.acesso],
-				foreignColumns: [acesso.idacesso],
-				name: 'fk_acesso',
-			}).onUpdate('cascade'),
-			fkUsuario: foreignKey({
-				columns: [table.usuario],
-				foreignColumns: [usuario.idusuario],
-				name: 'fk_usuario',
-			}).onDelete('cascade'),
-			pkUsuarioAcesso: primaryKey({ columns: [table.usuario, table.acesso], name: 'pk_usuario_acesso' }),
 		};
 	},
 );

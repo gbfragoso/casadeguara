@@ -44,7 +44,13 @@
 		<div class="field">
 			<label class="label" for="descricao">Descrição</label>
 			<div class="control">
-				<input class="input" type="text" name="descricao" id="descricao" value={entrada.descricao} />
+				<input
+					class="input"
+					type="text"
+					name="descricao"
+					id="descricao"
+					maxlength="200"
+					value={entrada.descricao} />
 				{#if form?.field === 'descricao'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}

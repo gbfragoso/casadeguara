@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({ params }) => {
 					id: entradas.identrada,
 					valor: entradas.valor,
 					contribuinte: leitor.nome,
-					data: entradas.dataEntrada,
+					dataEntrada: entradas.dataEntrada,
+					dataRegistro: entradas.dataRegistro,
 				})
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
