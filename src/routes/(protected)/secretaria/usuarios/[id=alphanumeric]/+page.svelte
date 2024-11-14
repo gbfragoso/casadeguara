@@ -58,8 +58,11 @@
 		<div class="select mb-4">
 			<select name="roles" id="roles" value={usuario.roles}>
 				<option value="biblioteca">Biblioteca</option>
+				<option value="biblioteca:admin">Biblioteca - Coordenação</option>
 				<option value="secretaria">Secretaria</option>
+				<option value="secretaria:admin">Secretaria - Coordenação</option>
 				<option value="financeiro">Tesouraria</option>
+				<option value="financeiro:admin">Tesouraria - Coordenação</option>
 			</select>
 		</div>
 		<div class="field">
@@ -68,12 +71,12 @@
 					aria-busy={loading}
 					class:is-loading={loading}
 					class="button is-primary has-text-weight-semibold"
-					type="submit">Cadastrar</button>
+					type="submit">Atualizar</button>
 			</div>
 		</div>
 	</div>
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Usuário cadastrado com sucesso!</Notification>
+	<Notification class="is-success">Usuário atualizado com sucesso!</Notification>
 {/if}
