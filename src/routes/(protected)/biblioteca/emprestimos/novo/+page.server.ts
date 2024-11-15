@@ -1,8 +1,9 @@
 import { db } from '$lib/database/connection';
 import { emprestimo, exemplar, leitor, livro } from '$lib/database/schema';
+import { unaccent } from '$lib/database/functions';
 import { error, redirect } from '@sveltejs/kit';
 import dayjs from 'dayjs';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, sql } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -11,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	try {
 		const leitores = async () => {
-			return db.select({ idleitor: leitor.idleitor, nome: leitor.nome }).from(leitor).orderBy(leitor.nome);
+			return db.select({ idleitor: leitor.idleitor, nome: leitor.nome }).from(leitor).orderBy(unaccent(leitor.nome));
 		};
 
 		const exemplares = async () => {
@@ -24,7 +25,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 				})
 				.from(exemplar)
 				.innerJoin(livro, eq(livro.idlivro, exemplar.livro))
-				.where(eq(exemplar.status, 'Disponível'));
+				.where(eq(exemplar.status, 'Disponível'))
+				.orderBy(sql<number>`cast(livro.tombo as decimal)`, exemplar.numero);
 		};
 
 		return { leitores: leitores(), exemplares: exemplares() };
