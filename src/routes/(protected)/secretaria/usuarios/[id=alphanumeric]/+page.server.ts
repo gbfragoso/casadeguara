@@ -46,7 +46,7 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'password',
-				message: 'Formato da senha inválido',
+				message: 'Senha não atente aos requisitos mínimos de segurança',
 			};
 		}
 

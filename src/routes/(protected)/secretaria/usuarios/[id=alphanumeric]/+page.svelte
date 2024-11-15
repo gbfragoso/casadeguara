@@ -80,3 +80,6 @@
 {#if form?.status === 200}
 	<Notification class="is-success">Usuário atualizado com sucesso!</Notification>
 {/if}
+{#if form?.status === 400 && form?.message}
+	<Notification class="is-danger">{form.message}</Notification>
+{/if}

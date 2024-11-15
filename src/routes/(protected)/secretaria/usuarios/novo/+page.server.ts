@@ -19,14 +19,18 @@ export const actions: Actions = {
 		const roles = formData.get('roles') as string;
 
 		if (!validator.isEmail(username)) {
-			return fail(400, {
-				message: 'Invalid username',
-			});
+			return {
+				status: 400,
+				field: 'username',
+				message: 'E-mail inválido',
+			};
 		}
 		if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-			return fail(400, {
-				message: 'Invalid password',
-			});
+			return {
+				status: 400,
+				field: 'password',
+				message: 'Senha não atente aos requisitos mínimos de segurança',
+			};
 		}
 
 		const id = generateIdFromEntropySize(10);

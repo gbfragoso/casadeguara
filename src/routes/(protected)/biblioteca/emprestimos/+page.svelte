@@ -11,7 +11,6 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-
 	let { isAdmin } = $derived(data);
 	dayjs.extend(utc);
 </script>
@@ -125,7 +124,7 @@
 								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
 								{#if emprestimo.data_devolvido}
 									<td><span class="tag is-success">Devolvido</span></td>
-								{:else if dayjs().isAfter(emprestimo.data_devolucao)}
+								{:else if dayjs().add(1, 'day').isAfter(emprestimo.data_devolucao)}
 									<td><span class="tag is-warning">Atrasado</span></td>
 								{:else}
 									<td><span class="tag is-info">Ativo</span></td>
