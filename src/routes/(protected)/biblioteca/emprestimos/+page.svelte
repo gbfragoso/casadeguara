@@ -13,6 +13,17 @@
 	let loading = $state(false);
 	let { isAdmin } = $derived(data);
 	dayjs.extend(utc);
+
+	function showDropdown() {
+		let menu = document.getElementById('dropdown');
+		if (menu) {
+			if (menu.classList.contains('is-active')) {
+				menu.classList.remove('is-active');
+			} else {
+				menu.classList.add('is-active');
+			}
+		}
+	}
 </script>
 
 <div class="mb-2">
@@ -130,9 +141,13 @@
 									<td><span class="tag is-info">Ativo</span></td>
 								{/if}
 								<td class="table-actions">
-									<div class="dropdown is-hoverable">
+									<div id="dropdown" class="dropdown">
 										<div class="dropdown-trigger">
-											<button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+											<button
+												class="button"
+												aria-haspopup="true"
+												aria-controls="dropdown-menu"
+												onclick={showDropdown}>
 												<span>Ações</span>
 												<span class="icon is-small">
 													<i class="fas fa-angle-down" aria-hidden="true"></i>

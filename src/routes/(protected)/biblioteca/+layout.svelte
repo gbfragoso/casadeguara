@@ -8,20 +8,6 @@
 
 	let { data, children }: Props = $props();
 	let { isAdmin } = $derived(data);
-	let isHidden = $state(true);
-
-	function showMenu() {
-		let menu = document.getElementById('sidebar');
-		if (menu) {
-			if (menu.classList.contains('is-hidden-touch')) {
-				menu.classList.remove('is-hidden-touch');
-				isHidden = false;
-			} else {
-				menu.classList.add('is-hidden-touch');
-				isHidden = true;
-			}
-		}
-	}
 </script>
 
 <main class="is-flex">
@@ -87,45 +73,6 @@
 		</div>
 	</nav>
 	<section class="section is-flex-grow-1">
-		<div class="is-flex is-flex-direction-row is-justify-content-end">
-			<div class="box p-0 px-3 py-2">
-				<form action="/logout" method="POST">
-					<div class="field is-grouped">
-						<button
-							type="button"
-							class="navbar-burger"
-							class:is-active={!isHidden}
-							aria-label="menu"
-							aria-expanded="false"
-							onclick={showMenu}>
-							<span aria-hidden="true"></span>
-							<span aria-hidden="true"></span>
-							<span aria-hidden="true"></span>
-							<span aria-hidden="true"></span>
-						</button>
-						<button
-							aria-label="light"
-							type="button"
-							class="is-size-5 mr-2 pb-1"
-							data-theme-toggle
-							onclick={() => document.querySelector('html')?.setAttribute('data-theme', 'light')}>
-							<i class="fa-regular fa-sun fa-fw"></i>
-						</button>
-						<button
-							aria-label="light"
-							type="button"
-							data-theme-toggle
-							class="is-size-5 mr-2 pb-1"
-							onclick={() => document.querySelector('html')?.setAttribute('data-theme', 'dark')}>
-							<i class="fa-regular fa-moon fa-fw"></i>
-						</button>
-						<button class="is-size-5 pb-1" aria-label="sair" type="submit">
-							<i class="fa-solid fa-right-from-bracket fa-fw"></i>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
 		{@render children?.()}
 	</section>
 </main>
