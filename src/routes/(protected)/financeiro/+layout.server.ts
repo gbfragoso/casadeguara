@@ -7,4 +7,10 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 			message: 'Usuário não possui acesso ao sistema da tesouraria',
 		});
 	}
+
+	return {
+		username: locals.user.name,
+		userid: locals.user.id,
+		isAdmin: locals.user.roles.includes(':admin'),
+	};
 };

@@ -2,34 +2,27 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
-	import Navbar from '$lib/components/Navbar.svelte';
 	interface Props {
 		data: PageServerData;
 	}
 
 	let { data }: Props = $props();
-	let { avisos, emprestimos, devolucoes, username, userid } = $derived(data);
+	let { avisos, emprestimos, devolucoes } = $derived(data);
 	dayjs.extend(utc);
 </script>
 
-<div class="columns">
-	<div class="column">
-		<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-			<ul>
-				<li><a href="/biblioteca">Biblioteca</a></li>
-				<li class="is-active">
-					<a href="/biblioteca" aria-current="page">Página Inicial</a>
-				</li>
-			</ul>
-		</nav>
-		<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-			Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
-		</h1>
-	</div>
-	<div class="column"></div>
-	<div class="column is-2">
-		<Navbar {username} {userid}></Navbar>
-	</div>
+<div>
+	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+		<ul>
+			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li class="is-active">
+				<a href="/biblioteca" aria-current="page">Página Inicial</a>
+			</li>
+		</ul>
+	</nav>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
+		Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
+	</h1>
 </div>
 <div class="mt-2 columns">
 	<div class="column">

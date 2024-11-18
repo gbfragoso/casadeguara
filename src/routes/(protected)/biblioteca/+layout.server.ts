@@ -7,9 +7,10 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 			message: 'Usuário não possui acesso ao sistema da biblioteca',
 		});
 	}
-	const name = {
-		name: locals.user.name,
+
+	return {
+		username: locals.user.name,
+		userid: locals.user.id,
 		isAdmin: locals.user.roles.includes(':admin'),
 	};
-	return name;
 };

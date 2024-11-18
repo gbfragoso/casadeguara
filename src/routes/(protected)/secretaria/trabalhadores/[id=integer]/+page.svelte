@@ -9,7 +9,6 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-
 	let { trabalhador } = $derived(data);
 </script>
 

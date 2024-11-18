@@ -9,7 +9,6 @@
 
 	let { form }: Props = $props();
 	let loading = $state(false);
-
 	let password = $state('');
 </script>
 
