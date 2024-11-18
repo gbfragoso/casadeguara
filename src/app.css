@@ -18,10 +18,6 @@ body {
 	z-index: 2;
 }
 
-#dropdown {
-	position: absolute !important;
-}
-
 a {
 	color: #1b254b !important;
 }

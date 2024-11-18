@@ -13,17 +13,6 @@
 	let loading = $state(false);
 	let { isAdmin } = $derived(data);
 	dayjs.extend(utc);
-
-	function showDropdown() {
-		let menu = document.getElementById('dropdown');
-		if (menu) {
-			if (menu.classList.contains('is-active')) {
-				menu.classList.remove('is-active');
-			} else {
-				menu.classList.add('is-active');
-			}
-		}
-	}
 </script>
 
 <div class="mb-2">
@@ -135,56 +124,30 @@
 								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
 								{#if emprestimo.data_devolvido}
 									<td><span class="tag is-success">Devolvido</span></td>
-								{:else if dayjs().add(1, 'day').isAfter(emprestimo.data_devolucao)}
+								{:else if dayjs().isAfter(dayjs(emprestimo.data_devolucao).add(1, 'day'))}
 									<td><span class="tag is-warning">Atrasado</span></td>
 								{:else}
 									<td><span class="tag is-info">Ativo</span></td>
 								{/if}
-								<td class="table-actions">
-									<div id="dropdown" class="dropdown">
-										<div class="dropdown-trigger">
-											<button
-												class="button"
-												aria-haspopup="true"
-												aria-controls="dropdown-menu"
-												onclick={showDropdown}>
-												<span>Ações</span>
-												<span class="icon is-small">
-													<i class="fas fa-angle-down" aria-hidden="true"></i>
-												</span>
-											</button>
-										</div>
-										<div class="dropdown-menu" id="dropdown-menu" role="menu">
-											<div class="dropdown-content" style="max-height:100px;overflow: auto">
-												{#if !emprestimo.data_devolvido}
-													{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
-														<form
-															action="?/renovar&id={emprestimo.idemp}"
-															method="POST"
-															use:enhance>
-															<button class="dropdown-item" title="Renovar"
-																><i class="fa-solid fa-repeat fa-fw"></i
-																>&nbsp;Renovar</button>
-														</form>
-													{/if}
-													<form
-														action="?/devolver&id={emprestimo.idemp}"
-														method="POST"
-														use:enhance>
-														<button class="dropdown-item" title="Devolver"
-															><i class="fa-solid fa-reply fa-fw"></i
-															>&nbsp;Devolver</button>
-													</form>
-												{/if}
-												<a
-													class="dropdown-item"
-													href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo"
-													title="Recibo">
-													<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;Recibo
-												</a>
-											</div>
-										</div>
-									</div>
+								<td class="table-actions is-flex">
+									{#if !emprestimo.data_devolvido}
+										{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
+											<form action="?/renovar&id={emprestimo.idemp}" method="POST" use:enhance>
+												<button class="mr-2" aria-label="Renovar"
+													><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
+											</form>
+										{/if}
+										<form action="?/devolver&id={emprestimo.idemp}" method="POST" use:enhance>
+											<button class="mr-2" aria-label="Devolver"
+												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
+										</form>
+									{/if}
+									<a
+										class="mr-2"
+										href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo"
+										aria-label="Recibo">
+										<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
+									</a>
 								</td>
 							</tr>
 						{/each}

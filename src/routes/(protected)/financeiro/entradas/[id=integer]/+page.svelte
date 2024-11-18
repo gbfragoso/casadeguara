@@ -12,7 +12,6 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-
 	let { entrada } = $derived(data);
 	dayjs.extend(utc);
 </script>

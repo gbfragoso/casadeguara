@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { user } from '$lib/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { generateIdFromEntropySize } from 'lucia';
 import validator from 'validator';

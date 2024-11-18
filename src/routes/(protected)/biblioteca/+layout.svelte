@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 	interface Props {
 		data: LayoutServerData;
@@ -7,7 +8,7 @@
 	}
 
 	let { data, children }: Props = $props();
-	let { isAdmin } = $derived(data);
+	let { isAdmin, username, userid } = $derived(data);
 </script>
 
 <main class="is-flex">
@@ -73,6 +74,7 @@
 		</div>
 	</nav>
 	<section class="section is-flex-grow-1">
+		<Navbar {username} {userid}></Navbar>
 		{@render children?.()}
 	</section>
 </main>
