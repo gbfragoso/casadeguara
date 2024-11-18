@@ -38,6 +38,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			avisos: avisos(),
 			emprestimos: emprestimosMesAtual(),
 			devolucoes: devolucoesMesAtual(),
+			username: locals.user.name,
+			userid: locals.user.id,
 		};
 	} catch (err) {
 		console.error(err);
