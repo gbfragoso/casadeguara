@@ -47,20 +47,11 @@ export const actions: Actions = {
 		const idleitor = Number(form.get('leitorid'));
 		const idexemplar = Number(form.get('exemplarid'));
 
-		const leitores = await db.select({ ativo: leitor.status }).from(leitor).where(eq(leitor.idleitor, idleitor));
-		if (!leitores[0].ativo) {
-			return {
-				status: 400,
-				field: 'leitor',
-				message: 'Este leitor está inativo',
-			};
-		}
-
 		if (!idleitor || idleitor === 0) {
 			return {
 				status: 400,
 				field: 'leitor',
-				message: 'Nenhum leitor foi selecionado',
+				message: 'Leitor não encontrado',
 			};
 		}
 
@@ -68,7 +59,16 @@ export const actions: Actions = {
 			return {
 				status: 400,
 				field: 'exemplar',
-				message: 'Nenhum exemplar foi selecionado',
+				message: 'Exemplar não encontrado',
+			};
+		}
+
+		const leitores = await db.select({ ativo: leitor.status }).from(leitor).where(eq(leitor.idleitor, idleitor));
+		if (!leitores[0].ativo) {
+			return {
+				status: 400,
+				field: 'leitor',
+				message: 'Este leitor está inativo',
 			};
 		}
 

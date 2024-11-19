@@ -12,22 +12,22 @@
 	let { leitores, exemplares } = $derived(data);
 
 	let leitor = $state('');
-	let leitorid = $state('');
+	let leitorid = $state(0);
 
 	function selecionarLeitor() {
 		const option = document.querySelector<HTMLInputElement>("option[value='" + leitor.toUpperCase() + "']");
 		if (option) {
-			leitorid = option.getAttribute('data-value') as string;
+			leitorid = Number(option.getAttribute('data-value') as string);
 		}
 	}
 
 	let exemplar = $state('');
-	let exemplarid = $state('');
+	let exemplarid = $state(0);
 
 	function selecionarExemplar() {
 		const option = document.querySelector<HTMLInputElement>("option[value='" + exemplar.toUpperCase() + "']");
 		if (option) {
-			exemplarid = option.getAttribute('data-value') as string;
+			exemplarid = Number(option.getAttribute('data-value') as string);
 		}
 	}
 </script>
