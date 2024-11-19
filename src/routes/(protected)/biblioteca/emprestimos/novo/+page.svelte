@@ -10,6 +10,26 @@
 	let { data, form }: Props = $props();
 	let loading = $state(false);
 	let { leitores, exemplares } = $derived(data);
+
+	let leitor = $state('');
+	let leitorid = $state('');
+
+	function selecionarLeitor() {
+		const option = document.querySelector<HTMLInputElement>("option[value='" + leitor.toUpperCase() + "']");
+		if (option) {
+			leitorid = option.getAttribute('data-value') as string;
+		}
+	}
+
+	let exemplar = $state('');
+	let exemplarid = $state('');
+
+	function selecionarExemplar() {
+		const option = document.querySelector<HTMLInputElement>("option[value='" + exemplar.toUpperCase() + "']");
+		if (option) {
+			exemplarid = option.getAttribute('data-value') as string;
+		}
+	}
 </script>
 
 <div class="mb-2">
@@ -37,30 +57,56 @@
 	<div class="card-content">
 		<div class="columns">
 			<div class="column">
-				<label class="label" for="leitor">Leitor</label>
-				<div class="select is-fullwidth">
-					<select name="leitor" id="leitor" required>
-						<option>Selecione um leitor</option>
-						{#await leitores then item}
-							{#each item as leitor}
-								<option value={leitor.idleitor}>{leitor.nome}</option>
-							{/each}
-						{/await}
-					</select>
+				<div class="field">
+					<label class="label" for="leitor">Leitor</label>
+					<div class="control">
+						<input
+							class="input"
+							type="text"
+							name="leitor"
+							id="leitor"
+							list="leitores"
+							autocomplete="off"
+							bind:value={leitor}
+							onchange={selecionarLeitor}
+							required />
+						<input type="hidden" name="leitorid" id="leitorid" bind:value={leitorid} />
+						<datalist id="leitores">
+							{#await leitores then item}
+								{#each item as leitor}
+									<option data-value={leitor.idleitor} value={leitor.nome}></option>
+								{/each}
+							{/await}
+						</datalist>
+					</div>
 				</div>
 			</div>
 			<div class="column">
-				<label class="label" for="exemplar">Exemplar</label>
-				<div class="select is-fullwidth">
-					<select name="exemplar" id="exemplar" required>
-						<option>Selecione o exemplar</option>
-						{#await exemplares then item}
-							{#each item as exemplar}
-								<option value={exemplar.idexemplar}
-									>{exemplar.tombo} - {exemplar.titulo} - Ex: {exemplar.numero}</option>
-							{/each}
-						{/await}
-					</select>
+				<div class="field">
+					<label class="label" for="exemplar">Exemplar</label>
+					<div class="control">
+						<input
+							class="input"
+							type="text"
+							name="exemplar"
+							id="exemplar"
+							list="exemplares"
+							autocomplete="off"
+							bind:value={exemplar}
+							onchange={selecionarExemplar}
+							required />
+						<input type="hidden" name="exemplarid" id="exemplarid" bind:value={exemplarid} />
+						<datalist id="exemplares">
+							{#await exemplares then item}
+								{#each item as exemplar}
+									<option
+										data-value={exemplar.idexemplar}
+										value={exemplar.tombo + ' - ' + exemplar.titulo + ' - EX:' + exemplar.numero}
+									></option>
+								{/each}
+							{/await}
+						</datalist>
+					</div>
 				</div>
 			</div>
 		</div>

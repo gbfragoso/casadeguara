@@ -44,8 +44,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request }) => {
 		const form = await request.formData();
-		const idleitor = Number(form.get('leitor'));
-		const idexemplar = Number(form.get('exemplar'));
+		const idleitor = Number(form.get('leitorid'));
+		const idexemplar = Number(form.get('exemplarid'));
 
 		const leitores = await db.select({ ativo: leitor.status }).from(leitor).where(eq(leitor.idleitor, idleitor));
 		if (!leitores[0].ativo) {

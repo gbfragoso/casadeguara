@@ -44,10 +44,7 @@ export const actions: Actions = {
 		const passwordHash = await hash(password);
 
 		try {
-			await db
-				.update(user)
-				.set({ name, passwordHash })
-				.where(eq(user.id, params.id));
+			await db.update(user).set({ name, passwordHash }).where(eq(user.id, params.id));
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
