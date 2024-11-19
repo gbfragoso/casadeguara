@@ -56,6 +56,22 @@ export const actions: Actions = {
 			};
 		}
 
+		if (!idleitor || idleitor === 0) {
+			return {
+				status: 400,
+				field: 'leitor',
+				message: 'Nenhum leitor foi selecionado',
+			};
+		}
+
+		if (!idexemplar || idexemplar === 0) {
+			return {
+				status: 400,
+				field: 'exemplar',
+				message: 'Nenhum exemplar foi selecionado',
+			};
+		}
+
 		const emprestimos = await db
 			.select()
 			.from(emprestimo)
