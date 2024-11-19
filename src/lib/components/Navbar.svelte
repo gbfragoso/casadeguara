@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="columns .is-hidden-print">
+<div class="columns is-hidden-print">
 	<div class="column"></div>
 	<div class="column is-3-tablet">
 		<div class="is-flex is-justify-content-end">
