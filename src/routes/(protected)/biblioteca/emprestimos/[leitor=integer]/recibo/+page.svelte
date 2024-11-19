@@ -64,7 +64,7 @@
 		</div>
 	</div>
 	<button
-		class="button is-outlined is-primary"
+		class="button is-outlined is-primary is-hidden-print"
 		aria-label="print"
 		onclick={() => {
 			window.print();
