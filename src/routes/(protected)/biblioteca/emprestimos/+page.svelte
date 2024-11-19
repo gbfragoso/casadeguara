@@ -144,7 +144,7 @@
 									{/if}
 									<a
 										class="mr-2"
-										href="/biblioteca/emprestimos/{emprestimo.idleitor}/recibo"
+										href="/biblioteca/emprestimos/{emprestimo.idemp}/recibo"
 										aria-label="Recibo">
 										<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
 									</a>

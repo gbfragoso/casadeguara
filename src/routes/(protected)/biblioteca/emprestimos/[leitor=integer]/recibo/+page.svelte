@@ -29,7 +29,7 @@
 			<hr class="mb-2 mt-0 double" />
 			<div class="is-flex is-flex-direction-row is-justify-content-space-between">
 				<div class="has-text-weight-semibold">Biblioteca Batuíra - Recibo de Empréstimo</div>
-				<div class="has-text-weight-semibold">{dayjs.utc().format('DD/MM/YYYY')}</div>
+				<div class="has-text-weight-semibold">{dayjs().format('DD/MM/YYYY')}</div>
 			</div>
 			<hr class="mt-2 mb-0 double" />
 			<div class="is-flex is-flex-direction-row is-justify-content-flex-end">
@@ -63,4 +63,10 @@
 			</div>
 		</div>
 	</div>
+	<button
+		class="button is-outlined is-primary"
+		aria-label="print"
+		onclick={() => {
+			window.print();
+		}}>Clique aqui para imprimir</button>
 {/if}
