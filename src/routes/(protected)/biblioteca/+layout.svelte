@@ -70,6 +70,13 @@
 						<i class="fa-solid fa-key fa-fw"></i>
 					</a>
 				</li>
+				{#if isAdmin}
+					<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/usuarios'}>
+						<a aria-label="usuários" title="Usuários" href="/biblioteca/usuarios">
+							<i class="fa-solid fa-user-plus fa-fw"></i>
+						</a>
+					</li>
+				{/if}
 			</ul>
 		</div>
 	</nav>

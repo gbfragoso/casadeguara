@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Notification from '$lib/components/Notification.svelte';
-	import validator from 'validator';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
 	interface Props {
+		data: PageServerData;
 		form: ActionData;
 	}
 
-	let { form }: Props = $props();
+	let { data, form }: Props = $props();
 	let loading = $state(false);
-	let password = $state('');
+	let { usuario } = $derived(data);
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/secretaria">Secretaria</a></li>
+			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/secretaria/usuarios" aria-current="page">Usuários</a>
+				<a href="/biblioteca/usuarios" aria-current="page">Usuários</a>
 			</li>
 		</ul>
 	</nav>
@@ -38,35 +38,26 @@
 		<div class="field">
 			<label class="label" for="username">Usuário</label>
 			<div class="control">
-				<input class="input" name="username" id="username" />
+				<input class="input" name="username" id="username" value={usuario.username} />
 			</div>
 		</div>
 		<div class="field">
 			<label class="label" for="password">Senha</label>
 			<div class="control">
-				<input class="input" type="password" name="password" id="password" bind:value={password} /><br />
+				<input class="input" type="password" name="password" id="password" />
 			</div>
-			<span class="help">
-				Força da senha
-				<progress
-					class="progress is-primary is-small"
-					value={validator.isStrongPassword(password, { returnScore: true })}
-					max="50"></progress>
-			</span>
 		</div>
 		<div class="field">
 			<label class="label" for="name">Nome</label>
 			<div class="control">
-				<input class="input" name="name" id="name" />
+				<input class="input" name="name" id="name" value={usuario.name} />
 			</div>
 		</div>
 		<label class="label" for="roles">Setor</label>
 		<div class="select mb-4">
-			<select name="roles" id="roles">
-				<option value="secretaria">Secretaria</option>
-				<option value="secretaria:admin">Secretaria - Coordenação</option>
-				<option value="financeiro">Tesouraria</option>
-				<option value="financeiro:admin">Tesouraria - Coordenação</option>
+			<select name="roles" id="roles" value={usuario.roles}>
+				<option value="biblioteca">Biblioteca</option>
+				<option value="biblioteca:admin">Biblioteca - Coordenação</option>
 			</select>
 		</div>
 		<div class="field">
@@ -75,14 +66,14 @@
 					aria-busy={loading}
 					class:is-loading={loading}
 					class="button is-primary has-text-weight-semibold"
-					type="submit">Cadastrar</button>
+					type="submit">Atualizar</button>
 			</div>
 		</div>
 	</div>
 </form>
 
-{#if form?.status === 201}
-	<Notification class="is-success">Usuário cadastrado com sucesso!</Notification>
+{#if form?.status === 200}
+	<Notification class="is-success">Usuário atualizado com sucesso!</Notification>
 {/if}
 {#if form?.status === 400 && form?.message}
 	<Notification class="is-danger">{form.message}</Notification>

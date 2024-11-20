@@ -96,7 +96,7 @@
 						<div class="dropdown-content">
 							<p class="dropdown-item">Bem vindo(a), {username.substring(0, username.indexOf(' '))}</p>
 							<hr class="dropdown-divider" />
-							<a href="/usuarios/{userid}" class="dropdown-item"> Configurações </a>
+							<a href="/usuario/{userid}" class="dropdown-item"> Configurações </a>
 							<hr class="dropdown-divider" />
 							<form class="p-0" action="/logout" method="POST">
 								<button class="dropdown-item" aria-label="sair" type="submit">
