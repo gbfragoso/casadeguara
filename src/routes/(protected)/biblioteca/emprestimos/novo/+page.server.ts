@@ -84,12 +84,13 @@ export const actions: Actions = {
 			};
 		}
 
-		await db.insert(emprestimo).values({
+		const id = await db.insert(emprestimo).values({
 			leitor: idleitor,
 			exemplar: idexemplar,
 			dataEmprestimo: new Date(),
 			dataDevolucao: dayjs().add(14, 'day').toDate(),
-		});
-		return redirect(302, '/biblioteca/emprestimos/' + idleitor + '/recibo');
+		}).returning({ id: emprestimo.idemp });
+
+		return redirect(302, '/biblioteca/emprestimos/' + id[0].id + '/recibo');
 	},
 } satisfies Actions;
