@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Notification from '$lib/components/Notification.svelte';
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -10,6 +12,7 @@
 	let { data, form }: Props = $props();
 	let loading = $state(false);
 	let { trabalhador } = $derived(data);
+	dayjs.extend(utc);
 </script>
 
 <div class="mb-2">
@@ -60,7 +63,7 @@
 			<div class="field column">
 				<label class="label" for="aniversario">Aniversário</label>
 				<div class="control">
-					<input class="input" type="date" name="aniversario" id="aniversario" aria-label="Date" />
+					<input class="input" type="date" name="aniversario" id="aniversario" aria-label="Date" value={dayjs.utc(trabalhador.aniversario).format('YYYY-MM-DD')} />
 				</div>
 			</div>
 		</div>
