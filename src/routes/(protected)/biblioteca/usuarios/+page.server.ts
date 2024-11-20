@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.select()
 				.from(user)
 				.offset((page - 1) * 5)
-				.where(and(nameFilter, ulike(user.roles, 'secretaria%')))
+				.where(and(nameFilter, ulike(user.roles, 'biblioteca%')))
 				.orderBy(unaccent(user.name));
 		};
 

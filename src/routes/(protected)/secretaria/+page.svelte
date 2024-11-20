@@ -28,7 +28,7 @@
 		{#await engajamento then engajamento}
 			<div class="column">
 				<div class="box has-text-weight-semibold">
-					<i class="fa-solid fa-user fa-fw">&nbsp;</i>Trabalhadores
+					<i class="fa-solid fa-user-plus fa-fw">&nbsp;</i>Trabalhadores
 					<h2 class="is-size-3 has-text-primary">
 						{leitores[0].counter}
 					</h2>

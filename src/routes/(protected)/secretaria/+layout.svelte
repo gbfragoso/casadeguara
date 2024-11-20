@@ -8,7 +8,7 @@
 	}
 
 	let { data, children }: Props = $props();
-	let { username, userid } = $derived(data);
+	let { isAdmin, username, userid } = $derived(data);
 </script>
 
 <main class="is-flex">
@@ -38,11 +38,13 @@
 						<i class="fa-solid fa-handshake-angle fa-fw"></i>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
-					<a aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
-						<i class="fa-solid fa-user fa-fw"></i>
-					</a>
-				</li>
+				{#if isAdmin}
+					<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
+						<a aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
+							<i class="fa-solid fa-user-plus fa-fw"></i>
+						</a>
+					</li>
+				{/if}
 			</ul>
 		</div>
 	</nav>

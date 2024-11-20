@@ -15,9 +15,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/secretaria">Secretaria</a></li>
+			<li><a href="/biblioteca">Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/secretaria/usuarios" aria-current="page">Usuários</a>
+				<a href="/biblioteca/usuarios" aria-current="page">Usuários</a>
 			</li>
 		</ul>
 	</nav>
@@ -63,10 +63,8 @@
 		<label class="label" for="roles">Setor</label>
 		<div class="select mb-4">
 			<select name="roles" id="roles">
-				<option value="secretaria">Secretaria</option>
-				<option value="secretaria:admin">Secretaria - Coordenação</option>
-				<option value="financeiro">Tesouraria</option>
-				<option value="financeiro:admin">Tesouraria - Coordenação</option>
+				<option value="biblioteca">Biblioteca</option>
+				<option value="biblioteca:admin">Biblioteca - Coordenação</option>
 			</select>
 		</div>
 		<div class="field">
