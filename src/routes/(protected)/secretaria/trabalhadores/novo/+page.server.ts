@@ -1,7 +1,7 @@
 import { db } from '$lib/database/connection';
 import { leitor } from '$lib/database/schema';
 import { error } from '@sveltejs/kit';
-
+import validator from 'validator';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
@@ -20,6 +20,30 @@ export const actions: Actions = {
 		const cep = form.get('cep') as string;
 		const aniversario = form.get('aniversario') as string;
 		const trab = Boolean(form.get('trab'));
+
+		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do trabalhador é obrigatório',
+			};
+		}
+
+		if (validator.isNumeric(nome)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do trabalhador não pode conter somente números',
+			};
+		}
+
+		if (validator.isLength(nome, { min: 0, max: 80 })) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Nome do trabalhador não pode ser maior que 80 caracteres',
+			};
+		}
 
 		try {
 			await db.insert(leitor).values({
@@ -40,6 +64,13 @@ export const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
+			if (err instanceof Error && err.message.includes('duplicate key value violates')) {
+				return {
+					status: 400,
+					field: 'nome',
+					message: 'Já existe um cadastro com nome idêntico, favor consultar',
+				};
+			}
 			return error(500, { message: 'Falha ao cadastrar um novo trabalhador' });
 		}
 	},

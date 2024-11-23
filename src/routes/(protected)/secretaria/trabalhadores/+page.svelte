@@ -64,6 +64,7 @@
 					<thead>
 						<tr>
 							<th>Nome</th>
+							<th>Trabalhador</th>
 							<th class="table-actions">Ações</th>
 						</tr>
 					</thead>
@@ -71,6 +72,11 @@
 						{#each form.leitores as leitor}
 							<tr>
 								<td>{leitor.nome}</td>
+								{#if leitor.trab}
+									<td>Sim</td>
+								{:else}
+									<td>Não</td>
+								{/if}
 								<td class="table-actions">
 									<a aria-label="editar" href="/secretaria/trabalhadores/{leitor.idleitor}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>

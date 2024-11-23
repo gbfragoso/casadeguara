@@ -42,10 +42,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		if (!locals.user) redirect(302, '/');
+
 		const form = await request.formData();
 		const idleitor = Number(form.get('leitorid'));
 		const idexemplar = Number(form.get('exemplarid'));
+		const isAdmin = locals.user.roles.includes('admin');
 
 		if (!idleitor || idleitor === 0) {
 			return {
@@ -64,7 +67,7 @@ export const actions: Actions = {
 		}
 
 		const leitores = await db.select({ ativo: leitor.status }).from(leitor).where(eq(leitor.idleitor, idleitor));
-		if (!leitores[0].ativo) {
+		if (!leitores[0].ativo && !isAdmin) {
 			return {
 				status: 400,
 				field: 'leitor',
@@ -76,7 +79,7 @@ export const actions: Actions = {
 			.select()
 			.from(emprestimo)
 			.where(and(eq(emprestimo.leitor, idleitor), isNull(emprestimo.dataDevolvido)));
-		if (emprestimos.length > 0) {
+		if (emprestimos.length > 0 && !isAdmin) {
 			return {
 				status: 400,
 				field: 'leitor',
@@ -84,12 +87,15 @@ export const actions: Actions = {
 			};
 		}
 
-		const id = await db.insert(emprestimo).values({
-			leitor: idleitor,
-			exemplar: idexemplar,
-			dataEmprestimo: new Date(),
-			dataDevolucao: dayjs().add(14, 'day').toDate(),
-		}).returning({ id: emprestimo.idemp });
+		const id = await db
+			.insert(emprestimo)
+			.values({
+				leitor: idleitor,
+				exemplar: idexemplar,
+				dataEmprestimo: new Date(),
+				dataDevolucao: dayjs().add(14, 'day').toDate(),
+			})
+			.returning({ id: emprestimo.idemp });
 
 		return redirect(302, '/biblioteca/emprestimos/' + id[0].id + '/recibo');
 	},

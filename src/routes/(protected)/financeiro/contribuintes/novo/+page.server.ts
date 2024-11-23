@@ -44,9 +44,14 @@ export const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao cadastrar um novo contribuinte',
-			});
+			if (err instanceof Error && err.message.includes('duplicate key value violates')) {
+				return {
+					status: 400,
+					field: 'nome',
+					message: 'Já existe um cadastro com nome idêntico, favor consultar',
+				};
+			}
+			return error(500, { message: 'Falha ao cadastrar um novo contribuinte' });
 		}
 	},
 } satisfies Actions;
