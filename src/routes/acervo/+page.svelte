@@ -1,22 +1,20 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData, PageServerData } from './$types';
+	import type { ActionData } from './$types';
 	interface Props {
-		data: PageServerData;
 		form: ActionData;
 	}
 
-	let { data, form }: Props = $props();
+	let { form }: Props = $props();
 	let loading = $state(false);
-	let { role } = $derived(data);
 </script>
 
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href="/acervo">Acervo</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros" aria-current="page">Livros</a>
+				<a href="/acervo/livros" aria-current="page">Livros</a>
 			</li>
 		</ul>
 	</nav>
@@ -95,10 +93,6 @@
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/biblioteca/livros/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
-			</div>
 		</div>
 	</div>
 </form>
@@ -126,40 +120,23 @@
 								<td>{livro.referencia}</td>
 								<td class="table-actions">
 									<div class="field is-grouped">
-										<a
-											aria-label="editar"
-											title="Editar"
-											class="control"
-											href="/biblioteca/livros/{livro.idlivro}">
-											<i class="fa-solid fa-pen-to-square fa-fw"></i>
-										</a>
-										<a
-											aria-label="autores"
-											title="Autores"
-											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/autores">
+										<a aria-label="autores" title="Autores" class="control" href="/acervo/{livro.idlivro}/autores">
 											<i class="fa-solid fa-user-pen fa-fw"></i>
 										</a>
 										<a
 											aria-label="exemplares"
 											title="Exemplares"
 											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/exemplares">
+											href="/acervo/{livro.idlivro}/exemplares">
 											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
 										<a
 											aria-label="keywords"
-											title="Palavras-chave"
+											title="Palavas-chave"
 											class="control"
-											href="/biblioteca/livros/{livro.idlivro}/keywords">
+											href="/acervo/{livro.idlivro}/keywords">
 											<i class="fa-solid fa-key fa-fw"></i>
 										</a>
-										{#if role.includes('admin')}
-											<form action="?/excluir&id={livro.idlivro}" method="POST">
-												<button aria-label="trash" title="Excluir" class="control"
-													><i class="fa-regular fa-trash-can fa-fw"></i></button>
-											</form>
-										{/if}
 									</div>
 								</td>
 							</tr>
