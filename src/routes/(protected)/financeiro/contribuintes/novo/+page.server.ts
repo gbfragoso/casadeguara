@@ -31,14 +31,6 @@ export const actions: Actions = {
 			};
 		}
 
-		if (validator.isLength(nome, { min: 0, max: 80 })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do contribuinte não pode ser maior que 80 caracteres',
-			};
-		}
-
 		try {
 			await db.insert(leitor).values({ nome: nome.toUpperCase(), trab: trabalhador });
 			return { status: 201 };
