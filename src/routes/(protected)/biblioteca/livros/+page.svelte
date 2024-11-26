@@ -8,7 +8,7 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-	let { role } = $derived(data);
+	let { colecoes, role } = $derived(data);
 </script>
 
 <div class="mb-2">
@@ -69,8 +69,15 @@
 			</div>
 			<div class="column">
 				<label class="label" for="serie">Coleção</label>
-				<div class="control">
-					<input class="input" type="text" name="serie" id="serie" placeholder="Digite o nome da coleção" />
+				<div class="select is-fullwidth">
+					<select name="serie" id="serie">
+						<option></option>
+						{#await colecoes then item}
+							{#each item as serie}
+								<option value={serie.idserie}>{serie.nome}</option>
+							{/each}
+						{/await}
+					</select>
 				</div>
 			</div>
 			<div class="column">

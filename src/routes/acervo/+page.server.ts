@@ -4,7 +4,19 @@ import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie }
 import { error } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async () => {
+	try {
+		const colecoes = async () => {
+			return db.select().from(serie).orderBy(unaccent(serie.nome));
+		};
+		return { colecoes: colecoes() };
+	} catch (err) {
+		console.error(err);
+		return error(500, { message: 'Falha ao carregar os dados da página' });
+	}
+};
 
 export const actions: Actions = {
 	pesquisar: async ({ request }) => {
@@ -19,7 +31,7 @@ export const actions: Actions = {
 		const tituloFilter = titulo ? ulike(livro.titulo, titulo + '%') : undefined;
 		const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 		const editoraFilter = editor ? ulike(editora.nome, editor + '%') : undefined;
-		const colecaoFilter = colecao ? ulike(serie.nome, colecao + '%') : undefined;
+		const colecaoFilter = colecao ? eq(livro.serie, Number(colecao)) : undefined;
 		const autorFilter = author ? ulike(autor.nome, author + '%') : undefined;
 		const keywordFilter = key ? ulike(keyword.chave, key + '%') : undefined;
 		const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
@@ -41,9 +53,6 @@ export const actions: Actions = {
 
 			if (editor) {
 				query = query.leftJoin(editora, eq(livro.editora, editora.ideditora));
-			}
-			if (colecao) {
-				query = query.leftJoin(serie, eq(livro.serie, serie.idserie));
 			}
 			if (author) {
 				query = query
