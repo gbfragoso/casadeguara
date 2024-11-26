@@ -8,7 +8,16 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
-	return { role: locals.user.roles };
+
+	try {
+		const colecoes = async () => {
+			return db.select().from(serie).orderBy(unaccent(serie.nome));
+		};
+		return { colecoes: colecoes(), role: locals.user.roles };
+	} catch (err) {
+		console.error(err);
+		return error(500, { message: 'Falha ao baixar os dados do livro' });
+	}
 };
 
 export const actions: Actions = {
@@ -24,7 +33,7 @@ export const actions: Actions = {
 		const tituloFilter = titulo ? ulike(livro.titulo, titulo + '%') : undefined;
 		const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 		const editoraFilter = editor ? ulike(editora.nome, editor + '%') : undefined;
-		const colecaoFilter = colecao ? ulike(serie.nome, colecao + '%') : undefined;
+		const colecaoFilter = colecao ? eq(livro.serie, Number(colecao)) : undefined;
 		const autorFilter = author ? ulike(autor.nome, author + '%') : undefined;
 		const keywordFilter = key ? ulike(keyword.chave, key + '%') : undefined;
 		const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
@@ -46,9 +55,6 @@ export const actions: Actions = {
 
 			if (editor) {
 				query = query.leftJoin(editora, eq(livro.editora, editora.ideditora));
-			}
-			if (colecao) {
-				query = query.leftJoin(serie, eq(livro.serie, serie.idserie));
 			}
 			if (author) {
 				query = query
