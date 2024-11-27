@@ -97,6 +97,8 @@ export const actions: Actions = {
 			})
 			.returning({ id: emprestimo.idemp });
 
+		await db.update(exemplar).set({ status: 'Emprestado' }).where(eq(exemplar.idexemplar, idexemplar));
+
 		return redirect(302, '/biblioteca/emprestimos/' + id[0].id + '/recibo');
 	},
 } satisfies Actions;

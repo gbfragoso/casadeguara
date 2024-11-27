@@ -36,6 +36,7 @@ export const actions: Actions = {
 				.select({
 					idemp: emprestimo.idemp,
 					idleitor: leitor.idleitor,
+					exemplar: emprestimo.exemplar,
 					leitor: leitor.nome,
 					telefone: leitor.telefone,
 					titulo: livro.titulo,
@@ -88,13 +89,15 @@ export const actions: Actions = {
 		}
 	},
 	devolver: async ({ url }) => {
-		const id = url.searchParams.get('id');
+		const idemprestimo = url.searchParams.get('emprestimo');
+		const idexemplar = url.searchParams.get('exemplar');
 
 		try {
 			await db
 				.update(emprestimo)
 				.set({ dataDevolvido: new Date() })
-				.where(eq(emprestimo.idemp, Number(id)));
+				.where(eq(emprestimo.idemp, Number(idemprestimo)));
+			await db.update(exemplar).set({status: 'Disponível'}).where(eq(exemplar.idexemplar, Number(idexemplar)));
 			return { status: 201, message: 'Empréstimo devolvido com sucesso' };
 		} catch (err) {
 			console.error(err);
