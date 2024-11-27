@@ -64,7 +64,9 @@
 					<tr>
 						<th>Ex</th>
 						<th>Status</th>
-						<th class="table-actions">Ações</th>
+						{#if role.includes('admin')}
+							<th class="table-actions">Ações</th>
+						{/if}
 					</tr>
 				</thead>
 				<tbody>
@@ -80,6 +82,13 @@
 									<div></div>
 								</div>
 							</td>
+							{#if role.includes('admin')}
+								<td>
+									<div class="skeleton-lines">
+										<div></div>
+									</div>
+								</td>
+							{/if}
 						</tr>
 					{:then item}
 						{#each item as exemplar}
@@ -88,18 +97,40 @@
 								<td>
 									{#if exemplar.status === 'Disponível'}
 										<span class="tag is-success">{exemplar.status}</span>
+									{:else if exemplar.status === 'Arquivado'}
+										<span class="tag is-warning">{exemplar.status}</span>
 									{:else}
 										<span class="tag is-danger">{exemplar.status}</span>
 									{/if}
 								</td>
 								<td class="table-actions">
-									{#if role.includes('admin')}
+									{#if role.includes('admin') && exemplar.status !== 'Emprestado'}
 										<div class="field is-grouped">
+											{#if exemplar.status !== 'Disponível'}
+												<form
+													action="?/disponivel&exemplar={exemplar.idexemplar}"
+													method="POST"
+													use:enhance>
+													<button title="Disponibilizar" aria-label="Disponibilizar">
+														<i class="fa-solid fa-box-open fa-fw"></i>
+													</button>
+												</form>
+											{/if}
+											{#if exemplar.status !== 'Arquivado'}
+												<form
+													action="?/arquivar&exemplar={exemplar.idexemplar}"
+													method="POST"
+													use:enhance>
+													<button title="Arquivar" aria-label="Arquivar">
+														<i class="fa-solid fa-box-archive fa-fw"></i>
+													</button>
+												</form>
+											{/if}
 											<form
 												action="?/excluir&exemplar={exemplar.idexemplar}"
 												method="POST"
 												use:enhance>
-												<button aria-label="trash">
+												<button title="Excluir" aria-label="trash">
 													<i class="fa-regular fa-trash-can fa-fw"></i>
 												</button>
 											</form>

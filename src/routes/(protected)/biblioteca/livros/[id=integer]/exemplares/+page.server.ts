@@ -52,6 +52,48 @@ export const actions: Actions = {
 			});
 		}
 	},
+	disponivel: async ({ url }) => {
+		const id = url.searchParams.get('exemplar');
+		if (!id) {
+			return fail(400, {
+				message: 'Nenhum exemplar foi selecionada para disponibilizar',
+			});
+		}
+
+		try {
+			await db
+				.update(exemplar)
+				.set({ status: 'Disponível' })
+				.where(eq(exemplar.idexemplar, Number(id)));
+			return { status: 200 };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao disponibilizar o exemplar',
+			});
+		}
+	},
+	arquivar: async ({ url }) => {
+		const id = url.searchParams.get('exemplar');
+		if (!id) {
+			return fail(400, {
+				message: 'Nenhum exemplar foi selecionada para arquivar',
+			});
+		}
+
+		try {
+			await db
+				.update(exemplar)
+				.set({ status: 'Arquivado' })
+				.where(eq(exemplar.idexemplar, Number(id)));
+			return { status: 200 };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao arquivar o exemplar',
+			});
+		}
+	},
 	excluir: async ({ url }) => {
 		const id = url.searchParams.get('exemplar');
 		if (!id) {

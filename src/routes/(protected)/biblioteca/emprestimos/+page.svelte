@@ -133,18 +133,19 @@
 									{#if !emprestimo.data_devolvido}
 										{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
 											<form action="?/renovar&id={emprestimo.idemp}" method="POST" use:enhance>
-												<button class="mr-2" aria-label="Renovar"
+												<button class="mr-2" title="Renovar" aria-label="Renovar"
 													><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
 											</form>
 										{/if}
-										<form action="?/devolver&id={emprestimo.idemp}" method="POST" use:enhance>
-											<button class="mr-2" aria-label="Devolver"
+										<form action="?/devolver&emprestimo={emprestimo.idemp}&exemplar={emprestimo.exemplar}" method="POST" use:enhance>
+											<button class="mr-2" title="Devolver" aria-label="Devolver"
 												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
 										</form>
 									{/if}
 									<a
 										class="mr-2"
 										href="/biblioteca/emprestimos/{emprestimo.idemp}/recibo"
+										title="Recibo"
 										aria-label="Recibo">
 										<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
 									</a>

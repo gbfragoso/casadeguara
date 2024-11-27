@@ -38,7 +38,9 @@ export const actions: Actions = {
 		});
 
 		const role = existingUser[0].roles;
-		if (role.includes('biblioteca')) {
+		if (role.includes('diretoria')) {
+			redirect(302, '/diretoria');
+		} else if (role.includes('biblioteca')) {
 			redirect(302, '/biblioteca');
 		} else if (role.includes('financeiro')) {
 			redirect(302, '/financeiro');
