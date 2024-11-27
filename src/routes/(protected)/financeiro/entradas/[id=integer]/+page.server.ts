@@ -50,14 +50,6 @@ export const actions: Actions = {
 			};
 		}
 
-		if (validator.isLength(descricao, { max: 200 })) {
-			return {
-				status: 400,
-				field: 'descricao',
-				message: 'Descrição do recebimento muito grande para o campo',
-			};
-		}
-
 		try {
 			await db
 				.update(entradas)
