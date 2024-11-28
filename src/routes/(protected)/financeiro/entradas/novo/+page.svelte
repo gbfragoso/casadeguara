@@ -11,6 +11,18 @@
 	let { data, form }: Props = $props();
 	let loading = $state(false);
 	let { contribuintes } = $derived(data);
+
+	let leitor = $state('');
+	let leitorid = $state(0);
+
+	function selecionarDoador() {
+		const option = document.querySelector<HTMLInputElement>("option[value='" + leitor.toUpperCase() + "']");
+		if (option) {
+			leitorid = Number(option.getAttribute('data-value') as string);
+		} else {
+			leitorid = 0;
+		}
+	}
 </script>
 
 <div class="mb-2">
@@ -41,20 +53,25 @@
 			<div class="control">
 				<input
 					type="text"
-					name="nome"
+					name="contribuinte"
+					id="contribuinte"
 					placeholder="Digite o nome do doador"
 					list="contribuintes"
 					class="input"
+					autocomplete="off"
+					bind:value={leitor}
+					onchange={selecionarDoador}
 					aria-invalid={form?.field === 'nome' ? 'true' : undefined}
 					required />
+				<input type="hidden" name="contribuinteid" id="contribuinteid" bind:value={leitorid} />
 				<datalist id="contribuintes">
 					{#await contribuintes then item}
 						{#each item as contribuinte}
-							<option value={contribuinte.nome}></option>
+							<option data-value={contribuinte.idleitor} value={contribuinte.nome}></option>
 						{/each}
 					{/await}
 				</datalist>
-				{#if form?.field === 'nome'}
+				{#if form?.field === 'contribuinte'}
 					<p class="help is-danger">{form?.message}</p>
 				{/if}
 			</div>
