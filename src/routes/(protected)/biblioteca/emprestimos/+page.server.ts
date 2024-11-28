@@ -97,7 +97,10 @@ export const actions: Actions = {
 				.update(emprestimo)
 				.set({ dataDevolvido: new Date() })
 				.where(eq(emprestimo.idemp, Number(idemprestimo)));
-			await db.update(exemplar).set({status: 'Disponível'}).where(eq(exemplar.idexemplar, Number(idexemplar)));
+			await db
+				.update(exemplar)
+				.set({ status: 'Disponível' })
+				.where(eq(exemplar.idexemplar, Number(idexemplar)));
 			return { status: 201, message: 'Empréstimo devolvido com sucesso' };
 		} catch (err) {
 			console.error(err);

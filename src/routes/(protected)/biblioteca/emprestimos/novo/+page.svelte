@@ -18,6 +18,8 @@
 		const option = document.querySelector<HTMLInputElement>("option[value='" + leitor.toUpperCase() + "']");
 		if (option) {
 			leitorid = Number(option.getAttribute('data-value') as string);
+		} else {
+			leitorid = 0;
 		}
 	}
 
@@ -28,6 +30,8 @@
 		const option = document.querySelector<HTMLInputElement>("option[value='" + exemplar.toUpperCase() + "']");
 		if (option) {
 			exemplarid = Number(option.getAttribute('data-value') as string);
+		} else {
+			exemplarid = 0;
 		}
 	}
 </script>

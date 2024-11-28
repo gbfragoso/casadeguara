@@ -137,7 +137,10 @@
 													><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
 											</form>
 										{/if}
-										<form action="?/devolver&emprestimo={emprestimo.idemp}&exemplar={emprestimo.exemplar}" method="POST" use:enhance>
+										<form
+											action="?/devolver&emprestimo={emprestimo.idemp}&exemplar={emprestimo.exemplar}"
+											method="POST"
+											use:enhance>
 											<button class="mr-2" title="Devolver" aria-label="Devolver"
 												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
 										</form>
