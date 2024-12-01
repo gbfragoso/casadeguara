@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -88,43 +89,46 @@
 								<td class="table-actions">
 									<div class="field is-grouped">
 										{#if emprestimo.telefone}
-											<a
-												aria-label="link"
-												href="https://wa.me/{emprestimo.telefone}?text={body(
-													emprestimo.leitor,
-													emprestimo.titulo,
-													dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY'),
-												).replace('%0D%0A', ' ')}"
-												title="Whatsapp"
-												target="_blank">
-												<i class="fa-brands fa-whatsapp fa-fw"></i>
-											</a>
+											<form action="?/whatsapp" method="POST" use:enhance>
+												<input type="hidden" name="id" value={emprestimo.idemp} />
+												<input type="hidden" name="leitor" value={emprestimo.leitor} />
+												<input type="hidden" name="titulo" value={emprestimo.titulo} />
+												<input type="hidden" name="telefone" value={emprestimo.telefone} />
+												<input
+													type="hidden"
+													name="prazo"
+													value={dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')} />
+												<button aria-label="Whatsapp" title="Whatsapp" class="control"
+													><i class="fa-brands fa-whatsapp fa-fw"></i></button>
+											</form>
 										{/if}
 										{#if emprestimo.celular}
-											<a
-												aria-label="link"
-												href="https://wa.me/{emprestimo.celular}?text={body(
-													emprestimo.leitor,
-													emprestimo.titulo,
-													dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY'),
-												).replace('%0D%0A', ' ')}"
-												title="Celular"
-												target="_blank">
-												<i class="fa-solid fa-phone fa-fw"></i>
-											</a>
+											<form action="?/whatsapp" method="POST" use:enhance>
+												<input type="hidden" name="id" value={emprestimo.idemp} />
+												<input type="hidden" name="leitor" value={emprestimo.leitor} />
+												<input type="hidden" name="titulo" value={emprestimo.titulo} />
+												<input type="hidden" name="telefone" value={emprestimo.celular} />
+												<input
+													type="hidden"
+													name="prazo"
+													value={dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')} />
+												<button aria-label="Whatsapp" title="Whatsapp" class="control"
+													><i class="fa-brands fa-whatsapp fa-fw"></i></button>
+											</form>
 										{/if}
 										{#if emprestimo.email}
-											<a
-												aria-label="link"
-												href="mailto:{emprestimo.email}?subject=Prazo para devolução expirado&body={body(
-													emprestimo.leitor,
-													emprestimo.titulo,
-													dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY'),
-												)}"
-												title="Email"
-												target="_blank">
-												<i class="fa-regular fa-envelope fa-fw"></i>
-											</a>
+											<form action="?/email" method="POST" use:enhance>
+												<input type="hidden" name="id" value={emprestimo.idemp} />
+												<input type="hidden" name="leitor" value={emprestimo.leitor} />
+												<input type="hidden" name="titulo" value={emprestimo.titulo} />
+												<input type="hidden" name="email" value={emprestimo.email} />
+												<input
+													type="hidden"
+													name="prazo"
+													value={dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')} />
+												<button aria-label="Whatsapp" title="Whatsapp" class="control"
+													><i class="fa-regular fa-envelope fa-fw"></i></button>
+											</form>
 										{/if}
 									</div>
 								</td>

@@ -32,7 +32,7 @@ export const emprestimo = pgTable(
 		exemplar: smallint().notNull(),
 		dataEmprestimo: date('data_emprestimo', { mode: 'date' }),
 		dataDevolucao: date('data_devolucao', { mode: 'date' }),
-		cobranca: timestamp({ mode: 'string' }),
+		cobranca: timestamp({ mode: 'date' }),
 		renovacoes: smallint().default(0),
 		dataDevolvido: date('data_devolvido', { mode: 'date' }),
 		userEmprestimo: smallint('user_emprestimo'),
