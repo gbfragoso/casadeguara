@@ -94,6 +94,7 @@ export const actions: Actions = {
 				exemplar: idexemplar,
 				dataEmprestimo: new Date(),
 				dataDevolucao: dayjs().add(14, 'day').toDate(),
+				userEmprestimo: locals.user.id,
 			})
 			.returning({ id: emprestimo.idemp });
 

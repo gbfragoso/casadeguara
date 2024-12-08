@@ -4,6 +4,7 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
+	import { user } from '$lib/database/schema';
 
 	interface Props {
 		data: PageServerData;
@@ -73,6 +74,9 @@
 				</div>
 			</div>
 		</div>
+		<p class="mb-2 has-text-centered"
+			>Registrado no sistema por <strong>{entrada.usuarioCadastro}</strong> em
+			<strong>{dayjs.utc(entrada.dataRegistro).format('DD/MM/YYYY')}</strong></p>
 		<div class="field">
 			<div class="control">
 				<button

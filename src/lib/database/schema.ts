@@ -35,8 +35,8 @@ export const emprestimo = pgTable(
 		cobranca: timestamp({ mode: 'date' }),
 		renovacoes: smallint().default(0),
 		dataDevolvido: date('data_devolvido', { mode: 'date' }),
-		userEmprestimo: smallint('user_emprestimo'),
-		userDevolucao: smallint('user_devolucao'),
+		userEmprestimo: varchar('user_emprestimo', { length: 30 }),
+		userDevolucao: varchar('user_devolucao', { length: 30 }),
 	},
 	(table) => {
 		return {
@@ -130,8 +130,8 @@ export const saidas = pgTable('saidas', {
 	descricao: varchar({ length: 200 }).notNull(),
 	valor: numeric().notNull(),
 	dataSaida: date('data_saida', { mode: 'date' }).defaultNow().notNull(),
-	userCadastro: smallint('user_cadastro'),
-	userAlteracao: smallint('user_alteracao'),
+	userCadastro: varchar('user_cadastro', { length: 30 }),
+	userAlteracao: varchar('user_alteracao', { length: 30 }),
 });
 
 export const user = pgTable(
@@ -187,8 +187,8 @@ export const entradas = pgTable(
 		dataEntrada: date('data_entrada', { mode: 'date' }).notNull(),
 		dataRegistro: date('data_registro', { mode: 'date' }).defaultNow().notNull(),
 		idcontribuinte: integer().notNull(),
-		userCadastro: smallint('user_cadastro'),
-		userAlteracao: smallint('user_alteracao'),
+		userCadastro: varchar('user_cadastro', { length: 30 }),
+		userAlteracao: varchar('user_alteracao', { length: 30 }),
 		uuid: varchar({ length: 36 }).notNull(),
 	},
 	(table) => {
