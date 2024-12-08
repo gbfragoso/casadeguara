@@ -2,7 +2,7 @@ import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
 import { user } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and } from 'drizzle-orm';
+import { and, not } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.select()
 				.from(user)
 				.offset((page - 1) * 5)
-				.where(and(nameFilter, ulike(user.roles, 'secretaria%')))
+				.where(and(nameFilter, not(ulike(user.roles, 'biblioteca%'))))
 				.orderBy(unaccent(user.name));
 		};
 

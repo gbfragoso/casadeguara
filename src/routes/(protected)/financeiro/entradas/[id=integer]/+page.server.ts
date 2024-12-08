@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { entradas } from '$lib/database/schema';
+import { entradas, user } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
@@ -11,8 +11,15 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	try {
 		const entrada = await db
-			.select()
+			.select({
+				descricao: entradas.descricao,
+				valor: entradas.valor,
+				dataEntrada: entradas.dataEntrada,
+				dataRegistro: entradas.dataRegistro,
+				usuarioCadastro: user.name,
+			})
 			.from(entradas)
+			.innerJoin(user, eq(user.id, entradas.userCadastro))
 			.where(eq(entradas.identrada, Number(params.id)));
 		if (!entrada) {
 			throw fail(404, { message: 'Entrada não encontrada' });
@@ -28,7 +35,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-	update: async ({ request, params }) => {
+	update: async ({ request, params, locals }) => {
+		if (!locals.user) redirect(302, '/');
+
 		const form = await request.formData();
 		const descricao = form.get('descricao') as string;
 		const valor = form.get('valor') as string;
@@ -53,7 +62,7 @@ export const actions: Actions = {
 		try {
 			await db
 				.update(entradas)
-				.set({ descricao, valor, dataEntrada: new Date(data_entrada) })
+				.set({ descricao, valor, dataEntrada: new Date(data_entrada), userAlteracao: locals.user.id })
 				.where(eq(entradas.identrada, Number(params.id)));
 
 			return { status: 200 };

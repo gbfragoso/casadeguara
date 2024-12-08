@@ -11,7 +11,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	pesquisar: async ({ request }) => {
+	pesquisar: async ({ request, locals }) => {
+		if (!locals.user) redirect(302, '/');
+		
 		const form = await request.formData();
 		const nome = form.get('leitor') as string;
 		const titulo = form.get('titulo') as string;
@@ -63,6 +65,8 @@ export const actions: Actions = {
 		}
 	},
 	renovar: async ({ locals, url }) => {
+		if (!locals.user) redirect(302, '/');
+
 		const id = url.searchParams.get('id');
 		const where = eq(emprestimo.idemp, Number(id));
 		const resultado = await db.select({ renovacoes: emprestimo.renovacoes }).from(emprestimo).where(where);
@@ -88,14 +92,15 @@ export const actions: Actions = {
 			});
 		}
 	},
-	devolver: async ({ url }) => {
+	devolver: async ({ url, locals }) => {
+		if (!locals.user) redirect(302, '/');
 		const idemprestimo = url.searchParams.get('emprestimo');
 		const idexemplar = url.searchParams.get('exemplar');
 
 		try {
 			await db
 				.update(emprestimo)
-				.set({ dataDevolvido: new Date() })
+				.set({ dataDevolvido: new Date(), userDevolucao: locals.user.id })
 				.where(eq(emprestimo.idemp, Number(idemprestimo)));
 			await db
 				.update(exemplar)

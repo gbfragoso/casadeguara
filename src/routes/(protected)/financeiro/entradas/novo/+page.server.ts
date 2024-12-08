@@ -24,7 +24,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		if (!locals.user) redirect(302, '/');
+
 		const form = await request.formData();
 		const idcontribuinte = Number(form.get('contribuinteid') as string);
 		const descricao = form.get('descricao') as string;
@@ -62,6 +64,8 @@ export const actions: Actions = {
 			uuid,
 			valor: valor,
 			dataEntrada: new Date(data_entrada),
+			dataRegistro: new Date(),
+			userCadastro: locals.user.id,
 		});
 
 		return redirect(302, '/recibo/' + uuid);

@@ -123,7 +123,7 @@
 			</div>
 			<div class="is-flex is-justify-content-space-around pt-3">
 				<div class="column has-text-centered">
-					<div class="has-text-weight-bold">{dayjs(item[0].dataRegistro).format('DD / MM / YYYY')}</div>
+					<div class="has-text-weight-bold">{dayjs.utc(item[0].dataRegistro).format('DD / MM / YYYY')}</div>
 					<div>Data</div>
 				</div>
 				<div class="column has-text-centered">
