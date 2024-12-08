@@ -10,19 +10,6 @@
 	let { data }: Props = $props();
 	let { emprestimos } = $derived(data);
 	dayjs.extend(utc);
-
-	function body(leitor: string, titulo: string, data: string) {
-		return (
-			'Estimado(a) ' +
-			leitor +
-			',%0D%0AO prazo para devolução do livro ' +
-			titulo +
-			' expirou em ' +
-			data +
-			', se possível dirigir-se à biblioteca para regularização.%0D%0A' +
-			'Atenciosamente,%0D%0AClébio Fragoso'
-		);
-	}
 </script>
 
 <div class="mb-2">

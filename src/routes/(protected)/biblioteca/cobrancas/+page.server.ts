@@ -59,7 +59,6 @@ export const actions: Actions = {
 			prazo +
 			', se possível dirigir-se à biblioteca para regularização. Atenciosamente, Clébio Fragoso';
 
-
 		await db
 			.update(emprestimo)
 			.set({ cobranca: new Date() })
@@ -83,12 +82,11 @@ export const actions: Actions = {
 			prazo +
 			', se possível dirigir-se à biblioteca para regularização.%0D%0A%0D%0AAtenciosamente, Clébio Fragoso';
 
-
 		await db
 			.update(emprestimo)
 			.set({ cobranca: new Date() })
 			.where(eq(emprestimo.idemp, Number(id)));
 
-		redirect(302, 'mailto:'+ email + '?subject=Prazo para devolução expirado&body=' + body);
+		redirect(302, 'mailto:' + email + '?subject=Prazo para devolução expirado&body=' + body);
 	},
 } satisfies Actions;
