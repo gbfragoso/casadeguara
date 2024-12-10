@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	pesquisar: async ({ request, locals }) => {
 		if (!locals.user) redirect(302, '/');
-		
+
 		const form = await request.formData();
 		const nome = form.get('leitor') as string;
 		const titulo = form.get('titulo') as string;
@@ -53,7 +53,7 @@ export const actions: Actions = {
 				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
 				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 				.where(where)
-				.orderBy(desc(emprestimo.dataEmprestimo))
+				.orderBy(desc(emprestimo.dataDevolucao))
 				.limit(50);
 
 			return { emprestimos, status: 200, message: 'OK' };
