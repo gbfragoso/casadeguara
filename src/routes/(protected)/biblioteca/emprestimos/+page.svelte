@@ -130,6 +130,15 @@
 									<td><span class="tag is-info">Ativo</span></td>
 								{/if}
 								<td class="table-actions is-flex">
+									{#if isAdmin}
+										<a
+											class="mr-2"
+											href="/biblioteca/emprestimos/{emprestimo.idemp}"
+											title="Editar"
+											aria-label="Editar">
+											<i class="fa-regular fa-pen-to-square fa-fw"></i>&nbsp;
+										</a>
+									{/if}
 									{#if !emprestimo.data_devolvido}
 										{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
 											<form action="?/renovar&id={emprestimo.idemp}" method="POST" use:enhance>

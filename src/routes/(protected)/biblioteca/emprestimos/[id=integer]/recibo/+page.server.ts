@@ -8,7 +8,7 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
 
-	const id = Number(params.leitor);
+	const id = Number(params.id);
 
 	try {
 		const emprestimos = await db

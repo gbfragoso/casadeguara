@@ -24,7 +24,6 @@ export const actions: Actions = {
 		if (!existingUser || existingUser.length === 0) {
 			return fail(400, { failedLogin: true });
 		}
-		console.log(existingUser);
 
 		const validPassword = await verify(existingUser[0].passwordHash, password);
 		if (!validPassword) {

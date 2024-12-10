@@ -74,9 +74,10 @@
 				</div>
 			</div>
 		</div>
-		<p class="mb-2 has-text-centered"
-			>Registrado no sistema por <strong>{entrada.usuarioCadastro}</strong> em
-			<strong>{dayjs.utc(entrada.dataRegistro).format('DD/MM/YYYY')}</strong></p>
+		<p class="mb-2 has-text-centered">
+			Registrado no sistema por <strong>{entrada.usuarioCadastro}</strong> em
+			<strong>{dayjs.utc(entrada.dataRegistro).format('DD/MM/YYYY')}</strong>
+		</p>
 		<div class="field">
 			<div class="control">
 				<button
