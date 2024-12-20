@@ -3,14 +3,16 @@
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageServerData } from './$types';
 
 	interface Props {
 		form: ActionData;
+		data: PageServerData;
 	}
 
-	let { form }: Props = $props();
+	let { form, data }: Props = $props();
 	let loading = $state(false);
+	let { isAdmin } = $derived(data);
 
 	dayjs.extend(utc);
 </script>
@@ -109,14 +111,16 @@
 								{:else}
 									<td>Eventual</td>
 								{/if}
-								<td>{moeda(Number(resultado.entradas.valor))}</td>
-								<td>{resultado.entradas.descricao}</td>
-								<td>{dayjs.utc(resultado.entradas.dataEntrada).format('DD/MM/YYYY')}</td>
+								<td>{moeda(Number(resultado.valor))}</td>
+								<td>{resultado.descricao}</td>
+								<td>{dayjs.utc(resultado.dataEntrada).format('DD/MM/YYYY')}</td>
 								<td>
-									<a aria-label="editar" href="/financeiro/entradas/{resultado.entradas.identrada}">
-										<i class="fa-solid fa-pen-to-square fa-fw"></i>
-									</a>
-									<a aria-label="entradas" href="/recibo/{resultado.entradas.uuid}" title="Recibo">
+									{#if isAdmin}
+										<a aria-label="editar" href="/financeiro/entradas/{resultado.identrada}">
+											<i class="fa-solid fa-pen-to-square fa-fw"></i>
+										</a>
+									{/if}
+									<a aria-label="entradas" href="/recibo/{resultado.uuid}" title="Recibo">
 										<i class="fa-regular fa-file-lines fa-fw"></i>
 									</a>
 								</td>

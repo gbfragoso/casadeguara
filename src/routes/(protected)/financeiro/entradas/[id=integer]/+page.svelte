@@ -56,24 +56,6 @@
 				{/if}
 			</div>
 		</div>
-		<div class="columns">
-			<div class="field column">
-				<label class="label" for="valor">Valor</label>
-				<div class="control">
-					<input class="input" type="number" name="valor" id="valor" value={entrada.valor} step=".01" />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="data_entrada">Data do recebimento</label>
-				<div class="control">
-					<input
-						class="input"
-						type="date"
-						name="data_entrada"
-						value={dayjs.utc(entrada.dataEntrada).format('YYYY-MM-DD')} />
-				</div>
-			</div>
-		</div>
 		<p class="mb-2 has-text-centered">
 			Registrado no sistema por <strong>{entrada.usuarioCadastro}</strong> em
 			<strong>{dayjs.utc(entrada.dataRegistro).format('DD/MM/YYYY')}</strong>
