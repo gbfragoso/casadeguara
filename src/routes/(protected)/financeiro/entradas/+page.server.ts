@@ -7,6 +7,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
+	return { isAdmin: locals.user.roles.includes(':admin') };
 };
 
 export const actions: Actions = {
@@ -24,7 +25,11 @@ export const actions: Actions = {
 
 			const resultados = await db
 				.select({
-					entradas,
+					identrada: entradas.identrada,
+					descricao: entradas.descricao,
+					dataEntrada: entradas.dataEntrada,
+					valor: entradas.valor,
+					uuid: entradas.uuid,
 					contribuinte: leitor.nome,
 					idcontribuinte: leitor.idleitor,
 					trabalhador: leitor.trab,

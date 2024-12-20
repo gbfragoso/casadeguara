@@ -8,6 +8,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
+	if (!locals.user.roles.includes(':admin')) redirect(302, '/financeiro');
 
 	try {
 		const entrada = await db
@@ -37,11 +38,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions: Actions = {
 	update: async ({ request, params, locals }) => {
 		if (!locals.user) redirect(302, '/');
+		if (!locals.user.roles.includes(':admin')) redirect(302, '/financeiro');
 
 		const form = await request.formData();
 		const descricao = form.get('descricao') as string;
-		const valor = form.get('valor') as string;
-		const data_entrada = form.get('data_entrada') as string;
 
 		if (validator.isEmpty(descricao, { ignore_whitespace: true })) {
 			return {
@@ -62,7 +62,7 @@ export const actions: Actions = {
 		try {
 			await db
 				.update(entradas)
-				.set({ descricao, valor, dataEntrada: new Date(data_entrada), userAlteracao: locals.user.id })
+				.set({ descricao, userAlteracao: locals.user.id })
 				.where(eq(entradas.identrada, Number(params.id)));
 
 			return { status: 200 };

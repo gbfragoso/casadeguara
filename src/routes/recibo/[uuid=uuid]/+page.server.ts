@@ -12,6 +12,7 @@ export const load: PageServerLoad = async ({ params }) => {
 				.select({
 					id: entradas.identrada,
 					valor: entradas.valor,
+					descricao: entradas.descricao,
 					contribuinte: leitor.nome,
 					dataEntrada: entradas.dataEntrada,
 					dataRegistro: entradas.dataRegistro,

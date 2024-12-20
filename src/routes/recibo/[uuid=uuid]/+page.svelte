@@ -106,18 +106,18 @@
 			<div>
 				<div class="columns py-1 pr-2">
 					<div class="column is-one-quarter py-1">Recebemos do Sr.(a)</div>
-					<div class="column border fit-content py-1">{item[0].contribuinte}</div>
+					<div class="column border fit-content py-1">{item[0].contribuinte.toUpperCase()}</div>
 				</div>
 				<div class="columns py-1 pr-2">
 					<div class="column is-one-quarter py-1">A quantia de</div>
 					<div class="column border fit-content py-1">
-						{extenso(Number(item[0].valor).toLocaleString('pt-BR'), { mode: 'currency' })}
+						{extenso(Number(item[0].valor).toLocaleString('pt-BR'), { mode: 'currency' }).toUpperCase()}
 					</div>
 				</div>
 				<div class="columns py-1 pr-2">
-					<div class="column is-one-quarter py-1">Referente ao mês</div>
+					<div class="column is-one-quarter py-1">Referente a</div>
 					<div class="column border fit-content py-1">
-						{dayjs.utc(item[0].dataEntrada).format('MM / YYYY')}
+						{item[0].descricao.toUpperCase()}
 					</div>
 				</div>
 			</div>
@@ -152,6 +152,13 @@
 		#recibo {
 			width: 49rem;
 			margin: auto;
+		}
+	}
+
+	@media print {
+		#recibo {
+			width: 100%;
+			overflow: visible;
 		}
 	}
 </style>
