@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import Notification from '$lib/components/Notification.svelte';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -108,7 +109,6 @@
 					<thead>
 						<tr>
 							<th>Contribuinte</th>
-							<th>Tipo</th>
 							<th>Valor</th>
 							<th>Descrição</th>
 							<th>Depósito</th>
@@ -121,14 +121,11 @@
 							<tr>
 								<td>
 									<a href="/financeiro/contribuintes/{resultado.idcontribuinte}">
-										{resultado.contribuinte}
+										<span class={resultado.trabalhador ? 'has-background-warning-light' : ''}>
+											{resultado.contribuinte}
+										</span>
 									</a>
 								</td>
-								{#if resultado.trabalhador}
-									<td>T</td>
-								{:else}
-									<td>E</td>
-								{/if}
 								<td>{moeda(Number(resultado.valor))}</td>
 								<td>{resultado.descricao.toUpperCase()}</td>
 								{#if resultado.depositado}
@@ -172,4 +169,7 @@
 			</div>
 		</div>
 	</div>
+{/if}
+{#if form?.status === 201}
+	<Notification class="is-success">{form?.message}</Notification>
 {/if}
