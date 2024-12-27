@@ -11,17 +11,30 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	pesquisar: async ({ request }) => {
 		const form = await request.formData();
 		const nome = form.get('contribuinte') as string;
 		const dataInicio = form.get('dataInicio') as string;
 		const dataFim = form.get('dataFim') as string;
+		const dataRegistro = form.get('dataRegistro') as string;
+		const depositados = form.get('depositados') as string;
+		const trabalhadores = form.get('trabalhadores') as string;
 
 		try {
+			const dataRegistroFilter = dataRegistro ? gte(entradas.dataRegistro, new Date(dataRegistro)) : undefined;
 			const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
 			const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
 			const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
-			const where = and(dataInicioFilter, dataFimFilter, nameFilter);
+			const depositadosFilter = depositados ? eq(entradas.depositado, true) : undefined;
+			const trabalhadoresFilter = trabalhadores ? eq(leitor.trab, true) : undefined;
+			const where = and(
+				dataInicioFilter,
+				dataFimFilter,
+				dataRegistroFilter,
+				nameFilter,
+				depositadosFilter,
+				trabalhadoresFilter,
+			);
 
 			const resultados = await db
 				.select({
@@ -29,6 +42,7 @@ export const actions: Actions = {
 					descricao: entradas.descricao,
 					dataEntrada: entradas.dataEntrada,
 					valor: entradas.valor,
+					depositado: entradas.depositado,
 					uuid: entradas.uuid,
 					contribuinte: leitor.nome,
 					idcontribuinte: leitor.idleitor,
@@ -45,6 +59,24 @@ export const actions: Actions = {
 			console.error(err);
 			return error(500, {
 				message: 'Falha ao carregar a listagem de doações',
+			});
+		}
+	},
+	confirmar: async ({ locals, url }) => {
+		if (!locals.user) redirect(302, '/');
+
+		const id = url.searchParams.get('id');
+
+		try {
+			await db
+				.update(entradas)
+				.set({ depositado: true })
+				.where(eq(entradas.identrada, Number(id)));
+			return { status: 201, message: 'Depósito confirmado com sucesso' };
+		} catch (err) {
+			console.error(err);
+			return error(500, {
+				message: 'Falha ao confirmar o depósito',
 			});
 		}
 	},

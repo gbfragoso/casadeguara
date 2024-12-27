@@ -31,6 +31,7 @@
 
 <form
 	class="card"
+	action="?/pesquisar"
 	method="POST"
 	use:enhance={() => {
 		loading = true;
@@ -53,17 +54,33 @@
 		</div>
 		<div class="columns">
 			<div class="field column">
-				<label class="label" for="dataInicio">Data inicial</label>
+				<label class="label" for="dataFim">Registrado em</label>
+				<div class="control">
+					<input class="input" type="date" name="dataRegistro" id="dataRegistro" aria-label="Date" />
+				</div>
+			</div>
+			<div class="field column">
+				<label class="label" for="dataInicio">Data inicial do recebimento</label>
 				<div class="control">
 					<input class="input" type="date" name="dataInicio" id="dataInicio" aria-label="Date" />
 				</div>
 			</div>
 			<div class="field column">
-				<label class="label" for="dataFim">Data Final</label>
+				<label class="label" for="dataFim">Data final do recebimento</label>
 				<div class="control">
 					<input class="input" type="date" name="dataFim" id="dataFim" aria-label="Date" />
 				</div>
 			</div>
+		</div>
+		<div class="field is-grouped">
+			<label class="checkbox">
+				<input type="checkbox" name="depositados" id="depositados" />
+				Somente depositados
+			</label>
+			<label class="checkbox">
+				<input type="checkbox" name="trabalhadores" id="trabalhadores" />
+				Somente trabalhadores
+			</label>
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
@@ -94,8 +111,9 @@
 							<th>Tipo</th>
 							<th>Valor</th>
 							<th>Descrição</th>
+							<th>Depósito</th>
 							<th>Data</th>
-							<th>Ações</th>
+							<th class="table-actions">Ações</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -107,22 +125,45 @@
 									</a>
 								</td>
 								{#if resultado.trabalhador}
-									<td>Trabalhador</td>
+									<td>T</td>
 								{:else}
-									<td>Eventual</td>
+									<td>E</td>
 								{/if}
 								<td>{moeda(Number(resultado.valor))}</td>
-								<td>{resultado.descricao}</td>
+								<td>{resultado.descricao.toUpperCase()}</td>
+								{#if resultado.depositado}
+									<td>Sim</td>
+								{:else}
+									<td>Não</td>
+								{/if}
 								<td>{dayjs.utc(resultado.dataEntrada).format('DD/MM/YYYY')}</td>
-								<td>
-									{#if isAdmin}
-										<a aria-label="editar" href="/financeiro/entradas/{resultado.identrada}">
-											<i class="fa-solid fa-pen-to-square fa-fw"></i>
+								<td class="table-actions">
+									<div class="is-flex">
+										{#if isAdmin}
+											{#if !resultado.depositado}
+												<form
+													action="?/confirmar&id={resultado.identrada}"
+													method="POST"
+													use:enhance>
+													<button
+														class="mr-2"
+														title="Confirmar depósito"
+														aria-label="Confirmar"
+														><i class="fa-solid fa-check fa-fw"></i>&nbsp;</button>
+												</form>
+											{/if}
+											<a aria-label="editar" href="/financeiro/entradas/{resultado.identrada}">
+												<i class="fa-solid fa-pen-to-square fa-fw"></i>
+											</a>
+										{/if}
+										<a
+											class="ml-3"
+											aria-label="entradas"
+											href="/recibo/{resultado.uuid}"
+											title="Recibo">
+											<i class="fa-regular fa-file-lines fa-fw"></i>
 										</a>
-									{/if}
-									<a aria-label="entradas" href="/recibo/{resultado.uuid}" title="Recibo">
-										<i class="fa-regular fa-file-lines fa-fw"></i>
-									</a>
+									</div>
 								</td>
 							</tr>
 						{/each}
