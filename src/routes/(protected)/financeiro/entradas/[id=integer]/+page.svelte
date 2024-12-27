@@ -4,7 +4,6 @@
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
-	import { user } from '$lib/database/schema';
 
 	interface Props {
 		data: PageServerData;

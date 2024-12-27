@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import Notification from '$lib/components/Notification.svelte';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -137,18 +136,6 @@
 								<td class="table-actions">
 									<div class="is-flex">
 										{#if isAdmin}
-											{#if !resultado.depositado}
-												<form
-													action="?/confirmar&id={resultado.identrada}"
-													method="POST"
-													use:enhance>
-													<button
-														class="mr-2"
-														title="Confirmar depósito"
-														aria-label="Confirmar"
-														><i class="fa-solid fa-check fa-fw"></i>&nbsp;</button>
-												</form>
-											{/if}
 											<a aria-label="editar" href="/financeiro/entradas/{resultado.identrada}">
 												<i class="fa-solid fa-pen-to-square fa-fw"></i>
 											</a>
@@ -169,7 +156,4 @@
 			</div>
 		</div>
 	</div>
-{/if}
-{#if form?.status === 201}
-	<Notification class="is-success">{form?.message}</Notification>
 {/if}

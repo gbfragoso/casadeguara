@@ -62,22 +62,4 @@ export const actions: Actions = {
 			});
 		}
 	},
-	confirmar: async ({ locals, url }) => {
-		if (!locals.user) redirect(302, '/');
-
-		const id = url.searchParams.get('id');
-
-		try {
-			await db
-				.update(entradas)
-				.set({ depositado: true })
-				.where(eq(entradas.identrada, Number(id)));
-			return { status: 201, message: 'Depósito confirmado com sucesso' };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao confirmar o depósito',
-			});
-		}
-	},
 } satisfies Actions;
