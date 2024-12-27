@@ -184,6 +184,7 @@ export const entradas = pgTable(
 		identrada: serial().primaryKey().notNull(),
 		descricao: varchar({ length: 200 }).notNull(),
 		valor: numeric().notNull(),
+		depositado: boolean(),
 		dataEntrada: date('data_entrada', { mode: 'date' }).notNull(),
 		dataRegistro: date('data_registro', { mode: 'date' }).defaultNow().notNull(),
 		idcontribuinte: integer().notNull(),
