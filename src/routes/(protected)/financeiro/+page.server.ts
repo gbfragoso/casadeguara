@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 				})
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-				.orderBy(desc(entradas.dataEntrada))
+				.orderBy(desc(entradas.identrada))
 				.limit(5);
 		};
 
