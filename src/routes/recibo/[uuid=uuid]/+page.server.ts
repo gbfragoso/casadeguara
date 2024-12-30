@@ -6,31 +6,24 @@ import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	try {
-		const entrada = await db
-			.select({
-				id: entradas.identrada,
-				valor: entradas.valor,
-				descricao: entradas.descricao,
-				contribuinte: leitor.nome,
-				dataEntrada: entradas.dataEntrada,
-				dataRegistro: entradas.dataRegistro,
-			})
-			.from(entradas)
-			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-			.where(eq(entradas.uuid, params.uuid));
+	const entrada = await db
+		.select({
+			id: entradas.identrada,
+			valor: entradas.valor,
+			descricao: entradas.descricao,
+			contribuinte: leitor.nome,
+			dataEntrada: entradas.dataEntrada,
+			dataRegistro: entradas.dataRegistro,
+		})
+		.from(entradas)
+		.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+		.where(eq(entradas.uuid, params.uuid));
 
-		if (entrada.length == 0) {
-			return error(404, {
-				message: 'Recibo inexistente',
-			});
-		}
-
-		return { entrada: entrada[0] };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de entrada',
+	if (entrada.length == 0) {
+		return error(404, {
+			message: 'Recibo inexistente',
 		});
 	}
+
+	return { entrada: entrada[0] };
 };
