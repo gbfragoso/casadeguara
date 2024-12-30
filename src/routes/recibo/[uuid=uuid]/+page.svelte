@@ -34,27 +34,27 @@
 			</div>
 		</div>
 		<div class="is-flex is-justify-content-end mt-3">
-			<div class="columns">
+			<div class="columns is-mobile">
 				<div class="column has-text-weight-bold py-1">N°</div>
 				<div class="column border fit-content py-1">{entrada.id}</div>
 			</div>
-			<div class="columns pl-5 pr-2">
+			<div class="columns is-mobile pl-5 pr-2">
 				<div class="column has-text-weight-bold py-1">Valor</div>
 				<div class="column border fit-content py-1">{moeda(Number(entrada.valor))}</div>
 			</div>
 		</div>
 		<div>
-			<div class="columns py-1 pr-2">
+			<div class="columns is-mobile py-1 pr-2">
 				<div class="column is-one-quarter py-1">Recebemos do Sr.(a)</div>
 				<div class="column border fit-content py-1">{entrada.contribuinte.toUpperCase()}</div>
 			</div>
-			<div class="columns py-1 pr-2">
+			<div class="columns is-mobile py-1 pr-2">
 				<div class="column is-one-quarter py-1">A quantia de</div>
 				<div class="column border fit-content py-1">
 					{extenso(Number(entrada.valor).toLocaleString('pt-BR'), { mode: 'currency' }).toUpperCase()}
 				</div>
 			</div>
-			<div class="columns py-1 pr-2">
+			<div class="columns is-mobile py-1 pr-2">
 				<div class="column is-one-quarter py-1">Referente a</div>
 				<div class="column border fit-content py-1">
 					{entrada.descricao.toUpperCase()}
@@ -62,11 +62,11 @@
 			</div>
 		</div>
 		<div class="is-flex is-justify-content-space-around pt-3">
-			<div class="column has-text-centered">
+			<div class="has-text-centered">
 				<div class="has-text-weight-bold">{dayjs.utc(entrada.dataRegistro).format('DD / MM / YYYY')}</div>
 				<div>Data</div>
 			</div>
-			<div class="column has-text-centered">
+			<div class="has-text-centered">
 				<div>_______________________________</div>
 				<div>Assinatura</div>
 			</div>
