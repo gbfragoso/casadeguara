@@ -20,6 +20,12 @@ export const load: PageServerLoad = async ({ params }) => {
 			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
 			.where(eq(entradas.uuid, params.uuid));
 
+		if (entrada.length == 0) {
+			return error(404, {
+				message: 'Recibo inexistente',
+			});
+		}
+
 		return { entrada: entrada[0] };
 	} catch (err) {
 		console.error(err);
