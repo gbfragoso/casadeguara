@@ -7,22 +7,20 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
 	try {
-		const entrada = async () => {
-			return db
-				.select({
-					id: entradas.identrada,
-					valor: entradas.valor,
-					descricao: entradas.descricao,
-					contribuinte: leitor.nome,
-					dataEntrada: entradas.dataEntrada,
-					dataRegistro: entradas.dataRegistro,
-				})
-				.from(entradas)
-				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-				.where(eq(entradas.uuid, params.uuid));
-		};
+		const entrada = await db
+			.select({
+				id: entradas.identrada,
+				valor: entradas.valor,
+				descricao: entradas.descricao,
+				contribuinte: leitor.nome,
+				dataEntrada: entradas.dataEntrada,
+				dataRegistro: entradas.dataRegistro,
+			})
+			.from(entradas)
+			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+			.where(eq(entradas.uuid, params.uuid));
 
-		return { entrada: entrada() };
+		return { entrada: entrada[0] };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -13,7 +13,7 @@
 
 	let { data }: Props = $props();
 	let { entrada } = $derived(data);
-	let qrcode = QRCode.toDataURL($page.url.href);
+	let qrcode = QRCode.toDataURL(page.url.href);
 	dayjs.extend(utc);
 </script>
 
@@ -33,105 +33,44 @@
 				{/await}
 			</div>
 		</div>
-		{#await entrada}
-			<div class="is-flex is-justify-content-end mt-3">
-				<div class="columns is-mobile">
-					<div class="column has-text-weight-bold py-1">N°</div>
-					<div class="column border fit-content py-1">
-						<div class="skeleton-lines">
-							<div></div>
-						</div>
-					</div>
-				</div>
-				<div class="columns is-mobile pl-5 pr-2">
-					<div class="column has-text-weight-bold py-1">Valor</div>
-					<div class="column border fit-content py-1">
-						<div class="skeleton-lines">
-							<div></div>
-						</div>
-					</div>
+		<div class="is-flex is-justify-content-end mt-3">
+			<div class="columns">
+				<div class="column has-text-weight-bold py-1">N°</div>
+				<div class="column border fit-content py-1">{entrada.id}</div>
+			</div>
+			<div class="columns pl-5 pr-2">
+				<div class="column has-text-weight-bold py-1">Valor</div>
+				<div class="column border fit-content py-1">{moeda(Number(entrada.valor))}</div>
+			</div>
+		</div>
+		<div>
+			<div class="columns py-1 pr-2">
+				<div class="column is-one-quarter py-1">Recebemos do Sr.(a)</div>
+				<div class="column border fit-content py-1">{entrada.contribuinte.toUpperCase()}</div>
+			</div>
+			<div class="columns py-1 pr-2">
+				<div class="column is-one-quarter py-1">A quantia de</div>
+				<div class="column border fit-content py-1">
+					{extenso(Number(entrada.valor).toLocaleString('pt-BR'), { mode: 'currency' }).toUpperCase()}
 				</div>
 			</div>
-			<div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">Recebemos do Sr.(a)</div>
-					<div class="column border fit-content py-1">
-						<div class="skeleton-lines">
-							<div></div>
-						</div>
-					</div>
-				</div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">A quantia de</div>
-					<div class="column border fit-content py-1">
-						<div class="skeleton-lines">
-							<div></div>
-						</div>
-					</div>
-				</div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">Referente ao mês</div>
-					<div class="column border fit-content py-1">
-						<div class="skeleton-lines">
-							<div></div>
-						</div>
-					</div>
+			<div class="columns py-1 pr-2">
+				<div class="column is-one-quarter py-1">Referente a</div>
+				<div class="column border fit-content py-1">
+					{entrada.descricao.toUpperCase()}
 				</div>
 			</div>
-			<div class="is-flex is-justify-content-space-around pt-3">
-				<div class="column has-text-centered">
-					<div class="has-text-weight-bold">
-						<div class="skeleton-lines">
-							<div></div>
-						</div>
-					</div>
-					<div>Data</div>
-				</div>
-				<div class="column has-text-centered">
-					<div>_______________________________</div>
-					<div>Assinatura</div>
-				</div>
+		</div>
+		<div class="is-flex is-justify-content-space-around pt-3">
+			<div class="column has-text-centered">
+				<div class="has-text-weight-bold">{dayjs.utc(entrada.dataRegistro).format('DD / MM / YYYY')}</div>
+				<div>Data</div>
 			</div>
-		{:then item}
-			<div class="is-flex is-justify-content-end mt-3">
-				<div class="columns is-mobile">
-					<div class="column has-text-weight-bold py-1">N°</div>
-					<div class="column border fit-content py-1">{item[0].id}</div>
-				</div>
-				<div class="columns is-mobile pl-5 pr-2">
-					<div class="column has-text-weight-bold py-1">Valor</div>
-					<div class="column border fit-content py-1">{moeda(Number(item[0].valor))}</div>
-				</div>
+			<div class="column has-text-centered">
+				<div>_______________________________</div>
+				<div>Assinatura</div>
 			</div>
-			<div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">Recebemos do Sr.(a)</div>
-					<div class="column border fit-content py-1">{item[0].contribuinte.toUpperCase()}</div>
-				</div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">A quantia de</div>
-					<div class="column border fit-content py-1">
-						{extenso(Number(item[0].valor).toLocaleString('pt-BR'), { mode: 'currency' }).toUpperCase()}
-					</div>
-				</div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">Referente a</div>
-					<div class="column border fit-content py-1">
-						{item[0].descricao.toUpperCase()}
-					</div>
-				</div>
-			</div>
-			<div class="is-flex is-justify-content-space-around pt-3">
-				<div class="has-text-centered">
-					<div class="has-text-weight-bold">{dayjs.utc(item[0].dataRegistro).format('DD / MM / YYYY')}</div>
-					<div>Data</div>
-				</div>
-				<div class="has-text-centered">
-					<div>_______________________________</div>
-					<div>Assinatura</div>
-				</div>
-			</div>
-		{/await}
+		</div>
 		<p class="has-text-centered py-2">
 			Esta sua contribuição permite a manutenção dos nossos trabalhos. Jesus o abençoe.
 		</p>
