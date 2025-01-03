@@ -43,6 +43,11 @@
 						<i class="fa-solid fa-user fa-fw"></i>
 					</a>
 				</li>
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/historico'}>
+					<a aria-label="historico" title="Histórico" href="/financeiro/historico">
+						<i class="fa-regular fa-rectangle-list fa-fw"></i>
+					</a>
+				</li>
 			</ul>
 		</div>
 	</nav>

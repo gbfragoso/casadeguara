@@ -120,7 +120,7 @@
 							<tr>
 								<td>
 									<a href="/financeiro/contribuintes/{resultado.idcontribuinte}">
-										<span class={resultado.trabalhador ? 'has-background-warning-light' : ''}>
+										<span class={resultado.trabalhador ? 'has-background-primary-light' : ''}>
 											{resultado.contribuinte}
 										</span>
 									</a>
@@ -152,6 +152,23 @@
 							</tr>
 						{/each}
 					</tbody>
+					<tfoot class="has-background-warning-light has-text-weight-bold">
+						<tr>
+							<th>Total</th>
+							<th
+								>{moeda(
+									form.resultados
+										.map((a) => Number(a.valor))
+										.reduce(function (a, b) {
+											return a + b;
+										}, 0),
+								)}</th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th class="table-actions"></th>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
