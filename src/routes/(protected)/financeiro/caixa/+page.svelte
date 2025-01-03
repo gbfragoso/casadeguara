@@ -42,17 +42,17 @@
 	<div class="card-content">
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<tr>
-						<th class="is-hidden-print"></th>
-						<th>Contribuinte</th>
-						<th>Valor</th>
-						<th>Descrição</th>
-						<th>Data</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#await entradas then item}
+				{#await entradas then item}
+					<thead>
+						<tr>
+							<th class="is-hidden-print"></th>
+							<th>Contribuinte</th>
+							<th>Valor</th>
+							<th>Descrição</th>
+							<th>Data</th>
+						</tr>
+					</thead>
+					<tbody>
 						{#each item as resultado}
 							<tr>
 								<td class="is-hidden-print">
@@ -66,30 +66,34 @@
 								<td>{dayjs.utc(resultado.dataEntrada).format('DD/MM/YYYY')}</td>
 							</tr>
 						{/each}
-					{/await}
-				</tbody>
+					</tbody>
+					<tfoot class="has-background-warning-light has-text-weight-bold">
+						<tr>
+							<th class="is-hidden-print"></th>
+							<th><strong>Total</strong></th>
+							<th
+								>{moeda(
+									item
+										.map((a) => Number(a.valor))
+										.reduce(function (a, b) {
+											return a + b;
+										}, 0),
+								)}</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</tfoot>
+				{/await}
 			</table>
 		</div>
-		<hr />
-		<div class="is-size-3 has-text-centered">
-			{#await entradas then item}
-				Total: R$ {item
-					.map((a) => Number(a.valor))
-					.reduce(function (a, b) {
-						return a + b;
-					}, 0)}
-			{/await}
-		</div>
-		<div class="columns is-hidden-print">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-success is-fullwidth has-text-weight-semibold"
-					type="submit">
-					<i class="fa-solid fa-check fa-fw">&nbsp;</i>Confirmar depósito
-				</button>
-			</div>
+		<div class="is-hidden-print" style="min-width: 200px">
+			<button
+				aria-busy={loading}
+				class:is-loading={loading}
+				class="button is-success is-fullwidth has-text-weight-semibold"
+				type="submit">
+				<i class="fa-solid fa-check fa-fw">&nbsp;</i>Confirmar depósito
+			</button>
 		</div>
 	</div>
 </form>

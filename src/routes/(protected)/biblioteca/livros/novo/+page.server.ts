@@ -1,6 +1,7 @@
 import { db } from '$lib/database/connection';
 import { editora, livro, serie } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -26,8 +27,8 @@ export const actions: Actions = {
 		const tombo = form.get('tombo') as string;
 		const titulo = form.get('titulo') as string;
 		const editora = Number(form.get('editora'));
-		const serie = Number(form.get('colecao'));
-		const ordem = Number(form.get('ordem'));
+		const serie = Number(form.get('colecao')) > 0 ? Number(form.get('colecao')) : undefined;
+		const ordem = Number(form.get('ordem')) > 0 ? Number(form.get('ordem')) : undefined;
 
 		if (validator.isEmpty(titulo, { ignore_whitespace: true })) {
 			return {
@@ -42,6 +43,15 @@ export const actions: Actions = {
 				status: 400,
 				field: 'nome',
 				message: 'Título da obra não pode conter somente números',
+			};
+		}
+
+		const resultados = await db.select().from(livro).where(eq(livro.tombo, tombo));
+		if (resultados.length > 0) {
+			return {
+				status: 400,
+				field: 'tombo',
+				message: 'Tombo já cadastrado',
 			};
 		}
 
