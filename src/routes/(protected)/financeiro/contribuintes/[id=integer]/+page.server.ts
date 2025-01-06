@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	try {
 		const contribuinte = await db
-			.select({ nome: leitor.nome, trab: leitor.trab })
+			.select({ nome: leitor.nome, trab: leitor.trab, telefone: leitor.telefone })
 			.from(leitor)
 			.where(eq(leitor.idleitor, Number(params.id)));
 		if (!contribuinte) {
@@ -30,6 +30,7 @@ export const actions: Actions = {
 	update: async ({ request, params }) => {
 		const formdata = await request.formData();
 		const nome = formdata.get('nome') as string;
+		const telefone = formdata.get('telefone') as string;
 		const trabalhador = Boolean(formdata.get('trabalhador'));
 
 		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
@@ -48,10 +49,18 @@ export const actions: Actions = {
 			};
 		}
 
+		if (telefone && !validator.isNumeric(telefone)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Telefone só pode conter números',
+			};
+		}
+
 		try {
 			await db
 				.update(leitor)
-				.set({ nome: nome.toUpperCase(), trab: trabalhador })
+				.set({ nome: nome.toUpperCase(), telefone, trab: trabalhador })
 				.where(eq(leitor.idleitor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {

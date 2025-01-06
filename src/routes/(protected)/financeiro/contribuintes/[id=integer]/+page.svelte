@@ -54,6 +54,12 @@
 			{/if}
 		</div>
 		<div class="field">
+			<label class="label" for="telefone">Whatsapp (com DDD)</label>
+			<div class="control">
+				<input class="input" type="text" name="telefone" id="telefone" value={contribuinte.telefone} />
+			</div>
+		</div>
+		<div class="field">
 			<label class="checkbox" for="trabalhador">
 				<input type="checkbox" name="trabalhador" id="trabalhador" checked={contribuinte.trab} />
 				Trabalhador</label>

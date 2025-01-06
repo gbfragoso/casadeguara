@@ -147,6 +147,43 @@
 											title="Recibo">
 											<i class="fa-regular fa-file-lines fa-fw"></i>
 										</a>
+										{#if resultado.telefone && resultado.telefone.startsWith('739')}
+											<a
+												class="ml-3"
+												href={'https://wa.me/' +
+													resultado.telefone +
+													'?text=' +
+													encodeURIComponent(
+														'Estimado(a), ' +
+															resultado.contribuinte +
+															' segue link para o recibo referente a ' +
+															resultado.descricao +
+															': www.casadeguara.vercel.app/recibo/' +
+															resultado.uuid,
+													)}
+												aria-label="Whatsapp"
+												title="Whatsapp">
+												<i class="fa-brands fa-whatsapp fa-fw"></i>
+											</a>
+										{:else if resultado.celular && resultado.celular.startsWith('739')}
+											<a
+												class="ml-3"
+												href={'https://wa.me/' +
+													resultado.celular +
+													'?text=' +
+													encodeURIComponent(
+														'Estimado(a), ' +
+															resultado.contribuinte +
+															' segue link para o recibo referente a ' +
+															resultado.descricao +
+															': www.casadeguara.vercel.app/recibo/' +
+															resultado.uuid,
+													)}
+												aria-label="Whatsapp"
+												title="Whatsapp">
+												<i class="fa-brands fa-whatsapp fa-fw"></i>
+											</a>
+										{/if}
 									</div>
 								</td>
 							</tr>
