@@ -50,6 +50,12 @@
 			</div>
 		</div>
 		<div class="field">
+			<label class="label" for="telefone">Whatsapp (com DDD)</label>
+			<div class="control">
+				<input class="input" type="text" name="telefone" id="telefone" />
+			</div>
+		</div>
+		<div class="field">
 			<label class="checkbox" for="trabalhador">
 				<input type="checkbox" name="trabalhador" id="trabalhador" />
 				Trabalhador</label>

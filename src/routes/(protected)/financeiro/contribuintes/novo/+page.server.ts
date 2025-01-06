@@ -13,6 +13,7 @@ export const actions: Actions = {
 	default: async ({ request }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
+		const telefone = form.get('telefone') as string;
 		const trabalhador = Boolean(form.get('trabalhador'));
 
 		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
@@ -31,8 +32,16 @@ export const actions: Actions = {
 			};
 		}
 
+		if (telefone && !validator.isNumeric(telefone)) {
+			return {
+				status: 400,
+				field: 'nome',
+				message: 'Telefone só pode conter números',
+			};
+		}
+
 		try {
-			await db.insert(leitor).values({ nome: nome.toUpperCase(), trab: trabalhador });
+			await db.insert(leitor).values({ nome: nome.toUpperCase(), telefone, trab: trabalhador });
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
