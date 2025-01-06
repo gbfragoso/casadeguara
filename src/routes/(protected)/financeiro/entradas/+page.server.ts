@@ -21,7 +21,7 @@ export const actions: Actions = {
 		const trabalhadores = form.get('trabalhadores') as string;
 
 		try {
-			const dataRegistroFilter = dataRegistro ? gte(entradas.dataRegistro, new Date(dataRegistro)) : undefined;
+			const dataRegistroFilter = dataRegistro ? eq(entradas.dataRegistro, new Date(dataRegistro)) : undefined;
 			const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
 			const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
 			const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
@@ -47,6 +47,8 @@ export const actions: Actions = {
 					contribuinte: leitor.nome,
 					idcontribuinte: leitor.idleitor,
 					trabalhador: leitor.trab,
+					telefone: leitor.telefone,
+					celular: leitor.celular,
 				})
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))

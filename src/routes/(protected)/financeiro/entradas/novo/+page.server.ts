@@ -2,6 +2,7 @@ import { db } from '$lib/database/connection';
 import { entradas, leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { v7 as uuidv7 } from 'uuid';
+import { sql } from 'drizzle-orm';
 import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -11,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	try {
 		const contribuintes = async () => {
-			return db.select({ idleitor: leitor.idleitor, nome: leitor.nome }).from(leitor);
+			return db.select({ idleitor: leitor.idleitor, nome: sql<string>`unaccent(leitor.nome)` }).from(leitor);
 		};
 
 		return { contribuintes: contribuintes() };

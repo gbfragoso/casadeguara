@@ -17,7 +17,7 @@
 	dayjs.extend(utc);
 </script>
 
-<div id="recibo" style="background-color: white !important; color: black !important">
+<div id="recibo" style="background-color:white !important; color:black !important; overflow:hidden !important">
 	<div class="p-2">
 		<div class="is-flex is-justify-content-space-between">
 			<div class="has-text-centered p-2 mt-4 fit-content" style="border: 1px solid;">
@@ -75,6 +75,15 @@
 			Esta sua contribuição permite a manutenção dos nossos trabalhos. Jesus o abençoe.
 		</p>
 	</div>
+</div>
+
+<div class="has-text-centered mt-6">
+	<button
+		class="button is-primary is-hidden-print"
+		aria-label="print"
+		onclick={() => {
+			window.print();
+		}}>Clique aqui para imprimir</button>
 </div>
 
 <style>
