@@ -142,14 +142,16 @@
 										{/if}
 										<a
 											class="ml-3"
+											target="_blank"
 											aria-label="entradas"
 											href="/recibo/{resultado.uuid}"
 											title="Recibo">
 											<i class="fa-regular fa-file-lines fa-fw"></i>
 										</a>
-										{#if resultado.telefone && resultado.telefone.startsWith('739')}
+										{#if resultado.telefone}
 											<a
 												class="ml-3"
+												target="_blank"
 												href={'https://wa.me/' +
 													resultado.telefone +
 													'?text=' +
@@ -158,16 +160,17 @@
 															resultado.contribuinte +
 															' segue link para o recibo referente a ' +
 															resultado.descricao +
-															': www.casadeguara.vercel.app/recibo/' +
+															': casadeguara.vercel.app/recibo/' +
 															resultado.uuid,
 													)}
 												aria-label="Whatsapp"
 												title="Whatsapp">
 												<i class="fa-brands fa-whatsapp fa-fw"></i>
 											</a>
-										{:else if resultado.celular && resultado.celular.startsWith('739')}
+										{:else if resultado.celular}
 											<a
 												class="ml-3"
+												target="_blank"
 												href={'https://wa.me/' +
 													resultado.celular +
 													'?text=' +
