@@ -114,6 +114,12 @@
 			</div>
 		</div>
 		<div class="field">
+			<label class="checkbox">
+				<input type="checkbox" name="depositado" id="depositado" />
+				Depositado
+			</label>
+		</div>
+		<div class="field">
 			<div class="control">
 				<button
 					aria-busy={loading}

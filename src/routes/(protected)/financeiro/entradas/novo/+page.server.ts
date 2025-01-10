@@ -33,6 +33,7 @@ export const actions: Actions = {
 		const descricao = form.get('descricao') as string;
 		const valor = form.get('valor') as string;
 		const data_entrada = form.get('data_entrada') as string;
+		const depositado = Boolean(form.get('depositado'));
 		const uuid = uuidv7();
 
 		if (!idcontribuinte || idcontribuinte === 0) {
@@ -64,6 +65,7 @@ export const actions: Actions = {
 			descricao,
 			uuid,
 			valor: valor,
+			depositado,
 			dataEntrada: new Date(data_entrada),
 			dataRegistro: new Date(),
 			userCadastro: locals.user.id,
