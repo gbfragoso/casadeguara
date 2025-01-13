@@ -179,7 +179,7 @@
 															resultado.contribuinte +
 															' segue link para o recibo referente a ' +
 															resultado.descricao +
-															': www.casadeguara.vercel.app/recibo/' +
+															': casadeguara.vercel.app/recibo/' +
 															resultado.uuid,
 													)}
 												aria-label="Whatsapp"
