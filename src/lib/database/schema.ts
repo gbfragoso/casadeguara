@@ -184,7 +184,7 @@ export const entradas = pgTable(
 		userAlteracao: varchar('user_alteracao', { length: 30 }),
 		uuid: varchar({ length: 36 }).notNull(),
 		dataRegistro: date('data_registro', { mode: 'date' }).defaultNow().notNull(),
-		depositado: boolean(),
+		depositado: boolean().default(false),
 	},
 	(table) => [
 		foreignKey({
