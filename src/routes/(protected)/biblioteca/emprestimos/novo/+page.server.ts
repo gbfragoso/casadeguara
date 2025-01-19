@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const leitores = async () => {
 			return db
-				.select({ idleitor: leitor.idleitor, nome: leitor.nome })
+				.select({ idleitor: leitor.idleitor, nome: sql<string>`unaccent(leitor.nome)` })
 				.from(leitor)
 				.orderBy(unaccent(leitor.nome));
 		};

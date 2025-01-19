@@ -4,7 +4,7 @@ body {
 	font-variation-settings: normal;
 	min-height: 100vh !important;
 	overflow: auto;
-	background-color: #f3f4f6;
+	background-color: #f5f5f5;
 	color: #1b254b !important;
 }
 
@@ -137,7 +137,7 @@ tr td {
 	}
 
 	#printable-content tr:nth-child(even) td {
-		background-color: #f3f4f6 !important;
+		background-color: #f5f5f5 !important;
 		-webkit-print-color-adjust: exact;
 		print-color-adjust: exact;
 	}

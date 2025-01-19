@@ -37,14 +37,30 @@ export const actions: Actions = {
 			};
 		}
 
+		if (rg && (!validator.isNumeric(rg) || rg.length > 11)) {
+			return {
+				status: 400,
+				field: 'rg',
+				message: 'RG inválido',
+			};
+		}
+
+		if (cpf && (!validator.isNumeric(cpf) || cpf.length > 11)) {
+			return {
+				status: 400,
+				field: 'cpf',
+				message: 'CPF inválido',
+			};
+		}
+
 		try {
 			await db.insert(leitor).values({
 				nome: nome.toUpperCase(),
-				rg,
-				cpf,
+				rg: rg.replace(/\D/g, ''),
+				cpf: cpf.replace(/\D/g, ''),
 				email,
-				celular,
-				telefone,
+				celular: celular.replace(/\D/g, ''),
+				telefone: telefone.replace(/\D/g, ''),
 				logradouro,
 				bairro,
 				complemento,
