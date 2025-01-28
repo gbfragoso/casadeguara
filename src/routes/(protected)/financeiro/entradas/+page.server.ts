@@ -25,7 +25,7 @@ export const actions: Actions = {
 			const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
 			const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
 			const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
-			const depositadosFilter = depositados ? eq(entradas.depositado, true) : undefined;
+			const depositadosFilter = depositados ? eq(entradas.depositado, depositados === 'true') : undefined;
 			const trabalhadoresFilter = trabalhadores ? eq(leitor.trab, true) : undefined;
 			const where = and(
 				dataInicioFilter,

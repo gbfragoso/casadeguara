@@ -72,15 +72,30 @@
 				</div>
 			</div>
 		</div>
-		<div class="field is-grouped">
-			<label class="checkbox">
-				<input type="checkbox" name="depositados" id="depositados" />
-				Somente depositados
-			</label>
-			<label class="checkbox">
-				<input type="checkbox" name="trabalhadores" id="trabalhadores" />
-				Somente trabalhadores
-			</label>
+		<div class="columns" style="margin-top: -1.5rem">
+			<div class="control column">
+				<label class="label" for="depositados">Depósito confirmado?</label>
+				<label class="radio">
+					<input type="radio" name="depositados" value="" />
+					Todos
+				</label>
+				<label class="radio">
+					<input type="radio" name="depositados" value="true" />
+					Sim
+				</label>
+				<label class="radio">
+					<input type="radio" name="depositados" value="false" />
+					Não
+				</label>
+			</div>
+			<div class="field column">
+				<label class="label" for="trabalhadores">Tipo de contribuinte</label>
+				<label class="checkbox">
+					<input type="checkbox" name="trabalhadores" id="trabalhadores" />
+					Somente trabalhadores
+				</label>
+			</div>
+			<div class="column"></div>
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
