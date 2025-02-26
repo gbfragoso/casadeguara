@@ -1,7 +1,7 @@
 import { db } from '$lib/database/connection';
-import { entradas, leitor, saidas } from '$lib/database/schema';
+import { entradas, saidas } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, desc, eq, gte, lte, sum } from 'drizzle-orm';
+import { and, avg, count, gte, lte, sql, sum } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
@@ -15,27 +15,27 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const firstDay = new Date(year, month, 1);
 		const lastDay = new Date(year, month + 1, 0);
 
-		const ultimasEntradas = async () => {
+		const visaoGeral = async () => {
 			return db
 				.select({
-					valor: entradas.valor,
-					descricao: entradas.descricao,
-					data: entradas.dataEntrada,
-					contribuinte: leitor.nome,
+					year: sql<number>`extract(year from data_entrada) as year`,
+					count: count(),
+					avg: avg(entradas.valor),
+					median: sql<number>`PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY valor)`,
+					value: sum(entradas.valor),
 				})
 				.from(entradas)
-				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-				.orderBy(desc(entradas.identrada))
-				.limit(5);
-		};
-
-		const ultimasSaidas = async () => {
-			return db.select().from(saidas).orderBy(desc(saidas.dataSaida)).limit(5);
+				.groupBy(sql`year`);
 		};
 
 		const entradaMesAtual = async () => {
 			return db
-				.select({ value: sum(entradas.valor) })
+				.select({
+					count: count(),
+					avg: avg(entradas.valor),
+					median: sql<number>`PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY valor)`,
+					value: sum(entradas.valor),
+				})
 				.from(entradas)
 				.where(and(gte(entradas.dataEntrada, firstDay), lte(entradas.dataEntrada, lastDay)));
 		};
@@ -48,8 +48,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		};
 
 		return {
-			entradas: ultimasEntradas(),
-			saidas: ultimasSaidas(),
+			visaoGeral: visaoGeral(),
 			entradaMesAtual: entradaMesAtual(),
 			saidaMesAtual: saidaMesAtual(),
 		};

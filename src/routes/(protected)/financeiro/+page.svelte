@@ -10,7 +10,7 @@
 
 	let { data }: Props = $props();
 
-	let { entradas, saidas, entradaMesAtual, saidaMesAtual } = $derived(data);
+	let { visaoGeral, entradaMesAtual, saidaMesAtual } = $derived(data);
 	dayjs.extend(utc);
 </script>
 
@@ -26,6 +26,34 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
 		Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
 	</h1>
+</div>
+<div class="mt-2 columns">
+	{#await entradaMesAtual then entrada}
+		<div class="column">
+			<div class="box has-text-weight-semibold">
+				<i class="fa-solid fa-calculator fa-fw">&nbsp;</i>Total de doações
+				<h2 class="is-size-3 has-text-primary">
+					{entrada[0].count}
+				</h2>
+			</div>
+		</div>
+		<div class="column">
+			<div class="box has-text-weight-semibold">
+				<i class="fa-solid fa-wave-square fa-fw">&nbsp;</i>Valor médio
+				<h2 class="is-size-3 has-text-danger">
+					{moeda(Number(entrada[0].avg))}
+				</h2>
+			</div>
+		</div>
+		<div class="column">
+			<div class="box has-text-weight-semibold">
+				<i class="fa-solid fa-plus-minus fa-fw">&nbsp;</i>Mediana
+				<h2 class="is-size-3 has-text-success">
+					{moeda(Number(entrada[0].median))}
+				</h2>
+			</div>
+		</div>
+	{/await}
 </div>
 <div class="mt-2 columns">
 	{#await entradaMesAtual then entrada}
@@ -63,23 +91,30 @@
 		{/await}
 	{/await}
 </div>
-
+<div class="mb-4">
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Comparativo anual</h1>
+</div>
 <div class="card">
 	<div class="card-content">
-		<p class="is-size-4 mb-4 has-text-weight-semibold">Últimas contribuições</p>
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
 				<thead>
 					<tr>
-						<th>Contribuinte</th>
-						<th>Descrição</th>
-						<th>Valor</th>
-						<th>Data</th>
+						<th>Ano</th>
+						<th>Doações</th>
+						<th>Valor médio</th>
+						<th>Mediana</th>
+						<th>Total</th>
 					</tr>
 				</thead>
 				<tbody>
-					{#await entradas}
+					{#await visaoGeral}
 						<tr>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
 							<td>
 								<div class="skeleton-lines">
 									<div></div>
@@ -104,56 +139,11 @@
 					{:then item}
 						{#each item as entrada}
 							<tr>
-								<td>{entrada.contribuinte}</td>
-								<td>{entrada.descricao}</td>
-								<td>{moeda(Number(entrada.valor))}</td>
-								<td>{dayjs.utc(entrada.data).format('DD/MM/YYYY')}</td>
-							</tr>
-						{/each}
-					{/await}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
-
-<div class="card">
-	<div class="card-content">
-		<p class="is-size-4 mb-4 has-text-weight-semibold">Últimos pagamentos</p>
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<tr>
-						<th scope="col">Descrição</th>
-						<th scope="col">Valor</th>
-						<th scope="col">Data</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#await saidas}
-						<tr>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as saida}
-							<tr>
-								<td>{saida.descricao}</td>
-								<td>{moeda(Number(saida.valor))}</td>
-								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
+								<td>{entrada.year}</td>
+								<td>{entrada.count}</td>
+								<td>{moeda(Number(entrada.avg))}</td>
+								<td>{moeda(Number(entrada.median))}</td>
+								<td>{moeda(Number(entrada.value))}</td>
 							</tr>
 						{/each}
 					{/await}
