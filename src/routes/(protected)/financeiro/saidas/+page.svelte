@@ -104,8 +104,8 @@
 					</tbody>
 					<tfoot class="has-background-warning-light has-text-weight-bold">
 						<tr>
-							<th>Total</th>
-							<th
+							<th class="has-text-black">Total</th>
+							<th class="has-text-black"
 								>{moeda(
 									form.saidas
 										.map((a) => Number(a.valor))

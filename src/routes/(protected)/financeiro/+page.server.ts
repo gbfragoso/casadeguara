@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const visaoGeral = async () => {
 			return db
 				.select({
+					month: sql<number>`extract(month from data_entrada) as month`,
 					year: sql<number>`extract(year from data_entrada) as year`,
 					count: count(),
 					avg: avg(entradas.valor),
@@ -25,7 +26,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 					value: sum(entradas.valor),
 				})
 				.from(entradas)
-				.groupBy(sql`year`);
+				.groupBy(sql`year`, sql`month`)
+				.orderBy(sql`year`, sql`month`)
+				.limit(12);
 		};
 
 		const entradaMesAtual = async () => {

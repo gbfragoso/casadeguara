@@ -70,8 +70,8 @@
 					<tfoot class="has-background-warning-light has-text-weight-bold">
 						<tr>
 							<th class="is-hidden-print"></th>
-							<th><strong>Total</strong></th>
-							<th
+							<th class="has-text-black">Total</th>
+							<th class="has-text-black"
 								>{moeda(
 									item
 										.map((a) => Number(a.valor))
