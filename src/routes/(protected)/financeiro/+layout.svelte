@@ -8,7 +8,7 @@
 	}
 
 	let { data, children }: Props = $props();
-	let { username, userid } = $derived(data);
+	let { isAdmin, username, userid } = $derived(data);
 </script>
 
 <main class="is-flex">
@@ -33,11 +33,13 @@
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/caixa'}>
-					<a aria-label="caixa" title="Caixa" href="/financeiro/caixa">
-						<i class="fa-solid fa-file-invoice-dollar fa-fw"></i>
-					</a>
-				</li>
+				{#if isAdmin}
+					<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/caixa'}>
+						<a aria-label="caixa" title="Caixa" href="/financeiro/caixa">
+							<i class="fa-solid fa-file-invoice-dollar fa-fw"></i>
+						</a>
+					</li>
+				{/if}
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuintes'}>
 					<a aria-label="contribuintes" title="Contribuintes" href="/financeiro/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>
