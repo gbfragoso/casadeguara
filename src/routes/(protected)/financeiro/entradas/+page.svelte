@@ -135,9 +135,7 @@
 							<tr>
 								<td>
 									<a href="/financeiro/contribuintes/{resultado.idcontribuinte}">
-										<span class={resultado.trabalhador ? 'has-background-primary-light' : ''}>
-											{resultado.contribuinte}
-										</span>
+										{resultado.contribuinte}
 									</a>
 								</td>
 								<td>{moeda(Number(resultado.valor))}</td>
@@ -209,8 +207,8 @@
 					</tbody>
 					<tfoot class="has-background-warning-light has-text-weight-bold">
 						<tr>
-							<th>Total</th>
-							<th
+							<th class="has-text-black">Total</th>
+							<th class="has-text-black"
 								>{moeda(
 									form.resultados
 										.map((a) => Number(a.valor))
