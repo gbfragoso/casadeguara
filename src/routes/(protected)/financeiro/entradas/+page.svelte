@@ -122,6 +122,7 @@
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
 						<tr>
+							<th>N° Recibo</th>
 							<th>Contribuinte</th>
 							<th>Valor</th>
 							<th>Descrição</th>
@@ -133,6 +134,9 @@
 					<tbody>
 						{#each form.resultados as resultado}
 							<tr>
+								<td>
+									{resultado.identrada}
+								</td>
 								<td>
 									<a href="/financeiro/contribuintes/{resultado.idcontribuinte}">
 										{resultado.contribuinte}

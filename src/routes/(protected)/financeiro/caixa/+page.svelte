@@ -46,6 +46,7 @@
 					<thead>
 						<tr>
 							<th class="is-hidden-print"></th>
+							<th>N° Recibo</th>
 							<th>Contribuinte</th>
 							<th>Valor</th>
 							<th>Descrição</th>
@@ -57,6 +58,9 @@
 							<tr>
 								<td class="is-hidden-print">
 									<input name="entradas" value={resultado.identrada} type="checkbox" checked />
+								</td>
+								<td>
+									{resultado.identrada}
 								</td>
 								<td>
 									{resultado.contribuinte}
