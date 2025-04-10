@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	pesquisar: async ({ request, locals }) => {
+	default: async ({ request, locals }) => {
 		if (!locals.user) redirect(302, '/');
 
 		const form = await request.formData();
@@ -53,7 +53,7 @@ export const actions: Actions = {
 				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
 				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 				.where(where)
-				.orderBy(desc(emprestimo.dataDevolucao))
+				.orderBy(desc(emprestimo.dataDevolucao), desc(emprestimo.idemp))
 				.limit(50);
 
 			return { emprestimos, status: 200, message: 'OK' };
@@ -61,56 +61,6 @@ export const actions: Actions = {
 			console.error(err);
 			return error(500, {
 				message: 'Falha ao carregar a lista de empréstimos',
-			});
-		}
-	},
-	renovar: async ({ locals, url }) => {
-		if (!locals.user) redirect(302, '/');
-
-		const id = url.searchParams.get('id');
-		const where = eq(emprestimo.idemp, Number(id));
-		const resultado = await db.select({ renovacoes: emprestimo.renovacoes }).from(emprestimo).where(where);
-		const renovacoes = Number(resultado[0].renovacoes);
-		if (renovacoes > 1 && !locals.user?.roles.includes(':admin')) {
-			return {
-				status: 400,
-				message: 'Limite de renovações excedido',
-			};
-		}
-
-		const duracao = Number(14 + (renovacoes + 1) * 14);
-
-		try {
-			await db.execute(
-				sql`update emprestimo set data_devolucao = data_emprestimo + ${duracao}::int, renovacoes = renovacoes + 1 where idemp = ${id}`,
-			);
-			return { status: 201, message: 'Empréstimo renovado com sucesso' };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao renovar o empréstimo',
-			});
-		}
-	},
-	devolver: async ({ url, locals }) => {
-		if (!locals.user) redirect(302, '/');
-		const idemprestimo = url.searchParams.get('emprestimo');
-		const idexemplar = url.searchParams.get('exemplar');
-
-		try {
-			await db
-				.update(emprestimo)
-				.set({ dataDevolvido: new Date(), userDevolucao: locals.user.id })
-				.where(eq(emprestimo.idemp, Number(idemprestimo)));
-			await db
-				.update(exemplar)
-				.set({ status: 'Disponível' })
-				.where(eq(exemplar.idexemplar, Number(idexemplar)));
-			return { status: 201, message: 'Empréstimo devolvido com sucesso' };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao devolver o empréstimo',
 			});
 		}
 	},
