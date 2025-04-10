@@ -10,8 +10,70 @@
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
 	let { isAdmin } = $derived(data);
+	let loading = $state(false);
+
+	function devolver(id: number) {
+		let button = document.getElementById('devolver-' + id.toString());
+		if (button) {
+			button.ariaDisabled = 'true';
+			button.setAttribute('disabled', 'true');
+		}
+
+		let tr = document.getElementById(id.toString());
+		if (tr) {
+			fetch(`/api/biblioteca/devolucao?id=${id}`, {
+				method: 'POST',
+			}).then((data) => {
+				tr.classList = '';
+				if (data.status === 200) {
+					tr.classList.add('tag', 'is-light');
+					tr.innerHTML = 'Devolvido';
+				} else {
+					tr.classList.add('tag', 'is-danger');
+					tr.innerHTML = 'Erro ao devolver';
+				}
+			});
+		}
+		if (button) {
+			button.remove();
+		}
+	}
+	function renovar(id: number) {
+		let button = document.getElementById('renovar-' + id.toString());
+		if (button) {
+			button.ariaDisabled = 'true';
+			button.setAttribute('disabled', 'true');
+		}
+
+		let tr = document.getElementById(id.toString());
+		if (tr) {
+			fetch(`/api/biblioteca/renovacao?id=${id}`, {
+				method: 'POST',
+			})
+				.then((response) => {
+					tr.classList = '';
+					if (response.status === 200) {
+						tr.classList.add('tag', 'is-success');
+						tr.innerHTML = 'Renovado';
+					} else {
+						tr.classList.add('tag', 'is-danger');
+						tr.innerHTML = 'Erro ao renovar';
+					}
+					return response.text();
+				})
+				.then((text) => {
+					let span = document.getElementById(id + 'devolucao');
+					if (span) {
+						span.innerHTML = dayjs.utc(text).format('DD/MM/YYYY');
+					}
+				});
+		}
+
+		if (button && !isAdmin) {
+			button.remove();
+		}
+	}
 	dayjs.extend(utc);
 </script>
 
@@ -29,7 +91,6 @@
 
 <form
 	class="card"
-	action="?/pesquisar"
 	method="POST"
 	use:enhance={() => {
 		loading = true;
@@ -112,7 +173,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.emprestimos as emprestimo}
+						{#each form.emprestimos as emprestimo (emprestimo.idemp)}
 							<tr>
 								<td>
 									<a href="/biblioteca/leitores/{emprestimo.idleitor}">
@@ -121,13 +182,18 @@
 								</td>
 								<td>{emprestimo.titulo}</td>
 								<td>{emprestimo.numero}</td>
-								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
+								<td id={emprestimo.idemp.toString() + 'devolucao'}
+									>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
 								{#if emprestimo.data_devolvido}
-									<td><span class="tag is-success">Devolvido</span></td>
+									<td
+										><span id={emprestimo.idemp.toString()} class="tag is-light">Devolvido</span
+										></td>
 								{:else if dayjs().isAfter(dayjs(emprestimo.data_devolucao).add(1, 'day'))}
-									<td><span class="tag is-warning">Atrasado</span></td>
+									<td
+										><span id={emprestimo.idemp.toString()} class="tag is-warning">Atrasado</span
+										></td>
 								{:else}
-									<td><span class="tag is-info">Ativo</span></td>
+									<td><span id={emprestimo.idemp.toString()} class="tag is-info">Ativo</span></td>
 								{/if}
 								<td class="table-actions is-flex">
 									{#if !emprestimo.data_devolvido}
@@ -139,18 +205,22 @@
 											<i class="fa-regular fa-pen-to-square fa-fw"></i>&nbsp;
 										</a>
 										{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
-											<form action="?/renovar&id={emprestimo.idemp}" method="POST" use:enhance>
-												<button class="mr-2" title="Renovar" aria-label="Renovar"
-													><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
-											</form>
+											<button
+												id={'renovar-' + emprestimo.idemp.toString()}
+												class="mr-2"
+												onclick={() => renovar(emprestimo.idemp)}
+												title="Renovar"
+												aria-label="Renovar"
+												><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
 										{/if}
-										<form
-											action="?/devolver&emprestimo={emprestimo.idemp}&exemplar={emprestimo.exemplar}"
-											method="POST"
-											use:enhance>
-											<button class="mr-2" title="Devolver" aria-label="Devolver"
-												><i class="fa-solid fa-reply fa-fw"></i>&nbsp;</button>
-										</form>
+										<button
+											id={'devolver-' + emprestimo.idemp.toString()}
+											class="mr-2"
+											onclick={() => devolver(emprestimo.idemp)}
+											title="Devolver"
+											aria-label="Devolver">
+											<i class="fa-solid fa-reply fa-fw"></i>&nbsp;
+										</button>
 									{/if}
 									<a
 										class="mr-2"
