@@ -33,9 +33,9 @@
 						<i class="fa-solid fa-cake-candles fa-fw"></i>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/trabalhadores'}>
-					<a aria-label="trabalhadores" title="Trabalhadores" href="/secretaria/trabalhadores">
-						<i class="fa-solid fa-handshake-angle fa-fw"></i>
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/cadastros'}>
+					<a aria-label="cadastros" title="Cadastros" href="/secretaria/cadastros">
+						<i class="fa-brands fa-wpforms fa-fw"></i>
 					</a>
 				</li>
 				{#if isAdmin}

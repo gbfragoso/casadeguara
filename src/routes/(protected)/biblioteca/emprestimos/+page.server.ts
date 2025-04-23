@@ -2,7 +2,7 @@ import { db } from '$lib/database/connection';
 import { ulike } from '$lib/database/functions';
 import { emprestimo, exemplar, leitor, livro } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, desc, eq, gte, isNull, lte, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, isNull, lte } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {

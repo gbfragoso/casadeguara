@@ -75,6 +75,7 @@
 						<tr>
 							<th class="is-hidden-print"></th>
 							<th class="has-text-black">Total</th>
+							<th></th>
 							<th class="has-text-black"
 								>{moeda(
 									item

@@ -2,7 +2,7 @@ import { db } from '$lib/database/connection';
 import { ulike } from '$lib/database/functions';
 import { entradas, leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, desc, eq, gte, isNull, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, isNotNull, lte } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -34,22 +34,17 @@ export const actions: Actions = {
 				nameFilter,
 				depositadosFilter,
 				trabalhadoresFilter,
-				isNull(entradas.motivoEstorno),
+				isNotNull(entradas.motivoEstorno),
 			);
 
 			const resultados = await db
 				.select({
 					identrada: entradas.identrada,
-					descricao: entradas.descricao,
-					dataEntrada: entradas.dataEntrada,
 					valor: entradas.valor,
-					depositado: entradas.depositado,
-					uuid: entradas.uuid,
 					contribuinte: leitor.nome,
 					idcontribuinte: leitor.idleitor,
-					trabalhador: leitor.trab,
-					telefone: leitor.telefone,
-					celular: leitor.celular,
+					motivoEstorno: entradas.motivoEstorno,
+					dataEstorno: entradas.dataEstorno,
 				})
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))

@@ -40,8 +40,9 @@
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a>
+				<a href="/biblioteca/emprestimos/novo" aria-current="page">Novo</a>
 			</li>
 		</ul>
 	</nav>
