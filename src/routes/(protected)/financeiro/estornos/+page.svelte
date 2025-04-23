@@ -3,16 +3,14 @@
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
-	import type { ActionData, PageServerData } from './$types';
+	import type { ActionData } from './$types';
 
 	interface Props {
 		form: ActionData;
-		data: PageServerData;
 	}
 
-	let { form, data }: Props = $props();
+	let { form }: Props = $props();
 	let loading = $state(false);
-	let { isAdmin } = $derived(data);
 
 	dayjs.extend(utc);
 </script>
@@ -22,11 +20,11 @@
 		<ul>
 			<li><a href="/financeiro">Financeiro</a></li>
 			<li class="is-active">
-				<a href="/financeiro/entradas" aria-current="page">Entradas</a>
+				<a href="/financeiro/estornos" aria-current="page">Estornos</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Entradas</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de estornos</h1>
 </div>
 
 <form
@@ -73,21 +71,6 @@
 			</div>
 		</div>
 		<div class="columns" style="margin-top: -1.5rem">
-			<div class="control column">
-				<label class="label" for="depositados">Depósito confirmado?</label>
-				<label class="radio">
-					<input type="radio" name="depositados" value="" />
-					Todos
-				</label>
-				<label class="radio">
-					<input type="radio" name="depositados" value="true" />
-					Sim
-				</label>
-				<label class="radio">
-					<input type="radio" name="depositados" value="false" />
-					Não
-				</label>
-			</div>
 			<div class="field column">
 				<label class="label" for="trabalhadores">Tipo de contribuinte</label>
 				<label class="checkbox">
@@ -107,10 +90,6 @@
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/financeiro/entradas/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
-			</div>
 		</div>
 	</div>
 </form>
@@ -125,77 +104,21 @@
 							<th>N° Recibo</th>
 							<th>Contribuinte</th>
 							<th>Valor</th>
-							<th>Descrição</th>
-							<th>Depósito</th>
+							<th>Motivo</th>
 							<th>Data</th>
-							<th class="table-actions">Ações</th>
 						</tr>
 					</thead>
 					<tbody>
 						{#each form.resultados as resultado}
 							<tr>
-								<td>
-									{resultado.identrada}
-								</td>
-								<td>
-									<a href="/financeiro/contribuintes/{resultado.idcontribuinte}">
-										{resultado.contribuinte}
-									</a>
-								</td>
+								<td>{resultado.identrada}</td>
+								<td>{resultado.contribuinte}</td>
 								<td>{moeda(Number(resultado.valor))}</td>
-								<td>{resultado.descricao.toUpperCase()}</td>
-								{#if resultado.depositado}
-									<td>Sim</td>
-								{:else}
-									<td>Não</td>
-								{/if}
-								<td>{dayjs.utc(resultado.dataEntrada).format('DD/MM/YYYY')}</td>
-								<td class="table-actions">
-									<div class="is-flex">
-										{#if isAdmin}
-											<a aria-label="editar" href="/financeiro/entradas/{resultado.identrada}">
-												<i class="fa-solid fa-pen-to-square fa-fw"></i>
-											</a>
-										{/if}
-										<a
-											class="ml-3"
-											target="_blank"
-											aria-label="entradas"
-											href="/recibo/{resultado.uuid}"
-											title="Recibo">
-											<i class="fa-regular fa-file-lines fa-fw"></i>
-										</a>
-										<a
-											class="ml-3"
-											target="_blank"
-											aria-label="estorno"
-											href="/financeiro/entradas/{resultado.identrada}/estorno"
-											title="Estorno">
-											<i class="fa-solid fa-arrow-rotate-left fa-fw"></i>
-										</a>
-									</div>
-								</td>
+								<td>{resultado.motivoEstorno?.toUpperCase()}</td>
+								<td>{dayjs.utc(resultado.dataEstorno).format('DD/MM/YYYY')}</td>
 							</tr>
 						{/each}
 					</tbody>
-					<tfoot class="has-background-warning-light has-text-weight-bold">
-						<tr>
-							<th class="has-text-black">Total</th>
-							<th></th>
-							<th class="has-text-black"
-								>{moeda(
-									form.resultados
-										.map((a) => Number(a.valor))
-										.reduce(function (a, b) {
-											return a + b;
-										}, 0),
-								)}</th>
-							<th></th>
-							<th></th>
-							<th></th>
-							<th></th>
-						</tr>
-					</tfoot>
 				</table>
 			</div>
 		</div>

@@ -20,7 +20,7 @@
 		<ul>
 			<li><a href="/secretaria">Secretaria</a></li>
 			<li class="is-active">
-				<a href="/secretaria/trabalhadores" aria-current="page">Trabalhadores</a>
+				<a href="/secretaria/cadastros" aria-current="page">Trabalhadores</a>
 			</li>
 		</ul>
 	</nav>

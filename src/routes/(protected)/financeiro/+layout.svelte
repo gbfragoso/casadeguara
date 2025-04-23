@@ -33,6 +33,11 @@
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
 					</a>
 				</li>
+				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/estornos'}>
+					<a aria-label="estornos" title="Estornos" href="/financeiro/estornos">
+						<i class="fa-solid fa-clock-rotate-left fa-fw"></i>
+					</a>
+				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/caixa'}>
 						<a aria-label="caixa" title="Caixa" href="/financeiro/caixa">

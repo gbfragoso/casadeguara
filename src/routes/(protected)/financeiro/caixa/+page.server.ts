@@ -1,7 +1,7 @@
 import { db } from '$lib/database/connection';
 import { entradas, leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { desc, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 				})
 				.from(entradas)
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-				.where(eq(entradas.depositado, false))
+				.where(and(eq(entradas.depositado, false), isNull(entradas.motivoEstorno)))
 				.orderBy(desc(entradas.dataEntrada));
 		};
 
