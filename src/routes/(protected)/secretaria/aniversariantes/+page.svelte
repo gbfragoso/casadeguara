@@ -107,11 +107,12 @@
 						{/each}
 					</tbody>
 				</table>
-				<input
-					class="is-size-4 has-text-weight-semibold has-text-centered has-text-danger"
-					value="ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson (Tel (73)
-					98808-2447/Whatsapp) para as correções devidas" />
 			</div>
 		</div>
+		<input
+			style="position: fixed; bottom: 0;width: 100%;"
+			class="is-size-6 has-text-weight-semibold has-text-centered has-text-danger"
+			value="ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson (Tel (73)
+					98808-2447/Whatsapp) para as correções devidas" />
 	</div>
 {/if}
