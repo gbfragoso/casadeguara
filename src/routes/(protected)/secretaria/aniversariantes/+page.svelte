@@ -76,8 +76,10 @@
 				GRUPO ESPÍRITA CASA DE GUARÁ
 			</h1>
 			<br />
-			<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered has-text-danger" rows="1"
-				>Aniversariantes do mês de /
+			<textarea
+				class="textarea is-size-4 has-text-weight-semibold has-text-centered has-text-danger is-uppercase"
+				rows="2"
+				>Aniversariantes do mês de / {dayjs.utc(new Date()).format('MM/YYYY')}
 			</textarea>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
@@ -105,10 +107,10 @@
 						{/each}
 					</tbody>
 				</table>
-				<div class="is-size-4 has-text-weight-semibold has-text-centered has-text-danger">
-					ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson<br />(Tel
-					(73) 98804-2447/Whatsapp) para as correções devidas
-				</div>
+				<input
+					class="is-size-4 has-text-weight-semibold has-text-centered has-text-danger"
+					value="ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson (Tel (73)
+					98808-2447/Whatsapp) para as correções devidas" />
 			</div>
 		</div>
 	</div>
