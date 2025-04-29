@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
+	import locale from 'dayjs/locale/pt';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -76,9 +77,11 @@
 				GRUPO ESPÍRITA CASA DE GUARÁ
 			</h1>
 			<br />
-			<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered has-text-danger" rows="1"
-				>Aniversariantes do mês de /
-			</textarea>
+			<h2 class="is-size-5 has-text-weight-semibold has-text-centered has-text-danger is-uppercase">
+				Aniversariantes do mês {dayjs.utc(form.leitores[0].aniversario).locale('pt').format('MMMM')} / {dayjs
+					.utc(new Date())
+					.format('YYYY')}
+			</h2>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
@@ -105,11 +108,13 @@
 						{/each}
 					</tbody>
 				</table>
-				<div class="is-size-4 has-text-weight-semibold has-text-centered has-text-danger">
-					ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson<br />(Tel
-					(73) 98804-2447/Whatsapp) para as correções devidas
-				</div>
 			</div>
+		</div>
+		<div
+			style="position: fixed; bottom: 0;width: 100%;"
+			class="is-size-6 has-text-weight-semibold has-text-centered has-text-danger">
+			ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson <br />
+			(Tel (73) 98808-2447/Whatsapp) para as correções devidas
 		</div>
 	</div>
 {/if}

@@ -97,6 +97,15 @@ tr td {
 		line-height: 1.4em !important;
 	}
 
+	table > tbody > tr > td {
+		padding-top: 3px !important;
+		padding-bottom: 3px !important;
+	}
+
+	.has-text-danger {
+		color: red !important;
+	}
+
 	#sidebar,
 	#breadcrumb,
 	form {
