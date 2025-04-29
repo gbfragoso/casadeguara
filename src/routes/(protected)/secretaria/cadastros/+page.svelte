@@ -22,6 +22,20 @@
 			});
 		}
 	}
+	function desencarnado(id: number) {
+		const checkbox = document.getElementById('desencarnado' + id.toString()) as HTMLInputElement;
+		if (checkbox) {
+			fetch(`/api/cadastros?id=${id}&desencarnado=${checkbox.checked}`, {
+				method: 'POST',
+			}).then((data) => {
+				if (data.status === 200) {
+					console.log('Sucesso ao atualizar trabalhador');
+				} else {
+					console.error('Erro ao atualizar trabalhador');
+				}
+			});
+		}
+	}
 </script>
 
 <div class="mb-2">
@@ -88,6 +102,7 @@
 						<tr>
 							<th style="width:50px"></th>
 							<th>Nome</th>
+							<th>Desencarnado</th>
 							<th class="table-actions">Ações</th>
 						</tr>
 					</thead>
@@ -102,6 +117,13 @@
 										checked={leitor.trab}
 										onchange={() => uncheck(leitor.idleitor)} /></td>
 								<td>{leitor.nome}</td>
+								<td style="width:50px"
+									><input
+										type="checkbox"
+										name="desencarnado"
+										id={'desencarnado' + leitor.idleitor.toString()}
+										checked={leitor.desencarnado}
+										onchange={() => desencarnado(leitor.idleitor)} /></td>
 								<td class="table-actions">
 									<a aria-label="editar" href="/secretaria/cadastros/{leitor.idleitor}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>

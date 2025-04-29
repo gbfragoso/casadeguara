@@ -21,7 +21,9 @@
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de aniversariantes</h1>
+	<div class="is-hidden-print">
+		<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de aniversariantes</h1>
+	</div>
 </div>
 
 <form
@@ -70,6 +72,13 @@
 {#if form?.leitores}
 	<div id="printable-content" class="card">
 		<div class="card-content">
+			<h1 class="is-size-3 has-text-weight-semibold has-text-centered has-text-primary">
+				GRUPO ESPÍRITA CASA DE GUARÁ
+			</h1>
+			<br />
+			<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered has-text-danger" rows="1"
+				>Aniversariantes do mês de /
+			</textarea>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
@@ -83,6 +92,9 @@
 							<tr>
 								<td>
 									{leitor.nome.toUpperCase()}
+									{#if leitor.desencarnado}
+										<span class="has-text-weight-semibold has-text-danger">(IN MEMORIAM)</span>
+									{/if}
 								</td>
 								<td>
 									{#if leitor.aniversario}
@@ -93,6 +105,10 @@
 						{/each}
 					</tbody>
 				</table>
+				<div class="is-size-4 has-text-weight-semibold has-text-centered has-text-danger">
+					ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson<br />(Tel
+					(73) 98804-2447/Whatsapp) para as correções devidas
+				</div>
 			</div>
 		</div>
 	</div>

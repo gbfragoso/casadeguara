@@ -57,7 +57,7 @@
 			</label>
 
 			<label class="checkbox">
-				<input name="dias" value="2" type="checkbox" />
+				<input name="dias" value="2" type="checkbox" checked />
 				Terça
 			</label>
 

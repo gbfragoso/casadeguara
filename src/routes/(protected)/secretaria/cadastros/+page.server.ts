@@ -19,7 +19,12 @@ export const actions: Actions = {
 
 		try {
 			const leitores = await db
-				.select({ idleitor: leitor.idleitor, nome: leitor.nome, trab: leitor.trab })
+				.select({
+					idleitor: leitor.idleitor,
+					nome: leitor.nome,
+					trab: leitor.trab,
+					desencarnado: leitor.desencarnado,
+				})
 				.from(leitor)
 				.where(and(nomeFilter, trabalhadoresFilter))
 				.orderBy(unaccent(leitor.nome))

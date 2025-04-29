@@ -3,7 +3,7 @@ import { unaccent } from '$lib/database/functions';
 import { leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import dayjs from 'dayjs';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -29,9 +29,9 @@ export const actions: Actions = {
 
 		try {
 			const leitores = await db
-				.select({ nome: leitor.nome })
+				.select({ nome: leitor.nome, desencarnado: leitor.desencarnado })
 				.from(leitor)
-				.where(eq(leitor.trab, true))
+				.where(and(eq(leitor.trab, true), eq(leitor.desencarnado, false)))
 				.orderBy(unaccent(leitor.nome));
 
 			return { leitores, datas };
