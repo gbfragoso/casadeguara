@@ -71,6 +71,7 @@ export const leitor = pgTable(
 		cep: varchar({ length: 11 }),
 		dataCadastro: date('data_cadastro', { mode: 'date' }).defaultNow(),
 		trab: boolean().default(false),
+		desencarnado: boolean().default(false),
 		cidade: varchar(),
 		incompleto: boolean(),
 		status: boolean().default(true),
