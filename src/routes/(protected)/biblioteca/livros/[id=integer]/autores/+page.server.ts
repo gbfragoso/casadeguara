@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { autor, autorHasLivro } from '$lib/database/schema';
+import { autor, autorHasLivro, livro } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
@@ -9,6 +9,12 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
+		const livros = async () => {
+			return db
+				.select()
+				.from(livro)
+				.where(eq(livro.idlivro, Number(params.id)));
+		};
 		const autores = async () => {
 			return db.select().from(autor).orderBy(autor.nome);
 		};
@@ -21,7 +27,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				.orderBy(autor.nome);
 		};
 
-		return { autores: autores(), autoresLivro: autoresLivro(), role: locals.user.roles };
+		return { autores: autores(), autoresLivro: autoresLivro(), livros: livros(), role: locals.user.roles };
 	} catch (err) {
 		console.error(err);
 		return error(500, {
