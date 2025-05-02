@@ -137,6 +137,7 @@
 											aria-label="editar"
 											title="Editar"
 											class="control"
+											target="_blank"
 											href="/biblioteca/livros/{livro.idlivro}">
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
@@ -144,6 +145,7 @@
 											aria-label="autores"
 											title="Autores"
 											class="control"
+											target="_blank"
 											href="/biblioteca/livros/{livro.idlivro}/autores">
 											<i class="fa-solid fa-user-pen fa-fw"></i>
 										</a>
@@ -151,6 +153,7 @@
 											aria-label="exemplares"
 											title="Exemplares"
 											class="control"
+											target="_blank"
 											href="/biblioteca/livros/{livro.idlivro}/exemplares">
 											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
@@ -158,6 +161,7 @@
 											aria-label="keywords"
 											title="Palavras-chave"
 											class="control"
+											target="_blank"
 											href="/biblioteca/livros/{livro.idlivro}/keywords">
 											<i class="fa-solid fa-key fa-fw"></i>
 										</a>

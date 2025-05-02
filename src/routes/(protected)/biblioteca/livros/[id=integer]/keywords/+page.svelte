@@ -7,7 +7,7 @@
 
 	let { data }: Props = $props();
 	let loading = $state(false);
-	let { keywords, keywordsLivro, role } = $derived(data);
+	let { keywords, keywordsLivro, livros, role } = $derived(data);
 </script>
 
 <div class="mb-2">
@@ -35,6 +35,22 @@
 		};
 	}}>
 	<div class="card-content">
+		<div class="columns">
+			{#await livros then livro}
+				<div class="field column is-2">
+					<label class="label" for="nome">Tombo</label>
+					<div class="control">
+						<input class="input" type="number" name="tombo" id="tombo" value={livro[0].tombo} disabled />
+					</div>
+				</div>
+				<div class="field column">
+					<label class="label" for="nome">Título</label>
+					<div class="control">
+						<input class="input" type="text" name="titulo" id="titulo" value={livro[0].titulo} disabled />
+					</div>
+				</div>
+			{/await}
+		</div>
 		<div class="field">
 			<label class="label" for="nome">Palavra-chave</label>
 			<div class="select is-fullwidth">

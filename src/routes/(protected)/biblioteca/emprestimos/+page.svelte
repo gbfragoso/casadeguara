@@ -131,7 +131,7 @@
 		</div>
 		<div class="field is-grouped">
 			<label class="checkbox">
-				<input type="checkbox" name="ativos" id="ativos" />
+				<input type="checkbox" name="ativos" id="ativos" checked />
 				Somente ativos
 			</label>
 			<label class="checkbox">

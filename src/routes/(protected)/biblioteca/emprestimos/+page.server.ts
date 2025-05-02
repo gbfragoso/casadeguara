@@ -27,9 +27,7 @@ export const actions: Actions = {
 			? and(lte(emprestimo.dataDevolucao, new Date()), isNull(emprestimo.dataDevolvido))
 			: undefined;
 		const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
-		const ativosFilter = ativos
-			? and(gte(emprestimo.dataDevolucao, new Date()), isNull(emprestimo.dataDevolvido))
-			: undefined;
+		const ativosFilter = ativos ? and(isNull(emprestimo.dataDevolvido)) : undefined;
 
 		const where = and(nomeFilter, tituloFilter, tomboFilter, atrasadosFilter, ativosFilter);
 

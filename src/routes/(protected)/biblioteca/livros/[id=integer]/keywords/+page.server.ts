@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { keyword, livroHasKeyword } from '$lib/database/schema';
+import { keyword, livroHasKeyword, livro } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
@@ -9,6 +9,13 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
+		const livros = async () => {
+			return db
+				.select()
+				.from(livro)
+				.where(eq(livro.idlivro, Number(params.id)));
+		};
+
 		const keywords = async () => {
 			return db.select().from(keyword).orderBy(keyword.chave);
 		};
@@ -22,7 +29,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				.orderBy(keyword.chave);
 		};
 
-		return { keywords: keywords(), keywordsLivro: keywordsLivro(), role: locals.user.roles };
+		return { keywords: keywords(), keywordsLivro: keywordsLivro(), livros: livros(), role: locals.user.roles };
 	} catch (err) {
 		console.error(err);
 		return error(500, {

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import dayjs from 'dayjs';
+	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -8,7 +10,8 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-	let { exemplares, role } = $derived(data);
+	let { exemplares, livros, role } = $derived(data);
+	dayjs.extend(utc);
 </script>
 
 <div class="mb-2">
@@ -36,6 +39,22 @@
 		};
 	}}>
 	<div class="card-content">
+		<div class="columns">
+			{#await livros then livro}
+				<div class="field column is-2">
+					<label class="label" for="nome">Tombo</label>
+					<div class="control">
+						<input class="input" type="number" name="tombo" id="tombo" value={livro[0].tombo} disabled />
+					</div>
+				</div>
+				<div class="field column">
+					<label class="label" for="nome">Título</label>
+					<div class="control">
+						<input class="input" type="text" name="titulo" id="titulo" value={livro[0].titulo} disabled />
+					</div>
+				</div>
+			{/await}
+		</div>
 		<label class="label" for="numero">Número do exemplar</label>
 		<div class="field has-addons">
 			<div class="control is-expanded">
@@ -63,6 +82,7 @@
 				<thead>
 					<tr>
 						<th>Ex</th>
+						<th>Data cadastro</th>
 						<th>Status</th>
 						{#if role.includes('admin')}
 							<th class="table-actions">Ações</th>
@@ -72,6 +92,11 @@
 				<tbody>
 					{#await exemplares}
 						<tr>
+							<td>
+								<div class="skeleton-lines">
+									<div></div>
+								</div>
+							</td>
 							<td>
 								<div class="skeleton-lines">
 									<div></div>
@@ -94,6 +119,7 @@
 						{#each item as exemplar}
 							<tr>
 								<td>{exemplar.numero}</td>
+								<td>{dayjs.utc(exemplar.dataCadastro).format('DD/MM/YYYY')}</td>
 								<td>
 									{#if exemplar.status === 'Disponível'}
 										<span class="tag is-success">{exemplar.status}</span>
