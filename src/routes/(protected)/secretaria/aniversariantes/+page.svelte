@@ -73,11 +73,10 @@
 {#if form?.leitores}
 	<div id="printable-content" class="card">
 		<div class="card-content">
-			<h1 class="is-size-3 has-text-weight-semibold has-text-centered has-text-primary">
+			<h1 class="is-size-5 has-text-weight-semibold has-text-centered has-text-primary">
 				GRUPO ESPÍRITA CASA DE GUARÁ
 			</h1>
-			<br />
-			<h2 class="is-size-5 has-text-weight-semibold has-text-centered has-text-danger is-uppercase">
+			<h2 class="is-size-6 has-text-weight-semibold has-text-centered has-text-danger is-uppercase">
 				Aniversariantes do mês {dayjs.utc(form.leitores[0].aniversario).locale('pt').format('MMMM')} / {dayjs
 					.utc(new Date())
 					.format('YYYY')}

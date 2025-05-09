@@ -31,7 +31,7 @@ export const actions: Actions = {
 			const leitores = await db
 				.select({ nome: leitor.nome, desencarnado: leitor.desencarnado })
 				.from(leitor)
-				.where(and(eq(leitor.trab, true), eq(leitor.desencarnado, false)))
+				.where(and(eq(leitor.trab, true), eq(leitor.frequencia, true)))
 				.orderBy(unaccent(leitor.nome));
 
 			return { leitores, datas };

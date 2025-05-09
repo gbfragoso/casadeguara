@@ -9,6 +9,7 @@ export const POST: RequestHandler = async ({ url, locals }) => {
 	const id = url.searchParams.get('id') as string;
 	const trabalhador = url.searchParams.get('trabalhador') as string;
 	const desencarnado = url.searchParams.get('desencarnado') as string;
+	const frequencia = url.searchParams.get('frequencia') as string;
 
 	try {
 		await db
@@ -16,6 +17,7 @@ export const POST: RequestHandler = async ({ url, locals }) => {
 			.set({
 				trab: trabalhador ? trabalhador === 'true' : undefined,
 				desencarnado: desencarnado ? desencarnado === 'true' : undefined,
+				frequencia: frequencia ? frequencia === 'true' : undefined,
 			})
 			.where(eq(leitor.idleitor, Number(id)));
 
