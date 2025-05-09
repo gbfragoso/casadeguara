@@ -1,33 +1,30 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import Notification from '$lib/components/Notification.svelte';
-	import type { ActionData, PageServerData } from './$types';
+	import type { ActionData } from './$types';
 	interface Props {
-		data: PageServerData;
 		form: ActionData;
 	}
 
-	let { data, form }: Props = $props();
+	let { form }: Props = $props();
 	let loading = $state(false);
-	let { leitores } = $derived(data);
 </script>
 
 <div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
+	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li>
-				<a href="/secretaria">Secretaria</a>
-			</li>
+			<li><a href="/secretaria">Secretaria</a></li>
+			<li><a href="/secretaria/frequencia" aria-current="page">Frequência</a></li>
 			<li class="is-active">
-				<a href="/secretaria/frequencia" aria-current="page">Frequência</a>
+				<a href="/secretaria/frequencia/registro" aria-current="page">Registro</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Registro de frequência</h1>
+	<h1 class="is-size-3 is-hidden-print has-text-weight-semibold has-text-primary">Registro de frequência</h1>
 </div>
 
 <form
 	class="card"
+	action="?/pesquisar"
 	method="POST"
 	use:enhance={() => {
 		loading = true;
@@ -37,54 +34,125 @@
 		};
 	}}>
 	<div class="card-content">
-		<div class="field">
-			<label class="label" for="dataFim">Data</label>
-			<div class="control">
-				<input class="input" type="date" name="data" id="data" aria-label="Date" required />
+		<div class="columns">
+			<div class="column">
+				<div class="field">
+					<label class="label" for="dataInicio">Data inicial</label>
+					<div class="control">
+						<input class="input" type="date" name="dataInicio" id="dataInicio" aria-label="Date" required />
+					</div>
+				</div>
+			</div>
+			<div class="column">
+				<div class="field">
+					<label class="label" for="dataFim">Data final</label>
+					<div class="control">
+						<input class="input" type="date" name="dataFim" id="dataFim" aria-label="Date" required />
+					</div>
+				</div>
 			</div>
 		</div>
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<tr>
-						<th></th>
-						<th>Nome</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#await leitores}
-						<tr>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-							<td>
-								<div class="skeleton-lines"><div></div></div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as leitor}
-							<tr>
-								<td>
-									<input type="checkbox" value={leitor.idleitor} name="leitor" id="leitor" />
-								</td>
-								<td>
-									{leitor.nome.toUpperCase()}
-								</td>
-							</tr>
-						{/each}
-					{/await}
-				</tbody>
-			</table>
-			<div class="control mt-3">
+		<div class="mb-3 checkboxes">
+			<label class="checkbox">
+				<input name="dias" value="1" type="checkbox" checked />
+				Segunda
+			</label>
+
+			<label class="checkbox">
+				<input name="dias" value="2" type="checkbox" checked />
+				Terça
+			</label>
+
+			<label class="checkbox">
+				<input name="dias" value="3" type="checkbox" />
+				Quarta
+			</label>
+
+			<label class="checkbox">
+				<input name="dias" value="4" type="checkbox" checked />
+				Quinta
+			</label>
+
+			<label class="checkbox">
+				<input name="dias" value="5" type="checkbox" />
+				Sexta
+			</label>
+
+			<label class="checkbox">
+				<input name="dias" value="6" type="checkbox" />
+				Sábado
+			</label>
+
+			<label class="checkbox">
+				<input name="dias" value="0" type="checkbox" />
+				Domingo
+			</label>
+		</div>
+		<div class="columns">
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
 					class:is-loading={loading}
-					class="button is-primary has-text-weight-semibold"
-					type="submit">Registrar</button>
+					class="button is-primary is-fullwidth has-text-weight-semibold"
+					type="submit">
+					<i class="fa-regular fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar Lista
+				</button>
 			</div>
 		</div>
 	</div>
 </form>
-{#if form?.status === 201}
-	<Notification class="is-success">Presença registrada com sucesso!</Notification>
+
+{#if form?.leitores}
+	<form
+		class="card"
+		action="?/registrar"
+		method="POST"
+		use:enhance={() => {
+			loading = true;
+			return async ({ update }) => {
+				await update();
+				loading = false;
+			};
+		}}>
+		<div class="card-content">
+			<div class="table-container">
+				<table class="table is-striped is-hoverable is-fullwidth">
+					<thead>
+						<tr>
+							{#if form.datas}
+								{#each form.datas as date}
+									<th class="print-pr-2">
+										{date}
+									</th>
+								{/each}
+							{/if}
+							<th class="print-pl-6">Nome</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each form.leitores as leitor}
+							<tr>
+								{#each form.fulldates as _}
+									<td class="print-pr-2"
+										><input type="checkbox" name={leitor.id.toString()} value={_} /></td>
+								{/each}
+								<td class="print-pl-6">
+									{leitor.nome.toUpperCase()}
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="is-hidden-print" style="min-width: 200px">
+			<button
+				aria-busy={loading}
+				class:is-loading={loading}
+				class="button is-success is-fullwidth has-text-weight-semibold"
+				type="submit">
+				<i class="fa-solid fa-check fa-fw">&nbsp;</i>Concluir registro
+			</button>
+		</div>
+	</form>
 {/if}

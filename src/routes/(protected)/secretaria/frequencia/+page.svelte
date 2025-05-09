@@ -108,7 +108,13 @@
 {#if form?.leitores}
 	<div id="printable-content" class="card">
 		<div class="card-content">
-			<textarea class="textarea is-size-4 has-text-weight-semibold has-text-centered" rows="3"></textarea>
+			<h2 class="is-size-5 has-text-weight-semibold has-text-centered has-text-primary">
+				Grupo Espírita Casa de Guará
+			</h2>
+			<p contenteditable="true" class="is-size-5 has-text-weight-semibold has-text-centered">Altere o texto</p>
+			<p contenteditable="true" class="is-size-5 has-text-weight-semibold has-text-centered has-text-danger">
+				Altere o texto em destaque
+			</p>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>

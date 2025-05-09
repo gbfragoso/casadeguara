@@ -23,6 +23,7 @@ export const actions: Actions = {
 					idleitor: leitor.idleitor,
 					nome: leitor.nome,
 					trab: leitor.trab,
+					frequencia: leitor.frequencia,
 					desencarnado: leitor.desencarnado,
 				})
 				.from(leitor)

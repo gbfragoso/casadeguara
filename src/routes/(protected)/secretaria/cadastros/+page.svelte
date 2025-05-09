@@ -8,24 +8,10 @@
 	let { form }: Props = $props();
 	let loading = $state(false);
 
-	function uncheck(id: number) {
-		const checkbox = document.getElementById(id.toString()) as HTMLInputElement;
+	function uncheck(column: string, id: number) {
+		const checkbox = document.getElementById(column + id.toString()) as HTMLInputElement;
 		if (checkbox) {
-			fetch(`/api/cadastros?id=${id}&trabalhador=${checkbox.checked}`, {
-				method: 'POST',
-			}).then((data) => {
-				if (data.status === 200) {
-					console.log('Sucesso ao atualizar trabalhador');
-				} else {
-					console.error('Erro ao atualizar trabalhador');
-				}
-			});
-		}
-	}
-	function desencarnado(id: number) {
-		const checkbox = document.getElementById('desencarnado' + id.toString()) as HTMLInputElement;
-		if (checkbox) {
-			fetch(`/api/cadastros?id=${id}&desencarnado=${checkbox.checked}`, {
+			fetch(`/api/cadastros?id=${id}&${column}=${checkbox.checked}`, {
 				method: 'POST',
 			}).then((data) => {
 				if (data.status === 200) {
@@ -95,13 +81,15 @@
 	<div class="card">
 		<div class="card-content">
 			<span class="tag is-warning is-light is-size-5 mb-2"
-				>Obs.: Somente os nomes marcados aparecerão na lista de presença</span>
+				>Obs.: Somente os nomes marcados nas colunas "trabalhador" e "frequência" aparecerão na lista de
+				presença</span>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
 						<tr>
-							<th style="width:50px"></th>
+							<th style="width:50px">Trabalhador</th>
 							<th>Nome</th>
+							<th title="Marque para aparecer na lista de frequência">Frequência</th>
 							<th>Desencarnado</th>
 							<th class="table-actions">Ações</th>
 						</tr>
@@ -109,21 +97,29 @@
 					<tbody>
 						{#each form.leitores as leitor}
 							<tr>
-								<td style="width:50px"
+								<td style="text-align: center; width:50px"
 									><input
 										type="checkbox"
-										name="trab"
-										id={leitor.idleitor.toString()}
+										name="trabalhador"
+										id={'trabalhador' + leitor.idleitor.toString()}
 										checked={leitor.trab}
-										onchange={() => uncheck(leitor.idleitor)} /></td>
+										onchange={() => uncheck('trabalhador', leitor.idleitor)} /></td>
 								<td>{leitor.nome}</td>
-								<td style="width:50px"
+								<td style="text-align: center; width:50px"
+									><input
+										type="checkbox"
+										name="frequencia"
+										id={'frequencia' + leitor.idleitor.toString()}
+										checked={leitor.frequencia}
+										disabled={leitor.desencarnado}
+										onchange={() => uncheck('frequencia', leitor.idleitor)} /></td>
+								<td style="text-align: center; width:50px"
 									><input
 										type="checkbox"
 										name="desencarnado"
 										id={'desencarnado' + leitor.idleitor.toString()}
 										checked={leitor.desencarnado}
-										onchange={() => desencarnado(leitor.idleitor)} /></td>
+										onchange={() => uncheck('desencarnado', leitor.idleitor)} /></td>
 								<td class="table-actions">
 									<a aria-label="editar" href="/secretaria/cadastros/{leitor.idleitor}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
