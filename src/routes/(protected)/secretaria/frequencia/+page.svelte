@@ -96,10 +96,9 @@
 					<i class="fa-regular fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar Lista
 				</button>
 			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href="/secretaria/frequencia/registro"><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Registrar</a>
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px; line-height: 40px;">
+				<a class="has-text-primary is-underlined" href="/secretaria/frequencia/registro"
+					>Clique aqui para registrar as frequências</a>
 			</div>
 		</div>
 	</div>
