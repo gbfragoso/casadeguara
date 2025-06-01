@@ -167,7 +167,7 @@ export const user = pgTable(
 	{
 		id: varchar({ length: 30 }).primaryKey().notNull(),
 		passwordHash: varchar('password_hash', { length: 2000 }).notNull(),
-		roles: varchar({ length: 20 }).notNull(),
+		roles: varchar({ length: 50 }).notNull(),
 		username: varchar({ length: 30 }).notNull(),
 		name: varchar({ length: 255 }).notNull(),
 	},
