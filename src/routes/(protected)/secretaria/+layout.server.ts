@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
-	if (!locals.user?.roles.includes('secretaria') && !locals.user?.roles.includes('diretoria')) {
+	if (!locals.user?.roles.includes('secretaria')) {
 		error(401, {
 			message: 'Usuário não possui acesso ao sistema da secretaria',
 		});
@@ -11,6 +11,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	return {
 		username: locals.user.name,
 		userid: locals.user.id,
-		isAdmin: locals.user.roles.includes(':admin'),
+		isAdmin: locals.user.roles.includes('secretaria:admin'),
 	};
 };

@@ -6,7 +6,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
-	if (!locals.user.roles.includes(':admin')) redirect(302, '/financeiro');
+	if (!locals.user.roles.includes('financeiro:admin')) redirect(302, '/financeiro');
 
 	try {
 		const resultados = async () => {
