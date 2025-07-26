@@ -1,6 +1,11 @@
-@use 'bulma/sass/base' with (
+@use 'bulma/sass' with (
+	$family-primary: '"Roboto", sans-serif',
+	$primary: #0486dc,
+	$card-shadow: none,
+	$box-shadow: none,
 	$body-overflow-y: auto
 );
+@use 'bulma/sass/base';
 @use 'bulma/sass/elements';
 @use 'bulma/sass/form';
 @use 'bulma/sass/components';
@@ -8,6 +13,18 @@
 @use 'bulma/sass/helpers';
 @use 'bulma/sass/layout';
 @use 'bulma/sass/themes';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
+
+$card-border-color: #e3e3e3;
+$box-border-color: #e3e3e3;
+
+.card {
+	border: 1px solid $card-border-color !important;
+}
+.box {
+	border: 1px solid $card-border-color !important;
+}
 
 @media (prefers-color-scheme: dark) {
 	a {
@@ -49,5 +66,177 @@
 	#logout_btn:hover {
 		background-color: #ffd46f;
 		color: #14161a;
+	}
+}
+
+body {
+	font-family: sans-serif;
+	font-feature-settings: normal;
+	font-variation-settings: normal;
+	min-height: 100vh !important;
+	overflow: auto;
+	background-color: #f5f5f5;
+	color: #1b254b !important;
+}
+
+#sidebar {
+	background-color: #ffffff;
+	height: 100vh;
+	border-radius: 0px 18px 18px 0px;
+	position: relative;
+	transition: all 0.5s;
+	min-width: 82px;
+	z-index: 2;
+}
+
+a {
+	color: #1b254b !important;
+}
+
+aside {
+	background-color: white;
+}
+
+tr td {
+	border-bottom-style: hidden !important;
+}
+
+#user {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 24px;
+}
+
+#user-avatar {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+}
+
+#sidebar-list {
+	gap: 8px;
+	list-style: none;
+}
+
+.sidebar-item {
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.sidebar-item.active {
+	background-color: #017fc0;
+}
+
+.sidebar-item:hover:not(.active) {
+	background-color: #e3e9f7;
+}
+
+.sidebar-item a {
+	text-decoration: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	color: #262a32;
+}
+
+.sidebar-item.active a {
+	color: #fff !important;
+}
+
+.sidebar-item a i {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+}
+
+@media print {
+	* {
+		background: transparent !important;
+		color: #000 !important;
+		text-shadow: none !important;
+		filter: none !important;
+		-ms-filter: none !important;
+	}
+
+	body {
+		margin: 0 !important;
+		padding: 0 !important;
+		line-height: 1.4em !important;
+	}
+
+	table > tbody > tr > td {
+		padding-top: 3px !important;
+		padding-bottom: 3px !important;
+	}
+
+	.has-text-danger {
+		color: red !important;
+	}
+
+	#sidebar,
+	#breadcrumb,
+	form {
+		display: none !important;
+	}
+
+	.is-hidden-print {
+		display: none !important;
+	}
+
+	.print-pr-2 {
+		padding-right: 0.5rem !important;
+	}
+
+	.print-pl-6 {
+		padding-left: 3rem !important;
+	}
+
+	textarea {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	.card {
+		--bulma-card-background-color: transparent !important;
+		--bulma-card-shadow: none !important;
+		--bulma-card-radius: 0 !important;
+		--bulma-card-content-background-color: transparent;
+		--bulma-card-content-padding: 0 !important;
+	}
+
+	.section {
+		--bulma-section-padding: 0 !important;
+		--bulma-section-padding-desktop: 0 !important;
+		--bulma-section-padding-medium: 0 !important;
+		--bulma-section-padding-large: 0 !important;
+	}
+
+	#printable-content tr:nth-child(even) td {
+		background-color: #f5f5f5 !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+
+	.table {
+		--bulma-table-cell-padding: 0 !important;
+	}
+
+	.table-actions {
+		display: none !important;
+	}
+
+	hr {
+		display: block !important;
+		width: 100% !important;
+		border-top: solid 1px black !important;
+	}
+
+	hr.double {
+		border-bottom: solid 1px black !important;
 	}
 }

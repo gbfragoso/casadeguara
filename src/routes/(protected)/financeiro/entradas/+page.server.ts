@@ -55,7 +55,7 @@ export const actions: Actions = {
 				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
 				.where(where)
 				.orderBy(desc(entradas.identrada))
-				.limit(50);
+				.limit(100);
 
 			return { resultados };
 		} catch (err) {
