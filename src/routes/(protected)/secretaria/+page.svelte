@@ -7,7 +7,7 @@
 	}
 
 	let { data }: Props = $props();
-	let { leitores, engajamento, frequency } = $derived(data);
+	let { leitores, engajamento } = $derived(data);
 	dayjs.extend(utc);
 </script>
 
@@ -24,10 +24,29 @@
 </div>
 <div class="mt-2 columns">
 	{#await leitores then leitores}
-		{#await engajamento then engajamento}
+		{#await engajamento}
 			<div class="column">
 				<div class="box has-text-weight-semibold">
-					<i class="fa-solid fa-user-plus fa-fw">&nbsp;</i>Trabalhadores
+					<i class="fa-solid fa-user fa-fw">&nbsp;</i>Trabalhadores
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				</div>
+			</div>
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-list-check fa-fw">&nbsp;</i>Frequência no mês {dayjs
+						.utc(new Date())
+						.format('MM/YYYY')}
+					<div class="skeleton-lines">
+						<div></div>
+					</div>
+				</div>
+			</div>
+		{:then engajamento}
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-user fa-fw">&nbsp;</i>Trabalhadores
 					<h2 class="is-size-3 has-text-primary">
 						{leitores[0].counter}
 					</h2>
