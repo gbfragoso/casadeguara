@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Chart from '$lib/components/Chart.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -45,11 +44,5 @@
 				</div>
 			</div>
 		{/await}
-	{/await}
-</div>
-
-<div class="box" style="position: relative; height:50vh;">
-	{#await frequency then lista}
-		<Chart dataset={lista} />
 	{/await}
 </div>
