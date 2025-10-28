@@ -1,7 +1,7 @@
 import { db } from '$lib/database/connection';
 import { frequencia, leitor } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, count, eq, gte, lte, sql } from 'drizzle-orm';
+import { and, count, eq, gte, lte } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
@@ -24,22 +24,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 			return db.select({ counter: count() }).from(frequencia).where(dateFilter);
 		};
 
-		const frequency = async () => {
-			return db
-				.select({
-					data: count(),
-					label: sql<string>`date_trunc('month', ${frequencia.dataPresenca})`.as('mes'),
-				})
-				.from(frequencia)
-				.groupBy(({ label }) => label)
-				.orderBy(({ label }) => label)
-				.limit(12);
-		};
-
 		return {
 			leitores: leitores(),
 			engajamento: engajamento(),
-			frequency: frequency(),
 		};
 	} catch (err) {
 		console.error(err);

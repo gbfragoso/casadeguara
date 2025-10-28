@@ -111,8 +111,8 @@
 				Grupo Espírita Casa de Guará
 			</h2>
 			<p contenteditable="true" class="is-size-5 has-text-weight-semibold has-text-centered">Altere o texto</p>
-			<p contenteditable="true" class="is-size-5 has-text-weight-semibold has-text-centered has-text-danger">
-				Altere o texto em destaque
+			<p contenteditable="true" class="is-size-6 has-text-weight-semibold has-text-centered has-text-danger">
+				OBS.: Caso seu nome não esteja nesta lista, favor escrevê-lo ao final.
 			</p>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
