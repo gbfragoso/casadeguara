@@ -65,7 +65,6 @@
 						<tr>
 							<th>Contribuinte</th>
 							<th>Tipo</th>
-							<th>Ações</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -77,13 +76,6 @@
 								{:else}
 									<td>Eventual</td>
 								{/if}
-								<td>
-									<form method="POST">
-										<a aria-label="editar" href="/financeiro/contribuintes/{contribuinte.idleitor}">
-											<i class="fa-solid fa-pen-to-square fa-fw"></i>
-										</a>
-									</form>
-								</td>
 							</tr>
 						{/each}
 					</tbody>
