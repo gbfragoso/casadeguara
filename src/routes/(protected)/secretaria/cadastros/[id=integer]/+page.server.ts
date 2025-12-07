@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ locals, request, params }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
 		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
@@ -72,18 +72,20 @@ export const actions: Actions = {
 				.update(leitor)
 				.set({
 					nome: nome.toUpperCase(),
-					rg: rg && !rg.includes('*') ? rg : undefined,
-					cpf: cpf && !cpf.includes('*') ? cpf : undefined,
-					email,
-					celular: celular.replace(/\D/g, ''),
-					telefone: telefone.replace(/\D/g, ''),
-					logradouro,
-					bairro,
-					complemento,
-					cidade,
-					cep: cep.replace(/\D/g, ''),
-					trab,
+					rg: rg && !rg.includes('*') ? rg.replace(/\D/g, '') : undefined,
+					cpf: cpf && !cpf.includes('*') ? cpf.replace(/\D/g, '') : undefined,
+					email: email ? email : undefined,
+					celular: celular ? celular.replace(/\D/g, '') : undefined,
+					telefone: telefone ? telefone.replace(/\D/g, '') : undefined,
+					logradouro: logradouro ? logradouro : undefined,
+					bairro: bairro ? bairro : undefined,
+					complemento: complemento ? complemento : undefined,
+					cidade: cidade ? cidade : undefined,
+					cep: cep ? cep.replace(/\D/g, '') : undefined,
+					trab: trab ? trab : undefined,
 					aniversario: aniversario ? new Date(aniversario) : undefined,
+					userAlteracao: locals.user?.id,
+					dataAlteracao: new Date(),
 				})
 				.where(eq(leitor.idleitor, Number(params.id)));
 			return { status: 200 };

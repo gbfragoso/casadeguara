@@ -1,9 +1,9 @@
 import { db } from '$lib/database/connection';
 import { leitor } from '$lib/database/schema';
+import { cpf, rg } from '$lib/js/mask';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
-import { cpf, rg } from '$lib/js/mask';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ locals, request, params }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
 		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
@@ -72,18 +72,20 @@ export const actions: Actions = {
 				.update(leitor)
 				.set({
 					nome: nome.toUpperCase(),
-					rg: rg && !rg.includes('*') ? rg : undefined,
-					cpf: cpf && !cpf.includes('*') ? cpf : undefined,
-					email,
-					celular: celular.replace(/\D/g, ''),
-					telefone: telefone.replace(/\D/g, ''),
-					logradouro,
-					bairro,
-					complemento,
-					cidade,
-					cep: cep.replace(/\D/g, ''),
-					trab,
-					status,
+					rg: rg && !rg.includes('*') ? rg.replace(/\D/g, '') : undefined,
+					cpf: cpf && !cpf.includes('*') ? cpf.replace(/\D/g, '') : undefined,
+					email: email ? email : undefined,
+					celular: celular ? celular.replace(/\D/g, '') : undefined,
+					telefone: telefone ? telefone.replace(/\D/g, '') : undefined,
+					logradouro: logradouro ? logradouro : undefined,
+					bairro: bairro ? bairro : undefined,
+					complemento: complemento ? complemento : undefined,
+					cidade: cidade ? cidade : undefined,
+					cep: cep ? cep.replace(/\D/g, '') : undefined,
+					trab: trab ? trab : undefined,
+					status: status ? status : undefined,
+					userAlteracao: locals.user?.id,
+					dataAlteracao: new Date(),
 				})
 				.where(eq(leitor.idleitor, Number(params.id)));
 
