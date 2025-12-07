@@ -5,7 +5,10 @@ export default defineConfig({
 	plugins: [sveltekit()],
 
 	test: {
-		exclude: ['node_modules'],
-		include: ['src/**/*.{test,spec}.{js,ts}'],
+		name: 'server',
+		environment: 'node',
+		include: ['tests/**/*.{test,spec}.{js,ts}'],
+		exclude: ['tests/**/*.svelte.{test,spec}.{js,ts}'],
+		testTimeout: 10000,
 	},
 });

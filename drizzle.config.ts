@@ -1,11 +1,6 @@
-import dotenv from 'dotenv';
 import { defineConfig } from 'drizzle-kit';
 
-if (process.env.NODE_ENV === 'development') {
-	dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-} else {
-	dotenv.config({ path: '.env' });
-}
+if (!process.env.POSTGRES_URL) throw new Error('POSTGRES_URL is not set');
 
 export default defineConfig({
 	dialect: 'postgresql',
@@ -13,6 +8,7 @@ export default defineConfig({
 	schema: './src/lib/database/schema.ts',
 	dbCredentials: {
 		url: process.env.POSTGRES_URL!,
+		ssl: process.env.NODE_ENV === 'production' ? 'require' : undefined,
 	},
 	verbose: true,
 	strict: true,

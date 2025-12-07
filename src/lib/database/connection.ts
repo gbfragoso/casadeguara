@@ -1,12 +1,13 @@
-import { drizzle } from 'drizzle-orm/vercel-postgres';
-import { sql } from '@vercel/postgres';
+import { env } from '$env/dynamic/private';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import * as schema from './schema';
-import dotenv from 'dotenv';
 
-if (process.env.NODE_ENV === 'development') {
-	dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-} else {
-	dotenv.config({ path: '.env' });
-}
+if (!env.POSTGRES_URL) throw new Error('POSTGRES_URL is not set');
 
-export const db = drizzle(sql, { schema });
+const client = postgres(env.POSTGRES_URL as string, {
+	ssl: env.NODE_ENV === 'production' ? 'require' : undefined,
+	onnotice: () => {},
+});
+
+export const db = drizzle(client, { schema });
