@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ locals, request }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
 		const telefone = form.get('telefone') as string;
@@ -41,7 +41,14 @@ export const actions: Actions = {
 		}
 
 		try {
-			await db.insert(leitor).values({ nome: nome.toUpperCase(), telefone, trab: trabalhador });
+			await db
+				.insert(leitor)
+				.values({
+					nome: nome.toUpperCase(),
+					telefone: telefone ? telefone : undefined,
+					trab: trabalhador ? trabalhador : undefined,
+					userCadastro: locals.user?.id,
+				});
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);

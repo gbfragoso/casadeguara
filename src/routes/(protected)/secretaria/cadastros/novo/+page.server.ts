@@ -5,7 +5,7 @@ import validator from 'validator';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ locals, request }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
 		const rg = form.get('rg') as string;
@@ -40,18 +40,19 @@ export const actions: Actions = {
 		try {
 			await db.insert(leitor).values({
 				nome: nome.toUpperCase(),
-				rg,
-				cpf,
-				email,
-				celular,
-				telefone,
-				logradouro,
-				bairro,
-				complemento,
-				cidade,
-				cep,
-				trab,
+				rg: rg ? rg.replace(/\D/g, '') : undefined,
+				cpf: cpf ? cpf.replace(/\D/g, '') : undefined,
+				email: email ? email : undefined,
+				celular: celular ? celular : undefined,
+				telefone: telefone ? telefone : undefined,
+				logradouro: logradouro ? logradouro : undefined,
+				bairro: bairro ? bairro : undefined,
+				complemento: complemento ? complemento : undefined,
+				cidade: cidade ? cidade : undefined,
+				cep: cep ? cep : undefined,
+				trab: trab ? trab : undefined,
 				aniversario: aniversario ? new Date(aniversario) : undefined,
+				userCadastro: locals.user?.id,
 			});
 			return { status: 201 };
 		} catch (err) {
