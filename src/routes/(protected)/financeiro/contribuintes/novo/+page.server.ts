@@ -41,14 +41,12 @@ export const actions: Actions = {
 		}
 
 		try {
-			await db
-				.insert(leitor)
-				.values({
-					nome: nome.toUpperCase(),
-					telefone: telefone ? telefone : undefined,
-					trab: trabalhador ? trabalhador : undefined,
-					userCadastro: locals.user?.id,
-				});
+			await db.insert(leitor).values({
+				nome: nome.toUpperCase(),
+				telefone: telefone ? telefone : undefined,
+				trab: trabalhador ? trabalhador : undefined,
+				userCadastro: locals.user?.id,
+			});
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
