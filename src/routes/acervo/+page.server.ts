@@ -21,7 +21,6 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	pesquisar: async ({ request }) => {
 		const form = await request.formData();
-		const tombo = form.get('tombo') as string;
 		const titulo = form.get('titulo') as string;
 		const editor = form.get('editora') as string;
 		const colecao = form.get('serie') as string;
@@ -29,12 +28,11 @@ export const actions: Actions = {
 		const author = form.get('autor') as string;
 
 		const tituloFilter = titulo ? ulike(livro.titulo, titulo + '%') : undefined;
-		const tomboFilter = tombo ? eq(livro.tombo, tombo) : undefined;
 		const editoraFilter = editor ? ulike(editora.nome, editor + '%') : undefined;
 		const colecaoFilter = colecao ? eq(livro.serie, Number(colecao)) : undefined;
 		const autorFilter = author ? ulike(autor.nome, author + '%') : undefined;
 		const keywordFilter = key ? ulike(keyword.chave, key + '%') : undefined;
-		const where = and(tituloFilter, tomboFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
+		const where = and(tituloFilter, editoraFilter, autorFilter, colecaoFilter, keywordFilter);
 
 		try {
 			let query = db

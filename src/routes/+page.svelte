@@ -6,6 +6,7 @@
 	}
 
 	let { form }: Props = $props();
+	let loading = $state(false);
 </script>
 
 <main>
@@ -17,7 +18,15 @@
 						<img src="/logo.png" alt="Avatar" style="width:40%;height:auto" />
 					</div>
 				</div>
-				<form method="POST" use:enhance>
+				<form
+					method="POST"
+					use:enhance={() => {
+						loading = true;
+						return async ({ update }) => {
+							await update();
+							loading = false;
+						};
+					}}>
 					<div class="field">
 						<label class="label" for="email">Email</label>
 						<div class="control">
@@ -38,7 +47,10 @@
 					</div>
 					<div class="field pt-3">
 						<div class="control">
-							<button class="button is-primary is-fullwidth has-text-weight-semibold">Entrar</button>
+							<button
+								aria-busy={loading}
+								class:is-loading={loading}
+								class="button is-primary is-fullwidth has-text-weight-semibold">Entrar</button>
 						</div>
 					</div>
 					{#if form?.failedLogin}

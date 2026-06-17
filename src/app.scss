@@ -42,7 +42,7 @@ $box-border-color: #e3e3e3;
 
 	.sidebar-item:hover:not(.active),
 	#logout_btn:hover {
-		background-color: #ffb70f;
+		background-color: #f7c800;
 		color: #14161a !important;
 	}
 
@@ -68,7 +68,7 @@ $box-border-color: #e3e3e3;
 
 	.sidebar-item:hover:not(.active),
 	#logout_btn:hover {
-		background-color: #ffb70f;
+		background-color: #f7c800;
 	}
 
 	.sidebar-item:hover:not(.active) a {
@@ -136,7 +136,11 @@ tr td {
 }
 
 .sidebar-item:hover:not(.active) {
-	background-color: #ffb70f;
+	background-color: #f7c800;
+}
+
+span.is-light {
+	color: black;
 }
 
 .sidebar-item a {
