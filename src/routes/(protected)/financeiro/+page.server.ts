@@ -15,27 +15,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const firstDay = new Date(year, month, 1);
 		const lastDay = new Date(year, month + 1, 0);
 
-		const visaoGeral = async () => {
-			return db
-				.select({
-					month: sql<number>`extract(month from data_entrada) as month`,
-					year: sql<number>`extract(year from data_entrada) as year`,
-					count: count(),
-					avg: avg(entradas.valor),
-					median: sql<number>`PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY valor)`,
-					value: sum(entradas.valor),
-				})
-				.from(entradas)
-				.groupBy(sql`year`, sql`month`)
-				.orderBy(sql`year`, sql`month`)
-				.limit(12);
-		};
-
 		const entradaMesAtual = async () => {
 			return db
 				.select({
 					count: count(),
-					avg: avg(entradas.valor),
 					median: sql<number>`PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY valor)`,
 					value: sum(entradas.valor),
 				})
@@ -51,7 +34,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 		};
 
 		return {
-			visaoGeral: visaoGeral(),
 			entradaMesAtual: entradaMesAtual(),
 			saidaMesAtual: saidaMesAtual(),
 		};

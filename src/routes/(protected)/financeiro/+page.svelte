@@ -10,7 +10,7 @@
 
 	let { data }: Props = $props();
 
-	let { visaoGeral, entradaMesAtual, saidaMesAtual } = $derived(data);
+	let { entradaMesAtual, saidaMesAtual } = $derived(data);
 	dayjs.extend(utc);
 </script>
 
@@ -31,7 +31,7 @@
 	{#await entradaMesAtual}
 		<div class="column">
 			<div class="box has-text-weight-semibold">
-				<i class="fa-solid fa-calculator fa-fw">&nbsp;</i>Total de doações
+				<i class="fa-solid fa-calculator fa-fw">&nbsp;</i>Doações
 				<div class="skeleton-lines">
 					<div></div>
 				</div>
@@ -45,43 +45,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="column">
-			<div class="box has-text-weight-semibold">
-				<i class="fa-solid fa-plus-minus fa-fw">&nbsp;</i>Mediana
-				<div class="skeleton-lines">
-					<div></div>
-				</div>
-			</div>
-		</div>
-	{:then entrada}
-		<div class="column">
-			<div class="box has-text-weight-semibold">
-				<i class="fa-solid fa-calculator fa-fw">&nbsp;</i>Total de doações
-				<h2 class="is-size-3">
-					{entrada[0].count}
-				</h2>
-			</div>
-		</div>
-		<div class="column">
-			<div class="box has-text-weight-semibold">
-				<i class="fa-solid fa-wave-square fa-fw">&nbsp;</i>Valor médio
-				<h2 class="is-size-3">
-					{moeda(Number(entrada[0].avg))}
-				</h2>
-			</div>
-		</div>
-		<div class="column">
-			<div class="box has-text-weight-semibold">
-				<i class="fa-solid fa-plus-minus fa-fw">&nbsp;</i>Mediana
-				<h2 class="is-size-3">
-					{moeda(Number(entrada[0].median))}
-				</h2>
-			</div>
-		</div>
-	{/await}
-</div>
-<div class="mt-2 columns">
-	{#await entradaMesAtual}
 		<div class="column">
 			<div class="box has-text-weight-semibold">
 				<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor recebido
@@ -108,6 +71,22 @@
 		</div>
 	{:then entrada}
 		{#await saidaMesAtual then saida}
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-calculator fa-fw">&nbsp;</i>Total de doações
+					<h2 class="is-size-3">
+						{entrada[0].count}
+					</h2>
+				</div>
+			</div>
+			<div class="column">
+				<div class="box has-text-weight-semibold">
+					<i class="fa-solid fa-wave-square fa-fw">&nbsp;</i>Valor médio
+					<h2 class="is-size-3">
+						{moeda(Number(entrada[0].median))}
+					</h2>
+				</div>
+			</div>
 			<div class="column">
 				<div class="box has-text-weight-semibold">
 					<i class="fa-solid fa-hand-holding-dollar fa-fw">&nbsp;</i>Valor recebido
@@ -140,65 +119,4 @@
 			</div>
 		{/await}
 	{/await}
-</div>
-<div class="mb-4">
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Comparativo mensal</h1>
-</div>
-<div class="card">
-	<div class="card-content">
-		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
-				<thead>
-					<tr>
-						<th>Referência</th>
-						<th>Doações</th>
-						<th>Valor médio</th>
-						<th>Mediana</th>
-						<th>Total</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#await visaoGeral}
-						<tr>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-							<td>
-								<div class="skeleton-lines">
-									<div></div>
-								</div>
-							</td>
-						</tr>
-					{:then item}
-						{#each item as entrada}
-							<tr>
-								<td>{entrada.month.toString().padStart(2, '0') + ' / ' + entrada.year}</td>
-								<td>{entrada.count}</td>
-								<td>{moeda(Number(entrada.avg))}</td>
-								<td>{moeda(Number(entrada.median))}</td>
-								<td>{moeda(Number(entrada.value))}</td>
-							</tr>
-						{/each}
-					{/await}
-				</tbody>
-			</table>
-		</div>
-	</div>
 </div>
