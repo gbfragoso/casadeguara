@@ -14,34 +14,34 @@
 <main class="is-flex">
 	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between is-hidden-touch">
 		<div class="p-3">
-			<div class="mb-5 is-flex is-2 is-align-content-center">
+			<div class="mb-5 is-flex is-2 is-justify-content-center">
 				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
-			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
+			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria'}>
 					<a aria-label="home" title="Página Inicial" href="/secretaria">
-						<i class="fa-solid fa-house fa-fw"></i>
+						<i class="fa-solid fa-house fa-fw"></i>&nbsp<strong>Início</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/frequencia'}>
 					<a aria-label="frequência" title="Frequência" href="/secretaria/frequencia">
-						<i class="fa-solid fa-list-check fa-fw"></i>
+						<i class="fa-solid fa-list-check fa-fw"></i>&nbsp<strong>Frequência</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/aniversariantes'}>
 					<a aria-label="aniversariantes" title="Aniversariantes" href="/secretaria/aniversariantes">
-						<i class="fa-solid fa-cake-candles fa-fw"></i>
+						<i class="fa-solid fa-cake-candles fa-fw"></i>&nbsp<strong>Aniversariantes</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/cadastros'}>
 					<a aria-label="cadastros" title="Cadastros" href="/secretaria/cadastros">
-						<i class="fa-brands fa-wpforms fa-fw"></i>
+						<i class="fa-brands fa-wpforms fa-fw"></i>&nbsp<strong>Cadastros</strong>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
 						<a aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
-							<i class="fa-solid fa-user-plus fa-fw"></i>
+							<i class="fa-solid fa-user-plus fa-fw"></i>&nbsp<strong>Usuários</strong>
 						</a>
 					</li>
 				{/if}

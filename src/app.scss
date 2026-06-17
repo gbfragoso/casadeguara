@@ -1,6 +1,6 @@
 @use 'bulma/sass' with (
 	$family-primary: '"Roboto", sans-serif',
-	$primary: #0486dc,
+	$primary: #017fc0,
 	$card-shadow: none,
 	$box-shadow: none,
 	$body-overflow-y: auto
@@ -42,8 +42,12 @@ $box-border-color: #e3e3e3;
 
 	.sidebar-item:hover:not(.active),
 	#logout_btn:hover {
-		background-color: #ffd46f;
-		color: #14161a;
+		background-color: #ffb70f;
+		color: #14161a !important;
+	}
+
+	.sidebar-item:hover:not(.active) a {
+		color: #14161a !important;
 	}
 }
 
@@ -64,8 +68,11 @@ $box-border-color: #e3e3e3;
 
 	.sidebar-item:hover:not(.active),
 	#logout_btn:hover {
-		background-color: #ffd46f;
-		color: #14161a;
+		background-color: #ffb70f;
+	}
+
+	.sidebar-item:hover:not(.active) a {
+		color: #14161a !important;
 	}
 }
 
@@ -84,9 +91,9 @@ body {
 	height: 100vh;
 	border-radius: 0px 18px 18px 0px;
 	position: relative;
-	transition: all 0.5s;
 	min-width: 82px;
 	z-index: 2;
+	box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 4px;
 }
 
 a {
@@ -121,7 +128,7 @@ tr td {
 
 .sidebar-item {
 	border-radius: 8px;
-	cursor: pointer;
+	width: 100%;
 }
 
 .sidebar-item.active {
@@ -129,14 +136,13 @@ tr td {
 }
 
 .sidebar-item:hover:not(.active) {
-	background-color: #e3e9f7;
+	background-color: #ffb70f;
 }
 
 .sidebar-item a {
 	text-decoration: none;
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	padding: 1rem;
 	color: #262a32;
 }
