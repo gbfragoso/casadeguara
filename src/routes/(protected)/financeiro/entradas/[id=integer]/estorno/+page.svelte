@@ -20,10 +20,10 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
-			<li><a href="/financeiro/entradas">Entradas</a></li>
+			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href="/tesouraria/entradas">Entradas</a></li>
 			<li class="is-active">
-				<a href="/financeiro/entradas/estorno" aria-current="page">Estorno</a>
+				<a href="/tesouraria/entradas/estorno" aria-current="page">Estorno</a>
 			</li>
 		</ul>
 	</nav>

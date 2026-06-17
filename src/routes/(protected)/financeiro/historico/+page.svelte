@@ -19,9 +19,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
+			<li><a href="/tesouraria">Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/financeiro/historico" aria-current="page">Histórico</a>
+				<a href="/tesouraria/historico" aria-current="page">Histórico</a>
 			</li>
 		</ul>
 	</nav>

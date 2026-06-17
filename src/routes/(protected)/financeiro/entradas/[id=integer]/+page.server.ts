@@ -8,7 +8,7 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	if (!locals.user) redirect(302, '/');
-	if (!locals.user.roles.includes('financeiro:admin')) redirect(302, '/financeiro');
+	if (!locals.user.roles.includes('tesouraria:admin')) redirect(302, '/tesouraria');
 
 	try {
 		const entrada = await db
@@ -38,7 +38,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions: Actions = {
 	update: async ({ request, params, locals }) => {
 		if (!locals.user) redirect(302, '/');
-		if (!locals.user.roles.includes('financeiro:admin')) redirect(302, '/financeiro');
+		if (!locals.user.roles.includes('tesouraria:admin')) redirect(302, '/tesouraria');
 
 		const form = await request.formData();
 		const descricao = form.get('descricao') as string;

@@ -58,8 +58,8 @@
 			<select name="roles" id="roles" value={usuario.roles}>
 				<option value="secretaria">Secretaria</option>
 				<option value="secretaria:admin">Secretaria - Coordenação</option>
-				<option value="financeiro">Tesouraria</option>
-				<option value="financeiro:admin">Tesouraria - Coordenação</option>
+				<option value="tesouraria">Tesouraria</option>
+				<option value="tesouraria:admin">Tesouraria - Coordenação</option>
 			</select>
 		</div>
 		<div class="field">

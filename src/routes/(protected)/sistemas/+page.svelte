@@ -14,11 +14,10 @@
 			<div class="card-content">
 				<div class="has-text-centered">
 					<p class="is-size-4 mb-6">Selecione o módulo</p>
-					<div class="columns">
+					<div class="is-flex is-flex-direction-column">
 						{#each roles as role}
-							<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-								<a class="button" href="/{role.replace(':admin', '')}">{role.replace(':admin', '')}</a>
-							</div>
+							<a class="button has-text-weight-semibold mb-2" href="/{role.replace(':admin', '')}"
+								>{role.replace(':admin', '')}</a>
 						{/each}
 					</div>
 				</div>

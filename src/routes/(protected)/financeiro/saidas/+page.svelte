@@ -17,9 +17,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
+			<li><a href="/tesouraria">Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/financeiro/saidas" aria-current="page">Saídas</a>
+				<a href="/tesouraria/saidas" aria-current="page">Saídas</a>
 			</li>
 		</ul>
 	</nav>
@@ -68,7 +68,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/financeiro/saidas/novo"
+				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/tesouraria/saidas/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
@@ -95,7 +95,7 @@
 								<td>{moeda(Number(saida.valor))}</td>
 								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
 								<td class="table-actions">
-									<a aria-label="editar" href="/financeiro/saidas/{saida.idsaida}">
+									<a aria-label="editar" href="/tesouraria/saidas/{saida.idsaida}">
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

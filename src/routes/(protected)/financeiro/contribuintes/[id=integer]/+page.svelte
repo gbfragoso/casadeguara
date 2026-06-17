@@ -16,9 +16,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
+			<li><a href="/tesouraria">Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/financeiro/contribuintes" aria-current="page">Contribuintes</a>
+				<a href="/tesouraria/contribuintes" aria-current="page">Contribuintes</a>
 			</li>
 		</ul>
 	</nav>
