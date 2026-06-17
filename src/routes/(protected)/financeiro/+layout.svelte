@@ -14,45 +14,45 @@
 <main class="is-flex">
 	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between is-hidden-touch">
 		<div class="p-3">
-			<div class="mb-5 is-flex is-2 is-align-content-center">
+			<div class="mb-5 is-flex is-2 is-justify-content-center is-align-items-start">
 				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro'}>
 					<a aria-label="home" title="Página Inicial" href="/financeiro">
-						<i class="fa-solid fa-house fa-fw"></i>
+						<i class="fa-solid fa-house fa-fw"></i>&nbsp;<strong>Início</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/entradas'}>
 					<a aria-label="entradas" title="Entradas" href="/financeiro/entradas">
-						<i class="fa-solid fa-wallet fa-fw"></i>
+						<i class="fa-solid fa-wallet fa-fw"></i>&nbsp;<strong>Lançamentos</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/saidas'}>
 					<a aria-label="saídas" title="Saídas" href="/financeiro/saidas">
-						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>
+						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>&nbsp;<strong>Despesas</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/estornos'}>
 					<a aria-label="estornos" title="Estornos" href="/financeiro/estornos">
-						<i class="fa-solid fa-clock-rotate-left fa-fw"></i>
+						<i class="fa-solid fa-clock-rotate-left fa-fw"></i>&nbsp;<strong>Estornos</strong>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/caixa'}>
 						<a aria-label="caixa" title="Caixa" href="/financeiro/caixa">
-							<i class="fa-solid fa-file-invoice-dollar fa-fw"></i>
+							<i class="fa-solid fa-cash-register fa-fw"></i>&nbsp;<strong>Caixa</strong>
 						</a>
 					</li>
 				{/if}
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuintes'}>
 					<a aria-label="contribuintes" title="Contribuintes" href="/financeiro/contribuintes">
-						<i class="fa-solid fa-user fa-fw"></i>
+						<i class="fa-solid fa-user fa-fw"></i>&nbsp;<strong>Contribuintes</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/historico'}>
 					<a aria-label="historico" title="Histórico" href="/financeiro/historico">
-						<i class="fa-regular fa-rectangle-list fa-fw"></i>
+						<i class="fa-regular fa-rectangle-list fa-fw"></i>&nbsp;<strong>Histórico</strong>
 					</a>
 				</li>
 			</ul>
