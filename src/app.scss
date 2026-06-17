@@ -42,7 +42,7 @@ $box-border-color: #e3e3e3;
 
 	.sidebar-item:hover:not(.active),
 	#logout_btn:hover {
-		background-color: #f7c800;
+		background-color: #ffb70f;
 		color: #14161a !important;
 	}
 
@@ -68,7 +68,7 @@ $box-border-color: #e3e3e3;
 
 	.sidebar-item:hover:not(.active),
 	#logout_btn:hover {
-		background-color: #f7c800;
+		background-color: #ffb70f;
 	}
 
 	.sidebar-item:hover:not(.active) a {
@@ -88,7 +88,6 @@ body {
 
 #sidebar {
 	background-color: #ffffff;
-	height: 100vh;
 	border-radius: 0px 18px 18px 0px;
 	position: relative;
 	min-width: 82px;
@@ -136,7 +135,7 @@ tr td {
 }
 
 .sidebar-item:hover:not(.active) {
-	background-color: #f7c800;
+	background-color: #ffb70f;
 }
 
 span.is-light {
