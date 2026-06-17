@@ -37,12 +37,6 @@
 	<div class="card-content">
 		<div class="field columns">
 			<div class="column">
-				<label class="label" for="tombo">Tombo</label>
-				<div class="control">
-					<input class="input" type="number" name="tombo" id="tombo" placeholder="Digite o tombo do livro" />
-				</div>
-			</div>
-			<div class="column">
 				<label class="label" for="titulo">Título</label>
 				<div class="control">
 					<input class="input" type="text" name="titulo" id="titulo" placeholder="Digite o título do livro" />

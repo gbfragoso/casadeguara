@@ -41,7 +41,7 @@ export const actions: Actions = {
 		} catch (err) {
 			console.error(err);
 			return error(500, {
-				message: 'Falha ao criar um novo autor',
+				message: 'Falha ao criar um novo aviso',
 			});
 		}
 	},
