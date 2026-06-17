@@ -18,40 +18,40 @@
 				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro'}>
-					<a aria-label="home" title="Página Inicial" href="/financeiro">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria'}>
+					<a aria-label="home" title="Página Inicial" href="/tesouraria">
 						<i class="fa-solid fa-house fa-fw"></i>&nbsp;<strong>Início</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/entradas'}>
-					<a aria-label="entradas" title="Entradas" href="/financeiro/entradas">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria/entradas'}>
+					<a aria-label="entradas" title="Entradas" href="/tesouraria/entradas">
 						<i class="fa-solid fa-wallet fa-fw"></i>&nbsp;<strong>Lançamentos</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/saidas'}>
-					<a aria-label="saídas" title="Saídas" href="/financeiro/saidas">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria/saidas'}>
+					<a aria-label="saídas" title="Saídas" href="/tesouraria/saidas">
 						<i class="fa-solid fa-money-bill-transfer fa-fw"></i>&nbsp;<strong>Despesas</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/estornos'}>
-					<a aria-label="estornos" title="Estornos" href="/financeiro/estornos">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria/estornos'}>
+					<a aria-label="estornos" title="Estornos" href="/tesouraria/estornos">
 						<i class="fa-solid fa-clock-rotate-left fa-fw"></i>&nbsp;<strong>Estornos</strong>
 					</a>
 				</li>
 				{#if isAdmin}
-					<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/caixa'}>
-						<a aria-label="caixa" title="Caixa" href="/financeiro/caixa">
+					<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria/caixa'}>
+						<a aria-label="caixa" title="Caixa" href="/tesouraria/caixa">
 							<i class="fa-solid fa-cash-register fa-fw"></i>&nbsp;<strong>Caixa</strong>
 						</a>
 					</li>
 				{/if}
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/contribuintes'}>
-					<a aria-label="contribuintes" title="Contribuintes" href="/financeiro/contribuintes">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria/contribuintes'}>
+					<a aria-label="contribuintes" title="Contribuintes" href="/tesouraria/contribuintes">
 						<i class="fa-solid fa-user fa-fw"></i>&nbsp;<strong>Contribuintes</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/financeiro/historico'}>
-					<a aria-label="historico" title="Histórico" href="/financeiro/historico">
+				<li class="sidebar-item" class:active={$page.url.pathname === '/tesouraria/historico'}>
+					<a aria-label="historico" title="Histórico" href="/tesouraria/historico">
 						<i class="fa-regular fa-rectangle-list fa-fw"></i>&nbsp;<strong>Histórico</strong>
 					</a>
 				</li>

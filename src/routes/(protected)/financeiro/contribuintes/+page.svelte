@@ -12,9 +12,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
+			<li><a href="/tesouraria">Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/financeiro/contribuintes" aria-current="page">Contribuintes</a>
+				<a href="/tesouraria/contribuintes" aria-current="page">Contribuintes</a>
 			</li>
 		</ul>
 	</nav>
@@ -49,7 +49,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/financeiro/contribuintes/novo"
+				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/tesouraria/contribuintes/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>

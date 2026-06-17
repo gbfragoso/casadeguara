@@ -42,8 +42,8 @@ export const actions: Actions = {
 			redirect(302, '/sistemas');
 		} else if (role.includes('biblioteca')) {
 			redirect(302, '/biblioteca');
-		} else if (role.includes('financeiro')) {
-			redirect(302, '/financeiro');
+		} else if (role.includes('tesouraria')) {
+			redirect(302, '/tesouraria');
 		} else if (role.includes('secretaria')) {
 			redirect(302, '/secretaria');
 		} else {

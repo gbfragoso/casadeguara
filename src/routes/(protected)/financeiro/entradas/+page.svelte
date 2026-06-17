@@ -20,9 +20,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/financeiro">Financeiro</a></li>
+			<li><a href="/tesouraria">Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/financeiro/entradas" aria-current="page">Entradas</a>
+				<a href="/tesouraria/entradas" aria-current="page">Entradas</a>
 			</li>
 		</ul>
 	</nav>
@@ -108,7 +108,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/financeiro/entradas/novo"
+				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/tesouraria/entradas/novo"
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
@@ -138,7 +138,7 @@
 									{resultado.identrada}
 								</td>
 								<td>
-									<a href="/financeiro/contribuintes/{resultado.idcontribuinte}">
+									<a href="/tesouraria/contribuintes/{resultado.idcontribuinte}">
 										{resultado.contribuinte}
 									</a>
 								</td>
@@ -153,7 +153,7 @@
 								<td class="table-actions">
 									<div class="is-flex">
 										{#if isAdmin}
-											<a aria-label="editar" href="/financeiro/entradas/{resultado.identrada}">
+											<a aria-label="editar" href="/tesouraria/entradas/{resultado.identrada}">
 												<i class="fa-solid fa-pen-to-square fa-fw"></i>
 											</a>
 										{/if}
@@ -169,7 +169,7 @@
 											class="ml-3"
 											target="_blank"
 											aria-label="estorno"
-											href="/financeiro/entradas/{resultado.identrada}/estorno"
+											href="/tesouraria/entradas/{resultado.identrada}/estorno"
 											title="Estorno">
 											<i class="fa-solid fa-trash fa-fw"></i>
 										</a>
