@@ -171,7 +171,7 @@
 											aria-label="estorno"
 											href="/financeiro/entradas/{resultado.identrada}/estorno"
 											title="Estorno">
-											<i class="fa-solid fa-arrow-rotate-left fa-fw"></i>
+											<i class="fa-solid fa-trash fa-fw"></i>
 										</a>
 									</div>
 								</td>
