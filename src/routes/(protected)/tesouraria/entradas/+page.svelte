@@ -22,11 +22,11 @@
 		<ul>
 			<li><a href="/tesouraria">Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/entradas" aria-current="page">Entradas</a>
+				<a href="/tesouraria/entradas" aria-current="page">Lançamentos</a>
 			</li>
 		</ul>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Entradas</h1>
+	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lançamentos</h1>
 </div>
 
 <form
@@ -171,7 +171,7 @@
 											aria-label="estorno"
 											href="/tesouraria/entradas/{resultado.identrada}/estorno"
 											title="Estorno">
-											<i class="fa-solid fa-trash fa-fw"></i>
+											<i class="fa-solid fa-trash-can fa-fw"></i>
 										</a>
 									</div>
 								</td>
