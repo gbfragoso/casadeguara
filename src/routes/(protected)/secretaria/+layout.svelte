@@ -48,7 +48,7 @@
 			</ul>
 		</div>
 	</nav>
-	<section class="section is-flex-grow-1">
+	<section class="section is-flex-grow-1" style="max-width: 100vw !important;">
 		<Navbar {username} {userid}></Navbar>
 		{@render children?.()}
 	</section>

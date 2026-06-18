@@ -3,7 +3,9 @@
 	$primary: #017fc0,
 	$card-shadow: none,
 	$box-shadow: none,
-	$body-overflow-y: auto
+	$body-overflow-y: auto,
+	$breadcrumb-item-color: #1b254b,
+	$breadcrumb-item-active-color: #1b254b
 );
 @use 'bulma/sass/base';
 @use 'bulma/sass/elements';
@@ -27,7 +29,8 @@ $box-border-color: #e3e3e3;
 }
 
 @media (prefers-color-scheme: dark) {
-	a {
+	a,
+	button {
 		color: #f5f5f5 !important;
 	}
 
@@ -37,13 +40,7 @@ $box-border-color: #e3e3e3;
 	}
 
 	#sidebar {
-		background-color: #14161a;
-	}
-
-	.sidebar-item:hover:not(.active),
-	#logout_btn:hover {
-		background-color: #ffb70f;
-		color: #14161a !important;
+		background-color: #14161a !important;
 	}
 
 	.sidebar-item:hover:not(.active) a {
@@ -51,9 +48,27 @@ $box-border-color: #e3e3e3;
 	}
 }
 
+[data-theme='light'],
+.theme-light {
+	a,
+	button {
+		color: #1b254b !important;
+	}
+
+	body {
+		background-color: #f5f5f5 !important;
+		color: #1b254b !important;
+	}
+
+	#sidebar {
+		background-color: #fff !important;
+	}
+}
+
 [data-theme='dark'],
 .theme-dark {
-	a {
+	a,
+	button {
 		color: #f5f5f5 !important;
 	}
 
@@ -63,12 +78,7 @@ $box-border-color: #e3e3e3;
 	}
 
 	#sidebar {
-		background-color: #14161a;
-	}
-
-	.sidebar-item:hover:not(.active),
-	#logout_btn:hover {
-		background-color: #ffb70f;
+		background-color: #14161a !important;
 	}
 
 	.sidebar-item:hover:not(.active) a {
@@ -100,7 +110,7 @@ body {
 }
 
 a {
-	color: #1b254b !important;
+	color: #1b254b;
 }
 
 aside {
