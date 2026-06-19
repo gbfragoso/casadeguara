@@ -117,7 +117,7 @@
 								<td
 									>{livro.titulo}<br />
 									{#each livro.autores as autor}
-										<span class="tag is-warning">{autor}</span>&nbsp;&nbsp;
+										<span class="tag is-light is-success">{autor}</span>&nbsp;&nbsp;
 									{/each}</td>
 								<td>{livro.disponiveis}</td>
 								<td class="table-actions">

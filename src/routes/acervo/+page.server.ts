@@ -47,7 +47,7 @@ export const actions: Actions = {
 				.$dynamic()
 				.where(where)
 				.groupBy(exemplar.livro, livro.titulo)
-				.orderBy(colecao ? livro.ordem : unaccent(livro.titulo))
+				.orderBy(unaccent(livro.titulo))
 				.limit(50);
 
 			if (editor) {
@@ -77,7 +77,8 @@ export const actions: Actions = {
 				})
 				.from(autorHasLivro)
 				.innerJoin(autor, eq(autorHasLivro.autor, autor.idautor))
-				.where(inArray(autorHasLivro.livro, vals));
+				.where(inArray(autorHasLivro.livro, vals))
+				.orderBy(autor.nome);
 
 			const autores = await resultados;
 			const map = new Map();
