@@ -82,7 +82,7 @@
 						type="text"
 						name="keyword"
 						id="keyword"
-						placeholder="Digite uma palavr-chave" />
+						placeholder="Digite uma palavra-chave" />
 				</div>
 			</div>
 		</div>
@@ -107,44 +107,28 @@
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead>
 						<tr>
-							<th>Tombo</th>
 							<th>Título</th>
-							<th>Palavra-chave</th>
-							<th>Referência</th>
-							<th class="table-actions">Ações</th>
+							<th>Disponíveis</th>
+							<th class="table-actions"></th>
 						</tr>
 					</thead>
 					<tbody>
 						{#each form.livros as livro}
 							<tr>
-								<td>{livro.tombo}</td>
-								<td>{livro.titulo}</td>
-								<td>{livro.keyword}</td>
-								<td>{livro.referencia}</td>
+								<td
+									>{livro.titulo}<br />
+									{#each livro.autores as autor}
+										<span class="tag is-warning">{autor}</span>&nbsp;&nbsp;
+									{/each}</td>
+								<td>{livro.disponiveis}</td>
 								<td class="table-actions">
-									<div class="field is-grouped">
-										<a
-											aria-label="autores"
-											title="Autores"
-											class="control"
-											href="/acervo/{livro.idlivro}/autores">
-											<i class="fa-solid fa-user-pen fa-fw"></i>
-										</a>
-										<a
-											aria-label="exemplares"
-											title="Exemplares"
-											class="control"
-											href="/acervo/{livro.idlivro}/exemplares">
-											<i class="fa-solid fa-book fa-fw"></i>
-										</a>
-										<a
-											aria-label="keywords"
-											title="Palavas-chave"
-											class="control"
-											href="/acervo/{livro.idlivro}/keywords">
-											<i class="fa-solid fa-key fa-fw"></i>
-										</a>
-									</div>
+									<a
+										aria-label="autores"
+										title="Autores"
+										class="button is-primary is-outlined"
+										href="/acervo/{livro.idlivro}">
+										Saiba mais
+									</a>
 								</td>
 							</tr>
 						{/each}

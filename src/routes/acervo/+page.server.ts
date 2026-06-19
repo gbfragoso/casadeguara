@@ -1,8 +1,8 @@
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
-import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '$lib/database/schema';
+import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie, exemplar } from '$lib/database/schema';
 import { error } from '@sveltejs/kit';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, sql, inArray } from 'drizzle-orm';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -37,15 +37,16 @@ export const actions: Actions = {
 		try {
 			let query = db
 				.select({
-					idlivro: livro.idlivro,
-					tombo: livro.tombo,
+					idlivro: exemplar.livro,
 					titulo: livro.titulo,
-					keyword: key ? sql<string>`"keyword"."chave"` : sql<string>`'' as keyword`,
-					referencia: key ? sql<string>`"livro_has_keyword"."referencia"` : sql<string>`'' as referencia`,
+					autores: sql<String>`null as autores`,
+					disponiveis: sql<Number>`SUM(CASE WHEN status = 'Disponível' THEN 1 ELSE 0 END)`,
 				})
-				.from(livro)
+				.from(exemplar)
+				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 				.$dynamic()
 				.where(where)
+				.groupBy(exemplar.livro, livro.titulo)
 				.orderBy(colecao ? livro.ordem : unaccent(livro.titulo))
 				.limit(50);
 
@@ -63,6 +64,33 @@ export const actions: Actions = {
 					.innerJoin(keyword, eq(livroHasKeyword.keyword, keyword.idkeyword));
 			}
 			const livros = await query;
+
+			var vals = [];
+			for (var i = 0; i < livros.length; i++) {
+				vals.push(livros[i].idlivro);
+			}
+
+			let resultados = db
+				.select({
+					livro: autorHasLivro.livro,
+					nome: autor.nome,
+				})
+				.from(autorHasLivro)
+				.innerJoin(autor, eq(autorHasLivro.autor, autor.idautor))
+				.where(inArray(autorHasLivro.livro, vals));
+
+			const autores = await resultados;
+			const map = new Map();
+			for (var i = 0; i < autores.length; i++) {
+				if (!map.has(autores[i].livro)) {
+					map.set(autores[i].livro, []);
+				}
+				map.get(autores[i].livro).push(autores[i].nome);
+			}
+
+			for (var i = 0; i < livros.length; i++) {
+				livros[i].autores = map.get(livros[i].idlivro);
+			}
 
 			return { livros };
 		} catch (err) {
