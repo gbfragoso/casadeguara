@@ -19,7 +19,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	pesquisar: async ({ request }) => {
+	default: async ({ request }) => {
 		const form = await request.formData();
 		const titulo = form.get('titulo') as string;
 		const editor = form.get('editora') as string;

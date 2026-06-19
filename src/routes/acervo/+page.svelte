@@ -25,7 +25,6 @@
 
 <form
 	class="card"
-	action="?/pesquisar"
 	method="POST"
 	use:enhance={() => {
 		loading = true;
