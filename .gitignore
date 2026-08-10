@@ -3,8 +3,10 @@ node_modules
 # Output
 .output
 .vercel
+.agents
 /.svelte-kit
 /build
+AGENTS.md
 
 # OS
 .DS_Store
