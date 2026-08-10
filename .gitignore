@@ -10,6 +10,7 @@ node_modules
 # OS
 .DS_Store
 Thumbs.db
+AGENTS.md
 
 # Env
 .env
@@ -22,4 +23,3 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .vercel
-AGENTS.md
