@@ -25,6 +25,6 @@ export default [
 		},
 	},
 	{
-		ignores: ['build/', '.svelte-kit/', '.vercel/', 'dist/'],
+		ignores: ['build/', '.svelte-kit/', '.vercel/', 'dist/', 'coverage/', 'playwright-report/', 'test-results/'],
 	},
 ];
