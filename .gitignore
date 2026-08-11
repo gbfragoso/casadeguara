@@ -4,9 +4,15 @@ node_modules
 .output
 .vercel
 .agents
+.codex
+.impeccable
 /.svelte-kit
 /build
+
+# Agents instructions
 AGENTS.md
+DESIGN.md
+PRODUCT.md
 
 # OS
 .DS_Store
