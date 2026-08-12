@@ -17,7 +17,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 		if (!resultado) {
 			throw fail(404, { message: 'Usuário não encontrado' });
 		}
-		console.log(resultado[0].roles);
 		return { roles: resultado[0].roles.split(',') };
 	} catch (err) {
 		console.error(err);
