@@ -1,43 +1,39 @@
-import { db } from '$lib/database/connection';
-import { autor } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import validator from 'validator';
+import { autorModel, type AutorModel } from '$lib/server/models/autor';
+import { authorSchema } from '$lib/validation/autor';
+import { error, fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type CreateModel = Pick<AutorModel, 'create'>;
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do autor é obrigatório',
-			};
-		}
-
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do autor não pode conter somente números',
-			};
-		}
-
-		try {
-			await db.insert(autor).values({ nome: nome.toUpperCase() });
-			return { status: 201 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar um novo autor',
-			});
-		}
+export const _createNewAuthorHandlers = (model: CreateModel) => ({
+	load: async ({ locals }: { locals: { user: unknown } }) => {
+		if (!locals.user) redirect(302, '/');
 	},
-} satisfies Actions;
+	actions: {
+		default: async ({ request }: { request: Request }) => {
+			const formData = await request.formData();
+			const rawName = formData.get('nome');
+			const result = authorSchema.safeParse({ nome: rawName });
+			const values = { nome: getSubmittedName(rawName) };
+
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			try {
+				await model.create(result.data.nome);
+
+				return { status: 201 };
+			} catch (cause) {
+				console.error(cause);
+				error(500, { message: 'Falha ao criar um novo autor' });
+			}
+		},
+	},
+});
+
+const handlers = _createNewAuthorHandlers(autorModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

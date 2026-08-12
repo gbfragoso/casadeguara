@@ -1,6 +1,7 @@
 import {
 	boolean,
 	date,
+	index,
 	integer,
 	numeric,
 	pgTable,
@@ -44,11 +45,15 @@ export const entradas = pgTable('entradas', {
 	depositado: boolean().default(false),
 });
 
-export const autor = pgTable('autor', {
-	idautor: smallserial().primaryKey().notNull(),
-	nome: varchar({ length: 60 }).notNull(),
-	dataCadastro: date('data_cadastro', { mode: 'date' }).defaultNow(),
-});
+export const autor = pgTable(
+	'autor',
+	{
+		idautor: smallserial().primaryKey().notNull(),
+		nome: varchar({ length: 60 }).notNull(),
+		dataCadastro: date('data_cadastro', { mode: 'date' }).defaultNow(),
+	},
+	(table) => [index('autor_nome_idx').on(table.nome)],
+);
 
 export const livro = pgTable(
 	'livro',

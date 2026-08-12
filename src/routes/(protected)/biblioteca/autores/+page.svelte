@@ -1,12 +1,28 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { fromAction } from 'svelte/attachments';
 	import type { ActionData } from './$types';
+	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
+
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
 	let loading = $state(false);
+
+	function handleSubmit(): SubmitCallback {
+		loading = true;
+
+		return async ({ update }) => {
+			try {
+				await update();
+			} finally {
+				loading = false;
+			}
+		};
+	}
 </script>
 
 <div class="mb-2">
@@ -21,29 +37,35 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de autores</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do autor</label>
 			<div class="control">
-				<input class="input" type="text" name="nome" id="nome" placeholder="Digite o nome do autor" />
+				<input
+					class="input"
+					type="text"
+					name="nome"
+					id="nome"
+					value={form?.values?.nome ?? ''}
+					placeholder="Digite o nome do autor"
+					maxlength="60"
+					aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
+					aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
 			</div>
+			{#if form?.errors?.nome?.length}
+				<div id="nome-errors" class="help is-danger">
+					{#each form.errors.nome as message (message)}
+						<p>{message}</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
+					class={['button is-primary is-fullwidth has-text-weight-semibold', { 'is-loading': loading }]}
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -56,31 +78,37 @@
 	</div>
 </form>
 
-{#if form?.autores}
+{#if form?.autores !== undefined}
 	<div class="card">
 		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<tr>
-							<th>Nome</th>
-							<th class="table-actions">Ações</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each form.autores as autor}
+			{#if form.autores.length === 0}
+				<p>Nenhum autor encontrado.</p>
+			{:else}
+				<div class="table-container">
+					<table class="table is-striped is-hoverable is-fullwidth">
+						<thead>
 							<tr>
-								<td>{autor.nome}</td>
-								<td class="table-actions">
-									<a aria-label="link" href="/biblioteca/autores/{autor.idautor}">
-										<i class="fa-solid fa-pen-to-square fa-fw"></i>
-									</a>
-								</td>
+								<th>Nome</th>
+								<th class="table-actions">Ações</th>
 							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
+						</thead>
+						<tbody>
+							{#each form.autores as autor (autor.idautor)}
+								<tr>
+									<td>{autor.nome}</td>
+									<td class="table-actions">
+										<a
+											aria-label={`Editar autor ${autor.nome}`}
+											href="/biblioteca/autores/{autor.idautor}">
+											<i class="fa-solid fa-pen-to-square fa-fw"></i>
+										</a>
+									</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}
