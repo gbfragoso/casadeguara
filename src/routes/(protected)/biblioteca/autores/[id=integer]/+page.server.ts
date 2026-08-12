@@ -1,64 +1,58 @@
-import { db } from '$lib/database/connection';
-import { autor } from '$lib/database/schema';
+import { autorModel, type AutorModel } from '$lib/server/models/autor';
+import { authorSchema } from '$lib/validation/autor';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import validator from 'validator';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, '/');
+type EditModel = Pick<AutorModel, 'get' | 'update'>;
 
-	try {
-		const resultado = await db
-			.select()
-			.from(autor)
-			.where(eq(autor.idautor, Number(params.id)));
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		if (!resultado) {
-			throw fail(404, { message: 'Autor não encontrado' });
-		}
-		return { autor: resultado[0] };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao baixar os dados do autor',
-		});
-	}
-};
+export const _createEditAuthorHandlers = (model: EditModel) => ({
+	load: async ({ locals, params }: { locals: { user: unknown }; params: { id: string } }) => {
+		if (!locals.user) redirect(302, '/');
 
-export const actions: Actions = {
-	default: async ({ request, params }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do autor é obrigatório',
-			};
-		}
-
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do autor não pode conter somente números',
-			};
-		}
+		const id = Number(params.id);
+		let author;
 
 		try {
-			await db
-				.update(autor)
-				.set({ nome: nome.toUpperCase() })
-				.where(eq(autor.idautor, Number(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do autor',
-			});
+			author = await model.get(id);
+		} catch (cause) {
+			console.error(cause);
+			error(500, { message: 'Falha ao baixar os dados do autor' });
 		}
+
+		if (!author) error(404, { message: 'Autor não encontrado.' });
+
+		return { autor: author };
 	},
-};
+	actions: {
+		default: async ({ request, params }: { request: Request; params: { id: string } }) => {
+			const formData = await request.formData();
+			const rawName = formData.get('nome');
+			const result = authorSchema.safeParse({ nome: rawName });
+			const values = { nome: getSubmittedName(rawName) };
+
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			const id = Number(params.id);
+			let updated;
+
+			try {
+				updated = await model.update(id, result.data.nome);
+			} catch (cause) {
+				console.error(cause);
+				error(500, { message: 'Falha ao atualizar os dados do autor' });
+			}
+
+			if (!updated) error(404, { message: 'Autor não encontrado.' });
+
+			return { status: 200 };
+		},
+	},
+});
+
+const handlers = _createEditAuthorHandlers(autorModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
