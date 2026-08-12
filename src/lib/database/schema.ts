@@ -4,7 +4,6 @@ import {
 	timestamp,
 	uniqueIndex,
 	varchar,
-	index,
 	smallserial,
 	date,
 	serial,
@@ -45,9 +44,6 @@ export const autor = pgTable(
 		nome: varchar({ length: 60 }).notNull(),
 		dataCadastro: date('data_cadastro').defaultNow(),
 	},
-	(table) => [
-		index('autor_name_idx').using('gin', sql`to_tsvector('portuguese'::regconfig, (COALESCE(nome, ''::charac`),
-	],
 );
 
 export const aviso = pgTable('aviso', {
