@@ -1,12 +1,28 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { fromAction } from 'svelte/attachments';
 	import type { ActionData } from './$types';
+	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
+
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
 	let loading = $state(false);
+
+	function handleSubmit(): SubmitCallback {
+		loading = true;
+
+		return async ({ update }) => {
+			try {
+				await update();
+			} finally {
+				loading = false;
+			}
+		};
+	}
 </script>
 
 <div class="mb-2">
@@ -21,29 +37,35 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de palavras-chave</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="chave">Palavra-chave</label>
 			<div class="control">
-				<input class="input" type="text" name="chave" id="chave" placeholder="Digite a palavra-chave" />
+				<input
+					class="input"
+					type="text"
+					name="chave"
+					id="chave"
+					value={form?.values?.chave ?? ''}
+					placeholder="Digite a palavra-chave"
+					maxlength="30"
+					aria-describedby={form?.errors?.chave?.length ? 'chave-errors' : undefined}
+					aria-invalid={form?.errors?.chave?.length ? 'true' : undefined} />
 			</div>
+			{#if form?.errors?.chave?.length}
+				<div id="chave-errors" class="help is-danger">
+					{#each form.errors.chave as message (message)}
+						<p>{message}</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
 					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
+					class={['button is-primary is-fullwidth has-text-weight-semibold', { 'is-loading': loading }]}
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
@@ -56,31 +78,37 @@
 	</div>
 </form>
 
-{#if form?.keywords}
+{#if form?.keywords !== undefined}
 	<div class="card">
 		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<tr>
-							<th>chave</th>
-							<th class="table-actions">Ações</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each form.keywords as keyword}
+			{#if form.keywords.length === 0}
+				<p>Nenhuma palavra-chave encontrada.</p>
+			{:else}
+				<div class="table-container">
+					<table class="table is-striped is-hoverable is-fullwidth">
+						<thead>
 							<tr>
-								<td>{keyword.chave}</td>
-								<td class="table-actions">
-									<a aria-label="link" href="/biblioteca/keywords/{keyword.idkeyword}">
-										<i class="fa-solid fa-pen-to-square fa-fw"></i>
-									</a>
-								</td>
+								<th>Palavra-chave</th>
+								<th class="table-actions">Ações</th>
 							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
+						</thead>
+						<tbody>
+							{#each form.keywords as keyword (keyword.idkeyword)}
+								<tr>
+									<td>{keyword.chave}</td>
+									<td class="table-actions">
+										<a
+											aria-label={`Editar palavra-chave ${keyword.chave}`}
+											href="/biblioteca/keywords/{keyword.idkeyword}">
+											<i class="fa-solid fa-pen-to-square fa-fw"></i>
+										</a>
+									</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}
