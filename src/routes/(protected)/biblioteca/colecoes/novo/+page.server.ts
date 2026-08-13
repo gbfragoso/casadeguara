@@ -1,43 +1,41 @@
-import { db } from '$lib/database/connection';
-import { serie } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import validator from 'validator';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { colecaoModel, type ColecaoModel } from '$lib/server/models/colecao';
+import { colecaoSchema } from '$lib/validation/colecao';
+import { error, fail } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type CreateModel = Pick<ColecaoModel, 'create'>;
+type User = { roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome da coleção é obrigatório',
-			};
-		}
+export const _createNewColecaoHandlers = (model: CreateModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireLibraryAccess(locals.user),
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			requireLibraryAccess(locals.user);
+			const formData = await request.formData();
+			const rawName = formData.get('nome');
+			const result = colecaoSchema.safeParse({ nome: rawName });
+			const values = { nome: getSubmittedName(rawName) };
 
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do coleção não pode conter somente números',
-			};
-		}
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
 
-		try {
-			await db.insert(serie).values({ nome: nome.toUpperCase() });
-			return { status: 201 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar uma nova coleção',
-			});
-		}
+			try {
+				await model.create(result.data.nome);
+
+				return { status: 201 };
+			} catch (cause) {
+				console.error('Falha ao criar uma nova coleção', cause);
+				error(500, { message: 'Falha ao criar uma nova coleção' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createNewColecaoHandlers(colecaoModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
