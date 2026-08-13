@@ -1,65 +1,70 @@
-import { db } from '$lib/database/connection';
-import { serie } from '$lib/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import validator from 'validator';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { colecaoModel, type ColecaoModel } from '$lib/server/models/colecao';
+import { colecaoSchema } from '$lib/validation/colecao';
+import { error, fail } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, '/');
+type EditModel = Pick<ColecaoModel, 'get' | 'update'>;
+type User = { roles: string } | null;
+type LoadContext = { locals: { user: User }; params: { id: string } };
+type ActionContext = LoadContext & { request: Request };
 
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
+
+async function getColecao(model: Pick<ColecaoModel, 'get'>, id: number) {
 	try {
-		const colecao = await db
-			.select()
-			.from(serie)
-			.where(eq(serie.idserie, Number(params.id)));
-		if (!colecao) {
-			throw fail(404, {
-				message: 'Coleção não encontrada',
-			});
-		}
-		return { colecao: colecao[0] };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao recuperar os dados da coleção',
-		});
+		return await model.get(id);
+	} catch (cause) {
+		console.error('Falha ao recuperar os dados da coleção', cause);
+		error(500, { message: 'Falha ao recuperar os dados da coleção' });
 	}
-};
+}
 
-export const actions: Actions = {
-	default: async ({ request, params }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
+async function updateColecao(model: Pick<ColecaoModel, 'update'>, id: number, name: string) {
+	try {
+		return await model.update(id, name);
+	} catch (cause) {
+		console.error('Falha ao atualizar os dados da coleção', cause);
+		error(500, { message: 'Falha ao atualizar os dados da coleção' });
+	}
+}
 
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome da coleção é obrigatório',
-			};
-		}
+const createEditLoad =
+	(model: EditModel) =>
+	async ({ locals, params }: LoadContext) => {
+		requireLibraryAccess(locals.user);
+		const id = Number(params.id);
+		const colecao = await getColecao(model, id);
 
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do coleção não pode conter somente números',
-			};
-		}
+		if (!colecao) error(404, { message: 'Coleção não encontrada.' });
+		return { colecao };
+	};
 
-		try {
-			await db
-				.update(serie)
-				.set({ nome: nome.toUpperCase() })
-				.where(eq(serie.idserie, Number(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados da coleção',
-			});
-		}
-	},
-};
+const createEditAction =
+	(model: EditModel) =>
+	async ({ locals, params, request }: ActionContext) => {
+		requireLibraryAccess(locals.user);
+		const formData = await request.formData();
+		const rawName = formData.get('nome');
+		const result = colecaoSchema.safeParse({ nome: rawName });
+		const values = { nome: getSubmittedName(rawName) };
+
+		if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+		const id = Number(params.id);
+		const updated = await updateColecao(model, id, result.data.nome);
+		if (!updated) error(404, { message: 'Coleção não encontrada.' });
+
+		return { status: 200 };
+	};
+
+export const _createEditColecaoHandlers = (model: EditModel) => ({
+	load: createEditLoad(model),
+	actions: { default: createEditAction(model) },
+});
+
+const handlers = _createEditColecaoHandlers(colecaoModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
