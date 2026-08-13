@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
+import { cadastros } from '$lib/database/schema';
 import { cpf, rg } from '$lib/js/mask';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
@@ -13,8 +13,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	try {
 		const resultado = await db
 			.select()
-			.from(leitor)
-			.where(eq(leitor.idleitor, Number(params.id)));
+			.from(cadastros)
+			.where(eq(cadastros.idleitor, Number(params.id)));
 
 		if (!resultado) {
 			throw fail(404, {
@@ -69,7 +69,7 @@ export const actions: Actions = {
 
 		try {
 			await db
-				.update(leitor)
+				.update(cadastros)
 				.set({
 					nome: nome.toUpperCase(),
 					rg: rg && !rg.includes('*') ? rg.replace(/\D/g, '') : undefined,
@@ -87,7 +87,7 @@ export const actions: Actions = {
 					userAlteracao: locals.user?.id,
 					dataAlteracao: new Date(),
 				})
-				.where(eq(leitor.idleitor, Number(params.id)));
+				.where(eq(cadastros.idleitor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);

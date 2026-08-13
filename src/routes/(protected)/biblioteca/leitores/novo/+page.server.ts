@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
+import { cadastros } from '$lib/database/schema';
 import { error } from '@sveltejs/kit';
 import validator from 'validator';
 import type { Actions } from './$types';
@@ -54,7 +54,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			await db.insert(leitor).values({
+			await db.insert(cadastros).values({
 				nome: nome.toUpperCase(),
 				rg: rg ? rg.replace(/\D/g, '') : undefined,
 				cpf: cpf ? cpf.replace(/\D/g, '') : undefined,

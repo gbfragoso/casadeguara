@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
+import { cadastros } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
@@ -11,9 +11,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 	try {
 		const contribuinte = await db
-			.select({ nome: leitor.nome, trab: leitor.trab, telefone: leitor.telefone })
-			.from(leitor)
-			.where(eq(leitor.idleitor, Number(params.id)));
+			.select({ nome: cadastros.nome, trab: cadastros.trab, telefone: cadastros.telefone })
+			.from(cadastros)
+			.where(eq(cadastros.idleitor, Number(params.id)));
 		if (!contribuinte) {
 			throw fail(404, { message: 'Contribuinte não encontrado' });
 		}
@@ -59,9 +59,9 @@ export const actions: Actions = {
 
 		try {
 			await db
-				.update(leitor)
+				.update(cadastros)
 				.set({ nome: nome.toUpperCase(), telefone, trab: trabalhador })
-				.where(eq(leitor.idleitor, Number(params.id)));
+				.where(eq(cadastros.idleitor, Number(params.id)));
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);

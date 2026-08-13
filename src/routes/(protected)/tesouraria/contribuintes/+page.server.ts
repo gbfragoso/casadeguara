@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
-import { leitor } from '$lib/database/schema';
+import { cadastros } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
@@ -13,14 +13,14 @@ export const actions: Actions = {
 	default: async ({ request }) => {
 		const form = await request.formData();
 		const nome = form.get('nome') as string;
-		const where = nome ? ulike(leitor.nome, nome + '%') : undefined;
+		const where = nome ? ulike(cadastros.nome, nome + '%') : undefined;
 
 		try {
 			const contribuintes = await db
-				.select({ idleitor: leitor.idleitor, nome: leitor.nome, trab: leitor.trab })
-				.from(leitor)
+				.select({ idleitor: cadastros.idleitor, nome: cadastros.nome, trab: cadastros.trab })
+				.from(cadastros)
 				.where(where)
-				.orderBy(unaccent(leitor.nome))
+				.orderBy(unaccent(cadastros.nome))
 				.limit(50);
 
 			return { contribuintes };

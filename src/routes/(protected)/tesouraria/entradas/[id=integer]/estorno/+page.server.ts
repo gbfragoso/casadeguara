@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { entradas, leitor, user } from '$lib/database/schema';
+import { cadastros, entradas, user } from '$lib/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 
@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	try {
 		const entrada = await db
 			.select({
-				contribuinte: leitor.nome,
+				contribuinte: cadastros.nome,
 				descricao: entradas.descricao,
 				valor: entradas.valor,
 				dataEntrada: entradas.dataEntrada,
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 				usuarioCadastro: user.name,
 			})
 			.from(entradas)
-			.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+			.innerJoin(cadastros, eq(cadastros.idleitor, entradas.idcontribuinte))
 			.innerJoin(user, eq(user.id, entradas.userCadastro))
 			.where(eq(entradas.identrada, Number(params.id)));
 		if (!entrada) {

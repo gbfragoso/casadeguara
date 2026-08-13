@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
+import { cadastros } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
@@ -13,13 +13,13 @@ export const POST: RequestHandler = async ({ url, locals }) => {
 
 	try {
 		await db
-			.update(leitor)
+			.update(cadastros)
 			.set({
 				trab: trabalhador ? trabalhador === 'true' : undefined,
 				desencarnado: desencarnado ? desencarnado === 'true' : undefined,
 				frequencia: frequencia ? frequencia === 'true' : undefined,
 			})
-			.where(eq(leitor.idleitor, Number(id)));
+			.where(eq(cadastros.idleitor, Number(id)));
 
 		return new Response('Cadastro atualizado com sucesso');
 	} catch (err) {

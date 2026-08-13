@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike, unaccent } from '$lib/database/functions';
-import { entradas, leitor } from '$lib/database/schema';
+import { cadastros, entradas } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, avg, count, eq, gte, lte, max, sql } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -22,8 +22,8 @@ export const actions: Actions = {
 		try {
 			const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
 			const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
-			const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
-			const trabalhadoresFilter = trabalhadores ? eq(leitor.trab, true) : undefined;
+			const nameFilter = nome ? ulike(cadastros.nome, nome.toUpperCase() + '%') : undefined;
+			const trabalhadoresFilter = trabalhadores ? eq(cadastros.trab, true) : undefined;
 			const exercicioFilter = exercicio ? eq(sql<string>`extract(year from data_entrada)`, exercicio) : undefined;
 			const where = and(dataInicioFilter, dataFimFilter, nameFilter, exercicioFilter, trabalhadoresFilter);
 
@@ -32,13 +32,13 @@ export const actions: Actions = {
 					data: max(entradas.dataEntrada),
 					valor: avg(entradas.valor),
 					contribuicoes: count(),
-					contribuinte: leitor.nome,
+					contribuinte: cadastros.nome,
 				})
 				.from(entradas)
-				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
-				.groupBy(entradas.idcontribuinte, leitor.nome)
+				.innerJoin(cadastros, eq(cadastros.idleitor, entradas.idcontribuinte))
+				.groupBy(entradas.idcontribuinte, cadastros.nome)
 				.where(where)
-				.orderBy(unaccent(leitor.nome))
+				.orderBy(unaccent(cadastros.nome))
 				.limit(50);
 
 			return { resultados };

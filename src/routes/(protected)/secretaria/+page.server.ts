@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { frequencia, leitor } from '$lib/database/schema';
+import { cadastros, frequencia } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, count, eq, gte, lte } from 'drizzle-orm';
 
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const dateFilter = and(gte(frequencia.dataPresenca, firstDay), lte(frequencia.dataPresenca, lastDay));
 
 		const leitores = async () => {
-			return db.select({ counter: count() }).from(leitor).where(eq(leitor.trab, true));
+			return db.select({ counter: count() }).from(cadastros).where(eq(cadastros.trab, true));
 		};
 
 		const engajamento = async () => {

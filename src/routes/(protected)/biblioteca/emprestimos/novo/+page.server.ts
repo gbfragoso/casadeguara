@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { emprestimo, exemplar, leitor, livro } from '$lib/database/schema';
+import { cadastros, emprestimo, exemplar, livro } from '$lib/database/schema';
 import { unaccent } from '$lib/database/functions';
 import { error, redirect } from '@sveltejs/kit';
 import dayjs from 'dayjs';
@@ -13,9 +13,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const leitores = async () => {
 			return db
-				.select({ idleitor: leitor.idleitor, nome: sql<string>`unaccent(leitor.nome)` })
-				.from(leitor)
-				.orderBy(unaccent(leitor.nome));
+				.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(leitor.nome)` })
+				.from(cadastros)
+				.orderBy(unaccent(cadastros.nome));
 		};
 
 		const exemplares = async () => {
@@ -66,7 +66,7 @@ export const actions: Actions = {
 			};
 		}
 
-		const leitores = await db.select({ ativo: leitor.status }).from(leitor).where(eq(leitor.idleitor, idleitor));
+		const leitores = await db.select({ ativo: cadastros.status }).from(cadastros).where(eq(cadastros.idleitor, idleitor));
 		if (!leitores[0].ativo && !isAdmin) {
 			return {
 				status: 400,

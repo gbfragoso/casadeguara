@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
+import { cadastros } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 
@@ -18,10 +18,10 @@ export const actions: Actions = {
 			const mesFilter = mes ? eq(sql<string>`extract(month from leitor.aniversario)`, mes) : undefined;
 
 			const leitores = await db
-				.select({ nome: leitor.nome, aniversario: leitor.aniversario, desencarnado: leitor.desencarnado })
-				.from(leitor)
-				.where(and(eq(leitor.trab, true), mesFilter))
-				.orderBy(sql<number>`extract(day from leitor.aniversario)`, leitor.nome);
+				.select({ nome: cadastros.nome, aniversario: cadastros.aniversario, desencarnado: cadastros.desencarnado })
+				.from(cadastros)
+				.where(and(eq(cadastros.trab, true), mesFilter))
+				.orderBy(sql<number>`extract(day from leitor.aniversario)`, cadastros.nome);
 
 			return { leitores };
 		} catch (err) {
