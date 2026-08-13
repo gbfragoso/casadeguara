@@ -46,3 +46,6 @@ export const getSecretariaFormValues = (value: unknown): SecretariaFormValues =>
 	rg: '',
 	cpf: '',
 });
+
+export const getSecretariaErrors = (errors: SecretariaFormErrors, formErrors: string[] = []): SecretariaFormErrors =>
+	formErrors.length ? { ...errors, form: formErrors } : errors;

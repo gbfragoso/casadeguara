@@ -58,7 +58,7 @@ describe('secretaria registration list handlers', () => {
 			status: 400,
 			data: {
 				values: { nome: '123', trabalhadores: 'true' },
-				errors: { nome: ['Nome do trabalhador inválido.'] },
+				errors: { nome: ['Nome do trabalhador inválido.'], form: ['Dados do cadastro inválidos.'] },
 			},
 		});
 		expect(model.fetchSecretaria).not.toHaveBeenCalled();

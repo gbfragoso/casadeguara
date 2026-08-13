@@ -4,7 +4,7 @@ import { secretariaCreateSchema } from '$lib/validation/cadastros/secretaria';
 import { error, fail } from '@sveltejs/kit';
 
 import { requireSecretariaAccess } from '../secretaria-access';
-import { getSecretariaFormValues } from '../secretaria-form';
+import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
 import type { Actions } from './$types';
 
 type CreateModel = Pick<CadastroModel, 'createSecretaria'>;
@@ -19,7 +19,10 @@ export const _createNewSecretariaHandlers = (model: CreateModel) => ({
 			const result = secretariaCreateSchema.safeParse(input);
 			const values = getSecretariaFormValues(input);
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) {
+				const errors = result.error.flatten();
+				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
+			}
 
 			try {
 				await model.createSecretaria(result.data, user.id);
@@ -27,7 +30,7 @@ export const _createNewSecretariaHandlers = (model: CreateModel) => ({
 				return { status: 201 };
 			} catch (cause) {
 				if (cause instanceof DuplicateCadastroNameError) {
-					return fail(400, { values, errors: { nome: [cause.message] } });
+					return fail(400, { values, errors: getSecretariaErrors({ nome: [cause.message] }) });
 				}
 
 				console.error('Falha ao criar um novo trabalhador.');

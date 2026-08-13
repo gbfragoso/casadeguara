@@ -3,7 +3,7 @@ import { secretariaSearchSchema } from '$lib/validation/cadastros/secretaria';
 import { error, fail } from '@sveltejs/kit';
 
 import { requireSecretariaAccess } from './secretaria-access';
-import { getSecretariaSearchValues } from './secretaria-form';
+import { getSecretariaErrors, getSecretariaSearchValues } from './secretaria-form';
 import type { Actions, PageServerLoad } from './$types';
 
 type ListModel = Pick<CadastroModel, 'fetchSecretaria'>;
@@ -19,7 +19,10 @@ export const _createSecretariaListHandlers = (model: ListModel) => ({
 			const result = secretariaSearchSchema.safeParse(input);
 			const values = getSecretariaSearchValues(input);
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) {
+				const errors = result.error.flatten();
+				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
+			}
 
 			try {
 				const cadastros = await model.fetchSecretaria(result.data.nome, result.data.trabalhadores);

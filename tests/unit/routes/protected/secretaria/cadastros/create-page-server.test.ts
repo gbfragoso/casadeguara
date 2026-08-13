@@ -63,7 +63,10 @@ describe('new secretaria registration handlers', () => {
 			}),
 		).resolves.toMatchObject({
 			status: 400,
-			data: { values: { nome: '123', cpf: '', rg: '' }, errors: { nome: ['Nome do trabalhador inválido.'] } },
+			data: {
+				values: { nome: '123', cpf: '', rg: '' },
+				errors: { nome: ['Nome do trabalhador inválido.'], form: ['Dados do cadastro inválidos.'] },
+			},
 		});
 		expect(model.createSecretaria).not.toHaveBeenCalled();
 	});

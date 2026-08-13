@@ -5,7 +5,7 @@ import { error, fail } from '@sveltejs/kit';
 
 import { requireSecretariaAccess } from '../secretaria-access';
 import { toSecretariaDetail } from '../secretaria-detail';
-import { getSecretariaFormValues } from '../secretaria-form';
+import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
 import type { Actions, PageServerLoad } from './$types';
 
 type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria'>;
@@ -38,7 +38,10 @@ export const _createEditSecretariaHandlers = (model: EditModel) => ({
 			const result = secretariaUpdateSchema.safeParse(input);
 			const values = getSecretariaFormValues(input);
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) {
+				const errors = result.error.flatten();
+				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
+			}
 
 			const id = Number(params.id);
 			try {
@@ -47,7 +50,7 @@ export const _createEditSecretariaHandlers = (model: EditModel) => ({
 				if (updated) return { status: 200 };
 			} catch (cause) {
 				if (cause instanceof DuplicateCadastroNameError) {
-					return fail(400, { values, errors: { nome: [cause.message] } });
+					return fail(400, { values, errors: getSecretariaErrors({ nome: [cause.message] }) });
 				}
 
 				console.error('Falha ao atualizar os dados do trabalhador.');

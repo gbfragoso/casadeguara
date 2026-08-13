@@ -35,6 +35,7 @@ describe('secretaria registration flag endpoint', () => {
 
 	it.each([
 		['malformed JSON', new Request('http://localhost', { method: 'POST', body: '{' })],
+		['string id', createRequest({ id: '4', field: 'trab', value: true })],
 		['string boolean', createRequest({ id: 4, field: 'trab', value: 'true' })],
 		['multiple fields', createRequest({ id: 4, field: 'trab', value: true, frequencia: true })],
 		['arbitrary column', createRequest({ id: 4, field: 'status', value: true })],
