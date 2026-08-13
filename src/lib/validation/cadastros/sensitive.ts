@@ -19,12 +19,19 @@ type SensitiveUpdateInput = {
 	removeRg: boolean;
 };
 
+type SensitiveUpdateOutput = {
+	cpf?: string | null;
+	rg?: string | null;
+};
+
 export const validateSensitiveUpdate = (data: SensitiveUpdateInput, context: z.RefinementCtx) => {
 	if (data.removeCpf && data.cpf) context.addIssue({ code: 'custom', message: CPF_INVALID_MESSAGE, path: ['cpf'] });
 	if (data.removeRg && data.rg) context.addIssue({ code: 'custom', message: RG_INVALID_MESSAGE, path: ['rg'] });
 };
 
-export const normalizeSensitiveUpdate = <Fields extends SensitiveUpdateInput>(data: Fields) => {
+export const normalizeSensitiveUpdate = <Fields extends SensitiveUpdateInput>(
+	data: Fields,
+): Omit<Fields, 'cpf' | 'rg' | 'removeCpf' | 'removeRg'> & SensitiveUpdateOutput => {
 	const { cpf, rg, removeCpf, removeRg, ...fields } = data;
 
 	return {
