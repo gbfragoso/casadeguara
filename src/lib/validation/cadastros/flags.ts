@@ -1,20 +1,18 @@
 import { z } from 'zod';
 
-import { createCheckboxSchema } from './common';
-
 const INVALID_UPDATE_MESSAGE = 'Cadastro ou campo de atualização inválido.';
+const MAX_CADASTRO_ID = 32_767;
 const registrationIdSchema = z
-	.string({ error: INVALID_UPDATE_MESSAGE })
-	.trim()
-	.regex(/^[1-9]\d*$/, INVALID_UPDATE_MESSAGE)
-	.transform(Number)
-	.refine((value) => value <= 32_767, INVALID_UPDATE_MESSAGE);
+	.number({ error: INVALID_UPDATE_MESSAGE })
+	.int(INVALID_UPDATE_MESSAGE)
+	.min(1, INVALID_UPDATE_MESSAGE)
+	.max(MAX_CADASTRO_ID, INVALID_UPDATE_MESSAGE);
 
 export const secretariaFlagsSchema = z.strictObject(
 	{
 		id: registrationIdSchema,
 		field: z.enum(['trab', 'frequencia', 'desencarnado'], { error: INVALID_UPDATE_MESSAGE }),
-		value: createCheckboxSchema(INVALID_UPDATE_MESSAGE),
+		value: z.boolean({ error: INVALID_UPDATE_MESSAGE }),
 	},
 	INVALID_UPDATE_MESSAGE,
 );

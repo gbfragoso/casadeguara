@@ -67,10 +67,10 @@ describe('secretaria registration schemas', () => {
 	});
 
 	it('supports trimmed search names and rejects numeric values', () => {
-		const valid = secretariaSearchSchema.safeParse({ nome: '  João  ' });
+		const valid = secretariaSearchSchema.safeParse({ nome: '  João  ', trabalhadores: 'true' });
 		const invalid = secretariaSearchSchema.safeParse({ nome: '42' });
 
-		expect(valid).toMatchObject({ success: true, data: { nome: 'João' } });
+		expect(valid).toMatchObject({ success: true, data: { nome: 'João', trabalhadores: true } });
 		expect(invalid.error?.flatten().fieldErrors.nome).toEqual(['Nome do trabalhador inválido.']);
 	});
 });

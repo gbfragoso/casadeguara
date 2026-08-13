@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createOptionalBirthdaySchema, createSearchNameSchema } from './common';
+import { createCheckboxSchema, createOptionalBirthdaySchema, createSearchNameSchema } from './common';
 import { createPersonalRegistrationFields } from './personal';
 import { normalizeSensitiveUpdate, sensitiveUpdateFields, validateSensitiveUpdate } from './sensitive';
 
@@ -10,7 +10,10 @@ const secretariaFields = {
 };
 
 export const secretariaSearchSchema = z.strictObject(
-	{ nome: createSearchNameSchema('trabalhador') },
+	{
+		nome: createSearchNameSchema('trabalhador'),
+		trabalhadores: createCheckboxSchema('Filtro de trabalhadores inválido.').optional().default(false),
+	},
 	'Dados do cadastro inválidos.',
 );
 export const secretariaCreateSchema = z.strictObject(secretariaFields, 'Dados do cadastro inválidos.');

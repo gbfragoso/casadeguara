@@ -1,41 +1,46 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { cadastros } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { and, eq } from 'drizzle-orm';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { secretariaSearchSchema } from '$lib/validation/cadastros/secretaria';
+import { error, fail } from '@sveltejs/kit';
+
+import { requireSecretariaAccess } from './secretaria-access';
+import { getSecretariaSearchValues } from './secretaria-form';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type ListModel = Pick<CadastroModel, 'fetchSecretaria'>;
+type User = { id: string; roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		const trabalhadores = form.get('trabalhadores') as string;
-		const trabalhadoresFilter = trabalhadores ? eq(cadastros.trab, true) : undefined;
-		const nomeFilter = nome ? ulike(cadastros.nome, nome + '%') : undefined;
+export const _createSecretariaListHandlers = (model: ListModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireSecretariaAccess(locals.user),
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			requireSecretariaAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = secretariaSearchSchema.safeParse(input);
+			const values = getSecretariaSearchValues(input);
 
-		try {
-			const leitores = await db
-				.select({
-					idleitor: cadastros.idleitor,
-					nome: cadastros.nome,
-					trab: cadastros.trab,
-					frequencia: cadastros.frequencia,
-					desencarnado: cadastros.desencarnado,
-				})
-				.from(cadastros)
-				.where(and(nomeFilter, trabalhadoresFilter))
-				.orderBy(unaccent(cadastros.nome))
-				.limit(trabalhadores ? 500 : 50);
-			return { leitores };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de trabalhadores',
-			});
-		}
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			try {
+				const cadastros = await model.fetchSecretaria(result.data.nome, result.data.trabalhadores);
+				const lista = cadastros.map(({ idleitor, nome, trab, frequencia, desencarnado }) => ({
+					idleitor,
+					nome,
+					trab,
+					frequencia,
+					desencarnado,
+				}));
+
+				return { cadastros: lista, values };
+			} catch {
+				console.error('Falha ao carregar a lista de cadastros.');
+				error(500, { message: 'Falha ao carregar a lista de cadastros.' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createSecretariaListHandlers(cadastroModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
