@@ -25,7 +25,11 @@ export class KeywordModel {
 	}
 
 	async get(id: number) {
-		const [found] = await this.database.select(keywordFields).from(keyword).where(eq(keyword.idkeyword, id)).limit(1);
+		const [found] = await this.database
+			.select(keywordFields)
+			.from(keyword)
+			.where(eq(keyword.idkeyword, id))
+			.limit(1);
 
 		return found;
 	}

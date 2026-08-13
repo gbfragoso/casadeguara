@@ -12,12 +12,23 @@ const createRequest = (key?: string | Blob) => {
 };
 
 describe('keyword list handlers', () => {
+	it('rejects a wrong-role loader before fetching', () => {
+		const model = { fetch: vi.fn() };
+
+		expect(() => _createListHandlers(model).load({ locals: { user: { roles: 'secretaria' } } })).toThrow(
+			expect.objectContaining({ status: 401 }),
+		);
+		expect(model.fetch).not.toHaveBeenCalled();
+	});
+
 	it('rejects unauthorized actions before parsing or fetching', async () => {
 		const request = new Request('http://localhost', { method: 'POST' });
 		const formData = vi.spyOn(request, 'formData');
 		const model = { fetch: vi.fn() };
 
-		await expect(_createListHandlers(model).actions.default({ locals: { user: null }, request })).rejects.toMatchObject({
+		await expect(
+			_createListHandlers(model).actions.default({ locals: { user: null }, request }),
+		).rejects.toMatchObject({
 			status: 302,
 		});
 		expect(formData).not.toHaveBeenCalled();
@@ -29,7 +40,10 @@ describe('keyword list handlers', () => {
 		const model = { fetch: vi.fn().mockResolvedValue(keywords) };
 
 		await expect(
-			_createListHandlers(model).actions.default({ locals: { user: libraryUser }, request: createRequest(' Ficção ') }),
+			_createListHandlers(model).actions.default({
+				locals: { user: libraryUser },
+				request: createRequest(' Ficção '),
+			}),
 		).resolves.toEqual({ keywords, values: { chave: 'Ficção' } });
 		expect(model.fetch).toHaveBeenCalledWith('Ficção');
 	});
@@ -61,7 +75,10 @@ describe('keyword list handlers', () => {
 		const model = { fetch: vi.fn().mockRejectedValue(new Error('database unavailable')) };
 
 		await expect(
-			_createListHandlers(model).actions.default({ locals: { user: libraryUser }, request: createRequest('Ana') }),
+			_createListHandlers(model).actions.default({
+				locals: { user: libraryUser },
+				request: createRequest('Ana'),
+			}),
 		).rejects.toMatchObject({ status: 500, body: { message: 'Falha ao carregar a lista de palavras-chave' } });
 	});
 });

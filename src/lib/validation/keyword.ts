@@ -9,8 +9,7 @@ const LETTER_PATTERN = /\p{L}/u;
 
 const createKeywordSchema = z
 	.string({
-		error: (issue) =>
-			issue.input === undefined || issue.input === null ? REQUIRED_MESSAGE : INVALID_MESSAGE,
+		error: (issue) => (issue.input === undefined || issue.input === null ? REQUIRED_MESSAGE : INVALID_MESSAGE),
 	})
 	.trim()
 	.min(1, REQUIRED_MESSAGE)

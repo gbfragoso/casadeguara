@@ -12,6 +12,12 @@ const createRequest = (key?: string | Blob) => {
 };
 
 describe('new keyword handlers', () => {
+	it('allows a library loader', () => {
+		const model = { create: vi.fn() };
+
+		expect(() => _createNewKeywordHandlers(model).load({ locals: { user: libraryUser } })).not.toThrow();
+	});
+
 	it('rejects wrong-role actions before parsing or creating', async () => {
 		const request = new Request('http://localhost', { method: 'POST' });
 		const formData = vi.spyOn(request, 'formData');
@@ -28,7 +34,10 @@ describe('new keyword handlers', () => {
 		const model = { create: vi.fn().mockResolvedValue([]) };
 
 		await expect(
-			_createNewKeywordHandlers(model).actions.default({ locals: { user: libraryUser }, request: createRequest('  Ficção  ') }),
+			_createNewKeywordHandlers(model).actions.default({
+				locals: { user: libraryUser },
+				request: createRequest('  Ficção  '),
+			}),
 		).resolves.toEqual({ status: 201 });
 		expect(model.create).toHaveBeenCalledWith('FICÇÃO');
 	});
@@ -49,7 +58,10 @@ describe('new keyword handlers', () => {
 		const model = { create: vi.fn().mockRejectedValue(new Error('database unavailable')) };
 
 		await expect(
-			_createNewKeywordHandlers(model).actions.default({ locals: { user: libraryUser }, request: createRequest('Ana') }),
+			_createNewKeywordHandlers(model).actions.default({
+				locals: { user: libraryUser },
+				request: createRequest('Ana'),
+			}),
 		).rejects.toMatchObject({ status: 500, body: { message: 'Falha ao cadastrar nova palavra-chave' } });
 	});
 });

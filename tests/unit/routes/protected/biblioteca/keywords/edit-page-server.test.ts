@@ -63,9 +63,7 @@ describe('edit keyword handlers', () => {
 	])('returns validation failures for %s input without updating', async (_, request, chave) => {
 		const model = { get: vi.fn(), update: vi.fn() };
 
-		await expect(
-			_createEditKeywordHandlers(model).actions.default({ ...context, request }),
-		).resolves.toEqual({
+		await expect(_createEditKeywordHandlers(model).actions.default({ ...context, request })).resolves.toEqual({
 			status: 400,
 			data: { values: { chave }, errors: { chave: ['Palavra-chave inválida.'] } },
 		});

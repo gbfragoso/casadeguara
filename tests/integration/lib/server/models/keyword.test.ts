@@ -11,7 +11,10 @@ const TEST_TOKEN_LENGTH = 12;
 
 const createTestKey = (suffix: string) => `T${randomUUID().replaceAll('-', '').slice(0, TEST_TOKEN_LENGTH)}${suffix}`;
 
-async function withKeywords<T>(keys: string[], callback: (items: { idkeyword: number; chave: string }[]) => Promise<T>) {
+async function withKeywords<T>(
+	keys: string[],
+	callback: (items: { idkeyword: number; chave: string }[]) => Promise<T>,
+) {
 	const items = (await Promise.all(keys.map((key) => model.create(key)))).flat();
 
 	try {
