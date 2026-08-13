@@ -13,15 +13,28 @@ describe('collection list page', () => {
 		expect(body).not.toContain('Nenhuma coleção encontrada.');
 	});
 
-	it('renders persisted values, messages, and ARIA associations', () => {
+	it('renders persisted values, all messages, and ARIA associations', () => {
 		const { body } = render(Page, {
-			props: { form: { values: { nome: '123' }, errors: { nome: ['Nome da coleção inválido.'] } } },
+			props: {
+				form: {
+					values: { nome: '123' },
+					errors: {
+						nome: [
+							'Nome da coleção é obrigatório.',
+							'Nome da coleção inválido.',
+							'Nome da coleção excede o limite de caracteres.',
+						],
+					},
+				},
+			},
 		});
 
 		expect(body).toContain('value="123"');
 		expect(body).toContain('aria-describedby="nome-errors"');
 		expect(body).toContain('aria-invalid="true"');
+		expect(body).toContain('Nome da coleção é obrigatório.');
 		expect(body).toContain('Nome da coleção inválido.');
+		expect(body).toContain('Nome da coleção excede o limite de caracteres.');
 	});
 
 	it('renders result rows with descriptive edit links', () => {

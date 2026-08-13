@@ -21,7 +21,11 @@ describe('edit collection page', () => {
 				form: {
 					values: { nome: '' },
 					errors: {
-						nome: ['Nome da coleção é obrigatório.', 'Nome da coleção inválido.'],
+						nome: [
+							'Nome da coleção é obrigatório.',
+							'Nome da coleção inválido.',
+							'Nome da coleção excede o limite de caracteres.',
+						],
 					},
 				},
 			},
@@ -32,6 +36,7 @@ describe('edit collection page', () => {
 		expect(body).toContain('aria-invalid="true"');
 		expect(body).toContain('Nome da coleção é obrigatório.');
 		expect(body).toContain('Nome da coleção inválido.');
+		expect(body).toContain('Nome da coleção excede o limite de caracteres.');
 	});
 
 	it('renders the successful update notification for status 200', () => {
