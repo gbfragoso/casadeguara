@@ -129,10 +129,14 @@ export const editora = pgTable(
 	(table) => [index('editora_nome_idx').on(table.nome)],
 );
 
-export const keyword = pgTable('keyword', {
-	idkeyword: smallserial().primaryKey().notNull(),
-	chave: varchar({ length: 30 }).notNull(),
-});
+export const keyword = pgTable(
+	'keyword',
+	{
+		idkeyword: smallserial().primaryKey().notNull(),
+		chave: varchar({ length: 30 }).notNull(),
+	},
+	(table) => [index('keyword_chave_idx').on(table.chave)],
+);
 
 export const saidas = pgTable('saidas', {
 	idsaida: serial().primaryKey().notNull(),
