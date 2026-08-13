@@ -1,0 +1,1 @@
+CREATE INDEX "editora_nome_idx" ON "editora" USING btree ("nome");

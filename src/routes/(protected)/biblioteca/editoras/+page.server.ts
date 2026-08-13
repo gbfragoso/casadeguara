@@ -1,28 +1,39 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { editora } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { editoraModel, type EditoraModel } from '$lib/server/models/editora';
+import { editoraSearchSchema } from '$lib/validation/editora';
+import { error, fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type ListModel = Pick<EditoraModel, 'fetch'>;
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		const where = nome ? ulike(editora.nome, nome + '%') : undefined;
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		try {
-			const editoras = await db.select().from(editora).where(where).orderBy(unaccent(editora.nome)).limit(50);
-			return { editoras };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de editoras',
-			});
-		}
+export const _createListHandlers = (model: ListModel) => ({
+	load: async ({ locals }: { locals: { user: unknown } }) => {
+		if (!locals.user) redirect(302, '/');
 	},
-} satisfies Actions;
+	actions: {
+		default: async ({ request }: { request: Request }) => {
+			const formData = await request.formData();
+			const rawName = formData.get('nome');
+			const result = editoraSearchSchema.safeParse({ nome: rawName });
+			const values = { nome: getSubmittedName(rawName) };
+
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			try {
+				const editoras = await model.fetch(result.data.nome);
+
+				return { editoras, values: { nome: result.data.nome } };
+			} catch (cause) {
+				console.error(cause);
+				error(500, { message: 'Falha ao carregar a lista de editoras' });
+			}
+		},
+	},
+});
+
+const handlers = _createListHandlers(editoraModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

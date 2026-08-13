@@ -119,11 +119,15 @@ export const leitor = pgTable(
 	(table) => [unique('unique_leitor').on(table.nome)],
 );
 
-export const editora = pgTable('editora', {
-	ideditora: smallserial().primaryKey().notNull(),
-	nome: varchar({ length: 60 }).notNull(),
-	dataCadastro: date('data_cadastro', { mode: 'date' }).defaultNow(),
-});
+export const editora = pgTable(
+	'editora',
+	{
+		ideditora: smallserial().primaryKey().notNull(),
+		nome: varchar({ length: 60 }).notNull(),
+		dataCadastro: date('data_cadastro', { mode: 'date' }).defaultNow(),
+	},
+	(table) => [index('editora_nome_idx').on(table.nome)],
+);
 
 export const keyword = pgTable('keyword', {
 	idkeyword: smallserial().primaryKey().notNull(),
