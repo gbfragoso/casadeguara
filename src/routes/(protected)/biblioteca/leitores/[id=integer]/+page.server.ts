@@ -38,7 +38,8 @@ export const _createEditReaderHandlers = (model: EditModel) => ({
 			const result = bibliotecaUpdateSchema.safeParse(input);
 			const values = getReaderFormValues(input);
 
-			if (!result.success) return fail(400, { values, errors: getReaderErrors(result.error.flatten().fieldErrors) });
+			if (!result.success)
+				return fail(400, { values, errors: getReaderErrors(result.error.flatten().fieldErrors) });
 
 			const id = Number(params.id);
 			try {

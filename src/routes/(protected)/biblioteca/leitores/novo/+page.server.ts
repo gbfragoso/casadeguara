@@ -20,7 +20,8 @@ export const _createNewReaderHandlers = (model: CreateModel) => ({
 			const result = bibliotecaCreateSchema.safeParse(input);
 			const values = getReaderFormValues(input);
 
-			if (!result.success) return fail(400, { values, errors: getReaderErrors(result.error.flatten().fieldErrors) });
+			if (!result.success)
+				return fail(400, { values, errors: getReaderErrors(result.error.flatten().fieldErrors) });
 
 			try {
 				await model.createBiblioteca(result.data, user.id);

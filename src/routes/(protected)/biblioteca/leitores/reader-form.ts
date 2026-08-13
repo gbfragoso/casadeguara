@@ -1,27 +1,25 @@
-const redisplayFields = [
-	'nome',
-	'email',
-	'celular',
-	'telefone',
-	'logradouro',
-	'bairro',
-	'complemento',
-	'cidade',
-	'cep',
-	'trab',
-	'status',
-	'removeRg',
-	'removeCpf',
-] as const;
-
 export type ReaderFormErrors = Record<string, string[] | undefined>;
-export type ReaderFormValues = Partial<Record<(typeof redisplayFields)[number], string>> & {
+type ReaderFormField =
+	| 'nome'
+	| 'email'
+	| 'celular'
+	| 'telefone'
+	| 'logradouro'
+	| 'bairro'
+	| 'complemento'
+	| 'cidade'
+	| 'cep'
+	| 'trab'
+	| 'status'
+	| 'removeRg'
+	| 'removeCpf';
+
+export type ReaderFormValues = Partial<Record<ReaderFormField, string>> & {
 	rg: string;
 	cpf: string;
 };
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-	typeof value === 'object' && value !== null;
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 
 const getString = (value: unknown, field: string) =>
 	isRecord(value) && typeof value[field] === 'string' ? value[field] : '';
