@@ -44,8 +44,10 @@
 					placeholder="Digite a palavra-chave"
 					required />
 			</div>
-			{#if form?.field === 'chave'}
-				<p class="help is-danger">{form?.message}</p>
+			{#if form?.errors?.chave}
+				{#each form.errors.chave as message}
+					<p class="help is-danger">{message}</p>
+				{/each}
 			{/if}
 		</div>
 		<div class="control">
