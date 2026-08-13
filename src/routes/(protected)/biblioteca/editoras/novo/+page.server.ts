@@ -1,39 +1,35 @@
-import { db } from '$lib/database/connection';
-import { editora } from '$lib/database/schema';
-import { error } from '@sveltejs/kit';
-import validator from 'validator';
+import { editoraModel, type EditoraModel } from '$lib/server/models/editora';
+import { editoraSchema } from '$lib/validation/editora';
+import { error, fail } from '@sveltejs/kit';
 
 import type { Actions } from './$types';
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
+type CreateModel = Pick<EditoraModel, 'create'>;
 
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome da editora é obrigatório',
-			};
-		}
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do editora não pode conter somente números',
-			};
-		}
+export const _createNewEditoraHandlers = (model: CreateModel) => ({
+	actions: {
+		default: async ({ request }: { request: Request }) => {
+			const formData = await request.formData();
+			const rawName = formData.get('nome');
+			const result = editoraSchema.safeParse({ nome: rawName });
+			const values = { nome: getSubmittedName(rawName) };
 
-		try {
-			await db.insert(editora).values({ nome: nome.toUpperCase() });
-			return { status: 201 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar uma nova editora',
-			});
-		}
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			try {
+				await model.create(result.data.nome);
+
+				return { status: 201 };
+			} catch (cause) {
+				console.error(cause);
+				error(500, { message: 'Falha ao criar uma nova editora' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createNewEditoraHandlers(editoraModel);
+
+export const actions: Actions = handlers.actions;
