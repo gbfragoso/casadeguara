@@ -1,28 +1,41 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { keyword } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { keywordModel, type KeywordModel } from '$lib/server/models/keyword';
+import { keywordSearchSchema } from '$lib/validation/keyword';
+import { error, fail } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type ListModel = Pick<KeywordModel, 'fetch'>;
+type User = { roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const chave = form.get('chave') as string;
-		const where = chave !== undefined ? ulike(keyword.chave, chave + '%') : undefined;
+const getSubmittedKey = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		try {
-			const keywords = await db.select().from(keyword).where(where).orderBy(unaccent(keyword.chave)).limit(50);
-			return { keywords };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de palavras-chave',
-			});
-		}
+export const _createListHandlers = (model: ListModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireLibraryAccess(locals.user),
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			requireLibraryAccess(locals.user);
+			const form = await request.formData();
+			const rawKey = form.get('chave');
+			const result = keywordSearchSchema.safeParse({ chave: rawKey });
+			const values = { chave: getSubmittedKey(rawKey) };
+
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			try {
+				const keywords = await model.fetch(result.data.chave);
+
+				return { keywords, values: { chave: result.data.chave } };
+			} catch (cause) {
+				console.error(cause);
+				error(500, { message: 'Falha ao carregar a lista de palavras-chave' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createListHandlers(keywordModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

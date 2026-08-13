@@ -1,0 +1,903 @@
+{
+  "id": "b631fd35-1653-4e0d-a9c2-2a849f60cf73",
+  "prevId": "f1a23046-44de-4263-acdf-d15dde924230",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.autor": {
+      "name": "autor",
+      "schema": "",
+      "columns": {
+        "idautor": {
+          "name": "idautor",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "autor_nome_idx": {
+          "name": "autor_nome_idx",
+          "columns": [
+            {
+              "expression": "nome",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.autor_has_livro": {
+      "name": "autor_has_livro",
+      "schema": "",
+      "columns": {
+        "autor": {
+          "name": "autor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "livro": {
+          "name": "livro",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "pk_autor_livro": {
+          "name": "pk_autor_livro",
+          "columns": [
+            "autor",
+            "livro"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.aviso": {
+      "name": "aviso",
+      "schema": "",
+      "columns": {
+        "idaviso": {
+          "name": "idaviso",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "texto": {
+          "name": "texto",
+          "type": "varchar(300)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.editora": {
+      "name": "editora",
+      "schema": "",
+      "columns": {
+        "ideditora": {
+          "name": "ideditora",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "editora_nome_idx": {
+          "name": "editora_nome_idx",
+          "columns": [
+            {
+              "expression": "nome",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.emprestimo": {
+      "name": "emprestimo",
+      "schema": "",
+      "columns": {
+        "idemp": {
+          "name": "idemp",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "leitor": {
+          "name": "leitor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exemplar": {
+          "name": "exemplar",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_emprestimo": {
+          "name": "data_emprestimo",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_devolucao": {
+          "name": "data_devolucao",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cobranca": {
+          "name": "cobranca",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "renovacoes": {
+          "name": "renovacoes",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "data_devolvido": {
+          "name": "data_devolvido",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_emprestimo": {
+          "name": "user_emprestimo",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_devolucao": {
+          "name": "user_devolucao",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.entradas": {
+      "name": "entradas",
+      "schema": "",
+      "columns": {
+        "identrada": {
+          "name": "identrada",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_entrada": {
+          "name": "data_entrada",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idcontribuinte": {
+          "name": "idcontribuinte",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_cadastro": {
+          "name": "user_cadastro",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_alteracao": {
+          "name": "user_alteracao",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "motivo_estorno": {
+          "name": "motivo_estorno",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_estorno": {
+          "name": "user_estorno",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_estorno": {
+          "name": "data_estorno",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_registro": {
+          "name": "data_registro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "depositado": {
+          "name": "depositado",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.exemplar": {
+      "name": "exemplar",
+      "schema": "",
+      "columns": {
+        "idexemplar": {
+          "name": "idexemplar",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "livro": {
+          "name": "livro",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "numero": {
+          "name": "numero",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.frequencia": {
+      "name": "frequencia",
+      "schema": "",
+      "columns": {
+        "frequenciaid": {
+          "name": "frequenciaid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "trabalhador": {
+          "name": "trabalhador",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_presenca": {
+          "name": "data_presenca",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.keyword": {
+      "name": "keyword",
+      "schema": "",
+      "columns": {
+        "idkeyword": {
+          "name": "idkeyword",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "chave": {
+          "name": "chave",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "keyword_chave_idx": {
+          "name": "keyword_chave_idx",
+          "columns": [
+            {
+              "expression": "chave",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.leitor": {
+      "name": "leitor",
+      "schema": "",
+      "columns": {
+        "idleitor": {
+          "name": "idleitor",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telefone": {
+          "name": "telefone",
+          "type": "varchar(12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "celular": {
+          "name": "celular",
+          "type": "varchar(12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "logradouro": {
+          "name": "logradouro",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bairro": {
+          "name": "bairro",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complemento": {
+          "name": "complemento",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cep": {
+          "name": "cep",
+          "type": "varchar(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "user_cadastro": {
+          "name": "user_cadastro",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_alteracao": {
+          "name": "user_alteracao",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_alteracao": {
+          "name": "data_alteracao",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "trab": {
+          "name": "trab",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "desencarnado": {
+          "name": "desencarnado",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "frequencia": {
+          "name": "frequencia",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "incompleto": {
+          "name": "incompleto",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "aniversario": {
+          "name": "aniversario",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rg": {
+          "name": "rg",
+          "type": "varchar(12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cpf": {
+          "name": "cpf",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "unique_leitor": {
+          "name": "unique_leitor",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nome"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.livro": {
+      "name": "livro",
+      "schema": "",
+      "columns": {
+        "idlivro": {
+          "name": "idlivro",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tombo": {
+          "name": "tombo",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "varchar(80)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "editora": {
+          "name": "editora",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "serie": {
+          "name": "serie",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ordem": {
+          "name": "ordem",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "tombo_unico": {
+          "name": "tombo_unico",
+          "nullsNotDistinct": false,
+          "columns": [
+            "tombo"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.livro_has_keyword": {
+      "name": "livro_has_keyword",
+      "schema": "",
+      "columns": {
+        "livro": {
+          "name": "livro",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keyword": {
+          "name": "keyword",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "referencia": {
+          "name": "referencia",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "pk_livro_keyword": {
+          "name": "pk_livro_keyword",
+          "columns": [
+            "livro",
+            "keyword"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.saidas": {
+      "name": "saidas",
+      "schema": "",
+      "columns": {
+        "idsaida": {
+          "name": "idsaida",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "descricao": {
+          "name": "descricao",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valor": {
+          "name": "valor",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_saida": {
+          "name": "data_saida",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "user_cadastro": {
+          "name": "user_cadastro",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_alteracao": {
+          "name": "user_alteracao",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.serie": {
+      "name": "serie",
+      "schema": "",
+      "columns": {
+        "idserie": {
+          "name": "idserie",
+          "type": "smallserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_cadastro": {
+          "name": "data_cadastro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.Session": {
+      "name": "Session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "timestamp (3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.User": {
+      "name": "User",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(30)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "varchar(2000)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "roles": {
+          "name": "roles",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "User_username_key": {
+          "name": "User_username_key",
+          "columns": [
+            {
+              "expression": "username",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "text_ops"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

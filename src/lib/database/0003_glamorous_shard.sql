@@ -1,0 +1,1 @@
+CREATE INDEX "keyword_chave_idx" ON "keyword" USING btree ("chave");

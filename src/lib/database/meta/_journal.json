@@ -22,6 +22,13 @@
       "when": 1786627923306,
       "tag": "0002_chunky_harpoon",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786634733714,
+      "tag": "0003_glamorous_shard",
+      "breakpoints": true
     }
   ]
 }

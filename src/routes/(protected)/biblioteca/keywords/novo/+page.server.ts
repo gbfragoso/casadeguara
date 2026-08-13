@@ -1,43 +1,41 @@
-import { db } from '$lib/database/connection';
-import { keyword } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import validator from 'validator';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { keywordModel, type KeywordModel } from '$lib/server/models/keyword';
+import { keywordSchema } from '$lib/validation/keyword';
+import { error, fail } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type CreateModel = Pick<KeywordModel, 'create'>;
+type User = { roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const chave = form.get('chave') as string;
+const getSubmittedKey = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		if (validator.isEmpty(chave, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'chave',
-				message: 'Descrição da palavra-chave é obrigatório',
-			};
-		}
+export const _createNewKeywordHandlers = (model: CreateModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireLibraryAccess(locals.user),
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			requireLibraryAccess(locals.user);
+			const form = await request.formData();
+			const rawKey = form.get('chave');
+			const result = keywordSchema.safeParse({ chave: rawKey });
+			const values = { chave: getSubmittedKey(rawKey) };
 
-		if (validator.isNumeric(chave)) {
-			return {
-				status: 400,
-				field: 'chave',
-				message: 'Palavra-chave não pode conter somente números',
-			};
-		}
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
 
-		try {
-			await db.insert(keyword).values({ chave: chave.toUpperCase() });
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao cadastrar nova palavra-chave',
-			});
-		}
+			try {
+				await model.create(result.data.chave);
+
+				return { status: 201 };
+			} catch (cause) {
+				console.error(cause);
+				error(500, { message: 'Falha ao cadastrar nova palavra-chave' });
+			}
+		},
 	},
-};
+});
+
+const handlers = _createNewKeywordHandlers(keywordModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
