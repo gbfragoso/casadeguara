@@ -1,28 +1,41 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { serie } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { colecaoModel, type ColecaoModel } from '$lib/server/models/colecao';
+import { colecaoSearchSchema } from '$lib/validation/colecao';
+import { error, fail } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type ListModel = Pick<ColecaoModel, 'fetch'>;
+type User = { roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		const where = nome ? ulike(serie.nome, nome + '%') : undefined;
+const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		try {
-			const colecoes = await db.select().from(serie).where(where).orderBy(unaccent(serie.nome)).limit(50);
-			return { colecoes };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de coleções',
-			});
-		}
+export const _createListHandlers = (model: ListModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireLibraryAccess(locals.user),
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			requireLibraryAccess(locals.user);
+			const formData = await request.formData();
+			const rawName = formData.get('nome');
+			const result = colecaoSearchSchema.safeParse({ nome: rawName });
+			const values = { nome: getSubmittedName(rawName) };
+
+			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+
+			try {
+				const colecoes = await model.fetch(result.data.nome);
+
+				return { colecoes, values: { nome: result.data.nome } };
+			} catch (cause) {
+				console.error('Falha ao carregar a lista de coleções', cause);
+				error(500, { message: 'Falha ao carregar a lista de coleções' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createListHandlers(colecaoModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
