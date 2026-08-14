@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { fromAction } from 'svelte/attachments';
+	import { runWithLoading } from '../tesouraria-submit';
 	import type { ActionData, PageServerData } from './$types';
+
+	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 
 	interface Props {
 		data: PageServerData;
@@ -10,68 +16,92 @@
 
 	let { data, form }: Props = $props();
 	let loading = $state(false);
-	let { contribuinte } = $derived(data);
+	let contribuinte = $derived(data.contribuinte);
+	let workerChecked = $derived(
+		form?.values?.trab === 'true' || (form?.values?.trab === undefined && contribuinte.trab),
+	);
+
+	function handleSubmit(): SubmitCallback {
+		return ({ update }) => runWithLoading(update, (isLoading) => (loading = isLoading));
+	}
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/contribuintes" aria-current="page">Contribuintes</a>
+				<a href={resolve('/tesouraria/contribuintes')} aria-current="page">Contribuintes</a>
 			</li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar informações do contribuinte</h1>
 </div>
 
-<form
-	class="card"
-	action="?/update"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
 	<div class="card-content">
 		<div class="field">
-			<label class="label" for="nome"> Nome</label>
+			<label class="label" for="nome">Nome</label>
 			<div class="control">
 				<input
 					class="input"
 					type="text"
 					name="nome"
 					id="nome"
+					value={form?.values?.nome ?? contribuinte.nome}
+					autocomplete="name"
 					maxlength="60"
-					placeholder="Digite o nome do contribuinte"
-					value={contribuinte.nome} />
+					required
+					aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
+					aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
 			</div>
-			{#if form?.field === 'nome'}
-				<p class="help is-danger">{form?.message}</p>
-			{/if}
 		</div>
 		<div class="field">
-			<label class="label" for="telefone">Whatsapp (com DDD)</label>
+			<label class="label" for="telefone">WhatsApp (com DDD)</label>
 			<div class="control">
-				<input class="input" type="text" name="telefone" id="telefone" value={contribuinte.telefone} />
+				<input
+					class="input"
+					type="text"
+					name="telefone"
+					id="telefone"
+					value={form?.values?.telefone ?? contribuinte.telefone ?? ''}
+					maxlength="15"
+					inputmode="tel"
+					autocomplete="tel-national"
+					aria-describedby={form?.errors?.telefone?.length ? 'telefone-errors' : undefined}
+					aria-invalid={form?.errors?.telefone?.length ? 'true' : undefined} />
 			</div>
 		</div>
 		<div class="field">
-			<label class="checkbox" for="trabalhador">
-				<input type="checkbox" name="trabalhador" id="trabalhador" checked={contribuinte.trab} />
-				Trabalhador</label>
+			<input type="hidden" name="trab" value="false" />
+			<label for="trab" class="checkbox">
+				<input
+					type="checkbox"
+					name="trab"
+					id="trab"
+					value="true"
+					checked={workerChecked}
+					aria-describedby={form?.errors?.trab?.length ? 'trab-errors' : undefined}
+					aria-invalid={form?.errors?.trab?.length ? 'true' : undefined} />
+				Trabalhador
+			</label>
 		</div>
-		<div class="field">
-			<div class="control">
-				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary has-text-weight-semibold"
-					type="submit">Atualizar</button>
+		{#if form?.errors}
+			<div class="notification is-danger" aria-live="polite">
+				{#each Object.entries(form.errors) as [field, messages] (field)}
+					<div id={`${field}-errors`}>
+						{#each messages as message (`${field}-${message}`)}
+							<p>{message}</p>
+						{/each}
+					</div>
+				{/each}
 			</div>
+		{/if}
+		<div class="control">
+			<button
+				aria-busy={loading}
+				class={['button is-primary has-text-weight-semibold', { 'is-loading': loading }]}
+				type="submit">Atualizar</button>
 		</div>
 	</div>
 </form>
