@@ -1,63 +1,49 @@
-import { db } from '$lib/database/connection';
-import { cadastros } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import validator from 'validator';
+import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { tesourariaCreateSchema } from '$lib/validation/cadastros/tesouraria';
+import { error, fail } from '@sveltejs/kit';
 
+import { requireTesourariaAccess } from '../tesouraria-access';
+import { getTesourariaErrors, getTesourariaFormValues } from '../tesouraria-form';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type CreateModel = Pick<CadastroModel, 'createTesouraria'>;
+type User = { id: string; roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ locals, request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		const telefone = form.get('telefone') as string;
-		const trabalhador = Boolean(form.get('trabalhador'));
-
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do contribuinte é obrigatório',
-			};
-		}
-
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do contribuinte não pode conter somente números',
-			};
-		}
-
-		if (telefone && !validator.isNumeric(telefone)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Telefone só pode conter números',
-			};
-		}
-
-		try {
-			await db.insert(cadastros).values({
-				nome: nome.toUpperCase(),
-				telefone: telefone ? telefone : undefined,
-				trab: trabalhador ? trabalhador : undefined,
-				userCadastro: locals.user?.id,
-			});
-			return { status: 201 };
-		} catch (err) {
-			console.error(err);
-			if (err instanceof Error && err.message.includes('duplicate key value violates')) {
-				return {
-					status: 400,
-					field: 'nome',
-					message: 'Já existe um cadastro com nome idêntico, favor consultar',
-				};
-			}
-			return error(500, { message: 'Falha ao cadastrar um novo contribuinte' });
-		}
+export const _createNewContributorHandlers = (model: CreateModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => {
+		requireTesourariaAccess(locals.user);
 	},
-} satisfies Actions;
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			const user = requireTesourariaAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = tesourariaCreateSchema.safeParse(input);
+			const values = getTesourariaFormValues(input);
+
+			if (!result.success) {
+				const errors = result.error.flatten();
+				return fail(400, { values, errors: getTesourariaErrors(errors.fieldErrors, errors.formErrors) });
+			}
+
+			try {
+				await model.createTesouraria({ ...result.data, trab: result.data.trab ?? false }, user.id);
+
+				return { status: 201 };
+			} catch (cause) {
+				if (cause instanceof DuplicateCadastroNameError) {
+					return fail(400, { values, errors: getTesourariaErrors({ nome: [cause.message] }) });
+				}
+
+				console.error('Falha ao criar um novo contribuinte.');
+				error(500, { message: 'Falha ao criar um novo contribuinte.' });
+			}
+		},
+	},
+});
+
+const handlers = _createNewContributorHandlers(cadastroModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

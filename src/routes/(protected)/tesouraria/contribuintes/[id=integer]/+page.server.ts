@@ -1,73 +1,64 @@
-import { db } from '$lib/database/connection';
-import { cadastros } from '$lib/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import validator from 'validator';
+import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { tesourariaUpdateSchema } from '$lib/validation/cadastros/tesouraria';
+import { error, fail } from '@sveltejs/kit';
 
+import { requireTesourariaAccess } from '../tesouraria-access';
+import { getTesourariaErrors, getTesourariaFormValues } from '../tesouraria-form';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, '/');
+type EditModel = Pick<CadastroModel, 'getTesouraria' | 'updateTesouraria'>;
+type User = { id: string; roles: string } | null;
+type LoadContext = { locals: { user: User }; params: { id: string } };
+type ActionContext = LoadContext & { request: Request };
 
+const getContributor = async (model: EditModel, id: number) => {
 	try {
-		const contribuinte = await db
-			.select({ nome: cadastros.nome, trab: cadastros.trab, telefone: cadastros.telefone })
-			.from(cadastros)
-			.where(eq(cadastros.idleitor, Number(params.id)));
-		if (!contribuinte) {
-			throw fail(404, { message: 'Contribuinte não encontrado' });
-		}
-		return { contribuinte: contribuinte[0] };
-	} catch (err) {
-		console.error(err);
-		throw fail(500, {
-			message: 'Falha ao recuperar os dados do contribuinte',
-		});
+		return await model.getTesouraria(id);
+	} catch {
+		console.error('Falha ao recuperar os dados do contribuinte.');
+		error(500, { message: 'Falha ao recuperar os dados do contribuinte.' });
 	}
 };
 
-export const actions: Actions = {
-	update: async ({ request, params }) => {
-		const formdata = await request.formData();
-		const nome = formdata.get('nome') as string;
-		const telefone = formdata.get('telefone') as string;
-		const trabalhador = Boolean(formdata.get('trabalhador'));
+export const _createEditContributorHandlers = (model: EditModel) => ({
+	load: async ({ locals, params }: LoadContext) => {
+		requireTesourariaAccess(locals.user);
+		const contribuinte = await getContributor(model, Number(params.id));
 
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do contribuinte é obrigatório',
-			};
-		}
-
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do contribuinte não pode conter somente números',
-			};
-		}
-
-		if (telefone && !validator.isNumeric(telefone)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Telefone só pode conter números',
-			};
-		}
-
-		try {
-			await db
-				.update(cadastros)
-				.set({ nome: nome.toUpperCase(), telefone, trab: trabalhador })
-				.where(eq(cadastros.idleitor, Number(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do contribuinte',
-			});
-		}
+		if (!contribuinte) error(404, { message: 'Contribuinte não encontrado.' });
+		return { contribuinte: { nome: contribuinte.nome, telefone: contribuinte.telefone, trab: contribuinte.trab } };
 	},
-};
+	actions: {
+		default: async ({ locals, params, request }: ActionContext) => {
+			const user = requireTesourariaAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = tesourariaUpdateSchema.safeParse(input);
+			const values = getTesourariaFormValues(input);
+
+			if (!result.success) {
+				const errors = result.error.flatten();
+				return fail(400, { values, errors: getTesourariaErrors(errors.fieldErrors, errors.formErrors) });
+			}
+
+			try {
+				const updated = await model.updateTesouraria(Number(params.id), result.data, user.id);
+				if (updated) return { status: 200 };
+			} catch (cause) {
+				if (cause instanceof DuplicateCadastroNameError) {
+					return fail(400, { values, errors: getTesourariaErrors({ nome: [cause.message] }) });
+				}
+
+				console.error('Falha ao atualizar os dados do contribuinte.');
+				error(500, { message: 'Falha ao atualizar os dados do contribuinte.' });
+			}
+
+			error(404, { message: 'Contribuinte não encontrado.' });
+		},
+	},
+});
+
+const handlers = _createEditContributorHandlers(cadastroModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
