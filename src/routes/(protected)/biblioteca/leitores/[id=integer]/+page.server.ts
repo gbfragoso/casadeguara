@@ -2,6 +2,7 @@ import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { bibliotecaUpdateSchema } from '$lib/validation/cadastros/biblioteca';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireReaderAccess } from '../reader-access';
 import { toReaderDetail } from '../reader-detail';
@@ -39,7 +40,7 @@ export const _createEditReaderHandlers = (model: EditModel) => ({
 			const values = getReaderFormValues(input);
 
 			if (!result.success)
-				return fail(400, { values, errors: getReaderErrors(result.error.flatten().fieldErrors) });
+				return fail(400, { values, errors: getReaderErrors(flattenError(result.error).fieldErrors) });
 
 			const id = Number(params.id);
 			try {

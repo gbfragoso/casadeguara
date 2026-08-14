@@ -12,7 +12,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	try {
 		const contribuintes = async () => {
-			return db.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(leitor.nome)` }).from(cadastros);
+			return db
+				.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(leitor.nome)` })
+				.from(cadastros);
 		};
 
 		return { contribuintes: contribuintes() };

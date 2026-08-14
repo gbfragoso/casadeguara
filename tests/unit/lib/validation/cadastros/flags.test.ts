@@ -2,6 +2,7 @@ import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
 import { secretariaFlagsSchema } from '$lib/validation/cadastros/flags';
+import { getFieldErrors } from '../field-errors';
 
 const INVALID = 'Cadastro ou campo de atualização inválido.';
 
@@ -22,7 +23,7 @@ describe('secretariaFlagsSchema', () => {
 	])('rejects %s', (_, input, field) => {
 		const result = secretariaFlagsSchema.safeParse(input);
 
-		expect(result.error?.flatten().fieldErrors).toMatchObject({ [field]: [INVALID] });
+		expect(getFieldErrors(result)).toMatchObject({ [field]: [INVALID] });
 	});
 
 	it('rejects multiple simultaneous flags and oversized ids', () => {
@@ -30,6 +31,6 @@ describe('secretariaFlagsSchema', () => {
 		const oversized = secretariaFlagsSchema.safeParse({ id: 32_768, field: 'trab', value: true });
 
 		expect(multiple.success).toBe(false);
-		expect(oversized.error?.flatten().fieldErrors.id).toEqual([INVALID]);
+		expect(getFieldErrors(oversized)?.id).toEqual([INVALID]);
 	});
 });

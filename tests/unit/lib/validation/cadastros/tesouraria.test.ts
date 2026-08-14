@@ -5,6 +5,7 @@ import {
 	tesourariaSearchSchema,
 	tesourariaUpdateSchema,
 } from '$lib/validation/cadastros/tesouraria';
+import { getFieldErrors } from '../field-errors';
 
 describe('tesouraria registration schemas', () => {
 	it('normalizes only treasury-owned fields', () => {
@@ -20,7 +21,7 @@ describe('tesouraria registration schemas', () => {
 	])('returns the exact name error', (nome, message) => {
 		const result = tesourariaCreateSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 
 	it('rejects foreign dashboard fields and invalid phone values', () => {
@@ -28,7 +29,7 @@ describe('tesouraria registration schemas', () => {
 		const phone = tesourariaCreateSchema.safeParse({ nome: 'Ana', telefone: '123' });
 
 		expect(foreign.success).toBe(false);
-		expect(phone.error?.flatten().fieldErrors.telefone).toEqual(['Telefone inválido.']);
+		expect(getFieldErrors(phone)?.telefone).toEqual(['Telefone inválido.']);
 	});
 
 	it('normalizes an empty update field to null and exact false', () => {
@@ -43,7 +44,7 @@ describe('tesouraria registration schemas', () => {
 		const extra = tesourariaSearchSchema.safeParse({ nome: '', status: 'false' });
 
 		expect(empty).toMatchObject({ success: true, data: { nome: '' } });
-		expect(missing.error?.flatten().fieldErrors.nome).toEqual(['Nome do contribuinte inválido.']);
+		expect(getFieldErrors(missing)?.nome).toEqual(['Nome do contribuinte inválido.']);
 		expect(extra.success).toBe(false);
 	});
 });

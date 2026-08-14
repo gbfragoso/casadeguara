@@ -1,6 +1,7 @@
 import { editoraModel, type EditoraModel } from '$lib/server/models/editora';
 import { editoraSchema } from '$lib/validation/editora';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -43,7 +44,7 @@ export const _createEditEditoraHandlers = (model: EditModel) => ({
 			const result = editoraSchema.safeParse({ nome: rawName });
 			const values = { nome: getSubmittedName(rawName) };
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
 
 			const updated = await updatePublisher(model, Number(params.id), result.data.nome);
 

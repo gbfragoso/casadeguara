@@ -2,7 +2,6 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
 import Page from '../../../../../../src/routes/(protected)/tesouraria/contribuintes/+page.svelte';
-import { runWithLoading } from '../../../../../../src/routes/(protected)/tesouraria/contribuintes/tesouraria-submit';
 
 describe('tesouraria contributor list page', () => {
 	it('renders the initial searchable form without an edit action', () => {
@@ -40,22 +39,5 @@ describe('tesouraria contributor list page', () => {
 		expect(results).toContain('<td>7133333333</td>');
 		expect(results).toContain('<td>Trabalhador</td>');
 		expect(empty).toContain('Nenhum contribuinte encontrado.');
-	});
-
-	it('cleans submit loading state after successful and failed updates', async () => {
-		const loadingStates: boolean[] = [];
-
-		await runWithLoading(
-			() => Promise.resolve(),
-			(loading) => loadingStates.push(loading),
-		);
-		await expect(
-			runWithLoading(
-				() => Promise.reject(new Error('network')),
-				(loading) => loadingStates.push(loading),
-			),
-		).rejects.toThrow('network');
-
-		expect(loadingStates).toEqual([true, false, true, false]);
 	});
 });

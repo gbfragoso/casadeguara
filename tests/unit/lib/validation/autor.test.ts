@@ -2,6 +2,7 @@ import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
 import { AUTHOR_NAME_MAX_LENGTH, authorSchema, authorSearchSchema } from '$lib/validation/autor';
+import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Nome do autor é obrigatório.';
 const INVALID = 'Nome do autor inválido.';
@@ -30,7 +31,7 @@ describe('authorSchema', () => {
 	])('rejects %s values', (_, nome, message) => {
 		const result = authorSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 
 	it('accepts a name with the maximum length', () => {
@@ -57,6 +58,6 @@ describe('authorSearchSchema', () => {
 	])('rejects %s', (_, nome, message) => {
 		const result = authorSearchSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 });

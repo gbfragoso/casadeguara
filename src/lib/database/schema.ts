@@ -90,7 +90,9 @@ export const emprestimo = pgTable('emprestimo', {
 	userDevolucao: varchar('user_devolucao', { length: 30 }),
 });
 
-export const cadastros = pgTable('cadastros', {
+export const cadastros = pgTable(
+	'cadastros',
+	{
 		idleitor: smallserial().primaryKey().notNull(),
 		nome: varchar({ length: 60 }).notNull(),
 		email: varchar({ length: 60 }),

@@ -1,6 +1,7 @@
 import { autorModel, type AutorModel } from '$lib/server/models/autor';
 import { authorSchema } from '$lib/validation/autor';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -19,7 +20,7 @@ export const _createNewAuthorHandlers = (model: CreateModel) => ({
 			const result = authorSchema.safeParse({ nome: rawName });
 			const values = { nome: getSubmittedName(rawName) };
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
 
 			try {
 				await model.create(result.data.nome);

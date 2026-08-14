@@ -6,6 +6,7 @@ import {
 	bibliotecaSearchSchema,
 	bibliotecaUpdateSchema,
 } from '$lib/validation/cadastros/biblioteca';
+import { getFieldErrors } from '../field-errors';
 
 const validReader = {
 	nome: '  Maria D’Ávila 2 ',
@@ -51,7 +52,7 @@ describe('biblioteca registration schemas', () => {
 	])('returns the exact name error', (nome, message) => {
 		const result = bibliotecaCreateSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 
 	it('rejects foreign fields and malformed identifiers', () => {
@@ -59,7 +60,7 @@ describe('biblioteca registration schemas', () => {
 		const identifiers = bibliotecaCreateSchema.safeParse({ nome: 'Maria', cpf: '111.111.111-11', rg: '***' });
 
 		expect(foreign.success).toBe(false);
-		expect(identifiers.error?.flatten().fieldErrors).toMatchObject({
+		expect(getFieldErrors(identifiers)).toMatchObject({
 			cpf: ['CPF inválido.'],
 			rg: ['RG inválido.'],
 		});
@@ -68,7 +69,7 @@ describe('biblioteca registration schemas', () => {
 	it('rejects files instead of converting them into a sensitive value', () => {
 		const result = bibliotecaCreateSchema.safeParse({ nome: 'Maria', cpf: new File(['cpf'], 'cpf.txt') });
 
-		expect(result.error?.flatten().fieldErrors).toMatchObject({ cpf: ['CPF inválido.'] });
+		expect(getFieldErrors(result)).toMatchObject({ cpf: ['CPF inválido.'] });
 	});
 
 	it('supports preserve, replace, and remove semantics for sensitive updates', () => {
@@ -84,7 +85,7 @@ describe('biblioteca registration schemas', () => {
 	it('rejects concurrent sensitive replacement and removal', () => {
 		const result = bibliotecaUpdateSchema.safeParse({ nome: 'Maria', cpf: '12345678909', removeCpf: 'true' });
 
-		expect(result.error?.flatten().fieldErrors).toMatchObject({ cpf: ['CPF inválido.'] });
+		expect(getFieldErrors(result)).toMatchObject({ cpf: ['CPF inválido.'] });
 	});
 
 	it('keeps empty searches valid and rejects unexpected keys', () => {

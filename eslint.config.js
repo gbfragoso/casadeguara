@@ -25,6 +25,12 @@ export default [
 		},
 	},
 	{
+		files: ['**/*.svelte.ts'],
+		languageOptions: {
+			parser: ts.parser,
+		},
+	},
+	{
 		ignores: ['build/', '.svelte-kit/', '.vercel/', 'dist/', 'coverage/', 'playwright-report/', 'test-results/'],
 	},
 ];

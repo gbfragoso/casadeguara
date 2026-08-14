@@ -1,6 +1,7 @@
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { tesourariaSearchSchema } from '$lib/validation/cadastros/tesouraria';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireTesourariaAccess } from './tesouraria-access';
 import { getTesourariaErrors, getTesourariaSearchValues } from './tesouraria-form';
@@ -22,7 +23,7 @@ export const _createContributorListHandlers = (model: ListModel) => ({
 			const values = getTesourariaSearchValues(input);
 
 			if (!result.success) {
-				const errors = result.error.flatten();
+				const errors = flattenError(result.error);
 				return fail(400, { values, errors: getTesourariaErrors(errors.fieldErrors, errors.formErrors) });
 			}
 

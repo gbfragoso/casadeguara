@@ -2,6 +2,7 @@ import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { secretariaUpdateSchema } from '$lib/validation/cadastros/secretaria';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireSecretariaAccess } from '../secretaria-access';
 import { toSecretariaDetail } from '../secretaria-detail';
@@ -39,7 +40,7 @@ export const _createEditSecretariaHandlers = (model: EditModel) => ({
 			const values = getSecretariaFormValues(input);
 
 			if (!result.success) {
-				const errors = result.error.flatten();
+				const errors = flattenError(result.error);
 				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
 			}
 

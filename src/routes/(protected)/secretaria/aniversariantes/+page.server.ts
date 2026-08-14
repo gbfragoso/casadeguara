@@ -18,7 +18,11 @@ export const actions: Actions = {
 			const mesFilter = mes ? eq(sql<string>`extract(month from leitor.aniversario)`, mes) : undefined;
 
 			const leitores = await db
-				.select({ nome: cadastros.nome, aniversario: cadastros.aniversario, desencarnado: cadastros.desencarnado })
+				.select({
+					nome: cadastros.nome,
+					aniversario: cadastros.aniversario,
+					desencarnado: cadastros.desencarnado,
+				})
 				.from(cadastros)
 				.where(and(eq(cadastros.trab, true), mesFilter))
 				.orderBy(sql<number>`extract(day from leitor.aniversario)`, cadastros.nome);

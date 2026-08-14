@@ -1,6 +1,7 @@
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { secretariaSearchSchema } from '$lib/validation/cadastros/secretaria';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireSecretariaAccess } from './secretaria-access';
 import { getSecretariaErrors, getSecretariaSearchValues } from './secretaria-form';
@@ -20,7 +21,7 @@ export const _createSecretariaListHandlers = (model: ListModel) => ({
 			const values = getSecretariaSearchValues(input);
 
 			if (!result.success) {
-				const errors = result.error.flatten();
+				const errors = flattenError(result.error);
 				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
 			}
 

@@ -5,6 +5,7 @@ import {
 	secretariaSearchSchema,
 	secretariaUpdateSchema,
 } from '$lib/validation/cadastros/secretaria';
+import { getFieldErrors } from '../field-errors';
 
 describe('secretaria registration schemas', () => {
 	it('normalizes the secretaria birthday and shared owned fields', () => {
@@ -29,7 +30,7 @@ describe('secretaria registration schemas', () => {
 	])('returns the exact name error', (nome, message) => {
 		const result = secretariaCreateSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 
 	it('rejects biblioteca fields and invalid birthdays', () => {
@@ -37,13 +38,13 @@ describe('secretaria registration schemas', () => {
 		const date = secretariaCreateSchema.safeParse({ nome: 'João', aniversario: '2023-02-29' });
 
 		expect(foreign.success).toBe(false);
-		expect(date.error?.flatten().fieldErrors.aniversario).toEqual(['Data de aniversário inválida.']);
+		expect(getFieldErrors(date)?.aniversario).toEqual(['Data de aniversário inválida.']);
 	});
 
 	it('rejects invalid CPF checksums and RG lengths', () => {
 		const result = secretariaCreateSchema.safeParse({ nome: 'João', cpf: '12345678900', rg: '1234' });
 
-		expect(result.error?.flatten().fieldErrors).toMatchObject({ cpf: ['CPF inválido.'], rg: ['RG inválido.'] });
+		expect(getFieldErrors(result)).toMatchObject({ cpf: ['CPF inválido.'], rg: ['RG inválido.'] });
 	});
 
 	it('normalizes empty fields to null and explicit identifier removal', () => {
@@ -63,7 +64,7 @@ describe('secretaria registration schemas', () => {
 	it('rejects simultaneous RG replacement and removal', () => {
 		const result = secretariaUpdateSchema.safeParse({ nome: 'João', rg: '123456789', removeRg: 'true' });
 
-		expect(result.error?.flatten().fieldErrors).toMatchObject({ rg: ['RG inválido.'] });
+		expect(getFieldErrors(result)).toMatchObject({ rg: ['RG inválido.'] });
 	});
 
 	it('supports trimmed search names and rejects numeric values', () => {
@@ -71,6 +72,6 @@ describe('secretaria registration schemas', () => {
 		const invalid = secretariaSearchSchema.safeParse({ nome: '42' });
 
 		expect(valid).toMatchObject({ success: true, data: { nome: 'João', trabalhadores: true } });
-		expect(invalid.error?.flatten().fieldErrors.nome).toEqual(['Nome do trabalhador inválido.']);
+		expect(getFieldErrors(invalid)?.nome).toEqual(['Nome do trabalhador inválido.']);
 	});
 });

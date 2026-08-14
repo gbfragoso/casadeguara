@@ -2,6 +2,7 @@ import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { secretariaFlagsSchema } from '$lib/validation/cadastros/flags';
 import { json } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { RequestHandler } from './$types';
 
@@ -29,7 +30,7 @@ export const _createCadastroFlagHandler =
 		const result = secretariaFlagsSchema.safeParse(await getRequestBody(request));
 		if (!result.success) {
 			return json(
-				{ message: INVALID_UPDATE_MESSAGE, errors: result.error.flatten().fieldErrors },
+				{ message: INVALID_UPDATE_MESSAGE, errors: flattenError(result.error).fieldErrors },
 				{ status: 400 },
 			);
 		}

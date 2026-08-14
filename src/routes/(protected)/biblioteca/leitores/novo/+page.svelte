@@ -1,33 +1,17 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { fromAction } from 'svelte/attachments';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
 	import type { ActionData } from './$types';
-
-	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let statusChecked = $derived(form?.values?.status !== 'false');
 	let workerChecked = $derived(form?.values?.trab === 'true');
-
-	function handleSubmit(): SubmitCallback {
-		loading = true;
-
-		return async ({ update }) => {
-			try {
-				await update();
-			} finally {
-				loading = false;
-			}
-		};
-	}
 </script>
 
 <div class="mb-2">
@@ -42,7 +26,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastrar leitor</h1>
 </div>
 
-<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
+<form class="card" method="POST" {@attach formEnhancer.attachment}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="field column is-three-fifths">
@@ -260,8 +244,8 @@
 		{/if}
 		<div class="control">
 			<button
-				aria-busy={loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': loading }]}
+				aria-busy={formEnhancer.loading}
+				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
 				type="submit">Cadastrar</button>
 		</div>
 	</div>

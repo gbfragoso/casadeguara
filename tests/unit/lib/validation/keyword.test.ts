@@ -3,6 +3,7 @@ import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
 import { KEYWORD_MAX_LENGTH, keywordSchema, keywordSearchSchema } from '$lib/validation/keyword';
+import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Palavra-chave é obrigatória.';
 const INVALID = 'Palavra-chave inválida.';
@@ -35,7 +36,7 @@ describe('keywordSchema', () => {
 	])('rejects %s values', (_, chave, message) => {
 		const result = keywordSchema.safeParse({ chave });
 
-		expect(result.error?.flatten().fieldErrors.chave).toEqual([message]);
+		expect(getFieldErrors(result)?.chave).toEqual([message]);
 	});
 
 	it('accepts a keyword with the maximum length', () => {
@@ -64,6 +65,6 @@ describe('keywordSearchSchema', () => {
 	])('rejects %s', (_, chave, message) => {
 		const result = keywordSearchSchema.safeParse({ chave });
 
-		expect(result.error?.flatten().fieldErrors.chave).toEqual([message]);
+		expect(getFieldErrors(result)?.chave).toEqual([message]);
 	});
 });

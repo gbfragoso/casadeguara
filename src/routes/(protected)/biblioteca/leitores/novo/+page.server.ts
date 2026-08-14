@@ -2,6 +2,7 @@ import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { bibliotecaCreateSchema } from '$lib/validation/cadastros/biblioteca';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireReaderAccess } from '../reader-access';
 import { getReaderErrors, getReaderFormValues } from '../reader-form';
@@ -21,7 +22,7 @@ export const _createNewReaderHandlers = (model: CreateModel) => ({
 			const values = getReaderFormValues(input);
 
 			if (!result.success)
-				return fail(400, { values, errors: getReaderErrors(result.error.flatten().fieldErrors) });
+				return fail(400, { values, errors: getReaderErrors(flattenError(result.error).fieldErrors) });
 
 			try {
 				await model.createBiblioteca(result.data, user.id);

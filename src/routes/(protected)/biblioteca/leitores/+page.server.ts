@@ -1,6 +1,7 @@
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { bibliotecaSearchSchema } from '$lib/validation/cadastros/biblioteca';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireReaderAccess } from './reader-access';
 import { getReaderSearchValues } from './reader-form';
@@ -19,7 +20,7 @@ export const _createReaderListHandlers = (model: ListModel) => ({
 			const result = bibliotecaSearchSchema.safeParse(input);
 			const values = getReaderSearchValues(input);
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
 
 			try {
 				const leitores = (await model.fetchBiblioteca(result.data.nome)).map((leitor) => ({

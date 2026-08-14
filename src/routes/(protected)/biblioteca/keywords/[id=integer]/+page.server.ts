@@ -2,6 +2,7 @@ import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 import { keywordModel, type KeywordModel } from '$lib/server/models/keyword';
 import { keywordSchema } from '$lib/validation/keyword';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -36,7 +37,7 @@ export const _createEditKeywordHandlers = (model: EditModel) => ({
 			const result = keywordSchema.safeParse({ chave: rawKey });
 			const values = { chave: getSubmittedKey(rawKey) };
 
-			if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
 
 			const id = Number(params.id);
 			let updated;

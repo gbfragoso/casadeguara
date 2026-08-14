@@ -66,7 +66,10 @@ export const actions: Actions = {
 			};
 		}
 
-		const leitores = await db.select({ ativo: cadastros.status }).from(cadastros).where(eq(cadastros.idleitor, idleitor));
+		const leitores = await db
+			.select({ ativo: cadastros.status })
+			.from(cadastros)
+			.where(eq(cadastros.idleitor, idleitor));
 		if (!leitores[0].ativo && !isAdmin) {
 			return {
 				status: 400,

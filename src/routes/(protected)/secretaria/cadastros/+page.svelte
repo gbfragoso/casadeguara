@@ -1,13 +1,10 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { fromAction } from 'svelte/attachments';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { updateCadastroFlag, type CadastroFlagField } from './cadastro-flag';
 	import type { ActionData } from './$types';
 
-	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 	type CheckboxEvent = Event & { currentTarget: HTMLInputElement };
 
 	interface Props {
@@ -15,7 +12,7 @@
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let pendingFlags = new SvelteSet<string>();
 	let flagError = $state('');
 	let cadastros = $derived(form?.cadastros);
@@ -24,18 +21,6 @@
 
 	const getFlagKey = (field: CadastroFlagField, id: number) => `${field}-${id}`;
 	const isFlagPending = (field: CadastroFlagField, id: number) => pendingFlags.has(getFlagKey(field, id));
-
-	function handleSubmit(): SubmitCallback {
-		loading = true;
-
-		return async ({ update }) => {
-			try {
-				await update();
-			} finally {
-				loading = false;
-			}
-		};
-	}
 
 	function setFlagPending(field: CadastroFlagField, id: number, pending: boolean) {
 		const key = getFlagKey(field, id);
@@ -71,7 +56,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de cadastros</h1>
 </div>
 
-<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
+<form class="card" method="POST" {@attach formEnhancer.attachment}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do trabalhador</label>
@@ -113,8 +98,11 @@
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
-					aria-busy={loading}
-					class={['button is-primary is-fullwidth has-text-weight-semibold', { 'is-loading': loading }]}
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						{ 'is-loading': formEnhancer.loading },
+					]}
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>

@@ -2,6 +2,7 @@ import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
 import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
 import { tesourariaCreateSchema } from '$lib/validation/cadastros/tesouraria';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import { requireTesourariaAccess } from '../tesouraria-access';
 import { getTesourariaErrors, getTesourariaFormValues } from '../tesouraria-form';
@@ -23,7 +24,7 @@ export const _createNewContributorHandlers = (model: CreateModel) => ({
 			const values = getTesourariaFormValues(input);
 
 			if (!result.success) {
-				const errors = result.error.flatten();
+				const errors = flattenError(result.error);
 				return fail(400, { values, errors: getTesourariaErrors(errors.fieldErrors, errors.formErrors) });
 			}
 
