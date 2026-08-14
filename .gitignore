@@ -3,7 +3,7 @@ node_modules
 # Output
 .output
 .vercel
-.agents
+/.agents/
 /.svelte-kit
 /build
 AGENTS.md

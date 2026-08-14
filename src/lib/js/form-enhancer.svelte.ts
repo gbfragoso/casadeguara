@@ -21,7 +21,7 @@ export function createFormEnhancer() {
 	};
 
 	return {
-		attachment: fromAction(enhance, () => submit),
+		submitWithLoading: fromAction(enhance, () => submit),
 		get loading() {
 			return loading;
 		},

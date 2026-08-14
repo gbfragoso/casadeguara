@@ -26,7 +26,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastrar leitor</h1>
 </div>
 
-<form class="card" method="POST" {@attach formEnhancer.attachment}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="field column is-three-fifths">
