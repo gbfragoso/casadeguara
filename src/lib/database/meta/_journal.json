@@ -29,6 +29,13 @@
       "when": 1786634733714,
       "tag": "0003_glamorous_shard",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786668238383,
+      "tag": "0004_checkpoint_cadastros_rename",
+      "breakpoints": true
     }
   ]
 }
