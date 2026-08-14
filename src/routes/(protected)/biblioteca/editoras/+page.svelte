@@ -1,44 +1,29 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { fromAction } from 'svelte/attachments';
+	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
 	import type { ActionData } from './$types';
-
-	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
-
-	function handleSubmit(): SubmitCallback {
-		loading = true;
-
-		return async ({ update }) => {
-			try {
-				await update();
-			} finally {
-				loading = false;
-			}
-		};
-	}
+	const formEnhancer = createFormEnhancer();
 </script>
 
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/editoras" aria-current="page">Editoras</a>
+				<a href={resolve('/biblioteca/editoras')} aria-current="page">Editoras</a>
 			</li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de editoras</h1>
 </div>
 
-<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
+<form class="card" method="POST" {@attach formEnhancer.attachment}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome da editora</label>
@@ -65,15 +50,19 @@
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
-					aria-busy={loading}
-					class={['button is-primary is-fullwidth has-text-weight-semibold', { 'is-loading': loading }]}
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						{ 'is-loading': formEnhancer.loading },
+					]}
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/biblioteca/editoras/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a
+					class="button is-fullwidth has-text-weight-semibold is-warning"
+					href={resolve('/biblioteca/editoras/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -100,7 +89,9 @@
 									<td class="table-actions">
 										<a
 											aria-label={`Editar editora ${editora.nome}`}
-											href="/biblioteca/editoras/{editora.ideditora}">
+											href={resolve('/(protected)/biblioteca/editoras/[id=integer]', {
+												id: `${editora.ideditora}`,
+											})}>
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
 									</td>

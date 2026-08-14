@@ -1,99 +1,69 @@
-import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
-import { cpf, rg } from '$lib/js/mask';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import validator from 'validator';
+import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { secretariaUpdateSchema } from '$lib/validation/cadastros/secretaria';
+import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
+import { requireSecretariaAccess } from '../secretaria-access';
+import { toSecretariaDetail } from '../secretaria-detail';
+import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, '/');
+type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria'>;
+type User = { id: string; roles: string } | null;
+type LoadContext = { locals: { user: User }; params: { id: string } };
+type ActionContext = LoadContext & { request: Request };
 
+const getSecretaria = async (model: EditModel, id: number) => {
 	try {
-		const resultado = await db
-			.select()
-			.from(leitor)
-			.where(eq(leitor.idleitor, Number(params.id)));
-
-		if (!resultado) {
-			throw fail(404, {
-				message: 'Leitor não encontrado',
-			});
-		}
-
-		resultado[0].cpf = cpf(resultado[0].cpf);
-		resultado[0].rg = rg(resultado[0].rg);
-
-		return { trabalhador: resultado[0] };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao recuperar os dados do trabalhador',
-		});
+		return await model.getSecretaria(id);
+	} catch {
+		console.error('Falha ao recuperar os dados do trabalhador.');
+		error(500, { message: 'Falha ao recuperar os dados do trabalhador.' });
 	}
 };
 
-export const actions: Actions = {
-	default: async ({ locals, request, params }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do trabalhador é obrigatório',
-			};
-		}
+export const _createEditSecretariaHandlers = (model: EditModel) => ({
+	load: async ({ locals, params }: LoadContext) => {
+		requireSecretariaAccess(locals.user);
+		const id = Number(params.id);
+		const cadastro = await getSecretaria(model, id);
 
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do trabalhador não pode conter somente números',
-			};
-		}
-
-		const rg = form.get('rg') as string;
-		const cpf = form.get('cpf') as string;
-		const email = form.get('email') as string;
-		const celular = form.get('celular') as string;
-		const telefone = form.get('telefone') as string;
-		const logradouro = form.get('logradouro') as string;
-		const bairro = form.get('bairro') as string;
-		const complemento = form.get('complemento') as string;
-		const cidade = form.get('cidade') as string;
-		const cep = form.get('cep') as string;
-		const trab = Boolean(form.get('trab'));
-		const aniversario = form.get('aniversario') as string;
-
-		try {
-			await db
-				.update(leitor)
-				.set({
-					nome: nome.toUpperCase(),
-					rg: rg && !rg.includes('*') ? rg.replace(/\D/g, '') : undefined,
-					cpf: cpf && !cpf.includes('*') ? cpf.replace(/\D/g, '') : undefined,
-					email: email ? email : undefined,
-					celular: celular ? celular.replace(/\D/g, '') : undefined,
-					telefone: telefone ? telefone.replace(/\D/g, '') : undefined,
-					logradouro: logradouro ? logradouro : undefined,
-					bairro: bairro ? bairro : undefined,
-					complemento: complemento ? complemento : undefined,
-					cidade: cidade ? cidade : undefined,
-					cep: cep ? cep.replace(/\D/g, '') : undefined,
-					trab: trab ? trab : undefined,
-					aniversario: aniversario ? new Date(aniversario) : undefined,
-					userAlteracao: locals.user?.id,
-					dataAlteracao: new Date(),
-				})
-				.where(eq(leitor.idleitor, Number(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do trabalhador',
-			});
-		}
+		if (!cadastro) error(404, { message: 'Trabalhador não encontrado.' });
+		return { trabalhador: toSecretariaDetail(cadastro) };
 	},
-};
+	actions: {
+		default: async ({ locals, params, request }: ActionContext) => {
+			const user = requireSecretariaAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = secretariaUpdateSchema.safeParse(input);
+			const values = getSecretariaFormValues(input);
+
+			if (!result.success) {
+				const errors = flattenError(result.error);
+				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
+			}
+
+			const id = Number(params.id);
+			try {
+				const updated = await model.updateSecretaria(id, result.data, user.id);
+
+				if (updated) return { status: 200 };
+			} catch (cause) {
+				if (cause instanceof DuplicateCadastroNameError) {
+					return fail(400, { values, errors: getSecretariaErrors({ nome: [cause.message] }) });
+				}
+
+				console.error('Falha ao atualizar os dados do trabalhador.');
+				error(500, { message: 'Falha ao atualizar os dados do trabalhador.' });
+			}
+
+			error(404, { message: 'Trabalhador não encontrado.' });
+		},
+	},
+});
+
+const handlers = _createEditSecretariaHandlers(cadastroModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

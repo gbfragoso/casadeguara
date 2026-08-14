@@ -3,6 +3,7 @@ import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
 import { COLLECTION_NAME_MAX_LENGTH, colecaoSchema, colecaoSearchSchema } from '$lib/validation/colecao';
+import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Nome da coleção é obrigatório.';
 const INVALID = 'Nome da coleção inválido.';
@@ -34,7 +35,7 @@ describe('colecaoSchema', () => {
 	])('rejects %s values', (_, nome, message) => {
 		const result = colecaoSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 
 	it('accepts a name with the maximum length', () => {
@@ -63,6 +64,6 @@ describe('colecaoSearchSchema', () => {
 	])('rejects %s', (_, nome, message) => {
 		const result = colecaoSearchSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 });

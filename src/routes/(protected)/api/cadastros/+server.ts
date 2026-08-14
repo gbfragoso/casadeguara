@@ -1,31 +1,50 @@
-import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { secretariaFlagsSchema } from '$lib/validation/cadastros/flags';
+import { json } from '@sveltejs/kit';
+import { flattenError } from 'zod';
+
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ url, locals }) => {
-	if (!locals.user) redirect(302, '/');
-	const id = url.searchParams.get('id') as string;
-	const trabalhador = url.searchParams.get('trabalhador') as string;
-	const desencarnado = url.searchParams.get('desencarnado') as string;
-	const frequencia = url.searchParams.get('frequencia') as string;
+type FlagModel = Pick<CadastroModel, 'updateSecretariaFlag'>;
+type User = { id: string; roles: string } | null;
+type RequestContext = { locals: { user: User }; request: Request };
 
+const INVALID_UPDATE_MESSAGE = 'Cadastro ou campo de atualização inválido.';
+const FORBIDDEN_MESSAGE = 'Usuário não possui acesso ao sistema da secretaria.';
+
+const getRequestBody = async (request: Request): Promise<unknown> => {
 	try {
-		await db
-			.update(leitor)
-			.set({
-				trab: trabalhador ? trabalhador === 'true' : undefined,
-				desencarnado: desencarnado ? desencarnado === 'true' : undefined,
-				frequencia: frequencia ? frequencia === 'true' : undefined,
-			})
-			.where(eq(leitor.idleitor, Number(id)));
-
-		return new Response('Cadastro atualizado com sucesso');
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao atualizar o cadastro',
-		});
+		return await request.json();
+	} catch {
+		return undefined;
 	}
 };
+
+export const _createCadastroFlagHandler =
+	(model: FlagModel) =>
+	async ({ locals, request }: RequestContext) => {
+		const user = locals.user;
+		if (!user || !hasSecretariaAccess(user)) return json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
+
+		const result = secretariaFlagsSchema.safeParse(await getRequestBody(request));
+		if (!result.success) {
+			return json(
+				{ message: INVALID_UPDATE_MESSAGE, errors: flattenError(result.error).fieldErrors },
+				{ status: 400 },
+			);
+		}
+
+		try {
+			const { id, field, value } = result.data;
+			const updated = await model.updateSecretariaFlag(id, { field, value }, user.id);
+			if (!updated) return json({ message: 'Cadastro não encontrado.' }, { status: 404 });
+
+			return json({ message: 'Cadastro atualizado com sucesso.' });
+		} catch {
+			console.error('Falha ao atualizar um campo do cadastro.');
+			return json({ message: 'Falha ao atualizar o cadastro.' }, { status: 500 });
+		}
+	};
+
+export const POST: RequestHandler = _createCadastroFlagHandler(cadastroModel);

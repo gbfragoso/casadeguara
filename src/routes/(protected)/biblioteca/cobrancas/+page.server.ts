@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { emprestimo, exemplar, leitor, livro } from '$lib/database/schema';
+import { cadastros, emprestimo, exemplar, livro } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, isNull, lt } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -13,11 +13,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 			return db
 				.select({
 					idemp: emprestimo.idemp,
-					idleitor: leitor.idleitor,
-					leitor: leitor.nome,
-					celular: leitor.celular,
-					telefone: leitor.telefone,
-					email: leitor.email,
+					idleitor: cadastros.idleitor,
+					leitor: cadastros.nome,
+					celular: cadastros.celular,
+					telefone: cadastros.telefone,
+					email: cadastros.email,
 					cobranca: emprestimo.cobranca,
 					titulo: livro.titulo,
 					numero: exemplar.numero,
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 					data_devolvido: emprestimo.dataDevolvido,
 				})
 				.from(emprestimo)
-				.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
+				.innerJoin(cadastros, eq(emprestimo.leitor, cadastros.idleitor))
 				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
 				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 				.where(and(lt(emprestimo.dataDevolucao, new Date()), isNull(emprestimo.dataDevolvido)))

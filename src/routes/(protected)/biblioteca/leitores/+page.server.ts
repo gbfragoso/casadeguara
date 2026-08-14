@@ -1,28 +1,45 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { leitor } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { bibliotecaSearchSchema } from '$lib/validation/cadastros/biblioteca';
+import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
+import { requireReaderAccess } from './reader-access';
+import { getReaderSearchValues } from './reader-form';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-};
+type ListModel = Pick<CadastroModel, 'fetchBiblioteca'>;
+type User = { id: string; roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-export const actions: Actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		const where = nome ? ulike(leitor.nome, nome + '%') : undefined;
+export const _createReaderListHandlers = (model: ListModel) => ({
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireReaderAccess(locals.user),
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			requireReaderAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = bibliotecaSearchSchema.safeParse(input);
+			const values = getReaderSearchValues(input);
 
-		try {
-			const leitores = await db.select().from(leitor).where(where).orderBy(unaccent(leitor.nome)).limit(50);
-			return { leitores };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de leitores',
-			});
-		}
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
+
+			try {
+				const leitores = (await model.fetchBiblioteca(result.data.nome)).map((leitor) => ({
+					idleitor: leitor.idleitor,
+					nome: leitor.nome,
+					trab: leitor.trab,
+					status: leitor.status,
+				}));
+
+				return { leitores, values: { nome: result.data.nome } };
+			} catch {
+				console.error('Falha ao carregar a lista de leitores.');
+				error(500, { message: 'Falha ao carregar a lista de leitores.' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createReaderListHandlers(cadastroModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

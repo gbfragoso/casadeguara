@@ -1,70 +1,46 @@
-import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
-import { error } from '@sveltejs/kit';
-import validator from 'validator';
+import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { secretariaCreateSchema } from '$lib/validation/cadastros/secretaria';
+import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
+
+import { requireSecretariaAccess } from '../secretaria-access';
+import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
 import type { Actions } from './$types';
 
-export const actions: Actions = {
-	default: async ({ locals, request }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		const rg = form.get('rg') as string;
-		const cpf = form.get('cpf') as string;
-		const email = form.get('email') as string;
-		const celular = form.get('celular') as string;
-		const telefone = form.get('telefone') as string;
-		const logradouro = form.get('logradouro') as string;
-		const bairro = form.get('bairro') as string;
-		const complemento = form.get('complemento') as string;
-		const cidade = form.get('cidade') as string;
-		const cep = form.get('cep') as string;
-		const aniversario = form.get('aniversario') as string;
-		const trab = Boolean(form.get('trab'));
+type CreateModel = Pick<CadastroModel, 'createSecretaria'>;
+type User = { id: string; roles: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do trabalhador é obrigatório',
-			};
-		}
+export const _createNewSecretariaHandlers = (model: CreateModel) => ({
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			const user = requireSecretariaAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = secretariaCreateSchema.safeParse(input);
+			const values = getSecretariaFormValues(input);
 
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do trabalhador não pode conter somente números',
-			};
-		}
-
-		try {
-			await db.insert(leitor).values({
-				nome: nome.toUpperCase(),
-				rg: rg ? rg.replace(/\D/g, '') : undefined,
-				cpf: cpf ? cpf.replace(/\D/g, '') : undefined,
-				email: email ? email : undefined,
-				celular: celular ? celular.replace(/\D/g, '') : undefined,
-				telefone: telefone ? telefone.replace(/\D/g, '') : undefined,
-				logradouro: logradouro ? logradouro : undefined,
-				bairro: bairro ? bairro : undefined,
-				complemento: complemento ? complemento : undefined,
-				cidade: cidade ? cidade : undefined,
-				cep: cep ? cep.replace(/\D/g, '') : undefined,
-				trab: trab ? trab : undefined,
-				aniversario: aniversario ? new Date(aniversario) : undefined,
-				userCadastro: locals.user?.id,
-			});
-			return { status: 201 };
-		} catch (err) {
-			console.error(err);
-			if (err instanceof Error && err.message.includes('duplicate key value violates')) {
-				return {
-					status: 400,
-					field: 'nome',
-					message: 'Já existe um cadastro com nome idêntico, favor consultar',
-				};
+			if (!result.success) {
+				const errors = flattenError(result.error);
+				return fail(400, { values, errors: getSecretariaErrors(errors.fieldErrors, errors.formErrors) });
 			}
-			return error(500, { message: 'Falha ao cadastrar um novo trabalhador' });
-		}
+
+			try {
+				await model.createSecretaria(result.data, user.id);
+
+				return { status: 201 };
+			} catch (cause) {
+				if (cause instanceof DuplicateCadastroNameError) {
+					return fail(400, { values, errors: getSecretariaErrors({ nome: [cause.message] }) });
+				}
+
+				console.error('Falha ao criar um novo trabalhador.');
+				error(500, { message: 'Falha ao criar um novo trabalhador.' });
+			}
+		},
 	},
-} satisfies Actions;
+});
+
+const handlers = _createNewSecretariaHandlers(cadastroModel);
+
+export const actions: Actions = handlers.actions;

@@ -2,6 +2,7 @@ import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 import { colecaoModel, type ColecaoModel } from '$lib/server/models/colecao';
 import { colecaoSchema } from '$lib/validation/colecao';
 import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 
@@ -50,7 +51,7 @@ const createEditAction =
 		const result = colecaoSchema.safeParse({ nome: rawName });
 		const values = { nome: getSubmittedName(rawName) };
 
-		if (!result.success) return fail(400, { values, errors: result.error.flatten().fieldErrors });
+		if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
 
 		const id = Number(params.id);
 		const updated = await updateColecao(model, id, result.data.nome);

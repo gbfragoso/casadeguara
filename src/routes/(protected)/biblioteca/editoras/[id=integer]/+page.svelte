@@ -1,11 +1,8 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { fromAction } from 'svelte/attachments';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
 	import type { ActionData, PageServerData } from './$types';
-
-	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 
 	interface Props {
 		data: PageServerData;
@@ -13,35 +10,23 @@
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let editora = $derived(data.editora);
-
-	function handleSubmit(): SubmitCallback {
-		loading = true;
-
-		return async ({ update }) => {
-			try {
-				await update();
-			} finally {
-				loading = false;
-			}
-		};
-	}
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/editoras" aria-current="page">Editoras</a>
+				<a href={resolve('/biblioteca/editoras')} aria-current="page">Editoras</a>
 			</li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar editora</h1>
 </div>
 
-<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
+<form class="card" method="POST" {@attach formEnhancer.attachment}>
 	<div class="card-content">
 		<div class="field">
 			<label for="nome" class="label">Nome</label>
@@ -68,8 +53,8 @@
 		</div>
 		<div class="control">
 			<button
-				aria-busy={loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': loading }]}
+				aria-busy={formEnhancer.loading}
+				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
 				type="submit">Atualizar</button>
 		</div>
 	</div>

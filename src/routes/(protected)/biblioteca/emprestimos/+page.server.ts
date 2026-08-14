@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike } from '$lib/database/functions';
-import { emprestimo, exemplar, leitor, livro } from '$lib/database/schema';
+import { cadastros, emprestimo, exemplar, livro } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, gte, isNull, lte } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -21,7 +21,7 @@ export const actions: Actions = {
 		const atrasados = form.get('atrasados') as string;
 		const ativos = form.get('ativos') as string;
 
-		const nomeFilter = nome ? ulike(leitor.nome, nome + '%') : undefined;
+		const nomeFilter = nome ? ulike(cadastros.nome, nome + '%') : undefined;
 		const tituloFilter = titulo ? ulike(livro.titulo, titulo + '%') : undefined;
 		const atrasadosFilter = atrasados
 			? and(lte(emprestimo.dataDevolucao, new Date()), isNull(emprestimo.dataDevolvido))
@@ -35,10 +35,10 @@ export const actions: Actions = {
 			const emprestimos = await db
 				.select({
 					idemp: emprestimo.idemp,
-					idleitor: leitor.idleitor,
+					idleitor: cadastros.idleitor,
 					exemplar: emprestimo.exemplar,
-					leitor: leitor.nome,
-					telefone: leitor.telefone,
+					leitor: cadastros.nome,
+					telefone: cadastros.telefone,
 					titulo: livro.titulo,
 					numero: exemplar.numero,
 					renovacoes: emprestimo.renovacoes,
@@ -47,7 +47,7 @@ export const actions: Actions = {
 					data_devolvido: emprestimo.dataDevolvido,
 				})
 				.from(emprestimo)
-				.innerJoin(leitor, eq(emprestimo.leitor, leitor.idleitor))
+				.innerJoin(cadastros, eq(emprestimo.leitor, cadastros.idleitor))
 				.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
 				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 				.where(where)

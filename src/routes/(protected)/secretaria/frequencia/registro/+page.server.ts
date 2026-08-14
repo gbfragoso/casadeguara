@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { unaccent } from '$lib/database/functions';
-import { leitor, frequencia } from '$lib/database/schema';
+import { cadastros, frequencia } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 import dayjs from 'dayjs';
@@ -31,10 +31,10 @@ export const actions: Actions = {
 
 		try {
 			const leitores = await db
-				.select({ id: leitor.idleitor, nome: leitor.nome })
-				.from(leitor)
-				.where(and(eq(leitor.trab, true), eq(leitor.frequencia, true)))
-				.orderBy(unaccent(leitor.nome));
+				.select({ id: cadastros.idleitor, nome: cadastros.nome })
+				.from(cadastros)
+				.where(and(eq(cadastros.trab, true), eq(cadastros.frequencia, true)))
+				.orderBy(unaccent(cadastros.nome));
 
 			return { leitores, fulldates, datas };
 		} catch (err) {

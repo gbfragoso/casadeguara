@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { entradas, leitor } from '$lib/database/schema';
+import { cadastros, entradas } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -18,12 +18,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 					valor: entradas.valor,
 					depositado: entradas.depositado,
 					uuid: entradas.uuid,
-					contribuinte: leitor.nome,
-					idcontribuinte: leitor.idleitor,
-					trabalhador: leitor.trab,
+					contribuinte: cadastros.nome,
+					idcontribuinte: cadastros.idleitor,
+					trabalhador: cadastros.trab,
 				})
 				.from(entradas)
-				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+				.innerJoin(cadastros, eq(cadastros.idleitor, entradas.idcontribuinte))
 				.where(and(eq(entradas.depositado, false), isNull(entradas.motivoEstorno)))
 				.orderBy(desc(entradas.dataEntrada));
 		};

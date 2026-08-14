@@ -1,100 +1,67 @@
-import { db } from '$lib/database/connection';
-import { leitor } from '$lib/database/schema';
-import { cpf, rg } from '$lib/js/mask';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import validator from 'validator';
+import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
+import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { bibliotecaUpdateSchema } from '$lib/validation/cadastros/biblioteca';
+import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
+import { requireReaderAccess } from '../reader-access';
+import { toReaderDetail } from '../reader-detail';
+import { getReaderErrors, getReaderFormValues } from '../reader-form';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, '/');
+type EditModel = Pick<CadastroModel, 'getBiblioteca' | 'updateBiblioteca'>;
+type User = { id: string; roles: string } | null;
+type LoadContext = { locals: { user: User }; params: { id: string } };
+type ActionContext = LoadContext & { request: Request };
 
+const getReader = async (model: EditModel, id: number) => {
 	try {
-		const resultado = await db
-			.select()
-			.from(leitor)
-			.where(eq(leitor.idleitor, Number(params.id)));
-
-		if (!resultado) {
-			throw fail(404, {
-				message: 'Leitor não encontrado',
-			});
-		}
-
-		resultado[0].cpf = cpf(resultado[0].cpf);
-		resultado[0].rg = rg(resultado[0].rg);
-
-		return { leitor: resultado[0] };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao recuperar os dados do leitor',
-		});
+		return await model.getBiblioteca(id);
+	} catch {
+		console.error('Falha ao recuperar os dados do leitor.');
+		error(500, { message: 'Falha ao recuperar os dados do leitor.' });
 	}
 };
 
-export const actions: Actions = {
-	default: async ({ locals, request, params }) => {
-		const form = await request.formData();
-		const nome = form.get('nome') as string;
-		if (validator.isEmpty(nome, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do leitor é obrigatório',
-			};
-		}
+export const _createEditReaderHandlers = (model: EditModel) => ({
+	load: async ({ locals, params }: LoadContext) => {
+		requireReaderAccess(locals.user);
+		const id = Number(params.id);
+		const reader = await getReader(model, id);
 
-		if (validator.isNumeric(nome)) {
-			return {
-				status: 400,
-				field: 'nome',
-				message: 'Nome do leitor não pode conter somente números',
-			};
-		}
-
-		const rg = form.get('rg') as string;
-		const cpf = form.get('cpf') as string;
-		const email = form.get('email') as string;
-		const celular = form.get('celular') as string;
-		const telefone = form.get('telefone') as string;
-		const logradouro = form.get('logradouro') as string;
-		const bairro = form.get('bairro') as string;
-		const complemento = form.get('complemento') as string;
-		const cidade = form.get('cidade') as string;
-		const cep = form.get('cep') as string;
-		const trab = Boolean(form.get('trab'));
-		const status = Boolean(form.get('status'));
-
-		try {
-			await db
-				.update(leitor)
-				.set({
-					nome: nome.toUpperCase(),
-					rg: rg && !rg.includes('*') ? rg.replace(/\D/g, '') : undefined,
-					cpf: cpf && !cpf.includes('*') ? cpf.replace(/\D/g, '') : undefined,
-					email: email ? email : undefined,
-					celular: celular ? celular.replace(/\D/g, '') : undefined,
-					telefone: telefone ? telefone.replace(/\D/g, '') : undefined,
-					logradouro: logradouro ? logradouro : undefined,
-					bairro: bairro ? bairro : undefined,
-					complemento: complemento ? complemento : undefined,
-					cidade: cidade ? cidade : undefined,
-					cep: cep ? cep.replace(/\D/g, '') : undefined,
-					trab: trab ? trab : undefined,
-					status: status ? status : undefined,
-					userAlteracao: locals.user?.id,
-					dataAlteracao: new Date(),
-				})
-				.where(eq(leitor.idleitor, Number(params.id)));
-
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do leitor',
-			});
-		}
+		if (!reader) error(404, { message: 'Leitor não encontrado.' });
+		return { leitor: toReaderDetail(reader) };
 	},
-};
+	actions: {
+		default: async ({ locals, params, request }: ActionContext) => {
+			const user = requireReaderAccess(locals.user);
+			const input: unknown = Object.fromEntries(await request.formData());
+			const result = bibliotecaUpdateSchema.safeParse(input);
+			const values = getReaderFormValues(input);
+
+			if (!result.success)
+				return fail(400, { values, errors: getReaderErrors(flattenError(result.error).fieldErrors) });
+
+			const id = Number(params.id);
+			try {
+				const updated = await model.updateBiblioteca(id, result.data, user.id);
+
+				if (updated) return { status: 200 };
+			} catch (cause) {
+				if (cause instanceof DuplicateCadastroNameError) {
+					return fail(400, { values, errors: getReaderErrors({ nome: [cause.message] }) });
+				}
+
+				console.error('Falha ao atualizar os dados do leitor.');
+				error(500, { message: 'Falha ao atualizar os dados do leitor.' });
+			}
+
+			error(404, { message: 'Leitor não encontrado.' });
+		},
+	},
+});
+
+const handlers = _createEditReaderHandlers(cadastroModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

@@ -1,98 +1,113 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
 	import type { ActionData } from './$types';
+
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
+	let leitores = $derived(form?.leitores);
+	let searchName = $derived(form?.values?.nome ?? '');
 </script>
 
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/leitores" aria-current="page">Leitores</a>
+				<a href={resolve('/biblioteca/leitores')} aria-current="page">Leitores</a>
 			</li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de leitores</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach formEnhancer.attachment}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="nome">Nome do leitor</label>
 			<div class="control">
-				<input class="input" type="text" name="nome" id="nome" placeholder="Digite o nome do leitor" />
+				<input
+					class="input"
+					type="text"
+					name="nome"
+					id="nome"
+					bind:value={searchName}
+					placeholder="Digite o nome do leitor"
+					autocomplete="name"
+					maxlength="60"
+					aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
+					aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
 			</div>
+			{#if form?.errors?.nome?.length}
+				<div id="nome-errors" class="help is-danger">
+					{#each form.errors.nome as message (message)}
+						<p>{message}</p>
+					{/each}
+				</div>
+			{/if}
 		</div>
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						{ 'is-loading': formEnhancer.loading },
+					]}
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/biblioteca/leitores/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a
+					class="button is-fullwidth has-text-weight-semibold is-warning"
+					href={resolve('/biblioteca/leitores/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
 </form>
 
-{#if form?.leitores}
+{#if leitores !== undefined}
 	<div class="card">
 		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<tr>
-							<th>Nome</th>
-							<th>Trabalhador</th>
-							<th>Status</th>
-							<th class="table-actions">Ações</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each form.leitores as leitor}
+			{#if leitores.length === 0}
+				<p>Nenhum leitor encontrado.</p>
+			{:else}
+				<div class="table-container">
+					<table class="table is-striped is-hoverable is-fullwidth">
+						<thead>
 							<tr>
-								<td>{leitor.nome}</td>
-								{#if leitor.trab}
-									<td>Sim</td>
-								{:else}
-									<td>Não</td>
-								{/if}
-								{#if leitor.status}
-									<td>Ativo</td>
-								{:else}
-									<td>Inativo</td>
-								{/if}
-								<td class="table-actions">
-									<a aria-label="link" href="/biblioteca/leitores/{leitor.idleitor}">
-										<i class="fa-solid fa-pen-to-square fa-fw"></i>
-									</a>
-								</td>
+								<th>Nome</th>
+								<th>Trabalhador</th>
+								<th>Status</th>
+								<th class="table-actions">Ações</th>
 							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
+						</thead>
+						<tbody>
+							{#each leitores as leitor (leitor.idleitor)}
+								<tr>
+									<td>{leitor.nome}</td>
+									<td>{leitor.trab ? 'Sim' : 'Não'}</td>
+									<td>{leitor.status ? 'Ativo' : 'Inativo'}</td>
+									<td class="table-actions">
+										<a
+											aria-label={`Editar leitor ${leitor.nome}`}
+											href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
+												id: `${leitor.idleitor}`,
+											})}>
+											<i class="fa-solid fa-pen-to-square fa-fw"></i>
+										</a>
+									</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
+			{/if}
 		</div>
 	</div>
 {/if}

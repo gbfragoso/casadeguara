@@ -2,6 +2,7 @@ import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
 import { PUBLISHER_NAME_MAX_LENGTH, editoraSchema, editoraSearchSchema } from '$lib/validation/editora';
+import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Nome da editora é obrigatório.';
 const INVALID = 'Nome da editora inválido.';
@@ -30,7 +31,7 @@ describe('editoraSchema', () => {
 	])('rejects %s values', (_, nome, message) => {
 		const result = editoraSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 
 	it('accepts a name with the maximum length', () => {
@@ -57,6 +58,6 @@ describe('editoraSearchSchema', () => {
 	])('rejects %s', (_, nome, message) => {
 		const result = editoraSearchSchema.safeParse({ nome });
 
-		expect(result.error?.flatten().fieldErrors.nome).toEqual([message]);
+		expect(getFieldErrors(result)?.nome).toEqual([message]);
 	});
 });

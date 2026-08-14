@@ -1,5 +1,5 @@
 import { db } from '$lib/database/connection';
-import { entradas, leitor } from '$lib/database/schema';
+import { cadastros, entradas } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { v7 as uuidv7 } from 'uuid';
 import { sql } from 'drizzle-orm';
@@ -12,7 +12,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	try {
 		const contribuintes = async () => {
-			return db.select({ idleitor: leitor.idleitor, nome: sql<string>`unaccent(leitor.nome)` }).from(leitor);
+			return db
+				.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(leitor.nome)` })
+				.from(cadastros);
 		};
 
 		return { contribuintes: contribuintes() };

@@ -1,6 +1,6 @@
 import { db } from '$lib/database/connection';
 import { ulike } from '$lib/database/functions';
-import { entradas, leitor } from '$lib/database/schema';
+import { cadastros, entradas } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, gte, isNotNull, lte } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
@@ -24,9 +24,9 @@ export const actions: Actions = {
 			const dataRegistroFilter = dataRegistro ? eq(entradas.dataRegistro, new Date(dataRegistro)) : undefined;
 			const dataInicioFilter = dataInicio ? gte(entradas.dataEntrada, new Date(dataInicio)) : undefined;
 			const dataFimFilter = dataFim ? lte(entradas.dataEntrada, new Date(dataFim)) : undefined;
-			const nameFilter = nome ? ulike(leitor.nome, nome.toUpperCase() + '%') : undefined;
+			const nameFilter = nome ? ulike(cadastros.nome, nome.toUpperCase() + '%') : undefined;
 			const depositadosFilter = depositados ? eq(entradas.depositado, depositados === 'true') : undefined;
-			const trabalhadoresFilter = trabalhadores ? eq(leitor.trab, true) : undefined;
+			const trabalhadoresFilter = trabalhadores ? eq(cadastros.trab, true) : undefined;
 			const where = and(
 				dataInicioFilter,
 				dataFimFilter,
@@ -41,13 +41,13 @@ export const actions: Actions = {
 				.select({
 					identrada: entradas.identrada,
 					valor: entradas.valor,
-					contribuinte: leitor.nome,
-					idcontribuinte: leitor.idleitor,
+					contribuinte: cadastros.nome,
+					idcontribuinte: cadastros.idleitor,
 					motivoEstorno: entradas.motivoEstorno,
 					dataEstorno: entradas.dataEstorno,
 				})
 				.from(entradas)
-				.innerJoin(leitor, eq(leitor.idleitor, entradas.idcontribuinte))
+				.innerJoin(cadastros, eq(cadastros.idleitor, entradas.idcontribuinte))
 				.where(where)
 				.orderBy(desc(entradas.identrada))
 				.limit(50);

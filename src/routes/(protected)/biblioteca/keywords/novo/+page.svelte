@@ -1,44 +1,30 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { fromAction } from 'svelte/attachments';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
 	import type { ActionData } from './$types';
-	type SubmitCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
-
-	function handleSubmit(): SubmitCallback {
-		loading = true;
-
-		return async ({ update }) => {
-			try {
-				await update();
-			} finally {
-				loading = false;
-			}
-		};
-	}
+	const formEnhancer = createFormEnhancer();
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/keywords" aria-current="page">Palavras-chave</a>
+				<a href={resolve('/biblioteca/keywords')} aria-current="page">Palavras-chave</a>
 			</li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastrar palavra-chave</h1>
 </div>
 
-<form class="card" method="POST" {@attach fromAction(enhance, () => handleSubmit)}>
+<form class="card" method="POST" {@attach formEnhancer.attachment}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="chave">Palavra-chave</label>
@@ -65,8 +51,8 @@
 		</div>
 		<div class="control">
 			<button
-				aria-busy={loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': loading }]}
+				aria-busy={formEnhancer.loading}
+				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
 				type="submit">Cadastrar</button>
 		</div>
 	</div>
