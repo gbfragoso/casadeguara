@@ -23,7 +23,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de palavras-chave</h1>
 </div>
 
-<form class="card" method="POST" {@attach formEnhancer.attachment}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="chave">Palavra-chave</label>

@@ -3,6 +3,12 @@ import { describe, expect, it, vi } from 'vitest';
 import { createFormEnhancer } from '../../../../src/lib/js/form-enhancer.svelte';
 
 describe('createFormEnhancer', () => {
+	it('exposes an attachment for submissions with loading state', () => {
+		const formEnhancer = createFormEnhancer();
+
+		expect(formEnhancer.submitWithLoading).toBeTypeOf('function');
+	});
+
 	it('keeps the form loading while the action result is updated', async () => {
 		const formEnhancer = createFormEnhancer();
 		const loadingStates: boolean[] = [];

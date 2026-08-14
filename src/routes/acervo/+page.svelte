@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -14,9 +15,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/acervo">Acervo</a></li>
+			<li><a href={resolve('/acervo')}>Acervo</a></li>
 			<li class="is-active">
-				<a href="/acervo/livros" aria-current="page">Livros</a>
+				<a href={resolve('/acervo')} aria-current="page">Livros</a>
 			</li>
 		</ul>
 	</nav>
@@ -66,7 +67,7 @@
 					<select name="serie" id="serie">
 						<option></option>
 						{#await colecoes then item}
-							{#each item as serie}
+							{#each item as serie (serie.idserie)}
 								<option value={serie.idserie}>{serie.nome}</option>
 							{/each}
 						{/await}
@@ -108,27 +109,17 @@
 						<tr>
 							<th>Título</th>
 							<th>Disponíveis</th>
-							<th class="table-actions"></th>
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.livros as livro}
+						{#each form.livros as livro (livro.idlivro)}
 							<tr>
 								<td
 									>{livro.titulo}<br />
-									{#each livro.autores as autor}
+									{#each livro.autores as autor (autor)}
 										<span class="tag is-light is-success">{autor}</span>&nbsp;&nbsp;
 									{/each}</td>
 								<td>{livro.disponiveis}</td>
-								<td class="table-actions">
-									<a
-										aria-label="autores"
-										title="Autores"
-										class="button is-primary is-outlined"
-										href="/acervo/{livro.idlivro}">
-										Saiba mais
-									</a>
-								</td>
 							</tr>
 						{/each}
 					</tbody>

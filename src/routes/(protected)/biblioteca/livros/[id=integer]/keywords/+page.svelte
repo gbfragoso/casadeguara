@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import type { PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -8,15 +10,22 @@
 	let { data }: Props = $props();
 	let loading = $state(false);
 	let { keywords, keywordsLivro, livros, role } = $derived(data);
+	let bookId = $derived(page.params.id);
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
-			<li><a href="/biblioteca/livros">Livros</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca/livros')}>Livros</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros/keywords" aria-current="page">Palavras-Chave</a>
+				{#if bookId}
+					<a
+						href={resolve('/(protected)/biblioteca/livros/[id=integer]/keywords', {
+							id: bookId,
+						})}
+						aria-current="page">Palavras-Chave</a>
+				{/if}
 			</li>
 		</ul>
 	</nav>
@@ -57,7 +66,7 @@
 				<select name="keyword" id="keyword" required>
 					<option></option>
 					{#await keywords then item}
-						{#each item as keyword}
+						{#each item as keyword (keyword.idkeyword)}
 							<option value={keyword.idkeyword}>{keyword.chave}</option>
 						{/each}
 					{/await}
@@ -116,7 +125,7 @@
 							</td>
 						</tr>
 					{:then item}
-						{#each item as keyword}
+						{#each item as keyword (keyword.idkeyword)}
 							<tr>
 								<td>{keyword.chave}</td>
 								<td>{keyword.referencia}</td>

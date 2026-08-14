@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -15,9 +16,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/secretaria">Secretaria</a></li>
+			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href="/secretaria/usuarios" aria-current="page">Usuários</a>
+				<a href={resolve('/secretaria/usuarios')} aria-current="page">Usuários</a>
 			</li>
 		</ul>
 	</nav>

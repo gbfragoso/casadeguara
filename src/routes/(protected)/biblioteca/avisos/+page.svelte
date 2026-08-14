@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -13,9 +14,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/avisos" aria-current="page">Avisos</a>
+				<a href={resolve('/biblioteca/avisos')} aria-current="page">Avisos</a>
 			</li>
 		</ul>
 	</nav>
@@ -74,11 +75,15 @@
 							</td>
 						</tr>
 					{:then item}
-						{#each item as aviso}
+						{#each item as aviso (aviso.idaviso)}
 							<tr>
 								<td>{aviso.texto}</td>
 								<td class="table-actions">
-									<a aria-label="link" href="/biblioteca/avisos/{aviso.idaviso}">
+									<a
+										aria-label="link"
+										href={resolve('/(protected)/biblioteca/avisos/[id=integer]', {
+											id: `${aviso.idaviso}`,
+										})}>
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

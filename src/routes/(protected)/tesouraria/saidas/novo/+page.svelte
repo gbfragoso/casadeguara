@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData } from './$types';
@@ -13,9 +14,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/saidas" aria-current="page">saidas</a>
+				<a href={resolve('/tesouraria/saidas')} aria-current="page">saidas</a>
 			</li>
 		</ul>
 	</nav>

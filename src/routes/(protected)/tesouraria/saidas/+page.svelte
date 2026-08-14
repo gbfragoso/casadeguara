@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
@@ -17,9 +18,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/saidas" aria-current="page">Saídas</a>
+				<a href={resolve('/tesouraria/saidas')} aria-current="page">Saídas</a>
 			</li>
 		</ul>
 	</nav>
@@ -68,8 +69,9 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/tesouraria/saidas/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a
+					class="button is-fullwidth has-text-weight-semibold is-warning"
+					href={resolve('/tesouraria/saidas/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -89,13 +91,17 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.saidas as saida}
+						{#each form.saidas as saida (saida.idsaida)}
 							<tr>
 								<td>{saida.descricao}</td>
 								<td>{moeda(Number(saida.valor))}</td>
 								<td>{dayjs.utc(saida.dataSaida).format('DD/MM/YYYY')}</td>
 								<td class="table-actions">
-									<a aria-label="editar" href="/tesouraria/saidas/{saida.idsaida}">
+									<a
+										aria-label="editar"
+										href={resolve('/(protected)/tesouraria/saidas/[id=integer]', {
+											id: `${saida.idsaida}`,
+										})}>
 										<i class="fa-solid fa-pen-to-square fa-fw"></i>
 									</a>
 								</td>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
 	import validator from 'validator';
 	import type { ActionData } from './$types';
@@ -15,9 +16,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/usuarios" aria-current="page">Usuários</a>
+				<a href={resolve('/biblioteca/usuarios')} aria-current="page">Usuários</a>
 			</li>
 		</ul>
 	</nav>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	let isHidden = $state(true);
 	let theme = $state('light');
 
@@ -84,7 +85,9 @@
 				<div class="dropdown-content">
 					<p class="dropdown-item">Bem vindo(a), {username.substring(0, username.indexOf(' '))}</p>
 					<hr class="dropdown-divider" />
-					<a href="/usuario/{userid}" class="dropdown-item"> Configurações </a>
+					<a href={resolve('/(protected)/usuario/[id=alphanumeric]', { id: userid })} class="dropdown-item">
+						Configurações
+					</a>
 					<hr class="dropdown-divider" />
 					<form class="p-0" action="/logout" method="POST">
 						<button class="dropdown-item" aria-label="sair" type="submit">
