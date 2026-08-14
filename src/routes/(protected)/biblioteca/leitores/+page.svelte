@@ -14,6 +14,7 @@
 	let { form }: Props = $props();
 	let loading = $state(false);
 	let leitores = $derived(form?.leitores);
+	let searchName = $derived(form?.values?.nome ?? '');
 
 	function handleSubmit(): SubmitCallback {
 		loading = true;
@@ -50,7 +51,7 @@
 					type="text"
 					name="nome"
 					id="nome"
-					value={form?.values?.nome ?? ''}
+					bind:value={searchName}
 					placeholder="Digite o nome do leitor"
 					autocomplete="name"
 					maxlength="60"

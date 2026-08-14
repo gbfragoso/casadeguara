@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { fromAction } from 'svelte/attachments';
+	import { SvelteSet } from 'svelte/reactivity';
 	import { updateCadastroFlag, type CadastroFlagField } from './cadastro-flag';
 	import type { ActionData } from './$types';
 
@@ -15,9 +16,10 @@
 
 	let { form }: Props = $props();
 	let loading = $state(false);
-	let pendingFlags = $state<ReadonlySet<string>>(new Set());
+	let pendingFlags = new SvelteSet<string>();
 	let flagError = $state('');
 	let cadastros = $derived(form?.cadastros);
+	let searchName = $derived(form?.values?.nome ?? '');
 	let workersOnly = $derived(form?.values?.trabalhadores === 'true');
 
 	const getFlagKey = (field: CadastroFlagField, id: number) => `${field}-${id}`;
@@ -36,11 +38,9 @@
 	}
 
 	function setFlagPending(field: CadastroFlagField, id: number, pending: boolean) {
-		const flags = new Set(pendingFlags);
 		const key = getFlagKey(field, id);
-		if (pending) flags.add(key);
-		else flags.delete(key);
-		pendingFlags = flags;
+		if (pending) pendingFlags.add(key);
+		else pendingFlags.delete(key);
 	}
 
 	function sendFlag(data: { id: number; field: CadastroFlagField; value: boolean }) {
@@ -81,7 +81,7 @@
 					type="text"
 					name="nome"
 					id="nome"
-					value={form?.values?.nome ?? ''}
+					bind:value={searchName}
 					placeholder="Digite o nome do trabalhador"
 					autocomplete="name"
 					maxlength="60"
@@ -104,7 +104,7 @@
 					name="trabalhadores"
 					id="trabalhadores"
 					value="true"
-					checked={workersOnly}
+					bind:checked={workersOnly}
 					aria-describedby={form?.errors?.trabalhadores?.length ? 'trabalhadores-errors' : undefined}
 					aria-invalid={form?.errors?.trabalhadores?.length ? 'true' : undefined} />
 				Somente trabalhadores

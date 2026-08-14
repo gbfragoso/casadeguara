@@ -13,7 +13,7 @@
 				</div>
 				<div class="has-text-centered">
 					{#if $page.status === 404}
-						<p>Página não encontrada</p>
+						<p>{$page.error?.message ?? 'Página não encontrada'}</p>
 					{:else}
 						<p>{$page.error?.message}</p>
 					{/if}

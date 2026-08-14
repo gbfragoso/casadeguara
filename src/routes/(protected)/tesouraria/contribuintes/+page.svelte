@@ -15,6 +15,7 @@
 	let { form }: Props = $props();
 	let loading = $state(false);
 	let contribuintes = $derived(form?.contribuintes);
+	let searchName = $derived(form?.values?.nome ?? '');
 
 	function handleSubmit(): SubmitCallback {
 		return ({ update }) => runWithLoading(update, (isLoading) => (loading = isLoading));
@@ -43,7 +44,7 @@
 					type="text"
 					name="nome"
 					id="nome"
-					value={form?.values?.nome ?? ''}
+					bind:value={searchName}
 					placeholder="Digite o nome do contribuinte"
 					autocomplete="name"
 					maxlength="60"
