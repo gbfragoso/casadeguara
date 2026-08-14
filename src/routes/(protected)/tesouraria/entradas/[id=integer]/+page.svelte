@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -19,9 +20,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/entradas" aria-current="page">Entradas</a>
+				<a href={resolve('/tesouraria/entradas')} aria-current="page">Entradas</a>
 			</li>
 		</ul>
 	</nav>

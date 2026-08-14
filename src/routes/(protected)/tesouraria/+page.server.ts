@@ -1,7 +1,7 @@
 import { db } from '$lib/database/connection';
 import { entradas, saidas } from '$lib/database/schema';
 import { error, redirect } from '@sveltejs/kit';
-import { and, avg, count, gte, lte, sql, sum } from 'drizzle-orm';
+import { and, count, gte, lte, sql, sum } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 

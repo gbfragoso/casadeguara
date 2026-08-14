@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -17,9 +18,9 @@
 <div>
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria" aria-current="page">Página Inicial</a>
+				<a href={resolve('/tesouraria')} aria-current="page">Página Inicial</a>
 			</li>
 		</ul>
 	</nav>

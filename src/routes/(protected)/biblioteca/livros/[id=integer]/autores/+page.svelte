@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import type { PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -8,15 +10,22 @@
 	let { data }: Props = $props();
 	let loading = $state(false);
 	let { autores, autoresLivro, livros, role } = $derived(data);
+	let bookId = $derived(page.params.id);
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
-			<li><a href="/biblioteca/livros">Livros</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca/livros')}>Livros</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros/autores" aria-current="page">Autores</a>
+				{#if bookId}
+					<a
+						href={resolve('/(protected)/biblioteca/livros/[id=integer]/autores', {
+							id: bookId,
+						})}
+						aria-current="page">Autores</a>
+				{/if}
 			</li>
 		</ul>
 	</nav>
@@ -57,7 +66,7 @@
 				<select name="autor" id="autor" required>
 					<option></option>
 					{#await autores then item}
-						{#each item as autor}
+						{#each item as autor (autor.idautor)}
 							<option value={autor.idautor}>{autor.nome}</option>
 						{/each}
 					{/await}
@@ -98,7 +107,7 @@
 							</td>
 						</tr>
 					{:then item}
-						{#each item as autor}
+						{#each item as autor (autor.idautor)}
 							<tr>
 								<td>{autor.nome}</td>
 								<td>

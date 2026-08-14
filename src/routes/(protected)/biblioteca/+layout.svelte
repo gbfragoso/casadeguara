@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/stores';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
@@ -19,60 +20,60 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca'}>
-					<a aria-label="home" title="Página inicial" href="/biblioteca">
+					<a aria-label="home" title="Página inicial" href={resolve('/biblioteca')}>
 						<i class="fa-solid fa-house fa-fw"></i>&nbsp;<strong>Início</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/autores'}>
-					<a aria-label="autores" title="Autores" href="/biblioteca/autores">
+					<a aria-label="autores" title="Autores" href={resolve('/biblioteca/autores')}>
 						<i class="fa-solid fa-user-pen fa-fw"></i>&nbsp;<strong>Autores</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/avisos'}>
-					<a aria-label="avisos" title="Avisos" href="/biblioteca/avisos">
+					<a aria-label="avisos" title="Avisos" href={resolve('/biblioteca/avisos')}>
 						<i class="fa-solid fa-inbox fa-fw"></i>&nbsp;<strong>Avisos</strong>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/cobrancas'}>
-						<a aria-label="cobranças" title="Cobranças" href="/biblioteca/cobrancas">
+						<a aria-label="cobranças" title="Cobranças" href={resolve('/biblioteca/cobrancas')}>
 							<i class="fa-solid fa-envelopes-bulk fa-fw"></i>&nbsp;<strong>Cobranças</strong>
 						</a>
 					</li>
 				{/if}
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/colecoes'}>
-					<a aria-label="coleções" title="Coleções" href="/biblioteca/colecoes">
+					<a aria-label="coleções" title="Coleções" href={resolve('/biblioteca/colecoes')}>
 						<i class="fa-solid fa-layer-group fa-fw"></i>&nbsp;<strong>Coleções</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/editoras'}>
-					<a aria-label="editoras" title="Editoras" href="/biblioteca/editoras">
+					<a aria-label="editoras" title="Editoras" href={resolve('/biblioteca/editoras')}>
 						<i class="fa-solid fa-landmark-flag fa-fw"></i>&nbsp;<strong>Editoras</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/emprestimos'}>
-					<a aria-label="empréstimos" title="Empréstimos" href="/biblioteca/emprestimos">
+					<a aria-label="empréstimos" title="Empréstimos" href={resolve('/biblioteca/emprestimos')}>
 						<i class="fa-solid fa-hand-holding fa-fw"></i>&nbsp;<strong>Empréstimos</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/leitores'}>
-					<a aria-label="leitores" title="Leitores" href="/biblioteca/leitores">
+					<a aria-label="leitores" title="Leitores" href={resolve('/biblioteca/leitores')}>
 						<i class=" fa-solid fa-book-open-reader fa-fw"></i>&nbsp;<strong>Leitores</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/livros'}>
-					<a aria-label="livros" title="Livros" href="/biblioteca/livros">
+					<a aria-label="livros" title="Livros" href={resolve('/biblioteca/livros')}>
 						<i class="fa-solid fa-book fa-fw"></i>&nbsp;<strong>Livros</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/keywords'}>
-					<a aria-label="keywords" title="Palavras-chave" href="/biblioteca/keywords">
+					<a aria-label="keywords" title="Palavras-chave" href={resolve('/biblioteca/keywords')}>
 						<i class="fa-solid fa-key fa-fw"></i>&nbsp;<strong>Palavras-chave</strong>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/usuarios'}>
-						<a aria-label="usuários" title="Usuários" href="/biblioteca/usuarios">
+						<a aria-label="usuários" title="Usuários" href={resolve('/biblioteca/usuarios')}>
 							<i class="fa-solid fa-user-plus fa-fw"></i>&nbsp;<strong>Usuários</strong>
 						</a>
 					</li>

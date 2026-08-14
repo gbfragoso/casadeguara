@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -12,10 +13,10 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/secretaria">Secretaria</a></li>
-			<li><a href="/secretaria/frequencia" aria-current="page">Frequência</a></li>
+			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('/secretaria/frequencia')} aria-current="page">Frequência</a></li>
 			<li class="is-active">
-				<a href="/secretaria/frequencia/registro" aria-current="page">Registro</a>
+				<a href={resolve('/secretaria/frequencia/registro')} aria-current="page">Registro</a>
 			</li>
 		</ul>
 	</nav>
@@ -120,7 +121,7 @@
 					<thead>
 						<tr>
 							{#if form.datas}
-								{#each form.datas as date}
+								{#each form.datas as date (date)}
 									<th class="print-pr-2">
 										{date}
 									</th>
@@ -130,9 +131,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.leitores as leitor}
+						{#each form.leitores as leitor (leitor.id)}
 							<tr>
-								{#each form.fulldates as _}
+								{#each form.fulldates as _ (_)}
 									<td class="print-pr-2"
 										><input type="checkbox" name={leitor.id.toString()} value={_} /></td>
 								{/each}

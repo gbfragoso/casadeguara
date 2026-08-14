@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -15,9 +16,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a>
+				<a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
 			</li>
 		</ul>
 	</nav>
@@ -55,10 +56,13 @@
 							</td>
 						</tr>
 					{:then item}
-						{#each item as emprestimo}
+						{#each item as emprestimo (emprestimo.idemp)}
 							<tr>
 								<td>
-									<a href="/biblioteca/leitores/{emprestimo.idleitor}">
+									<a
+										href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
+											id: `${emprestimo.idleitor}`,
+										})}>
 										{emprestimo.leitor}
 									</a>
 								</td>

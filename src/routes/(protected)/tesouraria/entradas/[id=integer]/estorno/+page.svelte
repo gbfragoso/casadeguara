@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import { moeda } from '$lib/js/currency';
 	import Notification from '$lib/components/Notification.svelte';
 	import dayjs from 'dayjs';
@@ -20,10 +21,10 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
-			<li><a href="/tesouraria/entradas">Entradas</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria/entradas')}>Entradas</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/entradas/estorno" aria-current="page">Estorno</a>
+				<a href={resolve('/tesouraria/entradas')} aria-current="page">Estorno</a>
 			</li>
 		</ul>
 	</nav>

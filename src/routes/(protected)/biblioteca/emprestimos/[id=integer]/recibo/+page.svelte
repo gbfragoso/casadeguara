@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -14,10 +15,10 @@
 <div id="breadcrumb" class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
-			<li><a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos/recibo" aria-current="page">Recibo</a>
+				<a href={resolve('/biblioteca/emprestimos')} aria-current="page">Recibo</a>
 			</li>
 		</ul>
 	</nav>
@@ -38,7 +39,7 @@
 				<div class="mr-6">Recebido por</div>
 			</div>
 			<hr class="mt-2 mb-0" />
-			{#each emprestimos as emprestimo}
+			{#each emprestimos as emprestimo (emprestimo.idemp)}
 				<div>
 					<div class="is-flex is-flex-direction-row is-justify-content-space-between">
 						<span>{emprestimo.tombo}&nbsp;&nbsp;&nbsp;{emprestimo.titulo.toUpperCase()}</span>

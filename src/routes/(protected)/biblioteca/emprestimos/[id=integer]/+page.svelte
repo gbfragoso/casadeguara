@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
 	import Notification from '$lib/components/Notification.svelte';
 	import utc from 'dayjs/plugin/utc';
@@ -18,9 +19,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a>
+				<a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
 			</li>
 		</ul>
 	</nav>
@@ -63,7 +64,7 @@
 				<select name="novoexemplar" id="novoexemplar" required>
 					<option value=""></option>
 					{#await exemplares then item}
-						{#each item as exemplar}
+						{#each item as exemplar (exemplar.idexemplar)}
 							<option value={exemplar.idexemplar}>{exemplar.livro + ' - EX:' + exemplar.numero}</option>
 						{/each}
 					{/await}

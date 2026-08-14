@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -20,9 +21,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/entradas" aria-current="page">Lançamentos</a>
+				<a href={resolve('/tesouraria/entradas')} aria-current="page">Lançamentos</a>
 			</li>
 		</ul>
 	</nav>
@@ -108,8 +109,9 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/tesouraria/entradas/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a
+					class="button is-fullwidth has-text-weight-semibold is-warning"
+					href={resolve('/tesouraria/entradas/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -132,13 +134,16 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.resultados as resultado}
+						{#each form.resultados as resultado (resultado.identrada)}
 							<tr>
 								<td>
 									{resultado.identrada}
 								</td>
 								<td>
-									<a href="/tesouraria/contribuintes/{resultado.idcontribuinte}">
+									<a
+										href={resolve('/(protected)/tesouraria/contribuintes/[id=integer]', {
+											id: `${resultado.idcontribuinte}`,
+										})}>
 										{resultado.contribuinte}
 									</a>
 								</td>
@@ -153,7 +158,11 @@
 								<td class="table-actions">
 									<div class="is-flex">
 										{#if isAdmin}
-											<a aria-label="editar" href="/tesouraria/entradas/{resultado.identrada}">
+											<a
+												aria-label="editar"
+												href={resolve('/(protected)/tesouraria/entradas/[id=integer]', {
+													id: `${resultado.identrada}`,
+												})}>
 												<i class="fa-solid fa-pen-to-square fa-fw"></i>
 											</a>
 										{/if}
@@ -161,7 +170,7 @@
 											class="ml-3"
 											target="_blank"
 											aria-label="entradas"
-											href="/recibo/{resultado.uuid}"
+											href={resolve('/recibo/[uuid=uuid]', { uuid: resultado.uuid })}
 											title="Recibo">
 											<i class="fa-regular fa-file-lines fa-fw"></i>
 										</a>
@@ -169,7 +178,9 @@
 											class="ml-3"
 											target="_blank"
 											aria-label="estorno"
-											href="/tesouraria/entradas/{resultado.identrada}/estorno"
+											href={resolve('/(protected)/tesouraria/entradas/[id=integer]/estorno', {
+												id: `${resultado.identrada}`,
+											})}
 											title="Estorno">
 											<i class="fa-solid fa-trash-can fa-fw"></i>
 										</a>

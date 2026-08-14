@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -12,9 +13,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/secretaria">Secretaria</a></li>
+			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href="/secretaria/frequencia" aria-current="page">Frequência</a>
+				<a href={resolve('/secretaria/frequencia')} aria-current="page">Frequência</a>
 			</li>
 		</ul>
 	</nav>
@@ -97,7 +98,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px; line-height: 40px;">
-				<a class="has-text-primary is-underlined" href="/secretaria/frequencia/registro"
+				<a class="has-text-primary is-underlined" href={resolve('/secretaria/frequencia/registro')}
 					>Clique aqui para registrar as frequências</a>
 			</div>
 		</div>
@@ -119,7 +120,7 @@
 					<thead>
 						<tr>
 							{#if form.datas}
-								{#each form.datas as date}
+								{#each form.datas as date (date)}
 									<th class="print-pr-2">
 										{date}
 									</th>
@@ -129,9 +130,9 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.leitores as leitor}
+						{#each form.leitores as leitor (leitor)}
 							<tr>
-								{#each form.datas as _}
+								{#each form.datas as _ (_)}
 									<td id={_} class="print-pr-2">[&nbsp;&nbsp;]</td>
 								{/each}
 								<td class="print-pl-6">

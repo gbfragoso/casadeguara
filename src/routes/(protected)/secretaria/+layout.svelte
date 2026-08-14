@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/stores';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
@@ -19,28 +20,31 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria'}>
-					<a aria-label="home" title="Página Inicial" href="/secretaria">
+					<a aria-label="home" title="Página Inicial" href={resolve('/secretaria')}>
 						<i class="fa-solid fa-house fa-fw"></i>&nbsp<strong>Início</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/frequencia'}>
-					<a aria-label="frequência" title="Frequência" href="/secretaria/frequencia">
+					<a aria-label="frequência" title="Frequência" href={resolve('/secretaria/frequencia')}>
 						<i class="fa-solid fa-list-check fa-fw"></i>&nbsp<strong>Frequência</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/aniversariantes'}>
-					<a aria-label="aniversariantes" title="Aniversariantes" href="/secretaria/aniversariantes">
+					<a
+						aria-label="aniversariantes"
+						title="Aniversariantes"
+						href={resolve('/secretaria/aniversariantes')}>
 						<i class="fa-solid fa-cake-candles fa-fw"></i>&nbsp<strong>Aniversariantes</strong>
 					</a>
 				</li>
 				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/cadastros'}>
-					<a aria-label="cadastros" title="Cadastros" href="/secretaria/cadastros">
+					<a aria-label="cadastros" title="Cadastros" href={resolve('/secretaria/cadastros')}>
 						<i class="fa-brands fa-wpforms fa-fw"></i>&nbsp<strong>Cadastros</strong>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
-						<a aria-label="usuários" title="Usuários" href="/secretaria/usuarios">
+						<a aria-label="usuários" title="Usuários" href={resolve('/secretaria/usuarios')}>
 							<i class="fa-solid fa-user-plus fa-fw"></i>&nbsp<strong>Usuários</strong>
 						</a>
 					</li>

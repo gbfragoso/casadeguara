@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -14,9 +15,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros" aria-current="page">Livros</a>
+				<a href={resolve('/biblioteca/livros')} aria-current="page">Livros</a>
 			</li>
 		</ul>
 	</nav>
@@ -73,7 +74,7 @@
 					<select name="serie" id="serie">
 						<option></option>
 						{#await colecoes then item}
-							{#each item as serie}
+							{#each item as serie (serie.idserie)}
 								<option value={serie.idserie}>{serie.nome}</option>
 							{/each}
 						{/await}
@@ -103,8 +104,9 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/biblioteca/livros/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a
+					class="button is-fullwidth has-text-weight-semibold is-warning"
+					href={resolve('/biblioteca/livros/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -125,7 +127,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.livros as livro}
+						{#each form.livros as livro (livro.idlivro)}
 							<tr>
 								<td>{livro.tombo}</td>
 								<td>{livro.titulo}</td>
@@ -138,7 +140,9 @@
 											title="Editar"
 											class="control"
 											target="_blank"
-											href="/biblioteca/livros/{livro.idlivro}">
+											href={resolve('/(protected)/biblioteca/livros/[id=integer]', {
+												id: `${livro.idlivro}`,
+											})}>
 											<i class="fa-solid fa-pen-to-square fa-fw"></i>
 										</a>
 										<a
@@ -146,7 +150,9 @@
 											title="Autores"
 											class="control"
 											target="_blank"
-											href="/biblioteca/livros/{livro.idlivro}/autores">
+											href={resolve('/(protected)/biblioteca/livros/[id=integer]/autores', {
+												id: `${livro.idlivro}`,
+											})}>
 											<i class="fa-solid fa-user-pen fa-fw"></i>
 										</a>
 										<a
@@ -154,7 +160,9 @@
 											title="Exemplares"
 											class="control"
 											target="_blank"
-											href="/biblioteca/livros/{livro.idlivro}/exemplares">
+											href={resolve('/(protected)/biblioteca/livros/[id=integer]/exemplares', {
+												id: `${livro.idlivro}`,
+											})}>
 											<i class="fa-solid fa-book fa-fw"></i>
 										</a>
 										<a
@@ -162,7 +170,9 @@
 											title="Palavras-chave"
 											class="control"
 											target="_blank"
-											href="/biblioteca/livros/{livro.idlivro}/keywords">
+											href={resolve('/(protected)/biblioteca/livros/[id=integer]/keywords', {
+												id: `${livro.idlivro}`,
+											})}>
 											<i class="fa-solid fa-key fa-fw"></i>
 										</a>
 										{#if role.includes('admin')}

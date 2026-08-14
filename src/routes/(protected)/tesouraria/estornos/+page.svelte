@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -18,9 +19,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/estornos" aria-current="page">Estornos</a>
+				<a href={resolve('/tesouraria/estornos')} aria-current="page">Estornos</a>
 			</li>
 		</ul>
 	</nav>
@@ -109,7 +110,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.resultados as resultado}
+						{#each form.resultados as resultado (resultado.identrada)}
 							<tr>
 								<td>{resultado.identrada}</td>
 								<td>{resultado.contribuinte}</td>

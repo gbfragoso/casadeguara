@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -39,10 +40,10 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
-			<li><a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos/novo" aria-current="page">Novo</a>
+				<a href={resolve('/biblioteca/emprestimos/novo')} aria-current="page">Novo</a>
 			</li>
 		</ul>
 	</nav>
@@ -78,7 +79,7 @@
 						<input type="hidden" name="leitorid" id="leitorid" bind:value={leitorid} />
 						<datalist id="leitores">
 							{#await leitores then item}
-								{#each item as leitor}
+								{#each item as leitor (leitor.idleitor)}
 									<option data-value={leitor.idleitor} value={leitor.nome}></option>
 								{/each}
 							{/await}
@@ -103,7 +104,7 @@
 						<input type="hidden" name="exemplarid" id="exemplarid" bind:value={exemplarid} />
 						<datalist id="exemplares">
 							{#await exemplares then item}
-								{#each item as exemplar}
+								{#each item as exemplar (exemplar.idexemplar)}
 									<option
 										data-value={exemplar.idexemplar}
 										value={exemplar.tombo + ' - ' + exemplar.titulo + ' - EX:' + exemplar.numero}

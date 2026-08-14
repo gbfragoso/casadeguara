@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
-	import locale from 'dayjs/locale/pt';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -16,9 +16,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/secretaria">Secretaria</a></li>
+			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href="/secretaria/aniversariantes" aria-current="page">Aniversariantes</a>
+				<a href={resolve('/secretaria/aniversariantes')} aria-current="page">Aniversariantes</a>
 			</li>
 		</ul>
 	</nav>
@@ -90,7 +90,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each form.leitores as leitor}
+						{#each form.leitores as leitor (leitor)}
 							<tr>
 								<td>
 									{leitor.nome.toUpperCase()}

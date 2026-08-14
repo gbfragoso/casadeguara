@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -14,9 +15,9 @@
 <div>
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href="/biblioteca" aria-current="page">Página Inicial</a>
+				<a href={resolve('/secretaria')} aria-current="page">Página Inicial</a>
 			</li>
 		</ul>
 	</nav>

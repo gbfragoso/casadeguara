@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import { moeda } from '$lib/js/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -19,9 +20,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/tesouraria">Tesouraria</a></li>
+			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href="/tesouraria/caixa" aria-current="page">Caixa</a>
+				<a href={resolve('/tesouraria/caixa')} aria-current="page">Caixa</a>
 			</li>
 		</ul>
 	</nav>
@@ -54,7 +55,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each item as resultado}
+						{#each item as resultado (resultado.identrada)}
 							<tr>
 								<td class="is-hidden-print">
 									<input name="entradas" value={resultado.identrada} type="checkbox" checked />

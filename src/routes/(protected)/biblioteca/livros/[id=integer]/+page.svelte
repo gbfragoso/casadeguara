@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -15,9 +16,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros" aria-current="page">Livros</a>
+				<a href={resolve('/biblioteca/livros')} aria-current="page">Livros</a>
 			</li>
 		</ul>
 	</nav>
@@ -69,7 +70,7 @@
 			<div class="select is-fullwidth">
 				<select name="editora" id="editora" value={livro.editora} required>
 					<option></option>
-					{#each editoras as editora}
+					{#each editoras as editora (editora.ideditora)}
 						<option value={editora.ideditora}>{editora.nome}</option>
 					{/each}
 				</select>
@@ -85,7 +86,7 @@
 					<div class="select is-fullwidth">
 						<select name="colecao" id="colecao" value={livro.serie}>
 							<option></option>
-							{#each colecoes as colecao}
+							{#each colecoes as colecao (colecao.idserie)}
 								<option value={colecao.idserie}>{colecao.nome}</option>
 							{/each}
 						</select>

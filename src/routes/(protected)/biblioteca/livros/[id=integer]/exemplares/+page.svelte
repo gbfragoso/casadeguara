@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
@@ -11,16 +13,23 @@
 	let { data, form }: Props = $props();
 	let loading = $state(false);
 	let { exemplares, livros, role } = $derived(data);
+	let bookId = $derived(page.params.id);
 	dayjs.extend(utc);
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
-			<li><a href="/biblioteca/livros" aria-current="page">Livros</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca/livros')} aria-current="page">Livros</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/livros/exemplares" aria-current="page">Exemplares</a>
+				{#if bookId}
+					<a
+						href={resolve('/(protected)/biblioteca/livros/[id=integer]/exemplares', {
+							id: bookId,
+						})}
+						aria-current="page">Exemplares</a>
+				{/if}
 			</li>
 		</ul>
 	</nav>
@@ -116,7 +125,7 @@
 							{/if}
 						</tr>
 					{:then item}
-						{#each item as exemplar}
+						{#each item as exemplar (exemplar.idexemplar)}
 							<tr>
 								<td>{exemplar.numero}</td>
 								<td>{dayjs.utc(exemplar.dataCadastro).format('DD/MM/YYYY')}</td>

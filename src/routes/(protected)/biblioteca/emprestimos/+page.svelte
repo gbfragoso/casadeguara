@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -80,9 +81,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href="/biblioteca">Biblioteca</a></li>
+			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href="/biblioteca/emprestimos" aria-current="page">Empréstimos</a>
+				<a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
 			</li>
 		</ul>
 	</nav>
@@ -150,8 +151,9 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a class="button is-fullwidth has-text-weight-semibold is-warning" href="/biblioteca/emprestimos/novo"
-					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+				<a
+					class="button is-fullwidth has-text-weight-semibold is-warning"
+					href={resolve('/biblioteca/emprestimos/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>
@@ -176,7 +178,10 @@
 						{#each form.emprestimos as emprestimo (emprestimo.idemp)}
 							<tr>
 								<td>
-									<a href="/biblioteca/leitores/{emprestimo.idleitor}">
+									<a
+										href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
+											id: `${emprestimo.idleitor}`,
+										})}>
 										{emprestimo.leitor}
 									</a>
 								</td>
@@ -199,7 +204,9 @@
 									{#if !emprestimo.data_devolvido}
 										<a
 											class="mr-2"
-											href="/biblioteca/emprestimos/{emprestimo.idemp}"
+											href={resolve('/(protected)/biblioteca/emprestimos/[id=integer]', {
+												id: `${emprestimo.idemp}`,
+											})}
 											title="Editar"
 											aria-label="Editar">
 											<i class="fa-regular fa-pen-to-square fa-fw"></i>&nbsp;
@@ -224,7 +231,9 @@
 									{/if}
 									<a
 										class="mr-2"
-										href="/biblioteca/emprestimos/{emprestimo.idemp}/recibo"
+										href={resolve('/(protected)/biblioteca/emprestimos/[id=integer]/recibo', {
+											id: `${emprestimo.idemp}`,
+										})}
 										title="Recibo"
 										aria-label="Recibo">
 										<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
