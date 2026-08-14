@@ -15,7 +15,7 @@ Do not execute these tasks in parallel: they intentionally share the Drizzle sch
 | [x] | 5 | [task-5](refactor-biblioteca-leitores/task-5.md) | Refactor secretaria registration routes, flags, and pages | No schema change |
 | [x] | 6 | [task-6](refactor-biblioteca-leitores/task-6.md) | Refactor tesouraria contributor routes and pages | No schema change |
 | [x] | 7 | [task-7](refactor-biblioteca-leitores/task-7.md) | Rename the physical table with an isolated `db:push` | Only `leitor` -> `cadastros` via `db:push` |
-| [ ] | 8 | [task-8](refactor-biblioteca-leitores/task-8.md) | Prove the cross-dashboard journey and close the LGPD/release gate | No schema change |
+| [x] | 8 | [task-8](refactor-biblioteca-leitores/task-8.md) | Prove the cross-dashboard journey and close the LGPD/release gate | No schema change |
 
 ## Global criticality rule
 
