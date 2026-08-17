@@ -15,7 +15,7 @@ export const actions: Actions = {
 		const mes = form.get('mes') as string;
 
 		try {
-			const mesFilter = mes ? eq(sql<string>`extract(month from leitor.aniversario)`, mes) : undefined;
+			const mesFilter = mes ? eq(sql<string>`extract(month from cadastros.aniversario)`, mes) : undefined;
 
 			const leitores = await db
 				.select({
