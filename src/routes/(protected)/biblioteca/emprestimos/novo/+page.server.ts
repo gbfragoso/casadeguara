@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	try {
 		const leitores = async () => {
 			return db
-				.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(leitor.nome)` })
+				.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(cadastros.nome)` })
 				.from(cadastros)
 				.orderBy(unaccent(cadastros.nome));
 		};
