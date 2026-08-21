@@ -1,13 +1,18 @@
 node_modules
-tasks
 
-# Output
-.output
-.vercel
+# Folders
+/.output/
+/.vercel/
+/.impeccable/
 /.agents/
-/.svelte-kit
-/build
+/.svelte-kit/
+/tasks/
+/build/
+
+## Markdown
 AGENTS.md
+PRODUCT.md
+DESIGN.md
 
 # OS
 .DS_Store
@@ -23,7 +28,6 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-.vercel
 # Playwright
 test-results
 playwright-report

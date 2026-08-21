@@ -71,7 +71,7 @@
 </form>
 
 {#if form?.leitores}
-	<div id="printable-content" class="card">
+	<div id="printable-content" class="card notranslate" translate="no">
 		<div class="card-content">
 			<h1 class="is-size-5 has-text-weight-semibold has-text-centered has-text-primary">
 				GRUPO ESPÍRITA CASA DE GUARÁ

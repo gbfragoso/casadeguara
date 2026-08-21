@@ -26,7 +26,7 @@
 </div>
 
 {#if emprestimos && emprestimos.length > 0}
-	<div id="printable-content" class="card">
+	<div id="printable-content" class="card notranslate" translate="no">
 		<div class="card-content">
 			<hr class="mb-2 mt-0 double" />
 			<div class="is-flex is-flex-direction-row is-justify-content-space-between">

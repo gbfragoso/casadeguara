@@ -25,7 +25,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Empréstimos em atraso</h1>
 </div>
 
-<div id="printable-content" class="card">
+<div id="printable-content" class="card notranslate" translate="no">
 	<div class="card-content">
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
