@@ -27,12 +27,13 @@ export const _createSecretariaListHandlers = (model: ListModel) => ({
 
 			try {
 				const cadastros = await model.fetchSecretaria(result.data.nome, result.data.trabalhadores);
-				const lista = cadastros.map(({ idleitor, nome, trab, frequencia, desencarnado }) => ({
+				const lista = cadastros.map(({ idleitor, nome, trab, frequencia, desencarnado, amigoFraterno }) => ({
 					idleitor,
 					nome,
 					trab,
 					frequencia,
 					desencarnado,
+					amigoFraterno,
 				}));
 
 				return { cadastros: lista, values };

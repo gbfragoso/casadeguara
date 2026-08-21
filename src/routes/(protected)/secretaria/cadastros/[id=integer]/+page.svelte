@@ -29,7 +29,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar dados do trabalhador</h1>
 </div>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
+<form class="card" method="POST" action="?/salvarCadastro" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="field column is-three-fifths">
@@ -282,3 +282,29 @@
 {#if form?.status === 200}
 	<Notification class="is-success">Trabalhador atualizado com sucesso!</Notification>
 {/if}
+
+<section class="card mt-4" aria-labelledby="foto-title">
+	<div class="card-content">
+		<h2 id="foto-title" class="title is-5">Foto</h2>
+		{#if trabalhador.hasPhoto}
+			<img src="foto" alt={`Foto de ${trabalhador.nome}`} />
+		{/if}
+		<form method="POST" action="?/salvarFoto" enctype="multipart/form-data">
+			<label class="label" for="foto">Incluir ou substituir foto</label>
+			<input class="input" id="foto" name="foto" type="file" accept="image/jpeg,image/png" required />
+			<button class="button is-primary mt-2" type="submit">Salvar foto</button>
+		</form>
+		{#if trabalhador.hasPhoto}
+			<form method="POST" action="?/removerFoto" class="mt-2">
+				<button class="button is-danger" type="submit">Remover foto</button>
+			</form>
+		{/if}
+		{#if form?.operation === 'photoSaved' && form?.status === 200}
+			<Notification class="is-success">Foto salva com sucesso!</Notification>
+		{:else if form?.operation === 'photoRemoved' && form?.status === 200}
+			<Notification class="is-success">Foto removida com sucesso!</Notification>
+		{:else if form?.errors?.foto?.length}
+			<div class="notification is-danger" role="alert">{form.errors.foto.join(' ')}</div>
+		{/if}
+	</div>
+</section>

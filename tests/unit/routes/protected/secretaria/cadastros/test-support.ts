@@ -19,6 +19,7 @@ export const secretariaDetail = {
 	cep: null,
 	aniversario: new Date('2024-02-29T00:00:00.000Z'),
 	trab: false,
+	hasPhoto: false,
 	userCadastro: 'private',
 };
 

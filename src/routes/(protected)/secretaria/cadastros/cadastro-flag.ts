@@ -1,4 +1,4 @@
-export const cadastroFlagFields = ['trab', 'frequencia', 'desencarnado'] as const;
+export const cadastroFlagFields = ['trab', 'frequencia', 'desencarnado', 'amigoFraterno'] as const;
 export type CadastroFlagField = (typeof cadastroFlagFields)[number];
 
 type Checkbox = { checked: boolean };
