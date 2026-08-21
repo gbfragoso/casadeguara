@@ -1,9 +1,10 @@
-import { amigoFraternoParticipants, type AmigoFraternoParticipants } from '$lib/server/amigo-fraterno/participants';
+import { type AmigoFraternoParticipant } from '$lib/server/amigo-fraterno/participant-projections';
+import { amigoFraternoParticipants } from '$lib/server/amigo-fraterno/participants';
 
 import { requireSecretariaAccess } from '../cadastros/secretaria-access';
 import type { PageServerLoad } from './$types';
 
-type ParticipantReader = Pick<AmigoFraternoParticipants, 'listSummary'>;
+type ParticipantReader = { listSummary: () => PromiseLike<AmigoFraternoParticipant[]> };
 type User = { id: string; roles: string } | null;
 
 export const _createAmigoFraternoLoad =
