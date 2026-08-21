@@ -25,7 +25,7 @@ export const actions: Actions = {
 				})
 				.from(cadastros)
 				.where(and(eq(cadastros.trab, true), mesFilter))
-				.orderBy(sql<number>`extract(day from leitor.aniversario)`, cadastros.nome);
+				.orderBy(sql<number>`extract(day from cadastros.aniversario)`, cadastros.nome);
 
 			return { leitores };
 		} catch (err) {
