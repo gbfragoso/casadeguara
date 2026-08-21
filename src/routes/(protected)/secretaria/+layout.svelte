@@ -42,6 +42,11 @@
 						<i class="fa-brands fa-wpforms fa-fw"></i>&nbsp<strong>Cadastros</strong>
 					</a>
 				</li>
+				<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/amigofraterno'}>
+					<a aria-label="amigo fraterno" title="Amigo Fraterno" href={resolve('/secretaria/amigofraterno')}>
+						<i class="fa-solid fa-people-group fa-fw"></i>&nbsp<strong>Amigo Fraterno</strong>
+					</a>
+				</li>
 				{#if isAdmin}
 					<li class="sidebar-item" class:active={$page.url.pathname === '/secretaria/usuarios'}>
 						<a aria-label="usuários" title="Usuários" href={resolve('/secretaria/usuarios')}>

@@ -1,4 +1,5 @@
 import { cadastros } from '$lib/database/schema';
+import { sql } from 'drizzle-orm';
 
 export const cadastroIdFields = { idleitor: cadastros.idleitor };
 
@@ -31,6 +32,7 @@ export const secretariaListFields = {
 	trab: cadastros.trab,
 	frequencia: cadastros.frequencia,
 	desencarnado: cadastros.desencarnado,
+	amigoFraterno: cadastros.amigoFraterno,
 };
 
 export const secretariaDetailFields = {
@@ -47,6 +49,7 @@ export const secretariaDetailFields = {
 	cep: cadastros.cep,
 	aniversario: cadastros.aniversario,
 	trab: cadastros.trab,
+	hasPhoto: sql<boolean>`${cadastros.foto} is not null`,
 };
 
 export const tesourariaListFields = {

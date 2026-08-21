@@ -7,9 +7,13 @@ import { flattenError } from 'zod';
 import { requireSecretariaAccess } from '../secretaria-access';
 import { toSecretariaDetail } from '../secretaria-detail';
 import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
+import { removePhoto, savePhoto } from '../photo-actions';
 import type { Actions, PageServerLoad } from './$types';
 
-type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria'>;
+type EditModel = Pick<
+	CadastroModel,
+	'getSecretaria' | 'updateSecretaria' | 'replaceSecretariaPhoto' | 'removeSecretariaPhoto'
+>;
 type User = { id: string; roles: string } | null;
 type LoadContext = { locals: { user: User }; params: { id: string } };
 type ActionContext = LoadContext & { request: Request };
@@ -33,7 +37,7 @@ export const _createEditSecretariaHandlers = (model: EditModel) => ({
 		return { trabalhador: toSecretariaDetail(cadastro) };
 	},
 	actions: {
-		default: async ({ locals, params, request }: ActionContext) => {
+		salvarCadastro: async ({ locals, params, request }: ActionContext) => {
 			const user = requireSecretariaAccess(locals.user);
 			const input: unknown = Object.fromEntries(await request.formData());
 			const result = secretariaUpdateSchema.safeParse(input);
@@ -60,6 +64,8 @@ export const _createEditSecretariaHandlers = (model: EditModel) => ({
 
 			error(404, { message: 'Trabalhador não encontrado.' });
 		},
+		salvarFoto: (context: ActionContext) => savePhoto(model, context),
+		removerFoto: (context: ActionContext) => removePhoto(model, context),
 	},
 });
 

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import { test } from '@playwright/test';
 import { signIn } from './cadastros-browser';
-import { closeDatabase, createTestUsers, deleteCadastro, deleteTestUsers, type TestUsers } from './cadastros-database';
+import { createTestUsers, deleteCadastro, deleteTestUsers, type TestUsers } from './cadastros-database';
 import { createCadastroFixture } from './cadastros-fixture';
 import { assertMissingCadastro, assertUnauthorizedUpdate, runOwnerJourney } from './cadastros-journey';
 
@@ -18,7 +18,6 @@ test.describe('shared cadastro journey', () => {
 	test.afterAll(async () => {
 		await deleteCadastro(fixture.name);
 		if (users) await deleteTestUsers(users);
-		await closeDatabase();
 	});
 
 	test('preserves dashboard-owned data and protects personal identifiers', async ({ browser }) => {

@@ -51,6 +51,7 @@ export const toTesourariaValues = (input: TesourariaCreateData | TesourariaUpdat
 export const toSecretariaFlagValue = ({ field, value }: SecretariaFlagData) => {
 	if (field === 'trab') return { trab: value };
 	if (field === 'frequencia') return { frequencia: value };
+	if (field === 'amigoFraterno') return { amigoFraterno: value };
 
 	return { desencarnado: value };
 };

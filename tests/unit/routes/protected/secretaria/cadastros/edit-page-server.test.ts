@@ -7,10 +7,15 @@ describe('edit secretaria registration handlers', () => {
 	it('enforces direct access before parsing or updating', async () => {
 		const request = new Request('http://localhost', { method: 'POST' });
 		const formData = vi.spyOn(request, 'formData');
-		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn() };
+		const model = {
+			getSecretaria: vi.fn(),
+			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 
 		await expect(
-			_createEditSecretariaHandlers(model).actions.default({
+			_createEditSecretariaHandlers(model).actions.salvarCadastro({
 				...secretariaContext,
 				locals: { user: null },
 				request,
@@ -24,6 +29,8 @@ describe('edit secretaria registration handlers', () => {
 		const model = {
 			getSecretaria: vi.fn().mockResolvedValue(secretariaDetail),
 			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
 		};
 
 		await expect(_createEditSecretariaHandlers(model).load(secretariaContext)).resolves.toEqual({
@@ -41,15 +48,21 @@ describe('edit secretaria registration handlers', () => {
 				cep: null,
 				aniversario: '2024-02-29',
 				trab: false,
+				hasPhoto: false,
 			},
 		});
 	});
 
 	it('updates only normalized secretaria fields and permits clearing', async () => {
-		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn().mockResolvedValue(true) };
+		const model = {
+			getSecretaria: vi.fn(),
+			updateSecretaria: vi.fn().mockResolvedValue(true),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 
 		await expect(
-			_createEditSecretariaHandlers(model).actions.default({
+			_createEditSecretariaHandlers(model).actions.salvarCadastro({
 				...secretariaContext,
 				request: createSecretariaRequest({
 					nome: ' Maria ',

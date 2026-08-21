@@ -17,6 +17,7 @@ const trabalhador = {
 	cep: null,
 	aniversario: null,
 	trab: true,
+	hasPhoto: false,
 };
 
 describe('edit secretaria registration page', () => {

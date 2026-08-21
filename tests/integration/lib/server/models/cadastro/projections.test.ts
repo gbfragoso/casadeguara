@@ -11,7 +11,14 @@ describe('CadastroModel projections', () => {
 				{ idleitor: created.idleitor, nome: name, trab: false, status: true },
 			]);
 			expect(await model.fetchSecretaria(name, false)).toEqual([
-				{ idleitor: created.idleitor, nome: name, trab: false, frequencia: false, desencarnado: false },
+				{
+					idleitor: created.idleitor,
+					nome: name,
+					trab: false,
+					frequencia: false,
+					desencarnado: false,
+					amigoFraterno: false,
+				},
 			]);
 			expect(await model.fetchTesouraria(name)).toEqual([
 				{ idleitor: created.idleitor, nome: name, telefone: null, trab: false },
@@ -62,6 +69,7 @@ describe('CadastroModel projections', () => {
 				cep: null,
 				aniversario: null,
 				trab: true,
+				hasPhoto: false,
 			});
 			expect(await model.getTesouraria(created.idleitor)).toEqual({
 				nome: name,

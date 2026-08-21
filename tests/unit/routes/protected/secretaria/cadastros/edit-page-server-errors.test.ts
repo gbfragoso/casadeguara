@@ -9,7 +9,12 @@ describe('secretaria registration edit errors', () => {
 		['missing', undefined, 404, 'Trabalhador não encontrado.'],
 		['database', new Error('database unavailable'), 500, 'Falha ao recuperar os dados do trabalhador.'],
 	])('maps %s detail outcomes', async (_, result, status, message) => {
-		const model = { getSecretaria: vi.fn().mockResolvedValue(result), updateSecretaria: vi.fn() };
+		const model = {
+			getSecretaria: vi.fn().mockResolvedValue(result),
+			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 		if (result instanceof Error) model.getSecretaria.mockRejectedValue(result);
 
 		await expect(_createEditSecretariaHandlers(model).load(secretariaContext)).rejects.toMatchObject({
@@ -22,6 +27,8 @@ describe('secretaria registration edit errors', () => {
 		const model = {
 			getSecretaria: vi.fn().mockResolvedValue({ ...secretariaDetail, aniversario: null }),
 			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
 		};
 
 		await expect(_createEditSecretariaHandlers(model).load(secretariaContext)).resolves.toMatchObject({
@@ -30,10 +37,15 @@ describe('secretaria registration edit errors', () => {
 	});
 
 	it('does not update when a foreign form field is sent', async () => {
-		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn() };
+		const model = {
+			getSecretaria: vi.fn(),
+			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 
 		await expect(
-			_createEditSecretariaHandlers(model).actions.default({
+			_createEditSecretariaHandlers(model).actions.salvarCadastro({
 				...secretariaContext,
 				request: createSecretariaRequest({ nome: 'Maria', trab: 'true', status: 'true' }),
 			}),
@@ -54,9 +66,14 @@ describe('secretaria registration edit errors', () => {
 		],
 		['database', new Error('database unavailable'), 500, 'Falha ao atualizar os dados do trabalhador.'],
 	])('maps %s updates', async (_, result, status, message) => {
-		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn().mockResolvedValue(result) };
+		const model = {
+			getSecretaria: vi.fn(),
+			updateSecretaria: vi.fn().mockResolvedValue(result),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 		if (result instanceof Error) model.updateSecretaria.mockRejectedValue(result);
-		const action = _createEditSecretariaHandlers(model).actions.default({
+		const action = _createEditSecretariaHandlers(model).actions.salvarCadastro({
 			...secretariaContext,
 			request: createSecretariaRequest({ nome: 'Maria', trab: 'true' }),
 		});

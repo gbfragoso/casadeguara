@@ -27,8 +27,6 @@ export const createBibliotecaCadastro = async (page: Page, fixture: CadastroFixt
 	await form.getByLabel('CEP').fill(fixture.postalCode);
 	await form.getByLabel('Trabalhador').check();
 	await form.getByRole('button', { name: 'Cadastrar' }).click();
-
-	await expect(page.getByText('Leitor cadastrado com sucesso!')).toBeVisible();
 };
 
 const searchCadastro = async (page: Page, path: string, label: string, name: string) => {

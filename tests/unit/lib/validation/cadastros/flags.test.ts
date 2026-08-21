@@ -7,10 +7,10 @@ import { getFieldErrors } from '../field-errors';
 const INVALID = 'Cadastro ou campo de atualização inválido.';
 
 describe('secretariaFlagsSchema', () => {
-	it.each([true, false])('accepts the exact %s flag boolean', (value) => {
-		const result = secretariaFlagsSchema.safeParse({ id: 42, field: 'frequencia', value });
+	it.each([true, false])('accepts the exact %s amigo fraterno boolean', (value) => {
+		const result = secretariaFlagsSchema.safeParse({ id: 42, field: 'amigoFraterno', value });
 
-		expect(result).toMatchObject({ success: true, data: { id: 42, field: 'frequencia', value } });
+		expect(result).toMatchObject({ success: true, data: { id: 42, field: 'amigoFraterno', value } });
 	});
 
 	it.each([

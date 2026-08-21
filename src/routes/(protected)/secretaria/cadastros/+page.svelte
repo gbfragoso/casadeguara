@@ -148,6 +148,7 @@
 								<th>Nome</th>
 								<th title="Marque para aparecer na lista de frequência">Frequência</th>
 								<th>Desencarnado</th>
+								<th>Amigo Fraterno</th>
 								<th class="table-actions">Ações</th>
 							</tr>
 						</thead>
@@ -181,6 +182,15 @@
 											aria-label={`Marcar ${cadastro.nome} como desencarnado`}
 											onchange={(event) =>
 												handleFlagChange(event, 'desencarnado', cadastro.idleitor)} />
+									</td>
+									<td style="text-align: center; width: 50px">
+										<input
+											type="checkbox"
+											checked={cadastro.amigoFraterno}
+											disabled={isFlagPending('amigoFraterno', cadastro.idleitor)}
+											aria-label={`Marcar ${cadastro.nome} para o Amigo Fraterno`}
+											onchange={(event) =>
+												handleFlagChange(event, 'amigoFraterno', cadastro.idleitor)} />
 									</td>
 									<td class="table-actions">
 										<a

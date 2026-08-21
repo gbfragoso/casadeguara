@@ -20,7 +20,16 @@ describe('secretaria registration list page', () => {
 		const { body: results } = render(Page, {
 			props: {
 				form: {
-					cadastros: [{ idleitor: 4, nome: 'MARIA', trab: true, frequencia: false, desencarnado: false }],
+					cadastros: [
+						{
+							idleitor: 4,
+							nome: 'MARIA',
+							trab: true,
+							frequencia: false,
+							desencarnado: false,
+							amigoFraterno: false,
+						},
+					],
 					values: { nome: '', trabalhadores: 'false' },
 				},
 			},
