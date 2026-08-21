@@ -17,7 +17,11 @@
 	dayjs.extend(utc);
 </script>
 
-<div id="recibo" style="background-color:white !important; color:black !important; overflow:hidden !important">
+<div
+	id="recibo"
+	class="notranslate"
+	translate="no"
+	style="background-color:white !important; color:black !important; overflow:hidden !important">
 	<div class="p-2">
 		<div class="is-flex is-justify-content-space-between">
 			<div class="has-text-centered p-2 mt-4 fit-content" style="border: 1px solid;">
