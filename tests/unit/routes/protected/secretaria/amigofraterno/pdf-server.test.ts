@@ -10,7 +10,13 @@ describe('amigo fraterno PDF handler', () => {
 		const listForPdf = vi.fn().mockResolvedValue([participant]);
 		const generatePdf = vi.fn().mockResolvedValue({ bytes: Uint8Array.of(1, 2), pageCount: 1 });
 
-		const response = await _createPdfHandler({ listForPdf }, generatePdf)({ locals: { user: secretariaUser } });
+		const response = await _createPdfHandler(
+			{ listForPdf },
+			generatePdf,
+		)({
+			locals: { user: secretariaUser },
+			url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
+		});
 
 		expect(response.status).toBe(200);
 		expect(response.headers.get('content-type')).toBe('application/pdf');
@@ -26,16 +32,35 @@ describe('amigo fraterno PDF handler', () => {
 			generatePdf,
 		)({
 			locals: { user: secretariaUser },
+			url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
 		});
 
 		expect(response.status).toBe(409);
 		expect(generatePdf).not.toHaveBeenCalled();
 	});
 
+	it('rejects an invalid draw date before reading participants', async () => {
+		const listForPdf = vi.fn();
+
+		const response = await _createPdfHandler(
+			{ listForPdf },
+			vi.fn(),
+		)({
+			locals: { user: secretariaUser },
+			url: new URL('http://localhost/pdf?nextDrawDate=2026-02-29'),
+		});
+
+		expect(response.status).toBe(400);
+		expect(listForPdf).not.toHaveBeenCalled();
+	});
+
 	it('returns a safe failure when the query or generator fails', async () => {
 		const handler = _createPdfHandler({ listForPdf: vi.fn().mockRejectedValue(new Error('database')) }, vi.fn());
 
-		const response = await handler({ locals: { user: secretariaUser } });
+		const response = await handler({
+			locals: { user: secretariaUser },
+			url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
+		});
 
 		expect(response.status).toBe(500);
 		await expect(response.json()).resolves.toEqual({ message: 'Não foi possível gerar o PDF do Amigo Fraterno.' });

@@ -6,7 +6,7 @@ vi.mock('$app/server', async () => {
 	let readCount = 0;
 	const assets = [
 		await readFile('src/lib/server/amigo-fraterno/assets/NotoSans-Regular.ttf'),
-		await readFile('src/lib/server/amigo-fraterno/assets/casa-de-guara.jpeg'),
+		await readFile('src/lib/server/amigo-fraterno/assets/casa-de-guara.png'),
 	];
 	return { read: () => new Response(assets[readCount++]) };
 });
@@ -31,7 +31,7 @@ describe('amigo fraterno PDF generator', () => {
 			photo: null,
 		}));
 
-		const result = await generateAmigoFraternoPdf(participants);
+		const result = await generateAmigoFraternoPdf(participants, '2026-11-22');
 		const document = await PDFDocument.load(result.bytes);
 
 		expect(result.pageCount).toBe(2);

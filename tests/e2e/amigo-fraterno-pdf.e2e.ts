@@ -45,7 +45,8 @@ test.describe.serial('Amigo Fraterno PDF', () => {
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
 		await page.goto('/secretaria/amigofraterno');
 		const downloadPromise = page.waitForEvent('download');
-		await page.getByRole('link', { name: 'Baixar cartões em PDF' }).click();
+		await page.getByLabel('Data do próximo sorteio').fill('2026-11-22');
+		await page.getByRole('button', { name: 'Baixar cartões em PDF' }).click();
 		const download = await downloadPromise;
 		const stream = await download.createReadStream();
 		if (!stream) throw new Error('Download do PDF não foi iniciado.');
@@ -55,15 +56,18 @@ test.describe.serial('Amigo Fraterno PDF', () => {
 		await Promise.all(ids.map((id) => setAmigoFraterno(id, false)));
 	});
 
-	test('E2E-04 disables an empty download and rejects a concurrent empty list', async ({ page }) => {
+	test('E2E-07 requires a draw date and rejects a concurrent empty list', async ({ page }) => {
 		const [id] = await createEligibleParticipants(1);
 		if (!id || !users) throw new Error('Fixture E2E não foi preparada.');
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
 		await page.goto('/secretaria/amigofraterno');
+		await expect(page.getByLabel('Data do próximo sorteio')).toHaveAttribute('required', '');
+		const invalidDate = await page.request.get('/secretaria/amigofraterno/pdf?nextDrawDate=2026-02-29');
+		expect(invalidDate.status()).toBe(400);
 		await setAmigoFraterno(id, false);
-		const response = await page.request.get('/secretaria/amigofraterno/pdf');
+		const response = await page.request.get('/secretaria/amigofraterno/pdf?nextDrawDate=2026-11-22');
 		expect(response.status()).toBe(409);
-		await expect(page.getByRole('link', { name: 'Baixar cartões em PDF' })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Baixar cartões em PDF' })).toBeVisible();
 		await page.reload();
 		await expect(
 			page.getByText('Não há participantes elegíveis no momento. Revise os Cadastros para atualizar a lista.'),

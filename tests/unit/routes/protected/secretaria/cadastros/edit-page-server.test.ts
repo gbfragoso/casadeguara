@@ -7,7 +7,12 @@ describe('edit secretaria registration handlers', () => {
 	it('enforces direct access before parsing or updating', async () => {
 		const request = new Request('http://localhost', { method: 'POST' });
 		const formData = vi.spyOn(request, 'formData');
-		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn(), replaceSecretariaPhoto: vi.fn(), removeSecretariaPhoto: vi.fn() };
+		const model = {
+			getSecretaria: vi.fn(),
+			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 
 		await expect(
 			_createEditSecretariaHandlers(model).actions.salvarCadastro({
@@ -23,7 +28,9 @@ describe('edit secretaria registration handlers', () => {
 	it('loads a masked secretaria detail DTO with a timezone-safe birthday', async () => {
 		const model = {
 			getSecretaria: vi.fn().mockResolvedValue(secretariaDetail),
-			updateSecretaria: vi.fn(), replaceSecretariaPhoto: vi.fn(), removeSecretariaPhoto: vi.fn(),
+			updateSecretaria: vi.fn(),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
 		};
 
 		await expect(_createEditSecretariaHandlers(model).load(secretariaContext)).resolves.toEqual({
@@ -39,15 +46,20 @@ describe('edit secretaria registration handlers', () => {
 				complemento: null,
 				cidade: null,
 				cep: null,
-			aniversario: '2024-02-29',
-			trab: false,
-			hasPhoto: false,
-		},
+				aniversario: '2024-02-29',
+				trab: false,
+				hasPhoto: false,
+			},
 		});
 	});
 
 	it('updates only normalized secretaria fields and permits clearing', async () => {
-		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn().mockResolvedValue(true), replaceSecretariaPhoto: vi.fn(), removeSecretariaPhoto: vi.fn() };
+		const model = {
+			getSecretaria: vi.fn(),
+			updateSecretaria: vi.fn().mockResolvedValue(true),
+			replaceSecretariaPhoto: vi.fn(),
+			removeSecretariaPhoto: vi.fn(),
+		};
 
 		await expect(
 			_createEditSecretariaHandlers(model).actions.salvarCadastro({

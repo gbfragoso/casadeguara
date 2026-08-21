@@ -35,9 +35,15 @@
 		{#if data.total === 0}
 			<p role="status">Não há participantes elegíveis no momento. Revise os Cadastros para atualizar a lista.</p>
 		{:else}
-			<a class="button is-primary mb-4" href={resolve('/secretaria/amigofraterno/pdf')} download>
-				Baixar cartões em PDF
-			</a>
+			<form class="mb-4" method="GET" action={resolve('/secretaria/amigofraterno/pdf')}>
+				<div class="field">
+					<label class="label" for="nextDrawDate">Data do próximo sorteio</label>
+					<div class="control">
+						<input id="nextDrawDate" class="input" type="date" name="nextDrawDate" required />
+					</div>
+				</div>
+				<button class="button is-primary" type="submit">Baixar cartões em PDF</button>
+			</form>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead><tr><th>Nome</th><th>Foto</th></tr></thead>

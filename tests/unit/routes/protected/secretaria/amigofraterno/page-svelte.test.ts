@@ -23,6 +23,9 @@ describe('amigo fraterno page', () => {
 		expect(body).toContain('MARIA');
 		expect(body).toContain('Pendente');
 		expect(body).toContain('Cadastros');
+		expect(body).toContain('Data do próximo sorteio');
+		expect(body).toContain('name="nextDrawDate"');
+		expect(body).toContain('required');
 		expect(body).toContain('Baixar cartões em PDF');
 	});
 

@@ -29,11 +29,15 @@ describe('amigo fraterno PDF endpoint', () => {
 			const response = await _createPdfHandler(
 				amigoFraternoParticipants,
 				generatePdf,
-			)({ locals: { user: secretariaUser } });
+			)({
+				locals: { user: secretariaUser },
+				url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
+			});
 
 			expect(response.status).toBe(200);
 			expect(generatePdf).toHaveBeenCalledWith(
 				expect.arrayContaining([expect.objectContaining({ id: eligible[0].idleitor, photo: null })]),
+				'2026-11-22',
 			);
 			expect(generatePdf).not.toHaveBeenCalledWith(
 				expect.arrayContaining([expect.objectContaining({ id: excluded[0].idleitor })]),

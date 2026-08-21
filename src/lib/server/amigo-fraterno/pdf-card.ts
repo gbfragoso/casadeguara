@@ -5,45 +5,68 @@ import type { PDFFont, PDFImage, PDFPage } from 'pdf-lib';
 
 type CardAssets = { font: PDFFont; logo: PDFImage };
 type NumberedCard = AmigoFraternoPdfParticipant & { number: string };
+const STUB_SEPARATOR_X = 235;
+const STUB_LOGO_X = 203;
+const LOGO_SIZE = 30;
 
 const drawText = (page: PDFPage, text: string, x: number, y: number, size: number, font: PDFFont) =>
-	page.drawText(text, { x, y, size, font, color: PDF_COLORS.gray });
+	page.drawText(text, { x, y, size, font, color: PDF_COLORS.black });
 
 const drawPhoto = async (page: PDFPage, participant: NumberedCard, slot: CardSlot) => {
-	const x = slot.x + 178;
-	const y = slot.y + 15;
-	page.drawRectangle({ x, y, width: 75, height: slot.height - 30, borderColor: PDF_COLORS.blue, borderWidth: 1 });
+	const width = 86;
+	const height = slot.height - 24;
+	const x = slot.x + 246;
+	const y = slot.y + 12;
+	page.drawRectangle({ x, y, width, height, borderColor: PDF_COLORS.black, borderWidth: 0.75 });
 	if (!participant.photo) return;
 	const photo = await page.doc.embedJpg(participant.photo);
-	const size = photo.scaleToFit(71, slot.height - 34);
-	page.drawImage(photo, { x: x + (75 - size.width) / 2, y: y + (slot.height - 30 - size.height) / 2, ...size });
+	const size = photo.scaleToFit(width - 4, height - 4);
+	page.drawImage(photo, { x: x + (width - size.width) / 2, y: y + (height - size.height) / 2, ...size });
 };
 
-const drawName = (page: PDFPage, name: string, slot: CardSlot, font: PDFFont) => {
-	const fitted = fitName(name, font, 128);
-	fitted.lines.forEach((line, index) =>
-		drawText(page, line, slot.x + 275, slot.y + slot.height - 40 - index * (fitted.size + 2), fitted.size, font),
-	);
+const drawName = (page: PDFPage, name: string, slot: CardSlot, font: PDFFont, x: number, y: number, width: number) => {
+	const fitted = fitName(name, font, width);
+	fitted.lines.forEach((line, index) => drawText(page, line, x, y - index * (fitted.size + 2), fitted.size, font));
 };
 
-export const drawCard = async (page: PDFPage, participant: NumberedCard, slot: CardSlot, assets: CardAssets) => {
-	page.drawRectangle({ ...slot, borderColor: PDF_COLORS.blue, borderWidth: 1, color: PDF_COLORS.lightBlue });
+export const drawCard = async (
+	page: PDFPage,
+	participant: NumberedCard,
+	slot: CardSlot,
+	assets: CardAssets,
+	nextDrawDate: string,
+) => {
+	page.drawRectangle({ ...slot, borderColor: PDF_COLORS.blue, borderWidth: 3 });
+	drawText(page, participant.number, slot.x + 14, slot.y + slot.height - 20, 20, assets.font);
+	drawName(page, participant.name, slot, assets.font, slot.x + 14, slot.y + slot.height - 68, 190);
+	drawText(page, 'Representado(a) por:', slot.x + 14, slot.y + 38, 11, assets.font);
 	page.drawLine({
-		start: { x: slot.x + 150, y: slot.y },
-		end: { x: slot.x + 150, y: slot.y + slot.height },
-		thickness: 1,
-		color: PDF_COLORS.blue,
+		start: { x: slot.x + 14, y: slot.y + 18 },
+		end: { x: slot.x + 220, y: slot.y + 18 },
+		thickness: 0.75,
 	});
-	drawText(page, 'LISTA DE PRESENÇA', slot.x + 12, slot.y + slot.height - 20, 8, assets.font);
-	drawText(page, `Nº ${participant.number}`, slot.x + 12, slot.y + slot.height - 38, 11, assets.font);
-	drawText(page, participant.name, slot.x + 12, slot.y + slot.height - 57, 9, assets.font);
-	drawText(page, 'Representado(a) por: __________________', slot.x + 12, slot.y + 18, 8, assets.font);
-	drawText(page, 'Amigo Fraterno', slot.x + 275, slot.y + slot.height - 20, 15, assets.font);
-	drawText(page, 'Data: ____ / ____ / ______', slot.x + 275, slot.y + 18, 8, assets.font);
-	drawText(page, 'Grupo Espírita Casa de Guará', slot.x + 395, slot.y + slot.height - 43, 8, assets.font);
-	drawText(page, 'Existem vários caminhos para a Felicidade...', slot.x + 275, slot.y + 38, 7, assets.font);
-	drawText(page, 'E um deles é a Casa de Guará!', slot.x + 275, slot.y + 28, 7, assets.font);
-	page.drawImage(assets.logo, { x: slot.x + slot.width - 55, y: slot.y + 12, width: 42, height: 42 });
-	drawName(page, participant.name, slot, assets.font);
+	page.drawLine({
+		start: { x: slot.x + STUB_SEPARATOR_X, y: slot.y },
+		end: { x: slot.x + STUB_SEPARATOR_X, y: slot.y + slot.height },
+		thickness: 0.75,
+		dashArray: [3, 3],
+	});
+	page.drawImage(assets.logo, {
+		x: slot.x + STUB_LOGO_X,
+		y: slot.y + slot.height - 35,
+		width: LOGO_SIZE,
+		height: LOGO_SIZE,
+	});
 	await drawPhoto(page, participant, slot);
+	drawText(page, 'Amigo Fraterno', slot.x + 382, slot.y + slot.height - 25, 16, assets.font);
+	drawText(page, `Próximo sorteio: ${nextDrawDate}`, slot.x + 344, slot.y + slot.height - 52, 11, assets.font);
+	drawName(page, participant.name, slot, assets.font, slot.x + 344, slot.y + slot.height - 83, 200);
+	drawText(page, '"Existem muitos caminhos para felicidade...', slot.x + 360, slot.y + 28, 10, assets.font);
+	drawText(page, 'Um deles é a Casa de Guará!"', slot.x + 385, slot.y + 12, 10, assets.font);
+	page.drawImage(assets.logo, {
+		x: slot.x + slot.width - LOGO_SIZE - 8,
+		y: slot.y + slot.height - 35,
+		width: LOGO_SIZE,
+		height: LOGO_SIZE,
+	});
 };

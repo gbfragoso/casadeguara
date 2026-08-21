@@ -7,7 +7,7 @@ import { sql } from './cadastros-database';
 export const createName = (suffix: string) => `AMF ${suffix} ${randomUUID().slice(0, 8)}`;
 
 export const createParticipant = async (name: string, hasPhoto = false) => {
-	const photo = hasPhoto ? await readFile('src/lib/server/amigo-fraterno/assets/casa-de-guara.jpeg') : null;
+	const photo = hasPhoto ? await readFile('tests/fixtures/amigo-fraterno-photo.jpeg') : null;
 	const [cadastro] = await sql<{ idleitor: number }[]>`
 		insert into cadastros (nome, trab, desencarnado, amigo_fraterno, foto)
 		values (${name}, true, false, false, ${photo})

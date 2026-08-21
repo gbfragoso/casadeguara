@@ -47,7 +47,9 @@ describe('CadastroModel secretaria photo updates', () => {
 		const errorLog = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
 		try {
-			await expect(model.replaceSecretariaPhoto(created.idleitor, new Uint8Array([1]), 'x'.repeat(31))).rejects.toThrow();
+			await expect(
+				model.replaceSecretariaPhoto(created.idleitor, new Uint8Array([1]), 'x'.repeat(31)),
+			).rejects.toThrow();
 			expect(await model.getSecretariaPhoto(created.idleitor)).toBeNull();
 			expect(errorLog).toHaveBeenCalledWith(
 				'amigo_fraterno.photo_persistence_failed',

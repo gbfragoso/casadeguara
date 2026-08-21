@@ -43,15 +43,11 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		await response;
 		await expect.poll(async () => (await readCadastro(name)).amigo_fraterno).toBe(true);
 		await page.goto(`/secretaria/cadastros/${id}`);
-		await page
-			.getByLabel('Incluir ou substituir foto')
-			.setInputFiles('src/lib/server/amigo-fraterno/assets/casa-de-guara.jpeg');
+		await page.getByLabel('Incluir ou substituir foto').setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
 		await page.getByRole('button', { name: 'Salvar foto' }).click();
 		await expect(page.getByText('Foto salva com sucesso!')).toBeVisible();
 		await expect(page.getByRole('img', { name: `Foto de ${name}` })).toBeVisible();
-		await page
-			.getByLabel('Incluir ou substituir foto')
-			.setInputFiles('src/lib/server/amigo-fraterno/assets/casa-de-guara.jpeg');
+		await page.getByLabel('Incluir ou substituir foto').setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
 		await page.getByRole('button', { name: 'Salvar foto' }).click();
 		await page.getByRole('button', { name: 'Remover foto' }).click();
 		await expect(page.getByText('Foto removida com sucesso!')).toBeVisible();

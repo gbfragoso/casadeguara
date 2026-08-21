@@ -10,7 +10,10 @@ import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form
 import { removePhoto, savePhoto } from '../photo-actions';
 import type { Actions, PageServerLoad } from './$types';
 
-type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria' | 'replaceSecretariaPhoto' | 'removeSecretariaPhoto'>;
+type EditModel = Pick<
+	CadastroModel,
+	'getSecretaria' | 'updateSecretaria' | 'replaceSecretariaPhoto' | 'removeSecretariaPhoto'
+>;
 type User = { id: string; roles: string } | null;
 type LoadContext = { locals: { user: User }; params: { id: string } };
 type ActionContext = LoadContext & { request: Request };

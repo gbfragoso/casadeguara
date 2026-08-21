@@ -15,7 +15,10 @@ const updatePhoto = async (database: CadastroDatabase, id: number, foto: Uint8Ar
 		const event = foto === null ? 'amigo_fraterno.photo_removed' : 'amigo_fraterno.photo_saved';
 		const details = { cadastroId: id, actorId: userAlteracao, duration: performance.now() - startedAt };
 
-		console.info(event, foto === null ? details : { ...details, inputSize: foto.byteLength, outputSize: foto.byteLength });
+		console.info(
+			event,
+			foto === null ? details : { ...details, inputSize: foto.byteLength, outputSize: foto.byteLength },
+		);
 		return updated !== undefined;
 	} catch (error) {
 		console.error('amigo_fraterno.photo_persistence_failed', { cadastroId: id, actorId: userAlteracao, error });

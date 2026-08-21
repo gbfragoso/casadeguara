@@ -51,9 +51,27 @@ describe('TI-10 Amigo Fraterno authorization', () => {
 			const emptyParticipants = { listForPdf: async () => [] };
 			const emptyPdf = async () => ({ bytes: Uint8Array.of(), pageCount: 0 });
 			expect(
-				(await _createPdfHandler(emptyParticipants, emptyPdf)({ locals: { user: secretaria } })).status,
+				(
+					await _createPdfHandler(
+						emptyParticipants,
+						emptyPdf,
+					)({
+						locals: { user: secretaria },
+						url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
+					})
+				).status,
 			).toBe(409);
-			expect((await _createPdfHandler(emptyParticipants, emptyPdf)({ locals: { user: null } })).status).toBe(401);
+			expect(
+				(
+					await _createPdfHandler(
+						emptyParticipants,
+						emptyPdf,
+					)({
+						locals: { user: null },
+						url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
+					})
+				).status,
+			).toBe(401);
 		} finally {
 			await deleteCadastro(created.idleitor);
 		}

@@ -42,6 +42,7 @@ describe('amigo fraterno authorization boundaries', () => {
 			vi.fn().mockResolvedValue({ bytes: Uint8Array.of(1), pageCount: 1 }),
 		)({
 			locals: { user: secretariaUser },
+			url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
 		});
 
 		expect(response.status).toBe(200);
@@ -51,7 +52,13 @@ describe('amigo fraterno authorization boundaries', () => {
 		['unauthenticated', null],
 		['biblioteca', bibliotecaUser],
 	])('rejects %s PDF requests', async (_, user) => {
-		const response = await _createPdfHandler(participants, vi.fn())({ locals: { user } });
+		const response = await _createPdfHandler(
+			participants,
+			vi.fn(),
+		)({
+			locals: { user },
+			url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
+		});
 
 		expect(response.status).toBe(401);
 		expect(participants.listForPdf).not.toHaveBeenCalled();
