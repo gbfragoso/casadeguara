@@ -35,6 +35,9 @@
 		{#if data.total === 0}
 			<p role="status">Não há participantes elegíveis no momento. Revise os Cadastros para atualizar a lista.</p>
 		{:else}
+			<a class="button is-primary mb-4" href={resolve('/secretaria/amigofraterno/pdf')} download>
+				Baixar cartões em PDF
+			</a>
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
 					<thead><tr><th>Nome</th><th>Foto</th></tr></thead>

@@ -23,6 +23,7 @@ describe('amigo fraterno page', () => {
 		expect(body).toContain('MARIA');
 		expect(body).toContain('Pendente');
 		expect(body).toContain('Cadastros');
+		expect(body).toContain('Baixar cartões em PDF');
 	});
 
 	it('renders a textual empty state', () => {
@@ -40,5 +41,6 @@ describe('amigo fraterno page', () => {
 		});
 
 		expect(body).toContain('Não há participantes elegíveis no momento.');
+		expect(body).not.toContain('Baixar cartões em PDF');
 	});
 });
