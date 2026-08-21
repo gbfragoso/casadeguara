@@ -11,7 +11,7 @@ const registrationIdSchema = z
 export const secretariaFlagsSchema = z.strictObject(
 	{
 		id: registrationIdSchema,
-		field: z.enum(['trab', 'frequencia', 'desencarnado'], { error: INVALID_UPDATE_MESSAGE }),
+		field: z.enum(['trab', 'frequencia', 'desencarnado', 'amigoFraterno'], { error: INVALID_UPDATE_MESSAGE }),
 		value: z.boolean({ error: INVALID_UPDATE_MESSAGE }),
 	},
 	INVALID_UPDATE_MESSAGE,

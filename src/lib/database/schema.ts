@@ -1,5 +1,6 @@
 import {
 	boolean,
+	customType,
 	date,
 	index,
 	integer,
@@ -15,6 +16,10 @@ import {
 	uniqueIndex,
 	varchar,
 } from 'drizzle-orm/pg-core';
+
+const byteaColumn = customType<{ data: Uint8Array; driverData: Uint8Array }>({
+	dataType: () => 'bytea',
+});
 
 export const aviso = pgTable('aviso', {
 	idaviso: smallserial().primaryKey().notNull(),
@@ -109,6 +114,8 @@ export const cadastros = pgTable(
 		trab: boolean().default(false),
 		desencarnado: boolean().default(false),
 		frequencia: boolean().default(false),
+		amigoFraterno: boolean('amigo_fraterno').notNull().default(false),
+		foto: byteaColumn(),
 		cidade: varchar(),
 		incompleto: boolean(),
 		status: boolean().default(true),

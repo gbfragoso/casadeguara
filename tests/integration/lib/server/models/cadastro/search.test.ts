@@ -48,6 +48,7 @@ describe('CadastroModel searches', () => {
 				trab: false,
 				frequencia: false,
 				desencarnado: false,
+				amigoFraterno: false,
 			});
 			expect(tesouraria).toContainEqual({ idleitor: created.idleitor, nome: name, telefone: null, trab: false });
 		});
