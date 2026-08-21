@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import { expect, test } from '@playwright/test';
 import { signIn } from './cadastros-browser';
-import { closeDatabase, createTestUsers, deleteTestUsers, readCadastro, type TestUsers } from './cadastros-database';
+import { createTestUsers, deleteTestUsers, readCadastro, type TestUsers } from './cadastros-database';
 import {
 	createName,
 	createParticipant,
@@ -24,7 +24,6 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 	test.afterAll(async () => {
 		await deleteParticipants(names);
 		if (users) await deleteTestUsers(users);
-		await closeDatabase();
 	});
 
 	test('E2E-01 manages participation and the complete photo lifecycle', async ({ page }) => {
@@ -61,7 +60,8 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		await setAmigoFraterno(id, true);
 		if (!users) throw new Error('Usuários E2E não foram preparados.');
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
-		await page.getByRole('link', { name: 'Amigo Fraterno' }).click();
+		await page.goto('/secretaria');
+		await page.locator('a[aria-label="amigo fraterno"]').click();
 		await expect(page).toHaveURL(/\/secretaria\/amigofraterno$/);
 		await expect(page.getByText(name, { exact: true })).toBeVisible();
 		await setWorker(id, false);

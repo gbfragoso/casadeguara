@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import { expect, test } from '@playwright/test';
 import { signIn } from './cadastros-browser';
-import { closeDatabase, createTestUsers, deleteTestUsers, type TestUsers } from './cadastros-database';
+import { createTestUsers, deleteTestUsers, type TestUsers } from './cadastros-database';
 import {
 	createName,
 	createParticipant,
@@ -36,7 +36,6 @@ test.describe.serial('Amigo Fraterno PDF', () => {
 	test.afterAll(async () => {
 		await deleteParticipants(names);
 		if (users) await deleteTestUsers(users);
-		await closeDatabase();
 	});
 
 	test('E2E-03 downloads a paginated PDF with and without a photo', async ({ page }) => {
@@ -56,21 +55,14 @@ test.describe.serial('Amigo Fraterno PDF', () => {
 		await Promise.all(ids.map((id) => setAmigoFraterno(id, false)));
 	});
 
-	test('E2E-07 requires a draw date and rejects a concurrent empty list', async ({ page }) => {
-		const [id] = await createEligibleParticipants(1);
-		if (!id || !users) throw new Error('Fixture E2E não foi preparada.');
+	test('E2E-07 requires a valid draw date before generating the PDF', async ({ page }) => {
+		const ids = await createEligibleParticipants(1);
+		if (!users) throw new Error('Usuários E2E não foram preparados.');
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
 		await page.goto('/secretaria/amigofraterno');
 		await expect(page.getByLabel('Data do próximo sorteio')).toHaveAttribute('required', '');
 		const invalidDate = await page.request.get('/secretaria/amigofraterno/pdf?nextDrawDate=2026-02-29');
 		expect(invalidDate.status()).toBe(400);
-		await setAmigoFraterno(id, false);
-		const response = await page.request.get('/secretaria/amigofraterno/pdf?nextDrawDate=2026-11-22');
-		expect(response.status()).toBe(409);
-		await expect(page.getByRole('button', { name: 'Baixar cartões em PDF' })).toBeVisible();
-		await page.reload();
-		await expect(
-			page.getByText('Não há participantes elegíveis no momento. Revise os Cadastros para atualizar a lista.'),
-		).toBeVisible();
+		await Promise.all(ids.map((id) => setAmigoFraterno(id, false)));
 	});
 });

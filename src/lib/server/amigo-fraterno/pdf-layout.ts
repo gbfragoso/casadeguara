@@ -1,7 +1,8 @@
 export const A4_WIDTH = 595.28;
 export const A4_HEIGHT = 841.89;
 export const CARDS_PER_PAGE = 6;
-const PAGE_MARGIN = 4;
+const POINTS_PER_CENTIMETER = 28.3464567;
+export const PAGE_MARGIN = POINTS_PER_CENTIMETER / 2;
 const CARD_GAP = 3;
 export const CARD_WIDTH = A4_WIDTH - PAGE_MARGIN * 2;
 export const CARD_HEIGHT = (A4_HEIGHT - PAGE_MARGIN * 2 - CARD_GAP * (CARDS_PER_PAGE - 1)) / CARDS_PER_PAGE;

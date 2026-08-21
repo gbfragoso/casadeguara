@@ -39,8 +39,8 @@ export const actions: Actions = {
 				.select({
 					idlivro: exemplar.livro,
 					titulo: livro.titulo,
-					autores: sql<String>`null as autores`,
-					disponiveis: sql<Number>`SUM(CASE WHEN status = 'Disponível' THEN 1 ELSE 0 END)`,
+					autores: sql<string[]>`null as autores`,
+					disponiveis: sql<number>`SUM(CASE WHEN status = 'Disponível' THEN 1 ELSE 0 END)`,
 				})
 				.from(exemplar)
 				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
@@ -65,12 +65,9 @@ export const actions: Actions = {
 			}
 			const livros = await query;
 
-			var vals = [];
-			for (var i = 0; i < livros.length; i++) {
-				vals.push(livros[i].idlivro);
-			}
+			const vals = livros.map(({ idlivro }) => idlivro);
 
-			let resultados = db
+			const resultados = db
 				.select({
 					livro: autorHasLivro.livro,
 					nome: autor.nome,
@@ -81,17 +78,16 @@ export const actions: Actions = {
 				.orderBy(autor.nome);
 
 			const autores = await resultados;
-			const map = new Map();
-			for (var i = 0; i < autores.length; i++) {
-				if (!map.has(autores[i].livro)) {
-					map.set(autores[i].livro, []);
-				}
-				map.get(autores[i].livro).push(autores[i].nome);
-			}
+			const autoresPorLivro = autores.reduce<Map<number, string[]>>((map, { livro, nome }) => {
+				const nomes = map.get(livro) ?? [];
+				nomes.push(nome);
+				map.set(livro, nomes);
+				return map;
+			}, new Map());
 
-			for (var i = 0; i < livros.length; i++) {
-				livros[i].autores = map.get(livros[i].idlivro);
-			}
+			livros.forEach((item) => {
+				item.autores = autoresPorLivro.get(item.idlivro) ?? [];
+			});
 
 			return { livros };
 		} catch (err) {

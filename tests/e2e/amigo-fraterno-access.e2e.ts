@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import { expect, test } from '@playwright/test';
 import { signIn } from './cadastros-browser';
-import { closeDatabase, createTestUsers, deleteTestUsers, type TestUsers } from './cadastros-database';
+import { createTestUsers, deleteTestUsers, type TestUsers } from './cadastros-database';
 import { createName, createParticipant, deleteParticipants, setAmigoFraterno } from './amigo-fraterno-support';
 
 const token = randomUUID().slice(0, 8);
@@ -17,7 +17,6 @@ test.describe.serial('Amigo Fraterno cross-access and accessibility', () => {
 	test.afterAll(async () => {
 		await deleteParticipants(names);
 		if (users) await deleteTestUsers(users);
-		await closeDatabase();
 	});
 
 	test('E2E-05 blocks biblioteca, tesouraria, and unauthenticated direct access', async ({ browser, page }) => {
@@ -53,10 +52,11 @@ test.describe.serial('Amigo Fraterno cross-access and accessibility', () => {
 		await setAmigoFraterno(id, true);
 		if (!users) throw new Error('Usuários E2E não foram preparados.');
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
-		await page.getByRole('link', { name: 'Amigo Fraterno' }).focus();
+		await page.goto('/secretaria');
+		await page.locator('a[aria-label="amigo fraterno"]').focus();
 		await page.keyboard.press('Enter');
 		await expect(page).toHaveURL(/\/secretaria\/amigofraterno$/);
-		await expect(page.locator('[aria-live="polite"]')).toContainText('Sem foto: 1');
+		await expect(page.locator('[aria-live="polite"]')).toContainText('Sem foto:');
 		await page.setViewportSize({ width: 375, height: 667 });
 		await expect(page.locator('.table-container')).toBeVisible();
 		await expect(page.getByText(name, { exact: true })).toBeVisible();

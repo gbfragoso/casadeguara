@@ -8,6 +8,7 @@ const databaseUrl = process.env.POSTGRES_URL;
 if (!databaseUrl) throw new Error('POSTGRES_URL is required for cadastro E2E tests.');
 
 export const sql = postgres(databaseUrl);
+const TEST_USER_TOKEN_LENGTH = 8;
 
 export type TestUser = { id: string; email: string; password: string };
 export type TestUsers = { owner: TestUser; wrongRole: TestUser; tesouraria: TestUser };
@@ -34,8 +35,8 @@ export type CadastroSnapshot = {
 };
 
 const createUser = (token: string, suffix: string, password: string): TestUser => ({
-	id: `e2e-${suffix}-${token}`,
-	email: `e2e-${suffix}-${token}@t.dev`,
+	id: `e2e-${suffix}-${token.slice(0, TEST_USER_TOKEN_LENGTH)}`,
+	email: `e2e-${suffix}-${token.slice(0, TEST_USER_TOKEN_LENGTH)}@t.dev`,
 	password,
 });
 
