@@ -13,7 +13,9 @@ type ActionContext = { locals: { user: User }; request: Request };
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
 export const _createListHandlers = (model: ListModel) => ({
-	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireLibraryAccess(locals.user),
+	load: ({ locals }: Pick<ActionContext, 'locals'>) => {
+		requireLibraryAccess(locals.user);
+	},
 	actions: {
 		default: async ({ locals, request }: ActionContext) => {
 			requireLibraryAccess(locals.user);

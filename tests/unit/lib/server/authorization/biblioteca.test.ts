@@ -17,6 +17,8 @@ describe('requireLibraryAccess', () => {
 	});
 
 	it('allows library roles including administrators', () => {
-		expect(() => requireLibraryAccess({ roles: 'biblioteca,biblioteca:admin' })).not.toThrow();
+		const user = { id: 'user-1', roles: 'biblioteca,biblioteca:admin', username: 'bibliotecaria' };
+
+		expect(requireLibraryAccess(user)).toBe(user);
 	});
 });
