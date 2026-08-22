@@ -34,7 +34,8 @@ test.describe.serial('notice journey', () => {
 		await page.goto('/biblioteca');
 		await expect(page.locator('p').filter({ hasText: expectedFixtures[0] })).toBeVisible();
 		await expect(page.locator('p').filter({ hasText: expectedFixtures[4] })).toBeVisible();
-		await page.goto('/biblioteca/avisos');
+		await page.getByRole('link', { name: 'avisos' }).click();
+		await expect(page.getByLabel('Texto do aviso')).toBeVisible();
 		await page.getByLabel('Texto do aviso').fill(createdText);
 		await page.getByRole('button', { name: 'Novo' }).click();
 		await expect(page.getByText('Aviso criado com sucesso!')).toBeVisible();
