@@ -1,58 +1,63 @@
-import { db } from '$lib/database/connection';
-import { aviso } from '$lib/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import validator from 'validator';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { avisoModel, type AvisoModel } from '$lib/server/models/aviso';
+import { avisoSchema } from '$lib/validation/aviso';
+import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-	if (!locals.user) redirect(302, '/');
+type NoticeModel = Pick<AvisoModel, 'get' | 'update'>;
+type User = { roles: string; username: string } | null;
+type HandlerContext = { locals: { user: User }; params: { id: string } };
+type ActionContext = HandlerContext & { request: Request };
 
-	try {
-		const resultado = await db
-			.select()
-			.from(aviso)
-			.where(eq(aviso.idaviso, Number(params.id)));
+const getSubmittedText = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-		if (!resultado) {
-			throw fail(404, {
-				message: 'Aviso não encontrado',
-			});
-		}
-		return { aviso: resultado[0] };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao baixar os dados do aviso',
-		});
-	}
-};
+const logFailure = (message: string, cause: unknown) => console.error(message, { cause });
 
-export const actions: Actions = {
-	default: async ({ request, params }) => {
-		const form = await request.formData();
-		const texto = form.get('texto') as string;
-
-		if (validator.isEmpty(texto, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'texto',
-				message: 'Texto do aviso é obrigatório',
-			};
-		}
+export const createAvisoEditHandlers = (model: NoticeModel) => ({
+	load: async ({ locals, params }: HandlerContext) => {
+		requireLibraryAccess(locals.user);
+		const id = Number(params.id);
+		let aviso;
 
 		try {
-			await db
-				.update(aviso)
-				.set({ texto })
-				.where(eq(aviso.idaviso, Number(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar o texto do aviso',
-			});
+			aviso = await model.get(id);
+		} catch (cause) {
+			logFailure('Falha ao baixar os dados do aviso', cause);
+			error(500, { message: 'Falha ao baixar os dados do aviso' });
 		}
+
+		if (!aviso) error(404, { message: 'Aviso não encontrado' });
+
+		return { aviso };
 	},
-};
+	actions: {
+		default: async ({ locals, params, request }: ActionContext) => {
+			requireLibraryAccess(locals.user);
+			const formData = await request.formData();
+			const rawText = formData.get('texto');
+			const result = avisoSchema.safeParse({ texto: rawText });
+			const values = { texto: getSubmittedText(rawText) };
+
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
+
+			let updated;
+			try {
+				updated = await model.update(Number(params.id), result.data.texto);
+			} catch (cause) {
+				logFailure('Falha ao atualizar o texto do aviso', cause);
+				error(500, { message: 'Falha ao atualizar o texto do aviso' });
+			}
+
+			if (!updated) error(404, { message: 'Aviso não encontrado' });
+
+			return { status: 200 };
+		},
+	},
+});
+
+const handlers = createAvisoEditHandlers(avisoModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;

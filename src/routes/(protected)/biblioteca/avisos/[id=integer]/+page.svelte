@@ -1,16 +1,19 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import Notification from '$lib/components/Notification.svelte';
-	import type { ActionData, PageServerData } from './$types';
+	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
+	import { NOTICE_TEXT_MAX_LENGTH } from '$lib/validation/aviso';
+	import type { ActionData, PageData } from './$types';
+
 	interface Props {
-		data: PageServerData;
-		form: ActionData;
+		data: PageData;
+		form?: ActionData;
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
-	let { aviso } = $derived(data);
+	const formEnhancer = createFormEnhancer();
+	let errorMessages = $derived(form?.errors?.texto ?? []);
+	let submittedText = $derived(form?.values?.texto ?? data.aviso.texto);
 </script>
 
 <div class="mb-2">
@@ -25,16 +28,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar aviso</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="texto">Texto do aviso</label>
@@ -43,20 +37,31 @@
 					class="textarea has-fixed-size"
 					name="texto"
 					id="texto"
-					value={aviso.texto}
 					placeholder="Digite o texto do aviso"
-					required></textarea>
+					required
+					maxlength={NOTICE_TEXT_MAX_LENGTH}
+					aria-invalid={errorMessages.length > 0 ? 'true' : undefined}
+					aria-describedby={errorMessages.length > 0 ? 'texto-errors' : undefined}>{submittedText}</textarea>
 			</div>
-			{#if form?.field === 'texto'}
-				<p class="help is-danger">{form?.message}</p>
+			{#if errorMessages.length > 0}
+				<div id="texto-errors" class="help is-danger">
+					{#each errorMessages as message (message)}
+						<p>{message}</p>
+					{/each}
+				</div>
 			{/if}
 		</div>
-		<div class="control">
-			<button
-				aria-busy={loading}
-				class:is-loading={loading}
-				class="button is-primary has-text-weight-semibold"
-				type="submit">Atualizar</button>
+		<div class="columns">
+			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
+				<button
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						{ 'is-loading': formEnhancer.loading },
+					]}
+					disabled={formEnhancer.loading}
+					type="submit">Atualizar</button>
+			</div>
 		</div>
 	</div>
 </form>

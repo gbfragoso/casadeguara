@@ -1,48 +1,52 @@
-import { db } from '$lib/database/connection';
-import { aviso } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { desc } from 'drizzle-orm';
-import validator from 'validator';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { avisoModel, type AvisoModel } from '$lib/server/models/aviso';
+import { avisoSchema } from '$lib/validation/aviso';
+import { error, fail } from '@sveltejs/kit';
+import { flattenError } from 'zod';
 
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
+type NoticeModel = Pick<AvisoModel, 'create' | 'listRecent'>;
+type User = { roles: string; username: string } | null;
+type ActionContext = { locals: { user: User }; request: Request };
 
-	try {
-		const avisos = async () => {
-			return db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
-		};
-		return { avisos: avisos() };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de avisos',
-		});
-	}
-};
+const getSubmittedText = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const actions: Actions = {
-	default: async ({ locals, request }) => {
-		const form = await request.formData();
-		const texto = form.get('texto') as string;
+const logFailure = (message: string, cause: unknown) => console.error(message, { cause });
 
-		if (validator.isEmpty(texto, { ignore_whitespace: true })) {
-			return {
-				status: 400,
-				field: 'texto',
-				message: 'Texto do aviso é obrigatório',
-			};
-		}
+export const createAvisosPageHandlers = (model: NoticeModel) => ({
+	load: async ({ locals }: Pick<ActionContext, 'locals'>) => {
+		requireLibraryAccess(locals.user);
 
 		try {
-			await db.insert(aviso).values({ texto, username: locals.user?.name });
-			return { status: 201 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar um novo aviso',
-			});
+			return { avisos: await model.listRecent() };
+		} catch (cause) {
+			logFailure('Falha ao carregar a lista de avisos', cause);
+			error(500, { message: 'Falha ao carregar a lista de avisos' });
 		}
 	},
-} satisfies Actions;
+	actions: {
+		default: async ({ locals, request }: ActionContext) => {
+			const user = requireLibraryAccess(locals.user);
+			const formData = await request.formData();
+			const rawText = formData.get('texto');
+			const result = avisoSchema.safeParse({ texto: rawText });
+			const values = { texto: getSubmittedText(rawText) };
+
+			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
+
+			try {
+				await model.create(result.data.texto, user.username);
+				return { status: 201 };
+			} catch (cause) {
+				logFailure('Falha ao criar um novo aviso', cause);
+				error(500, { message: 'Falha ao criar um novo aviso' });
+			}
+		},
+	},
+});
+
+const handlers = createAvisosPageHandlers(avisoModel);
+
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
