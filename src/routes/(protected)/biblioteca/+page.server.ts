@@ -1,50 +1,72 @@
 import { db } from '$lib/database/connection';
-import { aviso, emprestimo } from '$lib/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { and, count, desc, gte, isNotNull, lte, sum } from 'drizzle-orm';
+import { emprestimo } from '$lib/database/schema';
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { avisoModel, type Aviso } from '$lib/server/models/aviso';
+import { error } from '@sveltejs/kit';
+import { and, count, gte, isNotNull, lte, sum } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
+type LoanIndicator = { counter: number; renovacoes: string | null };
+type ReturnIndicator = { counter: number };
 
-	try {
-		const date = new Date();
-		const year = date.getFullYear();
-		const month = date.getMonth();
-		const firstDay = new Date(year, month, 1);
-		const lastDay = new Date(year, month + 1, 0);
-		const dateFilter = and(gte(emprestimo.dataEmprestimo, firstDay), lte(emprestimo.dataEmprestimo, lastDay));
-
-		const avisos = async () => {
-			return db.select().from(aviso).orderBy(desc(aviso.dataCadastro)).limit(5);
-		};
-
-		const emprestimosMesAtual = async () => {
-			return db
-				.select({ counter: count(), renovacoes: sum(emprestimo.renovacoes) })
-				.from(emprestimo)
-				.where(dateFilter);
-		};
-
-		const devolucoesMesAtual = async () => {
-			return db
-				.select({ counter: count() })
-				.from(emprestimo)
-				.where(and(dateFilter, isNotNull(emprestimo.dataDevolvido)));
-		};
-
-		return {
-			avisos: avisos(),
-			emprestimos: emprestimosMesAtual(),
-			devolucoes: devolucoesMesAtual(),
-			username: locals.user.name,
-			userid: locals.user.id,
-		};
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar as informações da biblioteca',
-		});
-	}
+export type DashboardSources = {
+	listRecent: () => Promise<Aviso[]>;
+	listLoans: (firstDay: Date, lastDay: Date) => Promise<LoanIndicator[]>;
+	listReturns: (firstDay: Date, lastDay: Date) => Promise<ReturnIndicator[]>;
+	now: () => Date;
 };
+
+type DashboardLoadEvent = Pick<Parameters<PageServerLoad>[0], 'locals'>;
+
+const getMonthBounds = (date: Date) => {
+	const year = date.getFullYear();
+	const month = date.getMonth();
+
+	return { firstDay: new Date(year, month, 1), lastDay: new Date(year, month + 1, 0) };
+};
+
+export const createLibraryDashboardLoad = (sources: DashboardSources) => {
+	return async ({ locals }: DashboardLoadEvent) => {
+		const user = requireLibraryAccess(locals.user);
+		const { firstDay, lastDay } = getMonthBounds(sources.now());
+
+		try {
+			const [avisos, emprestimos, devolucoes] = await Promise.all([
+				sources.listRecent(),
+				sources.listLoans(firstDay, lastDay),
+				sources.listReturns(firstDay, lastDay),
+			]);
+
+			return { avisos, emprestimos, devolucoes, username: user.name, userid: user.id };
+		} catch (cause) {
+			console.error('Falha ao carregar o painel da biblioteca', { cause });
+			error(500, { message: 'Falha ao carregar as informações da biblioteca' });
+		}
+	};
+};
+
+const listLoans: DashboardSources['listLoans'] = (firstDay, lastDay) => {
+	const dateFilter = and(gte(emprestimo.dataEmprestimo, firstDay), lte(emprestimo.dataEmprestimo, lastDay));
+
+	return db
+		.select({ counter: count(), renovacoes: sum(emprestimo.renovacoes) })
+		.from(emprestimo)
+		.where(dateFilter);
+};
+
+const listReturns: DashboardSources['listReturns'] = (firstDay, lastDay) => {
+	const dateFilter = and(gte(emprestimo.dataEmprestimo, firstDay), lte(emprestimo.dataEmprestimo, lastDay));
+
+	return db
+		.select({ counter: count() })
+		.from(emprestimo)
+		.where(and(dateFilter, isNotNull(emprestimo.dataDevolvido)));
+};
+
+export const load: PageServerLoad = createLibraryDashboardLoad({
+	listRecent: () => avisoModel.listRecent(),
+	listLoans,
+	listReturns,
+	now: () => new Date(),
+});
