@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createAvisoEditHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
+import { _createAvisoEditHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
 
 const libraryUser = { roles: 'biblioteca', username: 'bibliotecaria' };
 const aviso = { idaviso: 7, dataCadastro: new Date(), texto: 'Aviso carregado', username: 'bibliotecaria' };
@@ -12,7 +12,7 @@ describe('notice edit load handler', () => {
 	it('loads an existing notice through the model after authorizing the user', async () => {
 		const model = { get: vi.fn().mockResolvedValue(aviso), update: vi.fn() };
 
-		await expect(createAvisoEditHandlers(model).load({ locals: { user: libraryUser }, params })).resolves.toEqual({
+		await expect(_createAvisoEditHandlers(model).load({ locals: { user: libraryUser }, params })).resolves.toEqual({
 			aviso,
 		});
 		expect(model.get).toHaveBeenCalledWith(aviso.idaviso);
@@ -22,7 +22,7 @@ describe('notice edit load handler', () => {
 		const model = { get: vi.fn().mockResolvedValue(undefined), update: vi.fn() };
 
 		await expect(
-			createAvisoEditHandlers(model).load({ locals: { user: libraryUser }, params }),
+			_createAvisoEditHandlers(model).load({ locals: { user: libraryUser }, params }),
 		).rejects.toMatchObject({
 			status: 404,
 		});
@@ -31,7 +31,7 @@ describe('notice edit load handler', () => {
 	it('redirects an unauthenticated user before consulting the model', async () => {
 		const model = { get: vi.fn(), update: vi.fn() };
 
-		await expect(createAvisoEditHandlers(model).load({ locals: { user: null }, params })).rejects.toMatchObject({
+		await expect(_createAvisoEditHandlers(model).load({ locals: { user: null }, params })).rejects.toMatchObject({
 			status: 302,
 		});
 		expect(model.get).not.toHaveBeenCalled();
@@ -42,7 +42,7 @@ describe('notice edit load handler', () => {
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
 		await expect(
-			createAvisoEditHandlers(model).load({ locals: { user: libraryUser }, params }),
+			_createAvisoEditHandlers(model).load({ locals: { user: libraryUser }, params }),
 		).rejects.toMatchObject({
 			status: 500,
 			body: { message: 'Falha ao baixar os dados do aviso' },

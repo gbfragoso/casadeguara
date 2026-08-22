@@ -31,6 +31,15 @@ export default [
 		},
 	},
 	{
-		ignores: ['build/', '.svelte-kit/', '.vercel/', 'dist/', 'coverage/', 'playwright-report/', 'test-results/'],
+		ignores: [
+			'.agents/**',
+			'build/',
+			'.svelte-kit/',
+			'.vercel/',
+			'dist/',
+			'coverage/',
+			'playwright-report/',
+			'test-results/',
+		],
 	},
 ];

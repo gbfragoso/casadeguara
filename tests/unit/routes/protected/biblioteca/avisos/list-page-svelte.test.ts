@@ -46,4 +46,11 @@ describe('notice list page', () => {
 
 		expect(body).toContain('Aviso criado com sucesso!');
 	});
+
+	it('renders the submission control as available before a request', () => {
+		const { body } = render(Page, { props: { data: createData([]), form: { status: 201 } } });
+
+		expect(body).toContain('aria-busy="false"');
+		expect(body).toContain('type="submit"');
+	});
 });

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createAvisosPageHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/+page.server';
+import { _createAvisosPageHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/+page.server';
 
 const libraryUser = { roles: 'biblioteca', username: 'bibliotecaria' };
 
@@ -23,7 +23,7 @@ describe('notice creation failures', () => {
 		const model = { create: vi.fn(), listRecent: vi.fn() };
 
 		await expect(
-			createAvisosPageHandlers(model).actions.default({
+			_createAvisosPageHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				request: createRequest(texto),
 			}),
@@ -37,7 +37,7 @@ describe('notice creation failures', () => {
 		const model = { create: vi.fn(), listRecent: vi.fn() };
 
 		await expect(
-			createAvisosPageHandlers(model).actions.default({ locals: { user: null }, request }),
+			_createAvisosPageHandlers(model).actions.default({ locals: { user: null }, request }),
 		).rejects.toMatchObject({ status: 302 });
 		expect(formDataSpy).not.toHaveBeenCalled();
 		expect(model.create).not.toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe('notice creation failures', () => {
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
 		await expect(
-			createAvisosPageHandlers(model).actions.default({
+			_createAvisosPageHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				request: createRequest('Aviso'),
 			}),

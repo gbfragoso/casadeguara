@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createLibraryDashboardLoad } from '../../../../../src/routes/(protected)/biblioteca/+page.server';
+import { _createLibraryDashboardLoad } from '../../../../../src/routes/(protected)/biblioteca/+page.server';
 
 const libraryUser = { id: 'user-1', name: 'Bibliotecária', roles: 'biblioteca', username: 'bibliotecaria' };
 const notices = [{ idaviso: 5, dataCadastro: new Date('2026-08-20'), texto: 'Aviso', username: 'bibliotecaria' }];
@@ -15,7 +15,7 @@ describe('library dashboard load', () => {
 		const listRecent = vi.fn().mockReturnValue(noticesSource.promise);
 		const listLoans = vi.fn().mockReturnValue(loansSource.promise);
 		const listReturns = vi.fn().mockReturnValue(returnsSource.promise);
-		const load = createLibraryDashboardLoad({
+		const load = _createLibraryDashboardLoad({
 			listRecent,
 			listLoans,
 			listReturns,
@@ -41,7 +41,12 @@ describe('library dashboard load', () => {
 
 	it('does not consult dashboard sources without library access', async () => {
 		const listRecent = vi.fn();
-		const load = createLibraryDashboardLoad({ listRecent, listLoans: vi.fn(), listReturns: vi.fn(), now: vi.fn() });
+		const load = _createLibraryDashboardLoad({
+			listRecent,
+			listLoans: vi.fn(),
+			listReturns: vi.fn(),
+			now: vi.fn(),
+		});
 
 		await expect(load({ locals: { session: null, user: null } })).rejects.toMatchObject({ status: 302 });
 		expect(listRecent).not.toHaveBeenCalled();
@@ -49,7 +54,7 @@ describe('library dashboard load', () => {
 
 	it('returns an internal error when a dashboard source fails', async () => {
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-		const load = createLibraryDashboardLoad({
+		const load = _createLibraryDashboardLoad({
 			listRecent: vi.fn().mockRejectedValue(new Error('database unavailable')),
 			listLoans: vi.fn().mockResolvedValue(loans),
 			listReturns: vi.fn().mockResolvedValue(returns),

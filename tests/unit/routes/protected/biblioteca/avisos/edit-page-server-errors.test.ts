@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createAvisoEditHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
+import { _createAvisoEditHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
 
 const libraryUser = { roles: 'biblioteca', username: 'bibliotecaria' };
 const params = { id: '7' };
@@ -19,7 +19,7 @@ describe('notice edit action', () => {
 		const model = { get: vi.fn(), update: vi.fn().mockResolvedValue(true) };
 
 		await expect(
-			createAvisoEditHandlers(model).actions.default({
+			_createAvisoEditHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				params,
 				request: createRequest('  Texto preservado  '),
@@ -32,7 +32,7 @@ describe('notice edit action', () => {
 		const model = { get: vi.fn(), update: vi.fn() };
 
 		await expect(
-			createAvisoEditHandlers(model).actions.default({
+			_createAvisoEditHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				params,
 				request: createRequest('   '),
@@ -45,7 +45,7 @@ describe('notice edit action', () => {
 		const model = { get: vi.fn(), update: vi.fn().mockResolvedValue(false) };
 
 		await expect(
-			createAvisoEditHandlers(model).actions.default({
+			_createAvisoEditHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				params,
 				request: createRequest('Aviso'),
@@ -58,7 +58,7 @@ describe('notice edit action', () => {
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
 		await expect(
-			createAvisoEditHandlers(model).actions.default({
+			_createAvisoEditHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				params,
 				request: createRequest('Aviso'),

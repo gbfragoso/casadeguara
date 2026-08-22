@@ -26,7 +26,7 @@ const getMonthBounds = (date: Date) => {
 	return { firstDay: new Date(year, month, 1), lastDay: new Date(year, month + 1, 0) };
 };
 
-export const createLibraryDashboardLoad = (sources: DashboardSources) => {
+export const _createLibraryDashboardLoad = (sources: DashboardSources) => {
 	return async ({ locals }: DashboardLoadEvent) => {
 		const user = requireLibraryAccess(locals.user);
 		const { firstDay, lastDay } = getMonthBounds(sources.now());
@@ -64,7 +64,7 @@ const listReturns: DashboardSources['listReturns'] = (firstDay, lastDay) => {
 		.where(and(dateFilter, isNotNull(emprestimo.dataDevolvido)));
 };
 
-export const load: PageServerLoad = createLibraryDashboardLoad({
+export const load: PageServerLoad = _createLibraryDashboardLoad({
 	listRecent: () => avisoModel.listRecent(),
 	listLoans,
 	listReturns,

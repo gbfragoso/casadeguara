@@ -41,7 +41,8 @@
 					required
 					maxlength={NOTICE_TEXT_MAX_LENGTH}
 					aria-invalid={errorMessages.length > 0 ? 'true' : undefined}
-					aria-describedby={errorMessages.length > 0 ? 'texto-errors' : undefined}>{submittedText}</textarea>
+					aria-describedby={errorMessages.length > 0 ? 'texto-errors' : undefined}
+					bind:value={submittedText}></textarea>
 			</div>
 			{#if errorMessages.length > 0}
 				<div id="texto-errors" class="help is-danger">

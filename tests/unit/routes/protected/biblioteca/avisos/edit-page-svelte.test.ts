@@ -35,4 +35,11 @@ describe('notice edit page', () => {
 
 		expect(body).toContain('Aviso atualizado com sucesso!');
 	});
+
+	it('renders the update control as available before a request', () => {
+		const { body } = render(Page, { props: { data, form: undefined } });
+
+		expect(body).toContain('aria-busy="false"');
+		expect(body).toContain('type="submit"');
+	});
 });

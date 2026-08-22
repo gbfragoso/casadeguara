@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { createAvisosPageHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/+page.server';
+import { _createAvisosPageHandlers } from '../../../../../../src/routes/(protected)/biblioteca/avisos/+page.server';
 
 const libraryUser = { roles: 'biblioteca', username: 'bibliotecaria' };
 
@@ -18,7 +18,7 @@ describe('notice list handlers', () => {
 		const avisos = [{ idaviso: 3, dataCadastro: new Date(), texto: 'Aviso', username: 'bibliotecaria' }];
 		const model = { create: vi.fn(), listRecent: vi.fn().mockResolvedValue(avisos) };
 
-		await expect(createAvisosPageHandlers(model).load({ locals: { user: libraryUser } })).resolves.toEqual({
+		await expect(_createAvisosPageHandlers(model).load({ locals: { user: libraryUser } })).resolves.toEqual({
 			avisos,
 		});
 		expect(model.listRecent).toHaveBeenCalledOnce();
@@ -27,7 +27,7 @@ describe('notice list handlers', () => {
 	it('redirects an unauthenticated load before consulting the model', async () => {
 		const model = { create: vi.fn(), listRecent: vi.fn() };
 
-		await expect(createAvisosPageHandlers(model).load({ locals: { user: null } })).rejects.toMatchObject({
+		await expect(_createAvisosPageHandlers(model).load({ locals: { user: null } })).rejects.toMatchObject({
 			status: 302,
 		});
 		expect(model.listRecent).not.toHaveBeenCalled();
@@ -37,7 +37,7 @@ describe('notice list handlers', () => {
 		const model = { create: vi.fn(), listRecent: vi.fn().mockRejectedValue(new Error('database unavailable')) };
 		const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-		await expect(createAvisosPageHandlers(model).load({ locals: { user: libraryUser } })).rejects.toMatchObject({
+		await expect(_createAvisosPageHandlers(model).load({ locals: { user: libraryUser } })).rejects.toMatchObject({
 			status: 500,
 			body: { message: 'Falha ao carregar a lista de avisos' },
 		});
@@ -48,7 +48,7 @@ describe('notice list handlers', () => {
 		const model = { create: vi.fn().mockResolvedValue({}), listRecent: vi.fn() };
 
 		await expect(
-			createAvisosPageHandlers(model).actions.default({
+			_createAvisosPageHandlers(model).actions.default({
 				locals: { user: libraryUser },
 				request: createRequest('  Aviso preservado  '),
 			}),
