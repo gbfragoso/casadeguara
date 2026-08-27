@@ -1,10 +1,10 @@
 import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
-import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
+import { secretariaPhotoModel, type SecretariaPhotoModel } from '$lib/server/models/secretaria-photo';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
 
-type PhotoModel = Pick<CadastroModel, 'getSecretariaPhoto'>;
+type PhotoModel = Pick<SecretariaPhotoModel, 'getCard'>;
 type User = { roles: string } | null;
 type RequestContext = { locals: { user: User }; params: { id: string } };
 
@@ -29,7 +29,7 @@ export const _createPhotoHandler =
 			return json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
 
 		try {
-			const photo = await model.getSecretariaPhoto(Number(params.id));
+			const photo = await model.getCard(Number(params.id));
 			if (!photo) return json({ message: 'Foto não encontrada.' }, { status: 404 });
 
 			return new Response(toResponseBody(photo), { headers: PHOTO_HEADERS });
@@ -39,4 +39,4 @@ export const _createPhotoHandler =
 		}
 	};
 
-export const GET: RequestHandler = _createPhotoHandler(cadastroModel);
+export const GET: RequestHandler = _createPhotoHandler(secretariaPhotoModel);

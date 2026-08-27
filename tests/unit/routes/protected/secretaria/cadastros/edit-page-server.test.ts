@@ -79,4 +79,27 @@ describe('edit secretaria registration handlers', () => {
 			'secretaria-user',
 		);
 	});
+
+	it('routes photo actions to the dedicated photo facade', async () => {
+		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn() };
+		const photoModel = { replace: vi.fn(), remove: vi.fn().mockResolvedValue(true) };
+		const handlers = _createEditSecretariaHandlers(model, photoModel);
+
+		await expect(
+			handlers.actions.salvarFoto({
+				...secretariaContext,
+				request: new Request('http://localhost', { method: 'POST', body: new FormData() }),
+			}),
+		).resolves.toMatchObject({ status: 400 });
+		await expect(
+			handlers.actions.removerFoto({
+				...secretariaContext,
+				request: new Request('http://localhost', { method: 'POST' }),
+			}),
+		).resolves.toEqual({
+			operation: 'photoRemoved',
+			status: 200,
+		});
+		expect(photoModel.remove).toHaveBeenCalledWith(4, 'secretaria-user');
+	});
 });

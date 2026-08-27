@@ -1,11 +1,11 @@
 import { normalizePhoto, InvalidPhotoError } from '$lib/server/amigo-fraterno/photo-normalizer';
-import type { CadastroModel } from '$lib/server/models/cadastro';
+import type { SecretariaPhotoModel } from '$lib/server/models/secretaria-photo';
 import { photoUploadSchema } from '$lib/validation/cadastros/foto';
 import { error, fail } from '@sveltejs/kit';
 
 import { requireSecretariaAccess } from './secretaria-access';
 
-type PhotoModel = Pick<CadastroModel, 'replaceSecretariaPhoto' | 'removeSecretariaPhoto'>;
+type PhotoModel = Pick<SecretariaPhotoModel, 'replace' | 'remove'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; params: { id: string }; request: Request };
 
@@ -20,7 +20,7 @@ export const savePhoto = async (model: PhotoModel, { locals, params, request }: 
 
 	try {
 		const photo = await normalizePhoto(result.data);
-		if (await model.replaceSecretariaPhoto(Number(params.id), photo.bytes, user.id)) {
+		if (await model.replace(Number(params.id), photo.bytes, photo.bytes, user.id)) {
 			return { operation: 'photoSaved', status: 200 };
 		}
 	} catch (cause) {
@@ -41,7 +41,7 @@ export const savePhoto = async (model: PhotoModel, { locals, params, request }: 
 export const removePhoto = async (model: PhotoModel, { locals, params }: ActionContext) => {
 	const user = requireSecretariaAccess(locals.user);
 	try {
-		if (await model.removeSecretariaPhoto(Number(params.id), user.id)) {
+		if (await model.remove(Number(params.id), user.id)) {
 			return { operation: 'photoRemoved', status: 200 };
 		}
 	} catch {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { cadastroModel } from '$lib/server/models/cadastro';
+import { secretariaPhotoModel } from '$lib/server/models/secretaria-photo';
 import { _createCadastroFlagHandler } from '../../../../../src/routes/(protected)/api/cadastros/+server';
 import { _createPhotoHandler } from '../../../../../src/routes/(protected)/secretaria/cadastros/[id=integer]/foto/+server';
 import { _createAmigoFraternoLoad } from '../../../../../src/routes/(protected)/secretaria/amigofraterno/+page.server';
@@ -34,7 +35,7 @@ describe('TI-10 Amigo Fraterno authorization', () => {
 			});
 			expect(
 				(
-					await _createPhotoHandler(cadastroModel)({
+					await _createPhotoHandler(secretariaPhotoModel)({
 						locals: { user: secretaria },
 						params: { id: `${created.idleitor}` },
 					})
@@ -42,7 +43,7 @@ describe('TI-10 Amigo Fraterno authorization', () => {
 			).toBe(404);
 			expect(
 				(
-					await _createPhotoHandler(cadastroModel)({
+					await _createPhotoHandler(secretariaPhotoModel)({
 						locals: { user: biblioteca },
 						params: { id: `${created.idleitor}` },
 					})

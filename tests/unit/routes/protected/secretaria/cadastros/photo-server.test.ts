@@ -9,7 +9,7 @@ const context = { params: { id: '4' } };
 describe('secretaria photo endpoint', () => {
 	it('serves a private JPEG to a regular secretaria user', async () => {
 		const response = await _createPhotoHandler({
-			getSecretariaPhoto: vi.fn().mockResolvedValue(Uint8Array.of(1, 2)),
+			getCard: vi.fn().mockResolvedValue(Uint8Array.of(1, 2)),
 		})({
 			...context,
 			locals: { user: secretariaUser },
@@ -24,19 +24,19 @@ describe('secretaria photo endpoint', () => {
 		['unauthenticated', null],
 		['biblioteca', bibliotecaUser],
 	])('rejects %s direct photo requests', async (_, user) => {
-		const model = { getSecretariaPhoto: vi.fn() };
+		const model = { getCard: vi.fn() };
 		const response = await _createPhotoHandler(model)({ ...context, locals: { user } });
 
 		expect(response.status).toBe(401);
-		expect(model.getSecretariaPhoto).not.toHaveBeenCalled();
+		expect(model.getCard).not.toHaveBeenCalled();
 	});
 
 	it.each([
 		['missing', undefined, 404, 'Foto não encontrada.'],
 		['database failure', new Error('database'), 500, 'Falha ao recuperar a foto do trabalhador.'],
 	])('maps %s to a safe message', async (_, outcome, status, message) => {
-		const model = { getSecretariaPhoto: vi.fn().mockResolvedValue(outcome) };
-		if (outcome instanceof Error) model.getSecretariaPhoto.mockRejectedValue(outcome);
+		const model = { getCard: vi.fn().mockResolvedValue(outcome) };
+		if (outcome instanceof Error) model.getCard.mockRejectedValue(outcome);
 		const response = await _createPhotoHandler(model)({ ...context, locals: { user: secretariaUser } });
 
 		expect(response.status).toBe(status);
