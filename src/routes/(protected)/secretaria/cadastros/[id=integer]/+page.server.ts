@@ -8,11 +8,11 @@ import { flattenError } from 'zod';
 import { requireSecretariaAccess } from '../secretaria-access';
 import { toSecretariaDetail } from '../secretaria-detail';
 import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
-import { removePhoto, savePhoto } from '../photo-actions';
+import { reframePhoto, removePhoto, savePhoto } from '../photo-actions';
 import type { Actions, PageServerLoad } from './$types';
 
 type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria'>;
-type PhotoModel = Pick<SecretariaPhotoModel, 'replace' | 'remove'>;
+type PhotoModel = Pick<SecretariaPhotoModel, 'replace' | 'remove' | 'getSource' | 'reframe'>;
 type User = { id: string; roles: string } | null;
 type LoadContext = { locals: { user: User }; params: { id: string } };
 type ActionContext = LoadContext & { request: Request };
@@ -64,6 +64,7 @@ export const _createEditSecretariaHandlers = (model: EditModel, photoModel: Phot
 			error(404, { message: 'Trabalhador não encontrado.' });
 		},
 		salvarFoto: (context: ActionContext) => savePhoto(photoModel, context),
+		reenquadrarFoto: (context: ActionContext) => reframePhoto(photoModel, context),
 		removerFoto: (context: ActionContext) => removePhoto(photoModel, context),
 	},
 });

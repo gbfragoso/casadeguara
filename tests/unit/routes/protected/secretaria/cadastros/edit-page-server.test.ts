@@ -82,7 +82,12 @@ describe('edit secretaria registration handlers', () => {
 
 	it('routes photo actions to the dedicated photo facade', async () => {
 		const model = { getSecretaria: vi.fn(), updateSecretaria: vi.fn() };
-		const photoModel = { replace: vi.fn(), remove: vi.fn().mockResolvedValue(true) };
+		const photoModel = {
+			replace: vi.fn(),
+			remove: vi.fn().mockResolvedValue(true),
+			getSource: vi.fn(),
+			reframe: vi.fn(),
+		};
 		const handlers = _createEditSecretariaHandlers(model, photoModel);
 
 		await expect(
@@ -101,5 +106,14 @@ describe('edit secretaria registration handlers', () => {
 			status: 200,
 		});
 		expect(photoModel.remove).toHaveBeenCalledWith(4, 'secretaria-user');
+		await expect(
+			handlers.actions.reenquadrarFoto({
+				...secretariaContext,
+				request: new Request('http://localhost', {
+					method: 'POST',
+					body: new URLSearchParams({ focalX: '0.5', focalY: '0.5', zoom: '1' }),
+				}),
+			}),
+		).rejects.toMatchObject({ status: 404 });
 	});
 });
