@@ -52,4 +52,70 @@ describe('edit secretaria registration page', () => {
 		expect(body).toContain('name="aniversario" id="aniversario" value="2024-02-29"');
 		expect(body).toContain('Trabalhador atualizado com sucesso!');
 	});
+
+	it('renders submitted values and validation states for every editable field', () => {
+		const { body } = render(Page, {
+			props: {
+				data: {
+					trabalhador: {
+						...trabalhador,
+						rgMask: null,
+						cpfMask: null,
+						email: 'maria@example.com',
+						celular: '71999999999',
+						telefone: '7133333333',
+						logradouro: 'Rua das Flores',
+						bairro: 'Centro',
+						complemento: 'Casa 2',
+						cidade: 'Salvador',
+						cep: '40000000',
+					},
+				},
+				form: {
+					values: {
+						nome: 'MARIA NOVA',
+						rg: '123456789',
+						cpf: '12345678909',
+						aniversario: '1990-01-02',
+						email: 'nova@example.com',
+						celular: '71988888888',
+						telefone: '7132222222',
+						logradouro: 'Avenida Central',
+						bairro: 'Brotas',
+						complemento: 'Apartamento 3',
+						cidade: 'Lauro de Freitas',
+						cep: '42700000',
+						trab: 'false',
+						removeRg: 'true',
+						removeCpf: 'true',
+					},
+					errors: {
+						nome: ['Nome invÃ¡lido.'],
+						rg: ['RG invÃ¡lido.'],
+						removeRg: ['NÃ£o foi possÃ­vel remover o RG.'],
+						cpf: ['CPF invÃ¡lido.'],
+						removeCpf: ['NÃ£o foi possÃ­vel remover o CPF.'],
+						aniversario: ['Data invÃ¡lida.'],
+						email: ['E-mail invÃ¡lido.'],
+						celular: ['Celular invÃ¡lido.'],
+						telefone: ['WhatsApp invÃ¡lido.'],
+						logradouro: ['Logradouro invÃ¡lido.'],
+						bairro: ['Bairro invÃ¡lido.'],
+						complemento: ['Complemento invÃ¡lido.'],
+						cidade: ['Cidade invÃ¡lida.'],
+						cep: ['CEP invÃ¡lido.'],
+						trab: ['Status invÃ¡lido.'],
+					},
+				},
+			},
+		});
+
+		expect(body).toContain('value="MARIA NOVA"');
+		expect(body).toContain('value="nova@example.com"');
+		expect(body).toContain('value="false"');
+		expect(body).toContain('aria-invalid="true"');
+		expect(body).toContain('NÃ£o foi possÃ­vel remover o CPF.');
+		expect(body).toContain('RG cadastrado: Não informado.');
+		expect(body).toContain('CPF cadastrado: Não informado.');
+	});
 });

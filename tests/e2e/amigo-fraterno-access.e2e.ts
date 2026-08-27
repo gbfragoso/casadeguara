@@ -19,7 +19,10 @@ test.describe.serial('Amigo Fraterno cross-access and accessibility', () => {
 		if (users) await deleteTestUsers(users);
 	});
 
-	test('E2E-05 blocks biblioteca, tesouraria, and unauthenticated direct access', async ({ browser, page }) => {
+	test('E2E-05/E2E-12 blocks biblioteca, tesouraria, and unauthenticated direct access', async ({
+		browser,
+		page,
+	}) => {
 		const name = createName('acesso');
 		names.push(name);
 		const id = await createParticipant(name, true);

@@ -9,7 +9,7 @@ export const createName = (suffix: string) => `AMF ${suffix} ${randomUUID().slic
 
 export type PhotoSize = { width: number; height: number };
 
-const createPhoto = async (photoSize?: PhotoSize) => {
+export const createPhoto = async (photoSize?: PhotoSize) => {
 	if (!photoSize) return readFile('tests/fixtures/amigo-fraterno-photo.jpeg');
 	return sharp({
 		create: {
