@@ -1,4 +1,4 @@
-import { CARDS_PER_PAGE, createCardSlots, type CardSlot } from './pdf-layout';
+import { CARDS_PER_PAGE, createCardSlots, type CardSlot } from '$lib/amigo-fraterno/card-geometry';
 
 export type NumberedParticipant<T> = T & { number: string };
 export type CardPage<T> = Array<{ participant: NumberedParticipant<T>; slot: CardSlot }>;

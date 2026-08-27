@@ -9,18 +9,25 @@ import {
 	deleteParticipants,
 	getPdfPageCount,
 	setAmigoFraterno,
+	type PhotoSize,
 } from './amigo-fraterno-support';
 
 const token = randomUUID().slice(0, 8);
 const names: string[] = [];
 let users: TestUsers | undefined;
 
+const PHOTO_SIZES: Array<PhotoSize | undefined> = [
+	{ width: 1200, height: 400 },
+	{ width: 400, height: 1200 },
+	{ width: 700, height: 700 },
+];
+
 const createEligibleParticipants = async (count: number) => {
 	const ids = await Promise.all(
 		Array.from({ length: count }, async (_, index) => {
 			const name = createName(`pdf-${index}`);
 			names.push(name);
-			const id = await createParticipant(name, index === 0);
+			const id = await createParticipant(name, index < PHOTO_SIZES.length, PHOTO_SIZES[index]);
 			await setAmigoFraterno(id, true);
 			return id;
 		}),
@@ -38,7 +45,7 @@ test.describe.serial('Amigo Fraterno PDF', () => {
 		if (users) await deleteTestUsers(users);
 	});
 
-	test('E2E-03 downloads a paginated PDF with and without a photo', async ({ page }) => {
+	test('E2E-14 downloads a paginated PDF with varied and missing photos', async ({ page }) => {
 		const ids = await createEligibleParticipants(7);
 		if (!users) throw new Error('Usuários E2E não foram preparados.');
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');

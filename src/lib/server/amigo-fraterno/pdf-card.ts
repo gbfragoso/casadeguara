@@ -1,5 +1,7 @@
 import type { AmigoFraternoPdfParticipant } from './participant-projections';
-import { PDF_COLORS, type CardSlot } from './pdf-layout';
+import { PHOTO_FRAME, type CardSlot } from '$lib/amigo-fraterno/card-geometry';
+import { PDF_COLORS } from './pdf-layout';
+import { drawPhoto } from './pdf-photo';
 import { fitName } from './pdf-text';
 import type { PDFFont, PDFImage, PDFPage } from 'pdf-lib';
 
@@ -12,17 +14,8 @@ const LOGO_SIZE = 30;
 const drawText = (page: PDFPage, text: string, x: number, y: number, size: number, font: PDFFont) =>
 	page.drawText(text, { x, y, size, font, color: PDF_COLORS.black });
 
-const drawPhoto = async (page: PDFPage, participant: NumberedCard, slot: CardSlot) => {
-	const width = 86;
-	const height = slot.height - 24;
-	const x = slot.x + 246;
-	const y = slot.y + 12;
-	page.drawRectangle({ x, y, width, height, borderColor: PDF_COLORS.black, borderWidth: 0.75 });
-	if (!participant.photo) return;
-	const photo = await page.doc.embedJpg(participant.photo);
-	const size = photo.scaleToFit(width - 4, height - 4);
-	page.drawImage(photo, { x: x + (width - size.width) / 2, y: y + (height - size.height) / 2, ...size });
-};
+const PHOTO_FRAME_X_OFFSET = 246;
+const PHOTO_FRAME_Y_OFFSET = 12;
 
 const drawName = (page: PDFPage, name: string, slot: CardSlot, font: PDFFont, x: number, y: number, width: number) => {
 	const fitted = fitName(name, font, width);
@@ -57,7 +50,12 @@ export const drawCard = async (
 		width: LOGO_SIZE,
 		height: LOGO_SIZE,
 	});
-	await drawPhoto(page, participant, slot);
+	await drawPhoto(page, participant.photo, {
+		x: slot.x + PHOTO_FRAME_X_OFFSET,
+		y: slot.y + PHOTO_FRAME_Y_OFFSET,
+		width: PHOTO_FRAME.widthPoints,
+		height: PHOTO_FRAME.heightPoints,
+	});
 	drawText(page, 'Amigo Fraterno', slot.x + 382, slot.y + slot.height - 25, 16, assets.font);
 	drawText(page, `Próximo sorteio: ${nextDrawDate}`, slot.x + 344, slot.y + slot.height - 52, 11, assets.font);
 	drawName(page, participant.name, slot, assets.font, slot.x + 344, slot.y + slot.height - 83, 200);

@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+
 import { PDFDocument } from 'pdf-lib';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -8,7 +10,7 @@ vi.mock('$app/server', async () => {
 		await readFile('src/lib/server/amigo-fraterno/assets/NotoSans-Regular.ttf'),
 		await readFile('src/lib/server/amigo-fraterno/assets/casa-de-guara.png'),
 	];
-	return { read: () => new Response(assets[readCount++]) };
+	return { read: () => new Response(assets[readCount++ % assets.length]) };
 });
 
 import { generateAmigoFraternoPdf, sortPdfParticipants } from '$lib/server/amigo-fraterno/pdf-generator';
@@ -25,10 +27,11 @@ describe('amigo fraterno PDF generator', () => {
 	});
 
 	it('generates readable A4 pages for participants with and without photos', async () => {
+		const photo = new Uint8Array(await readFile('tests/fixtures/amigo-fraterno-photo.jpeg'));
 		const participants = Array.from({ length: 7 }, (_, index) => ({
 			id: index,
 			name: `PARTICIPANTE ${index}`,
-			photo: null,
+			photo: index === 0 ? photo : null,
 		}));
 
 		const result = await generateAmigoFraternoPdf(participants, '2026-11-22');
