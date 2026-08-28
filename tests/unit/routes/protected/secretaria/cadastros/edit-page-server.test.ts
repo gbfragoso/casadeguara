@@ -34,6 +34,7 @@ describe('edit secretaria registration handlers', () => {
 		};
 
 		await expect(_createEditSecretariaHandlers(model).load(secretariaContext)).resolves.toEqual({
+			id: 4,
 			trabalhador: {
 				nome: 'MARIA',
 				rgMask: '12.***.***-89',

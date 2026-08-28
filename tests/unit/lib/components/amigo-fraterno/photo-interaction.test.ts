@@ -181,11 +181,23 @@ describe('PhotoSection interactions', () => {
 	});
 
 	it('returns focus to the reframing trigger after canceling', async () => {
-		const component = mount(PhotoSection, { target, props: { hasPhoto: true, alt: 'Foto de Maria' } });
+		const component = mount(PhotoSection, {
+			target,
+			props: {
+				hasPhoto: true,
+				alt: 'Foto de Maria',
+				photoUrl: '/secretaria/cadastros/4/foto',
+				originalPhotoUrl: '/secretaria/cadastros/4/foto/original',
+			},
+		});
 		const trigger = target.querySelector('#reenquadrar-foto');
 		if (!(trigger instanceof HTMLButtonElement)) throw new Error('Reframing trigger was not rendered.');
 		trigger.click();
 		await tick();
+
+		expect(target.querySelector('.photo-cropper img')?.getAttribute('src')).toBe(
+			'/secretaria/cadastros/4/foto/original',
+		);
 		const cancelButton = [...target.querySelectorAll('button')].find((button) =>
 			button.textContent?.includes('Cancelar'),
 		);

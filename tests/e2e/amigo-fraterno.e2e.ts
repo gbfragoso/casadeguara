@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { signIn } from './cadastros-browser';
 import { createTestUsers, deleteTestUsers, readCadastro, type TestUsers } from './cadastros-database';
 import {
@@ -16,6 +16,30 @@ import {
 const token = randomUUID().slice(0, 8);
 const names: string[] = [];
 let users: TestUsers | undefined;
+
+const photoPath = (id: number, original = false) => `/secretaria/cadastros/${id}/foto${original ? '/original' : ''}`;
+
+const waitForPhotoResponse = (page: Page, id: number, original = false) =>
+	page.waitForResponse(
+		(response) =>
+			response.request().method() === 'GET' &&
+			new URL(response.url()).pathname === photoPath(id, original) &&
+			response.status() === 200,
+	);
+
+const expectLoadedPhoto = async (photo: Locator, path: string) => {
+	await expect(photo).toBeVisible();
+	await expect
+		.poll(async () =>
+			photo.evaluate((image) => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0),
+		)
+		.toBe(true);
+	await expect
+		.poll(async () =>
+			photo.evaluate((image) => (image instanceof HTMLImageElement ? new URL(image.currentSrc).pathname : '')),
+		)
+		.toBe(path);
+};
 
 test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 	test.beforeAll(async () => {
@@ -44,9 +68,11 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		await expect.poll(async () => (await readCadastro(name)).amigo_fraterno).toBe(true);
 		await page.goto(`/secretaria/cadastros/${id}`);
 		await page.getByLabel('Incluir ou substituir foto').setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
+		const photoResponse = waitForPhotoResponse(page, id);
 		await page.getByRole('button', { name: 'Salvar foto' }).click();
 		await expect(page.getByText('Foto salva com sucesso!')).toBeVisible();
-		await expect(page.getByRole('img', { name: `Foto de ${name}` })).toBeVisible();
+		await photoResponse;
+		await expectLoadedPhoto(page.getByRole('img', { name: `Foto de ${name}` }), photoPath(id));
 		await page.getByLabel('Incluir ou substituir foto').setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
 		await page.getByRole('button', { name: 'Salvar foto' }).click();
 		await page.getByRole('button', { name: 'Remover foto' }).click();
@@ -96,11 +122,15 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		await page.getByLabel('Ampliação da foto').press('ArrowRight');
 		await expect(page.getByTestId('photo-cropper').locator('input[name="focalX"]')).toHaveValue('0.52');
 		await expect(page.getByTestId('photo-cropper').locator('input[name="zoom"]')).toHaveValue('1.01');
+		const photoResponse = waitForPhotoResponse(page, id);
 		await page.getByRole('button', { name: 'Confirmar enquadramento' }).click();
 		await expect(page.getByText('Foto salva com sucesso!')).toBeVisible();
-		await expect(page.getByRole('img', { name: `Foto de ${name}` })).toBeVisible();
+		await photoResponse;
+		await expectLoadedPhoto(page.getByRole('img', { name: `Foto de ${name}` }), photoPath(id));
+		const reloadedPhotoResponse = waitForPhotoResponse(page, id);
 		await page.reload();
-		await expect(page.getByRole('img', { name: `Foto de ${name}` })).toBeVisible();
+		await reloadedPhotoResponse;
+		await expectLoadedPhoto(page.getByRole('img', { name: `Foto de ${name}` }), photoPath(id));
 	});
 
 	test('E2E-09 cancels inclusion and reframing without changing the current photo', async ({ page }) => {
@@ -109,14 +139,20 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		const id = await createParticipant(name, true);
 		if (!users) throw new Error('Usuários E2E não foram preparados.');
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
+		const photoResponse = waitForPhotoResponse(page, id);
 		await page.goto(`/secretaria/cadastros/${id}`);
 		await page.waitForLoadState('networkidle');
+		await photoResponse;
+		await expectLoadedPhoto(page.getByRole('img', { name: `Foto de ${name}` }), photoPath(id));
 		const before = await (await page.request.get(`/secretaria/cadastros/${id}/foto`)).body();
 		await page.getByLabel('Incluir ou substituir foto').setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
 		await page.getByRole('button', { name: 'Cancelar' }).click();
 		await expect(page.getByTestId('photo-cropper')).toBeHidden();
 		await expect(page.getByRole('img', { name: `Foto de ${name}` })).toBeVisible();
+		const originalPhotoResponse = waitForPhotoResponse(page, id, true);
 		await page.getByRole('button', { name: 'Reenquadrar foto' }).click();
+		await originalPhotoResponse;
+		await expectLoadedPhoto(page.locator('.photo-cropper img'), photoPath(id, true));
 		await page.getByRole('button', { name: 'Cancelar' }).click();
 		await expect(page.getByRole('button', { name: 'Reenquadrar foto' })).toBeFocused();
 		const after = await (await page.request.get(`/secretaria/cadastros/${id}/foto`)).body();

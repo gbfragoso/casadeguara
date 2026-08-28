@@ -33,7 +33,7 @@ export const _createEditSecretariaHandlers = (model: EditModel, photoModel: Phot
 		const cadastro = await getSecretaria(model, id);
 
 		if (!cadastro) error(404, { message: 'Trabalhador não encontrado.' });
-		return { trabalhador: toSecretariaDetail(cadastro) };
+		return { id, trabalhador: toSecretariaDetail(cadastro) };
 	},
 	actions: {
 		salvarCadastro: async ({ locals, params, request }: ActionContext) => {

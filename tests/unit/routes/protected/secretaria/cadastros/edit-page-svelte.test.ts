@@ -24,7 +24,7 @@ describe('edit secretaria registration page', () => {
 	it('renders masks, blank replacement inputs, null birthdays, and accessible removal controls', () => {
 		const { body } = render(Page, {
 			props: {
-				data: { trabalhador },
+				data: { id: 4, trabalhador: { ...trabalhador, hasPhoto: true } },
 				form: {
 					values: { rg: '', cpf: '' },
 					errors: { cpf: ['CPF inválido.'], removeCpf: ['CPF inválido.'] },
@@ -41,12 +41,16 @@ describe('edit secretaria registration page', () => {
 		expect(body).toContain('name="aniversario" id="aniversario" value=""');
 		expect(body).toContain('aria-describedby="cpf-errors"');
 		expect(body).toContain('CPF inválido.');
+		expect(body).toContain('src="/secretaria/cadastros/4/foto"');
 		expect(body).not.toContain('12345678909');
 	});
 
 	it('renders a valid birthday without timezone conversion and update success for status 200', () => {
 		const { body } = render(Page, {
-			props: { data: { trabalhador: { ...trabalhador, aniversario: '2024-02-29' } }, form: { status: 200 } },
+			props: {
+				data: { id: 4, trabalhador: { ...trabalhador, aniversario: '2024-02-29' } },
+				form: { status: 200 },
+			},
 		});
 
 		expect(body).toContain('name="aniversario" id="aniversario" value="2024-02-29"');
@@ -57,6 +61,7 @@ describe('edit secretaria registration page', () => {
 		const { body } = render(Page, {
 			props: {
 				data: {
+					id: 4,
 					trabalhador: {
 						...trabalhador,
 						rgMask: null,
