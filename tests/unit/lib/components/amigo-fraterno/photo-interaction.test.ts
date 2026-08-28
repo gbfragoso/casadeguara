@@ -133,6 +133,7 @@ describe('PhotoSection interactions', () => {
 		if (!(input instanceof HTMLInputElement)) throw new Error('Photo input was not rendered.');
 		const file = new File(['photo'], 'photo.jpg', { type: 'image/jpeg' });
 		Object.defineProperty(input, 'files', { value: createFileList(file), configurable: true });
+		input.focus();
 		input.dispatchEvent(new Event('change', { bubbles: true }));
 		await tick();
 
@@ -145,6 +146,7 @@ describe('PhotoSection interactions', () => {
 		await tick();
 		expect(revokeObjectUrl).toHaveBeenCalledWith('blob:photo');
 		expect(target.querySelector('[data-testid="photo-cropper"]')).toBeNull();
+		expect(document.activeElement).toBe(input);
 		unmount(component);
 	});
 

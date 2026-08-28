@@ -1,8 +1,10 @@
 import { randomUUID } from 'node:crypto';
 
 import { expect, test } from '@playwright/test';
+
 import { signIn } from './cadastros-browser';
 import { createTestUsers, deleteTestUsers, type TestUsers } from './cadastros-database';
+import { assertBlockedSecretariaAccess } from './amigo-fraterno-access-support';
 import { createName, createParticipant, deleteParticipants, setAmigoFraterno } from './amigo-fraterno-support';
 
 const token = randomUUID().slice(0, 8);
@@ -28,7 +30,7 @@ test.describe.serial('Amigo Fraterno cross-access and accessibility', () => {
 		const id = await createParticipant(name, true);
 		await setAmigoFraterno(id, true);
 		if (!users) throw new Error('Usuários E2E não foram preparados.');
-		expect((await page.request.get('/secretaria/amigofraterno/pdf')).status()).toBe(401);
+		await assertBlockedSecretariaAccess(page.request, id, name, 302);
 		const bibliotecaContext = await browser.newContext();
 		const tesourariaContext = await browser.newContext();
 		const biblioteca = await bibliotecaContext.newPage();
@@ -37,8 +39,7 @@ test.describe.serial('Amigo Fraterno cross-access and accessibility', () => {
 			await signIn(biblioteca, users.wrongRole.email, users.wrongRole.password, '**/biblioteca');
 			await signIn(tesouraria, users.tesouraria.email, users.tesouraria.password, '**/tesouraria');
 			for (const rolePage of [biblioteca, tesouraria]) {
-				expect((await rolePage.request.get(`/secretaria/cadastros/${id}/foto`)).status()).toBe(401);
-				expect((await rolePage.request.get('/secretaria/amigofraterno/pdf')).status()).toBe(401);
+				await assertBlockedSecretariaAccess(rolePage.request, id, name, 401);
 				await rolePage.goto('/secretaria/amigofraterno');
 				await expect(rolePage.getByText(name, { exact: true })).toBeHidden();
 			}

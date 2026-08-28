@@ -89,8 +89,12 @@ Seguir `techspec.md`, especialmente “Editor de enquadramento”, “Seção de
 - 2026-08-27: editor inline, seleção/reenquadramento/cancelamento/substituição/remoção, foco e mensagens implementados em `PhotoCropper.svelte`, `PhotoSection.svelte` e na página de edição.
 - 2026-08-27: fixtures existentes foram reutilizados; a fixture de paisagem é gerada com `sharp` no suporte E2E e o arquivo inválido é exercitado pelo fluxo de validação. Os casos de transparência e orientação EXIF permanecem cobertos pelos testes de normalização das tarefas anteriores.
 - 2026-08-27: a skill `impeccable` não está disponível neste ambiente; foi feita inspeção manual limitada de responsividade, foco, contraste, nomes acessíveis e estados de carregamento, sem achados materiais.
-- 2026-08-27: cobertura estreita aprovada para os três arquivos do entregável: `PhotoCropper.svelte` (95.41% statements, 91.11% branches, 100% functions, 97.29% lines), `PhotoSection.svelte` (95.18%, 82.56%, 95%, 97.89%) e `[id=integer]/+page.svelte` (100%, 100%, 100%, 100%).
-- 2026-08-27: `npm run check`, `npm test` (494 testes) e `npm run lint` aprovados; E2E principal (7 testes), E2E-05/E2E-12 e E2E-06 aprovados isoladamente.
+- 2026-08-27: a cobertura estreita deste ajuste foi executada com `--coverage.include="src/lib/components/amigo-fraterno/PhotoSection.svelte"`; `PhotoSection.svelte` atingiu 95,20% statements, 82,56% branches, 95% functions e 97,91% lines (106 arquivos de teste, 571 testes).
+- 2026-08-27: `npm run check` aprovado (0 erros/avisos); `npm test` aprovado (86 arquivos, 495 testes); `npm run test:integration` aprovado (20 arquivos, 76 testes); e `npm run lint` aprovado.
+- 2026-08-27: a reprodução inicial isolada do E2E-01 expirou em `page.waitForResponse` aguardando a resposta de `/api/cadastros`; após separar a resposta da busca e a atualização do checkbox, o cenário passou.
+- 2026-08-27: execução isolada dos E2E do Amigo Fraterno (`amigo-fraterno.e2e.ts`, `amigo-fraterno-access.e2e.ts` e `amigo-fraterno-pdf.e2e.ts`) aprovada: 12 testes.
+- 2026-08-27: `npm run test:e2e` executou 15 testes, com 14 aprovados e 1 falha preexistente fora do escopo em `tests/e2e/cadastros.e2e.ts` (`Cadastro de teste não foi encontrado` em `cadastros-database.ts:73`, chamado por `cadastros-journey.ts:39`); a execução isolada desse arquivo foi aprovada (1 teste).
+- 2026-08-27: a execução combinada de `avisos.e2e.ts` com `cadastros.e2e.ts` reproduziu a mesma falha (1 aprovado, 1 falho), enquanto `cadastros.e2e.ts` isolado passou, confirmando a interferência preexistente de ordem/estado fora deste escopo.
 
 ## Arquivos relevantes
 
@@ -103,5 +107,6 @@ Seguir `techspec.md`, especialmente “Editor de enquadramento”, “Seção de
 - `tests/unit/routes/protected/secretaria/cadastros/photo-actions.test.ts`
 - `tests/e2e/amigo-fraterno.e2e.ts`
 - `tests/e2e/amigo-fraterno-access.e2e.ts`
+- `tests/e2e/amigo-fraterno-access-support.ts`
 - `tests/e2e/amigo-fraterno-support.ts`
 - `tests/fixtures/amigo-fraterno-photo.jpeg`

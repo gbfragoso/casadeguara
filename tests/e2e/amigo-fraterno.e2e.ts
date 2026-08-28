@@ -59,12 +59,25 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
 		await page.goto('/secretaria/cadastros');
 		await page.getByLabel('Nome do trabalhador').fill(name);
-		const response = page.waitForResponse(
-			(candidate) => candidate.url().endsWith('/api/cadastros') && candidate.status() === 200,
+		const searchResponse = page.waitForResponse(
+			(candidate) =>
+				candidate.request().method() === 'POST' &&
+				new URL(candidate.url()).pathname === '/secretaria/cadastros' &&
+				candidate.status() === 200,
 		);
 		await page.getByRole('button', { name: 'Pesquisar' }).click();
-		await page.getByLabel(`Marcar ${name} para o Amigo Fraterno`).check();
-		await response;
+		await searchResponse;
+		await page.waitForLoadState('networkidle');
+		const checkbox = page.getByLabel(`Marcar ${name} para o Amigo Fraterno`);
+		await expect(checkbox).toBeVisible();
+		await expect(checkbox).not.toBeChecked();
+		const flagResponse = page.waitForResponse(
+			(candidate) =>
+				candidate.request().method() === 'POST' &&
+				new URL(candidate.url()).pathname === '/api/cadastros' &&
+				candidate.status() === 200,
+		);
+		await Promise.all([flagResponse, checkbox.check()]);
 		await expect.poll(async () => (await readCadastro(name)).amigo_fraterno).toBe(true);
 		await page.goto(`/secretaria/cadastros/${id}`);
 		await page.getByLabel('Incluir ou substituir foto').setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
@@ -157,6 +170,25 @@ test.describe.serial('Amigo Fraterno participation and eligibility', () => {
 		await expect(page.getByRole('button', { name: 'Reenquadrar foto' })).toBeFocused();
 		const after = await (await page.request.get(`/secretaria/cadastros/${id}/foto`)).body();
 		expect(Buffer.compare(before, after)).toBe(0);
+	});
+
+	test('E2E-09 restores focus after canceling an initial upload', async ({ page }) => {
+		const name = createName('cancelamento-sem-foto');
+		names.push(name);
+		const id = await createParticipant(name);
+		if (!users) throw new Error('Usuários E2E não foram preparados.');
+		await signIn(page, users.owner.email, users.owner.password, '**/sistemas');
+		await page.goto(`/secretaria/cadastros/${id}`);
+		await page.waitForLoadState('networkidle');
+
+		const fileInput = page.getByLabel('Incluir ou substituir foto');
+		await fileInput.setInputFiles('tests/fixtures/amigo-fraterno-photo.jpeg');
+		await expect(page.getByTestId('photo-cropper')).toBeVisible();
+		await page.getByRole('button', { name: 'Cancelar' }).click();
+
+		await expect(page.getByTestId('photo-cropper')).toBeHidden();
+		await expect(fileInput).toBeFocused();
+		await expect(page.getByText('Pendente', { exact: true })).toBeVisible();
 	});
 
 	test('E2E-10 reframes, replaces, and removes one current photo', async ({ page }) => {

@@ -76,6 +76,7 @@
 			return;
 		}
 		localError = null;
+		returnFocusElement = event.target;
 		revokeObjectUrl();
 		selectedFile = file;
 		objectUrl = URL.createObjectURL(file);
