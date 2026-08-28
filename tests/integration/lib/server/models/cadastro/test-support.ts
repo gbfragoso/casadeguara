@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/database/connection';
-import { cadastros } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { cadastros } from '$lib/server/database/schema';
 import { CadastroModel } from '$lib/server/models/cadastro';
 import type { BibliotecaCreateData } from '$lib/server/models/cadastro-inputs';
 import { eq } from 'drizzle-orm';

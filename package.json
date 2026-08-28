@@ -19,7 +19,7 @@
 		"test:coverage": "npm run db:start && npm run services:wait:database && vitest run --coverage",
 		"test:e2e": "playwright test",
 		"test:e2e:install": "playwright install chromium",
-		"services:wait:database": "node src/lib/scripts/wait-for-postgres.js",
+		"services:wait:database": "node src/lib/scripts/database/wait-for-postgres.js",
 		"db:start": "docker compose up -d",
 		"db:push": "drizzle-kit push",
 		"db:pull": "drizzle-kit pull",

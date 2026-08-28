@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { cadastros, entradas } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { cadastros, entradas } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { v7 as uuidv7 } from 'uuid';
 import { sql } from 'drizzle-orm';

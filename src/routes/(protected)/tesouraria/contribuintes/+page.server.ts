@@ -3,8 +3,8 @@ import { tesourariaSearchSchema } from '$lib/validation/cadastros/tesouraria';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireTesourariaAccess } from './tesouraria-access';
-import { getTesourariaErrors, getTesourariaSearchValues } from './tesouraria-form';
+import { requireTesourariaAccess } from '$lib/server/tesouraria/contributors/access';
+import { getTesourariaErrors, getTesourariaSearchValues } from '$lib/server/tesouraria/contributors/form';
 import type { Actions, PageServerLoad } from './$types';
 
 type ListModel = Pick<CadastroModel, 'fetchTesouraria'>;

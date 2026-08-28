@@ -4,9 +4,9 @@ import { bibliotecaUpdateSchema } from '$lib/validation/cadastros/biblioteca';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireReaderAccess } from '../reader-access';
-import { toReaderDetail } from '../reader-detail';
-import { getReaderErrors, getReaderFormValues } from '../reader-form';
+import { requireReaderAccess } from '$lib/server/biblioteca/readers/access';
+import { toReaderDetail } from '$lib/server/biblioteca/readers/detail';
+import { getReaderErrors, getReaderFormValues } from '$lib/server/biblioteca/readers/form';
 import type { Actions, PageServerLoad } from './$types';
 
 type EditModel = Pick<CadastroModel, 'getBiblioteca' | 'updateBiblioteca'>;

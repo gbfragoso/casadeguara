@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { user } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { user } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { generateIdFromEntropySize } from 'lucia';

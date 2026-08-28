@@ -1,6 +1,6 @@
-import { db } from '$lib/database/connection';
-import { ulike } from '$lib/database/functions';
-import { saidas } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { ulike } from '$lib/server/database/functions';
+import { saidas } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, gte, lte } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';

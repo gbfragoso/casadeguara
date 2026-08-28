@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 

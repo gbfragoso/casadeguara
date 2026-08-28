@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { cadastros, frequencia } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { cadastros, frequencia } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, count, eq, gte, lte } from 'drizzle-orm';
 

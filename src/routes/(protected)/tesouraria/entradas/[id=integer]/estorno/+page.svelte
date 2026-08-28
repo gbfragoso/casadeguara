@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
-	import { moeda } from '$lib/js/currency';
-	import Notification from '$lib/components/Notification.svelte';
+	import { moeda } from '$lib/utils/currency';
+	import Notification from '$lib/components/feedback/Notification.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';

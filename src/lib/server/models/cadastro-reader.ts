@@ -1,5 +1,5 @@
-import { ulike, unaccent } from '$lib/database/functions';
-import { cadastroFotos, cadastros } from '$lib/database/schema';
+import { ulike, unaccent } from '$lib/server/database/functions';
+import { cadastroFotos, cadastros } from '$lib/server/database/schema';
 import { and, eq } from 'drizzle-orm';
 
 import type { CadastroDatabase } from './cadastro-database';

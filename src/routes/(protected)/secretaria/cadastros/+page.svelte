@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import { SvelteSet } from 'svelte/reactivity';
-	import { updateCadastroFlag, type CadastroFlagField } from './cadastro-flag';
+	import { updateCadastroFlag, type CadastroFlagField } from '$lib/cadastros/flags';
 	import type { ActionData } from './$types';
 
 	type CheckboxEvent = Event & { currentTarget: HTMLInputElement };

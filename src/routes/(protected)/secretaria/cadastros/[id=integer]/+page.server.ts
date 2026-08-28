@@ -5,10 +5,10 @@ import { secretariaUpdateSchema } from '$lib/validation/cadastros/secretaria';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireSecretariaAccess } from '../secretaria-access';
-import { toSecretariaDetail } from '../secretaria-detail';
-import { getSecretariaErrors, getSecretariaFormValues } from '../secretaria-form';
-import { reframePhoto, removePhoto, savePhoto } from '../photo-actions';
+import { requireSecretariaAccess } from '$lib/server/secretaria/access';
+import { toSecretariaDetail } from '$lib/server/secretaria/detail';
+import { getSecretariaErrors, getSecretariaFormValues } from '$lib/server/secretaria/form';
+import { reframePhoto, removePhoto, savePhoto } from '$lib/server/secretaria/photo/actions';
 import type { Actions, PageServerLoad } from './$types';
 
 type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria'>;

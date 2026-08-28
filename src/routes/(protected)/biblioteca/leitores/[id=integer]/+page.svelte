@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Notification from '$lib/components/Notification.svelte';
-	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
+	import Notification from '$lib/components/feedback/Notification.svelte';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData, PageServerData } from './$types';
 
 	interface Props {

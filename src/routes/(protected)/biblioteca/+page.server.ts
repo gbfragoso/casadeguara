@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { emprestimo } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { emprestimo } from '$lib/server/database/schema';
 import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 import { avisoModel, type Aviso } from '$lib/server/models/aviso';
 import { error } from '@sveltejs/kit';

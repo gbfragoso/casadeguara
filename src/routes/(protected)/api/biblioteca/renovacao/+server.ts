@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { emprestimo } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { emprestimo } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
