@@ -62,10 +62,12 @@ export const createTestUsers = async (token: string): Promise<TestUsers> => {
 };
 export const readCadastro = async (name: string): Promise<CadastroSnapshot> => {
 	const [cadastro] = await sql<CadastroSnapshot[]>`
-		select idleitor, nome, rg, cpf, email, celular, telefone, logradouro, bairro, complemento, cidade, cep,
-			aniversario, trab, status, frequencia, desencarnado, amigo_fraterno, foto
-		from cadastros
-		where nome = ${name}
+		select c.idleitor, c.nome, c.rg, c.cpf, c.email, c.celular, c.telefone, c.logradouro, c.bairro,
+			c.complemento, c.cidade, c.cep, c.aniversario, c.trab, c.status, c.frequencia, c.desencarnado,
+			c.amigo_fraterno, f.original as foto
+		from cadastros c
+		left join cadastro_fotos f on f.cadastro_id = c.idleitor
+		where c.nome = ${name}
 	`;
 
 	if (!cadastro) throw new Error('Cadastro de teste não foi encontrado.');

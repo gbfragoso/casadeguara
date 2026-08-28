@@ -3,6 +3,16 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	css: {
+		preprocessorOptions: {
+			scss: {
+				quietDeps: true,
+			},
+		},
+	},
+	resolve: {
+		conditions: process.env.VITEST ? ['browser'] : undefined,
+	},
 
 	test: {
 		environment: 'node',

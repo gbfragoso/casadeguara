@@ -1,4 +1,4 @@
-import { cadastros } from '$lib/database/schema';
+import { cadastroFotos, cadastros } from '$lib/database/schema';
 import { sql } from 'drizzle-orm';
 
 export type AmigoFraternoParticipant = {
@@ -16,11 +16,11 @@ export type AmigoFraternoPdfParticipant = {
 export const participantSummaryFields = {
 	id: cadastros.idleitor,
 	name: cadastros.nome,
-	hasPhoto: sql<boolean>`${cadastros.foto} is not null`,
+	hasPhoto: sql<boolean>`${cadastroFotos.cadastroId} is not null`,
 };
 
 export const participantPdfFields = {
 	id: cadastros.idleitor,
 	name: cadastros.nome,
-	photo: cadastros.foto,
+	photo: cadastroFotos.cartao,
 };

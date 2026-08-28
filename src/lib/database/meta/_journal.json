@@ -43,6 +43,13 @@
 			"when": 1787314108631,
 			"tag": "0005_round_vivisector",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1787855516310,
+			"tag": "0006_fat_zodiak",
+			"breakpoints": true
 		}
 	]
 }

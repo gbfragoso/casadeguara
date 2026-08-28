@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { db } from '$lib/database/connection';
-import { cadastros } from '$lib/database/schema';
+import { cadastroFotos, cadastros } from '$lib/database/schema';
 import { AmigoFraternoParticipants } from '$lib/server/amigo-fraterno/participants';
 
 import { createTestName, deleteCadastro } from '../models/cadastro/test-support';
@@ -51,10 +51,14 @@ describe('amigo fraterno participants', () => {
 						amigoFraterno: true,
 						trab: true,
 						desencarnado: false,
-						foto: index ? Uint8Array.of(1) : null,
 					})
 					.returning();
 				if (!created) throw new Error('Cadastro de teste não foi criado.');
+				if (index) {
+					await db
+						.insert(cadastroFotos)
+						.values({ cadastroId: created.idleitor, original: Uint8Array.of(1), cartao: Uint8Array.of(1) });
+				}
 				return created;
 			}),
 		);

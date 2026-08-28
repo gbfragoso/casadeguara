@@ -1,19 +1,42 @@
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { PDFDocument } from 'pdf-lib';
+import sharp from 'sharp';
 
 import { sql } from './cadastros-database';
 
 export const createName = (suffix: string) => `AMF ${suffix} ${randomUUID().slice(0, 8)}`;
 
-export const createParticipant = async (name: string, hasPhoto = false) => {
-	const photo = hasPhoto ? await readFile('tests/fixtures/amigo-fraterno-photo.jpeg') : null;
+export type PhotoSize = { width: number; height: number };
+
+export const createPhoto = async (photoSize?: PhotoSize) => {
+	if (!photoSize) return readFile('tests/fixtures/amigo-fraterno-photo.jpeg');
+	return sharp({
+		create: {
+			width: photoSize.width,
+			height: photoSize.height,
+			channels: 3,
+			background: { r: photoSize.width % 255, g: photoSize.height % 255, b: 80 },
+		},
+	})
+		.jpeg()
+		.toBuffer();
+};
+
+export const createParticipant = async (name: string, hasPhoto = false, photoSize?: PhotoSize) => {
 	const [cadastro] = await sql<{ idleitor: number }[]>`
-		insert into cadastros (nome, trab, desencarnado, amigo_fraterno, foto)
-		values (${name}, true, false, false, ${photo})
+		insert into cadastros (nome, trab, desencarnado, amigo_fraterno)
+		values (${name}, true, false, false)
 		returning idleitor
 	`;
 	if (!cadastro) throw new Error('Cadastro do Amigo Fraterno não foi criado.');
+	if (hasPhoto) {
+		const photo = await createPhoto(photoSize);
+		await sql`
+			insert into cadastro_fotos (cadastro_id, original, cartao)
+			values (${cadastro.idleitor}, ${photo}, ${photo})
+		`;
+	}
 	return cadastro.idleitor;
 };
 

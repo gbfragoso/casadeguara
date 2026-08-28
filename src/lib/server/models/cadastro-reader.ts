@@ -1,5 +1,5 @@
 import { ulike, unaccent } from '$lib/database/functions';
-import { cadastros } from '$lib/database/schema';
+import { cadastroFotos, cadastros } from '$lib/database/schema';
 import { and, eq } from 'drizzle-orm';
 
 import type { CadastroDatabase } from './cadastro-database';
@@ -53,6 +53,7 @@ export const getSecretaria = async (database: CadastroDatabase, id: number) => {
 	const [cadastro] = await database
 		.select(secretariaDetailFields)
 		.from(cadastros)
+		.leftJoin(cadastroFotos, eq(cadastroFotos.cadastroId, cadastros.idleitor))
 		.where(eq(cadastros.idleitor, id))
 		.limit(1);
 

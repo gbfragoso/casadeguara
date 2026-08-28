@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { cadastroModel } from '$lib/server/models/cadastro';
+import { secretariaPhotoModel } from '$lib/server/models/secretaria-photo';
 import { _createCadastroFlagHandler } from '../../../../../src/routes/(protected)/api/cadastros/+server';
 import { _createPhotoHandler } from '../../../../../src/routes/(protected)/secretaria/cadastros/[id=integer]/foto/+server';
+import { _createOriginalPhotoHandler } from '../../../../../src/routes/(protected)/secretaria/cadastros/[id=integer]/foto/original/+server';
 import { _createAmigoFraternoLoad } from '../../../../../src/routes/(protected)/secretaria/amigofraterno/+page.server';
 import { _createPdfHandler } from '../../../../../src/routes/(protected)/secretaria/amigofraterno/pdf/+server';
 
@@ -21,6 +23,12 @@ describe('TI-10 Amigo Fraterno authorization', () => {
 	it('authorizes a regular secretaria user and rejects every other profile across boundaries', async () => {
 		const created = await createRawCadastro(createTestName('authorization'));
 		try {
+			await secretariaPhotoModel.replace(
+				created.idleitor,
+				Uint8Array.of(1, 2),
+				Uint8Array.of(3, 4),
+				secretaria.id,
+			);
 			const update = _createCadastroFlagHandler(cadastroModel);
 			const allowed = await update({ locals: { user: secretaria }, request: createRequest(created.idleitor) });
 			const rejected = await update({ locals: { user: biblioteca }, request: createRequest(created.idleitor) });
@@ -32,17 +40,27 @@ describe('TI-10 Amigo Fraterno authorization', () => {
 			).rejects.toMatchObject({
 				status: 401,
 			});
+			const cardResponse = await _createPhotoHandler(secretariaPhotoModel)({
+				locals: { user: secretaria },
+				params: { id: `${created.idleitor}` },
+			});
+			expect(cardResponse.status).toBe(200);
+			expect(await cardResponse.bytes()).toEqual(Uint8Array.of(3, 4));
+			const original = _createOriginalPhotoHandler(secretariaPhotoModel);
+			const originalResponse = await original({
+				locals: { user: secretaria },
+				params: { id: `${created.idleitor}` },
+			});
+			expect(originalResponse.status).toBe(200);
+			expect(await originalResponse.bytes()).toEqual(Uint8Array.of(1, 2));
+			const missingResponse = await _createPhotoHandler(secretariaPhotoModel)({
+				locals: { user: secretaria },
+				params: { id: '0' },
+			});
+			expect(missingResponse.status).toBe(404);
 			expect(
 				(
-					await _createPhotoHandler(cadastroModel)({
-						locals: { user: secretaria },
-						params: { id: `${created.idleitor}` },
-					})
-				).status,
-			).toBe(404);
-			expect(
-				(
-					await _createPhotoHandler(cadastroModel)({
+					await _createPhotoHandler(secretariaPhotoModel)({
 						locals: { user: biblioteca },
 						params: { id: `${created.idleitor}` },
 					})

@@ -1,10 +1,10 @@
 import { PDFDocument } from 'pdf-lib';
 
+import { A4_HEIGHT, A4_WIDTH } from '$lib/amigo-fraterno/card-geometry';
 import type { AmigoFraternoPdfParticipant } from './participant-projections';
 import { loadPdfAssets } from './pdf-assets';
 import { drawCard } from './pdf-card';
 import { formatNextDrawDate } from './pdf-date';
-import { A4_HEIGHT, A4_WIDTH } from './pdf-layout';
 import { numberParticipants, paginateCards } from './pdf-pagination';
 
 export const sortPdfParticipants = (participants: AmigoFraternoPdfParticipant[]) =>

@@ -21,7 +21,6 @@ import {
 } from './cadastro-reader';
 import { createSecretaria, updateSecretaria, updateSecretariaFlag } from './cadastro-secretaria';
 import { createTesouraria, updateTesouraria } from './cadastro-tesouraria';
-import { getSecretariaPhoto, removeSecretariaPhoto, replaceSecretariaPhoto } from './cadastro-photo';
 
 export class CadastroModel {
 	constructor(private readonly database: CadastroDatabase) {}
@@ -60,18 +59,6 @@ export class CadastroModel {
 
 	updateSecretariaFlag(id: number, flag: SecretariaFlagData, userAlteracao: string) {
 		return updateSecretariaFlag(this.database, id, flag, userAlteracao);
-	}
-
-	replaceSecretariaPhoto(id: number, foto: Uint8Array, userAlteracao: string) {
-		return replaceSecretariaPhoto(this.database, id, foto, userAlteracao);
-	}
-
-	removeSecretariaPhoto(id: number, userAlteracao: string) {
-		return removeSecretariaPhoto(this.database, id, userAlteracao);
-	}
-
-	getSecretariaPhoto(id: number) {
-		return getSecretariaPhoto(this.database, id);
 	}
 
 	fetchTesouraria(name: string) {

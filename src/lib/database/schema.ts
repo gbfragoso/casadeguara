@@ -115,7 +115,6 @@ export const cadastros = pgTable(
 		desencarnado: boolean().default(false),
 		frequencia: boolean().default(false),
 		amigoFraterno: boolean('amigo_fraterno').notNull().default(false),
-		foto: byteaColumn(),
 		cidade: varchar(),
 		incompleto: boolean(),
 		status: boolean().default(true),
@@ -125,6 +124,15 @@ export const cadastros = pgTable(
 	},
 	(table) => [unique('unique_leitor').on(table.nome)],
 );
+
+export const cadastroFotos = pgTable('cadastro_fotos', {
+	cadastroId: smallint('cadastro_id')
+		.primaryKey()
+		.notNull()
+		.references(() => cadastros.idleitor, { onDelete: 'cascade' }),
+	original: byteaColumn().notNull(),
+	cartao: byteaColumn().notNull(),
+});
 
 export const editora = pgTable(
 	'editora',
