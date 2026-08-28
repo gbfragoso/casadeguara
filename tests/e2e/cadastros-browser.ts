@@ -15,6 +15,7 @@ export const createBibliotecaCadastro = async (page: Page, fixture: CadastroFixt
 	await page.goto('/biblioteca/leitores/novo');
 	const form = page.locator('form.card');
 	await form.getByLabel('Nome').fill(fixture.name);
+	await expect(form.getByLabel('Nome')).toHaveValue(fixture.name);
 	await form.getByLabel('RG').fill(fixture.rg);
 	await form.getByLabel('CPF').fill(fixture.cpf);
 	await form.getByLabel('E-mail').fill(fixture.email);
@@ -27,6 +28,7 @@ export const createBibliotecaCadastro = async (page: Page, fixture: CadastroFixt
 	await form.getByLabel('CEP').fill(fixture.postalCode);
 	await form.getByLabel('Trabalhador').check();
 	await form.getByRole('button', { name: 'Cadastrar' }).click();
+	await expect(page.getByText('Leitor cadastrado com sucesso!')).toBeVisible();
 };
 
 const searchCadastro = async (page: Page, path: string, label: string, name: string) => {

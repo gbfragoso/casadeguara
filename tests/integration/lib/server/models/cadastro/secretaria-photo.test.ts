@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { db } from '$lib/database/connection';
+import { db } from '$lib/server/database/connection';
 import { SecretariaPhotoModel } from '$lib/server/models/secretaria-photo';
 
 import { createRawCadastro, createTestName, deleteCadastro, model, readCadastro } from './test-support';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { moeda } from '$lib/js/currency';
+	import { moeda } from '$lib/utils/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 

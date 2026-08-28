@@ -1,8 +1,8 @@
 import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
-import { generateAmigoFraternoPdf } from '$lib/server/amigo-fraterno/pdf-generator';
-import { createPdfStream } from '$lib/server/amigo-fraterno/pdf-stream';
-import { amigoFraternoParticipants, type AmigoFraternoParticipants } from '$lib/server/amigo-fraterno/participants';
-import { parseAmigoFraternoPdfRequest } from '$lib/validation/amigo-fraterno/pdf';
+import { generateAmigoFraternoPdf } from '$lib/server/pdf/amigo-fraterno/generator';
+import { createPdfStream } from '$lib/server/pdf/amigo-fraterno/stream';
+import { amigoFraternoParticipants, type AmigoFraternoParticipants } from '$lib/server/pdf/amigo-fraterno/participants';
+import { parseAmigoFraternoPdfRequest } from '$lib/validation/pdf/amigo-fraterno';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';

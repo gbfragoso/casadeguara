@@ -1,4 +1,4 @@
-import { cadastroFotos, cadastros } from '$lib/database/schema';
+import { cadastroFotos, cadastros } from '$lib/server/database/schema';
 import { sql } from 'drizzle-orm';
 
 export const cadastroIdFields = { idleitor: cadastros.idleitor };

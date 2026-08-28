@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/database/connection';
-import { aviso } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { aviso } from '$lib/server/database/schema';
 import type { Aviso } from '$lib/server/models/aviso';
 import { eq } from 'drizzle-orm';
 

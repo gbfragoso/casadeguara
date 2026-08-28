@@ -25,6 +25,8 @@ export default defineConfig({
 				'src/**/*.d.ts',
 				// Arquivos de teste não são comportamento da aplicação em produção.
 				'src/**/*.{test,spec,e2e}.{js,ts}',
+				// Scripts de suporte ao desenvolvimento não são comportamento da aplicação em produção.
+				'src/lib/scripts/**/*.js',
 			],
 			thresholds: {
 				perFile: true,

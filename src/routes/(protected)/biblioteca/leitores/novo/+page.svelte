@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Notification from '$lib/components/Notification.svelte';
-	import { createFormEnhancer } from '$lib/js/form-enhancer.svelte';
+	import Notification from '$lib/components/feedback/Notification.svelte';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData } from './$types';
 
 	interface Props {
@@ -10,8 +10,22 @@
 
 	let { form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
-	let statusChecked = $derived(form?.values?.status !== 'false');
-	let workerChecked = $derived(form?.values?.trab === 'true');
+	const getValues = () => ({
+		nome: form?.values?.nome ?? '',
+		rg: form?.values?.rg ?? '',
+		cpf: form?.values?.cpf ?? '',
+		email: form?.values?.email ?? '',
+		celular: form?.values?.celular ?? '',
+		telefone: form?.values?.telefone ?? '',
+		logradouro: form?.values?.logradouro ?? '',
+		bairro: form?.values?.bairro ?? '',
+		complemento: form?.values?.complemento ?? '',
+		cidade: form?.values?.cidade ?? '',
+		cep: form?.values?.cep ?? '',
+		trab: form?.values?.trab === 'true',
+		status: form?.values?.status !== 'false',
+	});
+	let values = $state(getValues());
 </script>
 
 <div class="mb-2">
@@ -37,7 +51,7 @@
 						type="text"
 						name="nome"
 						id="nome"
-						value={form?.values?.nome ?? ''}
+						bind:value={values.nome}
 						autocomplete="name"
 						maxlength="60"
 						required
@@ -53,7 +67,7 @@
 						type="text"
 						name="rg"
 						id="rg"
-						value={form?.values?.rg ?? ''}
+						bind:value={values.rg}
 						maxlength="12"
 						inputmode="numeric"
 						autocomplete="off"
@@ -69,7 +83,7 @@
 						type="text"
 						name="cpf"
 						id="cpf"
-						value={form?.values?.cpf ?? ''}
+						bind:value={values.cpf}
 						maxlength="14"
 						inputmode="numeric"
 						autocomplete="off"
@@ -87,7 +101,7 @@
 						type="email"
 						name="email"
 						id="email"
-						value={form?.values?.email ?? ''}
+						bind:value={values.email}
 						maxlength="60"
 						autocomplete="email"
 						aria-describedby={form?.errors?.email?.length ? 'email-errors' : undefined}
@@ -102,7 +116,7 @@
 						type="text"
 						name="celular"
 						id="celular"
-						value={form?.values?.celular ?? ''}
+						bind:value={values.celular}
 						maxlength="15"
 						inputmode="tel"
 						autocomplete="tel-national"
@@ -118,7 +132,7 @@
 						type="text"
 						name="telefone"
 						id="telefone"
-						value={form?.values?.telefone ?? ''}
+						bind:value={values.telefone}
 						maxlength="15"
 						inputmode="tel"
 						autocomplete="tel-national"
@@ -136,7 +150,7 @@
 						type="text"
 						name="logradouro"
 						id="logradouro"
-						value={form?.values?.logradouro ?? ''}
+						bind:value={values.logradouro}
 						maxlength="80"
 						autocomplete="street-address"
 						aria-describedby={form?.errors?.logradouro?.length ? 'logradouro-errors' : undefined}
@@ -151,7 +165,7 @@
 						type="text"
 						name="bairro"
 						id="bairro"
-						value={form?.values?.bairro ?? ''}
+						bind:value={values.bairro}
 						maxlength="30"
 						autocomplete="address-level3"
 						aria-describedby={form?.errors?.bairro?.length ? 'bairro-errors' : undefined}
@@ -166,7 +180,7 @@
 						type="text"
 						name="complemento"
 						id="complemento"
-						value={form?.values?.complemento ?? ''}
+						bind:value={values.complemento}
 						maxlength="100"
 						autocomplete="address-line2"
 						aria-describedby={form?.errors?.complemento?.length ? 'complemento-errors' : undefined}
@@ -181,7 +195,7 @@
 						type="text"
 						name="cidade"
 						id="cidade"
-						value={form?.values?.cidade ?? ''}
+						bind:value={values.cidade}
 						maxlength="100"
 						autocomplete="address-level2"
 						aria-describedby={form?.errors?.cidade?.length ? 'cidade-errors' : undefined}
@@ -196,7 +210,7 @@
 						type="text"
 						name="cep"
 						id="cep"
-						value={form?.values?.cep ?? ''}
+						bind:value={values.cep}
 						maxlength="9"
 						inputmode="numeric"
 						autocomplete="postal-code"
@@ -213,7 +227,7 @@
 					name="trab"
 					id="trab"
 					value="true"
-					checked={workerChecked}
+					bind:checked={values.trab}
 					aria-describedby={form?.errors?.trab?.length ? 'trab-errors' : undefined}
 					aria-invalid={form?.errors?.trab?.length ? 'true' : undefined} />
 				Trabalhador
@@ -225,7 +239,7 @@
 					name="status"
 					id="status"
 					value="true"
-					checked={statusChecked}
+					bind:checked={values.status}
 					aria-describedby={form?.errors?.status?.length ? 'status-errors' : undefined}
 					aria-invalid={form?.errors?.status?.length ? 'true' : undefined} />
 				Ativo

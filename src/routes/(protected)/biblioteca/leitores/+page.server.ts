@@ -3,8 +3,8 @@ import { bibliotecaSearchSchema } from '$lib/validation/cadastros/biblioteca';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireReaderAccess } from './reader-access';
-import { getReaderSearchValues } from './reader-form';
+import { requireReaderAccess } from '$lib/server/biblioteca/readers/access';
+import { getReaderSearchValues } from '$lib/server/biblioteca/readers/form';
 import type { Actions, PageServerLoad } from './$types';
 
 type ListModel = Pick<CadastroModel, 'fetchBiblioteca'>;

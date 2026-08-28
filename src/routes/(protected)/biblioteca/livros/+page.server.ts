@@ -1,6 +1,6 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { ulike, unaccent } from '$lib/server/database/functions';
+import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '$lib/server/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 

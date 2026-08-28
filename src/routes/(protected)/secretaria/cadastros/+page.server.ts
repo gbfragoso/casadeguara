@@ -3,8 +3,8 @@ import { secretariaSearchSchema } from '$lib/validation/cadastros/secretaria';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireSecretariaAccess } from './secretaria-access';
-import { getSecretariaErrors, getSecretariaSearchValues } from './secretaria-form';
+import { requireSecretariaAccess } from '$lib/server/secretaria/access';
+import { getSecretariaErrors, getSecretariaSearchValues } from '$lib/server/secretaria/form';
 import type { Actions, PageServerLoad } from './$types';
 
 type ListModel = Pick<CadastroModel, 'fetchSecretaria'>;

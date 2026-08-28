@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
-	import Notification from '$lib/components/Notification.svelte';
+	import Notification from '$lib/components/feedback/Notification.svelte';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {

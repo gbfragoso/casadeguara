@@ -1,6 +1,6 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { user } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { ulike, unaccent } from '$lib/server/database/functions';
+import { user } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, not } from 'drizzle-orm';
 

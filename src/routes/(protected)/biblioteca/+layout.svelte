@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/stores';
-	import Navbar from '$lib/components/Navbar.svelte';
+	import Navbar from '$lib/components/navigation/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 	interface Props {
 		data: LayoutServerData;

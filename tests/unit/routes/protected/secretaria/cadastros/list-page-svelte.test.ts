@@ -1,7 +1,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it, vi } from 'vitest';
 
-import { updateCadastroFlag } from '../../../../../../src/routes/(protected)/secretaria/cadastros/cadastro-flag';
+import { updateCadastroFlag } from '../../../../../../src/lib/cadastros/flags';
 import Page from '../../../../../../src/routes/(protected)/secretaria/cadastros/+page.svelte';
 
 describe('secretaria registration list page', () => {

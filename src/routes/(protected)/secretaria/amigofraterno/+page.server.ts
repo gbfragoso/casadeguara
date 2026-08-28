@@ -1,7 +1,7 @@
-import { type AmigoFraternoParticipant } from '$lib/server/amigo-fraterno/participant-projections';
-import { amigoFraternoParticipants } from '$lib/server/amigo-fraterno/participants';
+import { type AmigoFraternoParticipant } from '$lib/server/pdf/amigo-fraterno/participant-projections';
+import { amigoFraternoParticipants } from '$lib/server/pdf/amigo-fraterno/participants';
 
-import { requireSecretariaAccess } from '../cadastros/secretaria-access';
+import { requireSecretariaAccess } from '$lib/server/secretaria/access';
 import type { PageServerLoad } from './$types';
 
 type ParticipantReader = { listSummary: () => PromiseLike<AmigoFraternoParticipant[]> };

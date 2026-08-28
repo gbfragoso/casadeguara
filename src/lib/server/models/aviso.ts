@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { aviso } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { aviso } from '$lib/server/database/schema';
 import { desc, eq, sql } from 'drizzle-orm';
 
 export const RECENT_NOTICE_LIMIT = 5;

@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { entradas, saidas } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { entradas, saidas } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, count, gte, lte, sql, sum } from 'drizzle-orm';
 

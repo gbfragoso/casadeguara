@@ -1,6 +1,6 @@
-import { db } from '$lib/database/connection';
-import { ulike, unaccent } from '$lib/database/functions';
-import { editora } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { ulike, unaccent } from '$lib/server/database/functions';
+import { editora } from '$lib/server/database/schema';
 import { eq } from 'drizzle-orm';
 
 export const PUBLISHER_FETCH_LIMIT = 50;

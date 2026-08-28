@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { cadastros, entradas } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { cadastros, entradas } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';

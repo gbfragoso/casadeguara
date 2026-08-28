@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { keyword, livroHasKeyword, livro } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { keyword, livroHasKeyword, livro } from '$lib/server/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 

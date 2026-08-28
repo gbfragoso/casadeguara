@@ -1,5 +1,5 @@
-import { db } from '$lib/database/connection';
-import { cadastros, emprestimo, exemplar, livro, user } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { cadastros, emprestimo, exemplar, livro, user } from '$lib/server/database/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { and, eq, not } from 'drizzle-orm';
 import validator from 'validator';

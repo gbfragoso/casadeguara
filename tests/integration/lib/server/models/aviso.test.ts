@@ -1,4 +1,4 @@
-import { db } from '$lib/database/connection';
+import { db } from '$lib/server/database/connection';
 import { AvisoModel, RECENT_NOTICE_LIMIT } from '$lib/server/models/aviso';
 import { describe, expect, it } from 'vitest';
 

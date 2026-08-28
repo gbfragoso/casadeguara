@@ -1,6 +1,6 @@
-import { db } from '$lib/database/connection';
-import { ulike } from '$lib/database/functions';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/database/schema';
+import { db } from '$lib/server/database/connection';
+import { ulike } from '$lib/server/database/functions';
+import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
 import { error, redirect } from '@sveltejs/kit';
 import { and, desc, eq, isNull, lte } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types';
