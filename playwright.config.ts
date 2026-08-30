@@ -1,4 +1,7 @@
 import { defineConfig } from '@playwright/test';
+import { assertTestDatabase } from './tests/support/database';
+
+assertTestDatabase();
 
 export default defineConfig({
 	webServer: { command: 'npm run dev', port: 5173 },

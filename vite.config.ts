@@ -19,7 +19,7 @@ export default defineConfig({
 		testTimeout: 10_000,
 		coverage: {
 			provider: 'v8',
-			include: ['src/**/*.{js,ts,svelte}'],
+			include: [],
 			exclude: [
 				// Declarações de tipos são apagadas em tempo de execução.
 				'src/**/*.d.ts',
@@ -49,6 +49,7 @@ export default defineConfig({
 				test: {
 					name: 'integration',
 					include: ['tests/integration/**/*.{test,spec}.{js,ts}'],
+					setupFiles: ['tests/integration/setup.ts'],
 				},
 			},
 		],
