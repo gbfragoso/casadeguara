@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
 
-import { sql } from './cadastros-database';
+import type { TestDatabase } from './cadastros-database';
 
 export const createName = (suffix: string) => `AMF ${suffix} ${randomUUID().slice(0, 8)}`;
 
@@ -23,8 +23,13 @@ export const createPhoto = async (photoSize?: PhotoSize) => {
 		.toBuffer();
 };
 
-export const createParticipant = async (name: string, hasPhoto = false, photoSize?: PhotoSize) => {
-	const [cadastro] = await sql<{ idleitor: number }[]>`
+export const createParticipant = async (
+	database: TestDatabase,
+	name: string,
+	hasPhoto = false,
+	photoSize?: PhotoSize,
+) => {
+	const [cadastro] = await database<{ idleitor: number }[]>`
 		insert into cadastros (nome, trab, desencarnado, amigo_fraterno)
 		values (${name}, true, false, false)
 		returning idleitor
@@ -32,7 +37,7 @@ export const createParticipant = async (name: string, hasPhoto = false, photoSiz
 	if (!cadastro) throw new Error('Cadastro do Amigo Fraterno não foi criado.');
 	if (hasPhoto) {
 		const photo = await createPhoto(photoSize);
-		await sql`
+		await database`
 			insert into cadastro_fotos (cadastro_id, original, cartao)
 			values (${cadastro.idleitor}, ${photo}, ${photo})
 		`;
@@ -40,16 +45,17 @@ export const createParticipant = async (name: string, hasPhoto = false, photoSiz
 	return cadastro.idleitor;
 };
 
-export const setAmigoFraterno = (id: number, value: boolean) =>
-	sql`update cadastros set amigo_fraterno = ${value} where idleitor = ${id}`;
+export const setAmigoFraterno = (database: TestDatabase, id: number, value: boolean) =>
+	database`update cadastros set amigo_fraterno = ${value} where idleitor = ${id}`;
 
-export const setWorker = (id: number, value: boolean) =>
-	sql`update cadastros set trab = ${value} where idleitor = ${id}`;
+export const setWorker = (database: TestDatabase, id: number, value: boolean) =>
+	database`update cadastros set trab = ${value} where idleitor = ${id}`;
 
-export const setDisincarnated = (id: number, value: boolean) =>
-	sql`update cadastros set desencarnado = ${value} where idleitor = ${id}`;
+export const setDisincarnated = (database: TestDatabase, id: number, value: boolean) =>
+	database`update cadastros set desencarnado = ${value} where idleitor = ${id}`;
 
-export const deleteParticipants = (names: string[]) => sql`delete from cadastros where nome = any(${names})`;
+export const deleteParticipants = (database: TestDatabase, names: string[]) =>
+	database`delete from cadastros where nome = any(${names})`;
 
 export const getPdfPageCount = async (bytes: Uint8Array) => {
 	const document = await PDFDocument.load(bytes);

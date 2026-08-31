@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	server: { hmr: process.env.NODE_ENV !== 'test' },
 	css: {
 		preprocessorOptions: {
 			scss: {

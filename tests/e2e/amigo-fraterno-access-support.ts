@@ -1,6 +1,6 @@
 import { expect, type APIRequestContext } from '@playwright/test';
 
-import { readCadastro } from './cadastros-database';
+import { readCadastro, type TestDatabase } from './cadastros-database';
 import { createPhoto } from './amigo-fraterno-support';
 
 const privatePhotoPath = (id: number, original = false) =>
@@ -56,18 +56,23 @@ const postBlockedActions = (request: APIRequestContext, id: number, multipart: P
 		}),
 	]);
 
-const assertPhotoUnchanged = async (name: string, before: Awaited<ReturnType<typeof readCadastro>>) => {
-	const after = await readCadastro(name);
+const assertPhotoUnchanged = async (
+	database: TestDatabase,
+	name: string,
+	before: Awaited<ReturnType<typeof readCadastro>>,
+) => {
+	const after = await readCadastro(database, name);
 	expect(after).toEqual(before);
 };
 
 export const assertBlockedSecretariaAccess = async (
 	request: APIRequestContext,
+	database: TestDatabase,
 	id: number,
 	name: string,
 	status: number,
 ) => {
-	const before = await readCadastro(name);
+	const before = await readCadastro(database, name);
 	if (!before.foto) throw new Error('A fixture de foto não foi persistida.');
 	await assertUnauthorizedPhotoEndpoints(request, id, name);
 	const multipart = {
@@ -81,5 +86,5 @@ export const assertBlockedSecretariaAccess = async (
 	await Promise.all([save, reframe, remove].map((response) => assertBlockedAction(response, status, name)));
 	expect(pdf.status()).toBe(401);
 	expect(await pdf.text()).not.toContain(name);
-	await assertPhotoUnchanged(name, before);
+	await assertPhotoUnchanged(database, name, before);
 };
