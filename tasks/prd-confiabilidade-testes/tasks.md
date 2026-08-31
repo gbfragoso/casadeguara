@@ -7,4 +7,4 @@
 - [x] 3.0 Reclassificar testes e validar os adaptadores SvelteKit reais — depende de: 1.0
 - [x] 4.0 Racionalizar a suíte unitária e os testes de componentes — depende de: 3.0
 - [x] 5.0 Tornar as jornadas E2E independentes e diagnosticáveis — depende de: 1.0, 2.0 e 3.0
-- [ ] 6.0 Consolidar rastreabilidade e executar o gate integral — depende de: 2.0, 4.0 e 5.0
+- [x] 6.0 Consolidar rastreabilidade e executar o gate integral — depende de: 2.0, 4.0 e 5.0
