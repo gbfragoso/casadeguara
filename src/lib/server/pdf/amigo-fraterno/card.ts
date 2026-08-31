@@ -30,7 +30,7 @@ export const drawCard = async (
 	nextDrawDate: string,
 ) => {
 	page.drawRectangle({ ...slot, borderColor: PDF_COLORS.blue, borderWidth: 3 });
-	drawText(page, participant.number, slot.x + 14, slot.y + slot.height - 20, 20, assets.font);
+	drawText(page, participant.number, slot.x + 14, slot.y + slot.height - 25, 20, assets.font);
 	drawName(page, participant.name, slot, assets.font, slot.x + 14, slot.y + slot.height - 68, 190);
 	drawText(page, 'Representado(a) por:', slot.x + 14, slot.y + 38, 11, assets.font);
 	page.drawLine({
@@ -56,11 +56,11 @@ export const drawCard = async (
 		width: PHOTO_FRAME.widthPoints,
 		height: PHOTO_FRAME.heightPoints,
 	});
-	drawText(page, 'Amigo Fraterno', slot.x + 382, slot.y + slot.height - 25, 16, assets.font);
+	drawText(page, 'Amigo Fraterno', slot.x + 344, slot.y + slot.height - 25, 16, assets.font);
 	drawText(page, `Próximo sorteio: ${nextDrawDate}`, slot.x + 344, slot.y + slot.height - 52, 11, assets.font);
 	drawName(page, participant.name, slot, assets.font, slot.x + 344, slot.y + slot.height - 83, 200);
-	drawText(page, '"Existem muitos caminhos para felicidade...', slot.x + 360, slot.y + 28, 10, assets.font);
-	drawText(page, 'Um deles é a Casa de Guará!"', slot.x + 385, slot.y + 12, 10, assets.font);
+	drawText(page, '"Existem muitos caminhos para felicidade...', slot.x + 344, slot.y + 28, 10, assets.font);
+	drawText(page, 'Um deles é a Casa de Guará!"', slot.x + 380, slot.y + 12, 10, assets.font);
 	page.drawImage(assets.logo, {
 		x: slot.x + slot.width - LOGO_SIZE - 8,
 		y: slot.y + slot.height - 35,
