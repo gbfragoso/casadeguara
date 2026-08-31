@@ -103,8 +103,11 @@
 
 <section class="card mt-4 photo-section" aria-labelledby="foto-title">
 	<div class="card-content">
-		<h2 id="foto-title" class="title is-5">Foto</h2>
-		<p class="tag" aria-live="polite">{hasPhoto ? 'Cadastrada' : 'Pendente'}</p>
+		<h2 id="foto-title" class="has-text-weight-bold is-5">
+			Foto <span class="tag {hasPhoto ? 'is-success' : ''}" aria-live="polite"
+				>{hasPhoto ? 'Cadastrada' : 'Pendente'}</span>
+		</h2>
+
 		{#if hasPhoto}
 			<img class="photo-section__current" src={photoUrl} {alt} />
 		{/if}
