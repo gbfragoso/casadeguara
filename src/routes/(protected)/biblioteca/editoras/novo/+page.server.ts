@@ -3,15 +3,19 @@ import { editoraSchema } from '$lib/validation/editora';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+
 import type { Actions } from './$types';
 
 type CreateModel = Pick<EditoraModel, 'create'>;
+type User = { roles: string } | null;
 
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createNewEditoraHandlers = (model: CreateModel) => ({
+const createInternalNewEditoraHandlers = (model: CreateModel) => ({
 	actions: {
-		default: async ({ request }: { request: Request }) => {
+		default: async ({ locals, request }: { locals: { user: User }; request: Request }) => {
+			requireLibraryAccess(locals.user);
 			const formData = await request.formData();
 			const rawName = formData.get('nome');
 			const result = editoraSchema.safeParse({ nome: rawName });
@@ -31,6 +35,6 @@ export const _createNewEditoraHandlers = (model: CreateModel) => ({
 	},
 });
 
-const handlers = _createNewEditoraHandlers(editoraModel);
+const handlers = createInternalNewEditoraHandlers(editoraModel);
 
 export const actions: Actions = handlers.actions;

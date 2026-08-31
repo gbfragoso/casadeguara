@@ -1,20 +1,22 @@
 import { autorModel, type AutorModel } from '$lib/server/models/autor';
 import { authorSearchSchema } from '$lib/validation/autor';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
+
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 
 import type { Actions, PageServerLoad } from './$types';
 
 type ListModel = Pick<AutorModel, 'fetch'>;
+type User = { roles: string } | null;
 
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createListHandlers = (model: ListModel) => ({
-	load: async ({ locals }: { locals: { user: unknown } }) => {
-		if (!locals.user) redirect(302, '/');
-	},
+const createInternalListHandlers = (model: ListModel) => ({
+	load: async ({ locals }: { locals: { user: User } }) => requireLibraryAccess(locals.user),
 	actions: {
-		default: async ({ request }: { request: Request }) => {
+		default: async ({ locals, request }: { locals: { user: User }; request: Request }) => {
+			requireLibraryAccess(locals.user);
 			const formData = await request.formData();
 			const rawName = formData.get('nome');
 			const result = authorSearchSchema.safeParse({ nome: rawName });
@@ -34,7 +36,7 @@ export const _createListHandlers = (model: ListModel) => ({
 	},
 });
 
-const handlers = _createListHandlers(autorModel);
+const handlers = createInternalListHandlers(autorModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

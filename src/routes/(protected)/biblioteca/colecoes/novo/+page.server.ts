@@ -12,7 +12,7 @@ type ActionContext = { locals: { user: User }; request: Request };
 
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createNewColecaoHandlers = (model: CreateModel) => ({
+const createInternalNewColecaoHandlers = (model: CreateModel) => ({
 	load: ({ locals }: Pick<ActionContext, 'locals'>) => {
 		requireLibraryAccess(locals.user);
 	},
@@ -38,7 +38,7 @@ export const _createNewColecaoHandlers = (model: CreateModel) => ({
 	},
 });
 
-const handlers = _createNewColecaoHandlers(colecaoModel);
+const handlers = createInternalNewColecaoHandlers(colecaoModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

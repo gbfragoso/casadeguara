@@ -15,7 +15,7 @@ const getSubmittedText = (value: FormDataEntryValue | null) => (typeof value ===
 
 const logFailure = (message: string, cause: unknown) => console.error(message, { cause });
 
-export const _createAvisoEditHandlers = (model: NoticeModel) => ({
+const createInternalAvisoEditHandlers = (model: NoticeModel) => ({
 	load: async ({ locals, params }: HandlerContext) => {
 		requireLibraryAccess(locals.user);
 		const id = Number(params.id);
@@ -57,7 +57,7 @@ export const _createAvisoEditHandlers = (model: NoticeModel) => ({
 	},
 });
 
-const handlers = _createAvisoEditHandlers(avisoModel);
+const handlers = createInternalAvisoEditHandlers(avisoModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

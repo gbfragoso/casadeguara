@@ -12,7 +12,7 @@ type CreateModel = Pick<CadastroModel, 'createBiblioteca'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
 
-export const _createNewReaderHandlers = (model: CreateModel) => ({
+const createInternalNewReaderHandlers = (model: CreateModel) => ({
 	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireReaderAccess(locals.user),
 	actions: {
 		default: async ({ locals, request }: ActionContext) => {
@@ -40,7 +40,7 @@ export const _createNewReaderHandlers = (model: CreateModel) => ({
 	},
 });
 
-const handlers = _createNewReaderHandlers(cadastroModel);
+const handlers = createInternalNewReaderHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

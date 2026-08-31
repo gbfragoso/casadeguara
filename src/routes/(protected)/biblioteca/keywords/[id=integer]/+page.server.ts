@@ -13,7 +13,7 @@ type ActionContext = LoadContext & { request: Request };
 
 const getSubmittedKey = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createEditKeywordHandlers = (model: EditModel) => ({
+const createInternalEditKeywordHandlers = (model: EditModel) => ({
 	load: async ({ locals, params }: LoadContext) => {
 		requireLibraryAccess(locals.user);
 		const id = Number(params.id);
@@ -55,7 +55,7 @@ export const _createEditKeywordHandlers = (model: EditModel) => ({
 	},
 });
 
-const handlers = _createEditKeywordHandlers(keywordModel);
+const handlers = createInternalEditKeywordHandlers(keywordModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

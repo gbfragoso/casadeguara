@@ -23,7 +23,7 @@ const getReader = async (model: EditModel, id: number) => {
 	}
 };
 
-export const _createEditReaderHandlers = (model: EditModel) => ({
+const createInternalEditReaderHandlers = (model: EditModel) => ({
 	load: async ({ locals, params }: LoadContext) => {
 		requireReaderAccess(locals.user);
 		const id = Number(params.id);
@@ -61,7 +61,7 @@ export const _createEditReaderHandlers = (model: EditModel) => ({
 	},
 });
 
-const handlers = _createEditReaderHandlers(cadastroModel);
+const handlers = createInternalEditReaderHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

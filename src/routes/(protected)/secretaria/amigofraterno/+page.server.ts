@@ -7,7 +7,7 @@ import type { PageServerLoad } from './$types';
 type ParticipantReader = { listSummary: () => PromiseLike<AmigoFraternoParticipant[]> };
 type User = { id: string; roles: string } | null;
 
-export const _createAmigoFraternoLoad =
+const createInternalAmigoFraternoLoad =
 	(participants: ParticipantReader) =>
 	async ({ locals }: { locals: { user: User } }) => {
 		requireSecretariaAccess(locals.user);
@@ -20,4 +20,4 @@ export const _createAmigoFraternoLoad =
 		};
 	};
 
-export const load: PageServerLoad = _createAmigoFraternoLoad(amigoFraternoParticipants);
+export const load: PageServerLoad = createInternalAmigoFraternoLoad(amigoFraternoParticipants);

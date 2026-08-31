@@ -12,7 +12,7 @@ type ActionContext = { locals: { user: User }; request: Request };
 
 const getSubmittedKey = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createListHandlers = (model: ListModel) => ({
+const createInternalListHandlers = (model: ListModel) => ({
 	load: ({ locals }: Pick<ActionContext, 'locals'>) => {
 		requireLibraryAccess(locals.user);
 	},
@@ -38,7 +38,7 @@ export const _createListHandlers = (model: ListModel) => ({
 	},
 });
 
-const handlers = _createListHandlers(keywordModel);
+const handlers = createInternalListHandlers(keywordModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;
