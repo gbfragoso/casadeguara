@@ -1,14 +1,22 @@
 // @vitest-environment happy-dom
 import { mount, tick, unmount } from 'svelte';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import Notification from '$lib/components/feedback/Notification.svelte';
 
 describe('Notification', () => {
+	let mounted: ReturnType<typeof mount> | undefined;
+
+	afterEach(() => {
+		if (mounted) unmount(mounted);
+		mounted = undefined;
+		document.body.replaceChildren();
+	});
+
 	it('stays above application layers and can be dismissed', async () => {
 		const target = document.createElement('div');
 		document.body.append(target);
-		const component = mount(Notification, {
+		mounted = mount(Notification, {
 			target,
 			props: { class: 'is-success' },
 		});
@@ -24,7 +32,5 @@ describe('Notification', () => {
 		await tick();
 
 		expect(notification.style.display).toBe('none');
-		unmount(component);
-		target.remove();
 	});
 });

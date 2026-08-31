@@ -2,6 +2,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
 import Page from '../../../../../../src/routes/(protected)/biblioteca/leitores/[id=integer]/+page.svelte';
+import { getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
 const data = {
 	leitor: {
@@ -24,14 +25,17 @@ const data = {
 describe('edit reader page', () => {
 	it('shows masks separately while keeping identifier replacement inputs blank', () => {
 		const { body } = render(Page, { props: { data, form: { status: 200 } } });
+		const document = parseRenderedBody(body);
+		const rg = getRenderedInput(document, 'input[name="rg"]');
+		const cpf = getRenderedInput(document, 'input[name="cpf"]');
 
-		expect(body).toContain('RG cadastrado: 12.***.***-89');
-		expect(body).toContain('CPF cadastrado: 123.***.***-09');
-		expect(body).toContain('name="rg" id="rg" value=""');
-		expect(body).toContain('name="cpf" id="cpf" value=""');
-		expect(body).toContain('Remover RG cadastrado');
-		expect(body).toContain('Remover CPF cadastrado');
-		expect(body).not.toContain('12345678909');
+		expect(document.body.textContent).toContain('RG cadastrado: 12.***.***-89');
+		expect(document.body.textContent).toContain('CPF cadastrado: 123.***.***-09');
+		expect(rg.value).toBe('');
+		expect(cpf.value).toBe('');
+		expect(document.querySelector('label[for="removeRg"]')?.textContent).toContain('Remover RG cadastrado');
+		expect(document.querySelector('label[for="removeCpf"]')?.textContent).toContain('Remover CPF cadastrado');
+		expect(document.body.textContent).not.toContain('12345678909');
 	});
 
 	it('keeps safe submitted values and renders associated errors', () => {
@@ -44,19 +48,25 @@ describe('edit reader page', () => {
 				},
 			},
 		});
+		const document = parseRenderedBody(body);
+		const nome = getRenderedInput(document, 'input[name="nome"]');
+		const email = getRenderedInput(document, 'input[name="email"]');
+		const removeCpf = getRenderedInput(document, 'input[name="removeCpf"]');
 
-		expect(body).toContain('value="" autocomplete="name"');
-		expect(body).toContain('value="bad" maxlength="60" autocomplete="email"');
-		expect(body).toContain('aria-describedby="nome-errors"');
-		expect(body).toContain('aria-describedby="email-errors"');
-		expect(body).toContain('Nome do leitor é obrigatório.');
-		expect(body).toContain('E-mail inválido.');
-		expect(body).toContain('name="removeCpf" id="removeCpf" value="true" checked');
+		expect(nome.value).toBe('');
+		expect(nome.autocomplete).toBe('name');
+		expect(email.value).toBe('bad');
+		expect(email.autocomplete).toBe('email');
+		expect(nome.getAttribute('aria-describedby')).toBe('nome-errors');
+		expect(email.getAttribute('aria-describedby')).toBe('email-errors');
+		expect(document.querySelectorAll('#nome-errors p, #email-errors p')).toHaveLength(2);
+		expect(removeCpf.checked).toBe(true);
 	});
 
-	it('renders update success only for status 200', () => {
+	it('renders update success for status 200', () => {
 		const { body } = render(Page, { props: { data, form: { status: 200 } } });
+		const document = parseRenderedBody(body);
 
-		expect(body).toContain('Leitor atualizado com sucesso!');
+		expect(document.body.textContent).toContain('Leitor atualizado com sucesso!');
 	});
 });

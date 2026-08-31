@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { mount, tick, unmount } from 'svelte';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import Navbar from '$lib/components/navigation/Navbar.svelte';
 
@@ -11,6 +11,15 @@ const getButton = (target: HTMLElement, selector: string) => {
 };
 
 describe('Navbar', () => {
+	let mounted: ReturnType<typeof mount> | undefined;
+
+	afterEach(() => {
+		if (mounted) unmount(mounted);
+		mounted = undefined;
+		document.body.replaceChildren();
+		document.documentElement.removeAttribute('data-theme');
+	});
+
 	it('toggles the sidebar, menu, and color theme', async () => {
 		const sidebar = document.createElement('aside');
 		sidebar.id = 'sidebar';
@@ -18,7 +27,7 @@ describe('Navbar', () => {
 		document.body.append(sidebar);
 		const target = document.createElement('div');
 		document.body.append(target);
-		const component = mount(Navbar, { target, props: { username: 'Ana Silva', userid: 'ana-1' } });
+		mounted = mount(Navbar, { target, props: { username: 'Ana Silva', userid: 'ana-1' } });
 		await tick();
 
 		const menuButton = getButton(target, '[aria-label="menu"]');
@@ -44,15 +53,12 @@ describe('Navbar', () => {
 		expect(sidebar.classList.contains('is-hidden-touch')).toBe(true);
 		expect(document.documentElement.getAttribute('data-theme')).toBe('light');
 		expect(dropdown.classList.contains('is-active')).toBe(false);
-		unmount(component);
-		target.remove();
-		sidebar.remove();
 	});
 
 	it('keeps controls operable when their document targets are absent', async () => {
 		const target = document.createElement('div');
 		document.body.append(target);
-		const component = mount(Navbar, { target, props: { username: 'Ana Silva', userid: 'ana-1' } });
+		mounted = mount(Navbar, { target, props: { username: 'Ana Silva', userid: 'ana-1' } });
 		await tick();
 		const dropdownButton = getButton(target, '[aria-haspopup="true"]');
 		target.querySelector('#dropdown')?.remove();
@@ -62,7 +68,5 @@ describe('Navbar', () => {
 		await tick();
 
 		expect(target.querySelector('[aria-label="menu"]')).not.toBeNull();
-		unmount(component);
-		target.remove();
 	});
 });

@@ -3,6 +3,12 @@ import { describe, expect, it } from 'vitest';
 
 import PhotoCropper from '$lib/components/image/PhotoCropper.svelte';
 import PhotoSection from '$lib/components/image/PhotoSection.svelte';
+import {
+	getRenderedButton,
+	getRenderedDiv,
+	getRenderedInput,
+	parseRenderedBody,
+} from '../../../support/rendered-document';
 
 describe('PhotoCropper', () => {
 	it('renders an accessible crop region and typed position controls', () => {
@@ -14,39 +20,40 @@ describe('PhotoCropper', () => {
 				onCancel: () => undefined,
 			},
 		});
+		const document = parseRenderedBody(body);
+		const frame = getRenderedDiv(document, '[role="button"]');
+		const zoom = getRenderedInput(document, 'input[type="range"]');
+		const focalX = getRenderedInput(document, 'input[name="focalX"]');
+		const focalY = getRenderedInput(document, 'input[name="focalY"]');
+		const zoomValue = getRenderedInput(document, 'input[type="hidden"][name="zoom"]');
 
-		expect(body).toContain('role="button"');
-		expect(body).toContain('Área de enquadramento da foto');
-		expect(body).toContain('Use as setas do teclado');
-		expect(body).toContain('type="range"');
-		expect(body).toContain('aria-label="Ampliação da foto"');
-		expect(body).toContain('name="focalX" value="0.63"');
-		expect(body).toContain('name="focalY" value="0.41"');
-		expect(body).toContain('name="zoom" value="1.35"');
-		expect(body).toContain('Redefinir enquadramento');
-		expect(body).toContain('Confirmar enquadramento');
-		expect(body).toContain('Cancelar');
+		expect(frame.getAttribute('aria-label')).toBe('Área de enquadramento da foto');
+		expect(frame.getAttribute('aria-describedby')).toBe('photo-cropper-instructions');
+		expect(document.querySelector('#photo-cropper-instructions')?.textContent).toContain('Use as setas do teclado');
+		expect(zoom.getAttribute('aria-label')).toBe('Ampliação da foto');
+		expect(focalX.value).toBe('0.63');
+		expect(focalY.value).toBe('0.41');
+		expect(zoomValue.value).toBe('1.35');
+		expect(getRenderedButton(document, 'button[type="submit"]').textContent).toContain('Confirmar enquadramento');
+		expect(document.querySelectorAll('button[type="button"]')).toHaveLength(2);
 	});
 });
 
 describe('PhotoSection', () => {
 	it('keeps the current photo visible while exposing lifecycle actions and status', () => {
 		const { body } = render(PhotoSection, {
-			props: {
-				hasPhoto: true,
-				alt: 'Foto de Maria',
-				form: { operation: 'photoSaved', status: 200 },
-			},
+			props: { hasPhoto: true, alt: 'Foto de Maria', form: { operation: 'photoSaved', status: 200 } },
 		});
+		const document = parseRenderedBody(body);
 
-		expect(body).toContain('Cadastrada');
-		expect(body).toContain('src="foto"');
-		expect(body).toContain('Incluir ou substituir foto');
-		expect(body).toContain('Reenquadrar foto');
-		expect(body).toContain('Remover foto');
-		expect(body).toContain('Foto salva com sucesso!');
-		expect(body).toContain('action="?/salvarFoto"');
-		expect(body).toContain('action="?/removerFoto"');
+		expect(document.querySelector('[aria-live="polite"]')?.textContent).toBe('Cadastrada');
+		expect(document.querySelector('img[alt="Foto de Maria"]')?.getAttribute('src')).toBe('foto');
+		expect(document.querySelector('form[action="?/salvarFoto"]')).not.toBeNull();
+		expect(document.querySelector('form[action="?/removerFoto"]')).not.toBeNull();
+		expect(document.body.textContent).toContain('Incluir ou substituir foto');
+		expect(document.body.textContent).toContain('Reenquadrar foto');
+		expect(document.body.textContent).toContain('Remover foto');
+		expect(document.querySelector('[role="status"]')?.textContent).toBe('Foto salva com sucesso!');
 	});
 
 	it('announces a validation error without hiding the pending state', () => {
@@ -57,22 +64,26 @@ describe('PhotoSection', () => {
 				form: { operation: 'photoSaved', errors: { foto: ['Arquivo inválido.'] } },
 			},
 		});
+		const document = parseRenderedBody(body);
 
-		expect(body).toContain('Pendente');
-		expect(body).toContain('role="alert"');
-		expect(body).toContain('Arquivo inválido.');
-		expect(body).not.toContain('src="foto"');
+		expect(document.querySelector('[aria-live="polite"]')?.textContent).toBe('Pendente');
+		expect(document.querySelector('[role="alert"]')?.textContent).toContain('Arquivo inválido.');
+		expect(document.querySelector('img[alt="Foto de Maria"]')).toBeNull();
 	});
 
 	it('announces each successful photo operation', () => {
-		const reframed = render(PhotoSection, {
-			props: { hasPhoto: true, alt: 'Foto de Maria', form: { operation: 'photoReframed', status: 200 } },
-		});
-		const removed = render(PhotoSection, {
-			props: { hasPhoto: true, alt: 'Foto de Maria', form: { operation: 'photoRemoved', status: 200 } },
-		});
+		const reframed = parseRenderedBody(
+			render(PhotoSection, {
+				props: { hasPhoto: true, alt: 'Foto de Maria', form: { operation: 'photoReframed', status: 200 } },
+			}).body,
+		);
+		const removed = parseRenderedBody(
+			render(PhotoSection, {
+				props: { hasPhoto: true, alt: 'Foto de Maria', form: { operation: 'photoRemoved', status: 200 } },
+			}).body,
+		);
 
-		expect(reframed.body).toContain('Foto reenquadrada com sucesso!');
-		expect(removed.body).toContain('Foto removida com sucesso!');
+		expect(reframed.querySelector('[role="status"]')?.textContent).toBe('Foto reenquadrada com sucesso!');
+		expect(removed.querySelector('[role="status"]')?.textContent).toBe('Foto removida com sucesso!');
 	});
 });

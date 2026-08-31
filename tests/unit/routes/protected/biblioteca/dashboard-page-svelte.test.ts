@@ -2,6 +2,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
 import Page from '../../../../../src/routes/(protected)/biblioteca/+page.svelte';
+import { parseRenderedBody } from '../../../support/rendered-document';
 
 const notices = [
 	{ idaviso: 8, dataCadastro: new Date('2026-08-20'), texto: 'Aviso mais recente', username: 'bibliotecaria' },
@@ -9,7 +10,7 @@ const notices = [
 ];
 
 describe('library dashboard page', () => {
-	it('renders the received notice order and all monthly indicators', () => {
+	it('renders received notice order and monthly indicators', () => {
 		const { body } = render(Page, {
 			props: {
 				data: {
@@ -21,13 +22,15 @@ describe('library dashboard page', () => {
 				},
 			},
 		});
+		const document = parseRenderedBody(body);
+		const noticeText = [...document.querySelectorAll('.content p')].map((cell) => cell.textContent?.trim() ?? '');
+		const counters = [...document.querySelectorAll('h2')].map((heading) => heading.textContent?.trim());
 
-		expect(body.indexOf(notices[0].texto)).toBeLessThan(body.indexOf(notices[1].texto));
-		expect(body).toContain('Empréstimos');
-		expect(body).toContain('Devoluções');
-		expect(body).toContain('Renovações');
-		expect(body).toContain('>4</h2>');
-		expect(body).toContain('>3</h2>');
-		expect(body).toContain('>2</h2>');
+		expect(noticeText[0]).toContain('Aviso mais recente');
+		expect(noticeText[1]).toContain('Aviso anterior');
+		expect(document.body.textContent).toContain('Empréstimos');
+		expect(document.body.textContent).toContain('Devoluções');
+		expect(document.body.textContent).toContain('Renovações');
+		expect(counters).toEqual(expect.arrayContaining(['4', '3', '2']));
 	});
 });
