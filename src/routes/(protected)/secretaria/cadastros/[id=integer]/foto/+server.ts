@@ -4,7 +4,7 @@ import { createPhotoHandler } from '$lib/server/secretaria/photo/handler';
 
 import type { RequestHandler } from './$types';
 
-export const _createPhotoHandler = (model: Pick<SecretariaPhotoModel, 'getCard'>) =>
+const createInternalPhotoHandler = (model: Pick<SecretariaPhotoModel, 'getCard'>) =>
 	createPhotoHandler((id) => model.getCard(id));
 
-export const GET: RequestHandler = _createPhotoHandler(secretariaPhotoModel);
+export const GET: RequestHandler = createInternalPhotoHandler(secretariaPhotoModel);

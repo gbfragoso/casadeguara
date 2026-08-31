@@ -60,12 +60,12 @@ const createEditAction =
 		return { status: 200 };
 	};
 
-export const _createEditColecaoHandlers = (model: EditModel) => ({
+const createInternalEditColecaoHandlers = (model: EditModel) => ({
 	load: createEditLoad(model),
 	actions: { default: createEditAction(model) },
 });
 
-const handlers = _createEditColecaoHandlers(colecaoModel);
+const handlers = createInternalEditColecaoHandlers(colecaoModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

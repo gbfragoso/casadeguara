@@ -84,7 +84,7 @@ export const exemplar = pgTable('exemplar', {
 
 export const emprestimo = pgTable('emprestimo', {
 	idemp: serial().primaryKey().notNull(),
-	leitor: smallint().notNull(),
+	leitor: integer().notNull(),
 	exemplar: smallint().notNull(),
 	dataEmprestimo: date('data_emprestimo', { mode: 'date' }),
 	dataDevolucao: date('data_devolucao', { mode: 'date' }),
@@ -98,7 +98,7 @@ export const emprestimo = pgTable('emprestimo', {
 export const cadastros = pgTable(
 	'cadastros',
 	{
-		idleitor: smallserial().primaryKey().notNull(),
+		idleitor: serial().primaryKey().notNull(),
 		nome: varchar({ length: 60 }).notNull(),
 		email: varchar({ length: 60 }),
 		telefone: varchar({ length: 12 }),
@@ -126,7 +126,7 @@ export const cadastros = pgTable(
 );
 
 export const cadastroFotos = pgTable('cadastro_fotos', {
-	cadastroId: smallint('cadastro_id')
+	cadastroId: integer('cadastro_id')
 		.primaryKey()
 		.notNull()
 		.references(() => cadastros.idleitor, { onDelete: 'cascade' }),

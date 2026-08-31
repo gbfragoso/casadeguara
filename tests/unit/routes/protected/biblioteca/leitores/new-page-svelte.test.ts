@@ -2,6 +2,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
 import Page from '../../../../../../src/routes/(protected)/biblioteca/leitores/novo/+page.svelte';
+import { getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
 const values = {
 	nome: 'Maria da Silva',
@@ -26,34 +27,40 @@ describe('new reader page', () => {
 				form: {
 					values,
 					errors: {
-						nome: ['Nome invÃ¡lido.'],
-						rg: ['RG invÃ¡lido.'],
-						cpf: ['CPF invÃ¡lido.'],
-						email: ['E-mail invÃ¡lido.'],
-						celular: ['Celular invÃ¡lido.'],
-						telefone: ['Telefone invÃ¡lido.'],
-						logradouro: ['Logradouro invÃ¡lido.'],
-						bairro: ['Bairro invÃ¡lido.'],
-						complemento: ['Complemento invÃ¡lido.'],
-						cidade: ['Cidade invÃ¡lida.'],
-						cep: ['CEP invÃ¡lido.'],
-						trab: ['Trabalhador invÃ¡lido.'],
-						status: ['Status invÃ¡lido.'],
+						nome: ['Nome inválido.'],
+						rg: ['RG inválido.'],
+						cpf: ['CPF inválido.'],
+						email: ['E-mail inválido.'],
+						celular: ['Celular inválido.'],
+						telefone: ['Telefone inválido.'],
+						logradouro: ['Logradouro inválido.'],
+						bairro: ['Bairro inválido.'],
+						complemento: ['Complemento inválido.'],
+						cidade: ['Cidade inválida.'],
+						cep: ['CEP inválido.'],
+						trab: ['Trabalhador inválido.'],
+						status: ['Status inválido.'],
 					},
 				},
 			},
 		});
+		const document = parseRenderedBody(body);
+		const nome = getRenderedInput(document, 'input[name="nome"]');
+		const trab = getRenderedInput(document, 'input[type="checkbox"][name="trab"]');
+		const status = getRenderedInput(document, 'input[type="checkbox"][name="status"]');
 
-		expect(body).toContain('value="Maria da Silva"');
-		expect(body).toContain('name="trab" id="trab" value="true" checked');
-		expect(body).toContain('name="status" id="status" value="true"');
-		expect(body).toContain('Nome invÃ¡lido.');
-		expect(body).toContain('Status invÃ¡lido.');
+		expect(nome.value).toBe('Maria da Silva');
+		expect(trab.value).toBe('true');
+		expect(trab.checked).toBe(true);
+		expect(status.value).toBe('true');
+		expect(document.querySelectorAll('[aria-invalid="true"]')).toHaveLength(13);
+		expect(document.querySelector('#status-errors')?.textContent).toContain('Status inválido.');
 	});
 
 	it('shows the confirmation after a successful creation', () => {
 		const { body } = render(Page, { props: { form: { status: 201 } } });
+		const document = parseRenderedBody(body);
 
-		expect(body).toContain('Leitor cadastrado com sucesso!');
+		expect(document.body.textContent).toContain('Leitor cadastrado com sucesso!');
 	});
 });

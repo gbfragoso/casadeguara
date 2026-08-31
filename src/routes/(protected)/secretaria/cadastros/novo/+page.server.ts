@@ -12,7 +12,7 @@ type CreateModel = Pick<CadastroModel, 'createSecretaria'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
 
-export const _createNewSecretariaHandlers = (model: CreateModel) => ({
+const createInternalNewSecretariaHandlers = (model: CreateModel) => ({
 	actions: {
 		default: async ({ locals, request }: ActionContext) => {
 			const user = requireSecretariaAccess(locals.user);
@@ -41,6 +41,6 @@ export const _createNewSecretariaHandlers = (model: CreateModel) => ({
 	},
 });
 
-const handlers = _createNewSecretariaHandlers(cadastroModel);
+const handlers = createInternalNewSecretariaHandlers(cadastroModel);
 
 export const actions: Actions = handlers.actions;

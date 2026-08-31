@@ -1,11 +1,14 @@
 import { editoraModel, type EditoraModel } from '$lib/server/models/editora';
 import { editoraSchema } from '$lib/validation/editora';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
+
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 
 import type { Actions, PageServerLoad } from './$types';
 
 type EditModel = Pick<EditoraModel, 'get' | 'update'>;
+type User = { roles: string } | null;
 
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
@@ -27,9 +30,9 @@ const updatePublisher = async (model: EditModel, id: number, name: string) => {
 	}
 };
 
-export const _createEditEditoraHandlers = (model: EditModel) => ({
-	load: async ({ locals, params }: { locals: { user: unknown }; params: { id: string } }) => {
-		if (!locals.user) redirect(302, '/');
+const createInternalEditEditoraHandlers = (model: EditModel) => ({
+	load: async ({ locals, params }: { locals: { user: User }; params: { id: string } }) => {
+		requireLibraryAccess(locals.user);
 
 		const publisher = await getPublisher(model, Number(params.id));
 
@@ -38,7 +41,16 @@ export const _createEditEditoraHandlers = (model: EditModel) => ({
 		return { editora: publisher };
 	},
 	actions: {
-		default: async ({ request, params }: { request: Request; params: { id: string } }) => {
+		default: async ({
+			locals,
+			request,
+			params,
+		}: {
+			locals: { user: User };
+			request: Request;
+			params: { id: string };
+		}) => {
+			requireLibraryAccess(locals.user);
 			const formData = await request.formData();
 			const rawName = formData.get('nome');
 			const result = editoraSchema.safeParse({ nome: rawName });
@@ -55,7 +67,7 @@ export const _createEditEditoraHandlers = (model: EditModel) => ({
 	},
 });
 
-const handlers = _createEditEditoraHandlers(editoraModel);
+const handlers = createInternalEditEditoraHandlers(editoraModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

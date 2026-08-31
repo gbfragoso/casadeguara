@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "npm run db:start && npm run services:wait:database && vite dev",
+		"dev": "npm run db:start && vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -15,12 +15,11 @@
 		"test": "vitest run --project unit",
 		"test:unit": "vitest run --project unit",
 		"test:watch": "vitest --project unit",
-		"test:integration": "npm run db:start && npm run services:wait:database && vitest run --project integration",
-		"test:coverage": "npm run db:start && npm run services:wait:database && vitest run --coverage",
-		"test:e2e": "playwright test",
+		"test:integration": "npm run db:start && node src/lib/scripts/testing/run-suite.js integration",
+		"test:coverage": "npm run db:start && node src/lib/scripts/testing/run-suite.js coverage",
+		"test:e2e": "npm run db:start && node src/lib/scripts/testing/run-suite.js e2e",
 		"test:e2e:install": "playwright install chromium",
-		"services:wait:database": "node src/lib/scripts/database/wait-for-postgres.js",
-		"db:start": "docker compose up -d",
+		"db:start": "docker compose up --wait --wait-timeout 60",
 		"db:push": "drizzle-kit push",
 		"db:pull": "drizzle-kit pull",
 		"db:generate": "drizzle-kit generate",
@@ -41,16 +40,16 @@
 		"eslint": "^10.9.1",
 		"eslint-plugin-svelte": "^3.23.0",
 		"globals": "^17.11.0",
-		"happy-dom": "^20.11.12",
+		"happy-dom": "^20.12.0",
 		"lucia": "^3.2.2",
 		"prettier": "^3.9.6",
 		"prettier-plugin-svelte": "^4.1.1",
 		"sass": "^1.103.1",
-		"svelte": "^5.56.10",
+		"svelte": "^5.57.0",
 		"svelte-check": "^4.7.6",
 		"tslib": "^2.8.1",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.68.0",
+		"typescript-eslint": "^8.69.0",
 		"vite": "^8.2.2",
 		"vitest": "^4.1.11"
 	},
@@ -71,6 +70,6 @@
 		"sharp": "^0.35.4",
 		"uuid": "^14.0.2",
 		"validator": "^13.15.35",
-		"zod": "^4.4.3"
+		"zod": "^4.5.4"
 	}
 }

@@ -2,9 +2,10 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
 import Page from '../../../../../../src/routes/(protected)/secretaria/amigofraterno/+page.svelte';
+import { getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
 describe('amigo fraterno page', () => {
-	it('renders totals, photo pending status, and the Cadastro guidance', () => {
+	it('renders totals, photo status, guidance, and download form', () => {
 		const { body } = render(Page, {
 			props: {
 				data: {
@@ -17,19 +18,20 @@ describe('amigo fraterno page', () => {
 				},
 			},
 		});
+		const document = parseRenderedBody(body);
+		const date = getRenderedInput(document, 'input[name="nextDrawDate"]');
 
-		expect(body).toContain('Total: 1');
-		expect(body).toContain('Sem foto: 1');
-		expect(body).toContain('MARIA');
-		expect(body).toContain('Pendente');
-		expect(body).toContain('Cadastros');
-		expect(body).toContain('Data do próximo sorteio');
-		expect(body).toContain('name="nextDrawDate"');
-		expect(body).toContain('required');
-		expect(body).toContain('Baixar cartões em PDF');
+		expect(document.body.textContent).toContain('Total: 1');
+		expect(document.body.textContent).toContain('Sem foto: 1');
+		expect(document.body.textContent).toContain('MARIA');
+		expect(document.body.textContent).toContain('Pendente');
+		expect(document.body.textContent).toContain('Cadastros');
+		expect(document.querySelector('label[for="nextDrawDate"]')?.textContent).toContain('Data do próximo sorteio');
+		expect(date.required).toBe(true);
+		expect(document.body.textContent).toContain('Baixar cartões em PDF');
 	});
 
-	it('renders a textual empty state', () => {
+	it('renders a textual empty state without the download form', () => {
 		const { body } = render(Page, {
 			props: {
 				data: {
@@ -42,8 +44,9 @@ describe('amigo fraterno page', () => {
 				},
 			},
 		});
+		const document = parseRenderedBody(body);
 
-		expect(body).toContain('Não há participantes elegíveis no momento.');
-		expect(body).not.toContain('Baixar cartões em PDF');
+		expect(document.body.textContent).toContain('Não há participantes elegíveis no momento.');
+		expect(document.querySelector('input[name="nextDrawDate"]')).toBeNull();
 	});
 });

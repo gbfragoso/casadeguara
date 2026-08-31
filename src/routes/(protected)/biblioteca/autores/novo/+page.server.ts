@@ -1,20 +1,22 @@
 import { autorModel, type AutorModel } from '$lib/server/models/autor';
 import { authorSchema } from '$lib/validation/autor';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
+
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 
 import type { Actions, PageServerLoad } from './$types';
 
 type CreateModel = Pick<AutorModel, 'create'>;
+type User = { roles: string } | null;
 
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createNewAuthorHandlers = (model: CreateModel) => ({
-	load: async ({ locals }: { locals: { user: unknown } }) => {
-		if (!locals.user) redirect(302, '/');
-	},
+const createInternalNewAuthorHandlers = (model: CreateModel) => ({
+	load: async ({ locals }: { locals: { user: User } }) => requireLibraryAccess(locals.user),
 	actions: {
-		default: async ({ request }: { request: Request }) => {
+		default: async ({ locals, request }: { locals: { user: User }; request: Request }) => {
+			requireLibraryAccess(locals.user);
 			const formData = await request.formData();
 			const rawName = formData.get('nome');
 			const result = authorSchema.safeParse({ nome: rawName });
@@ -34,7 +36,7 @@ export const _createNewAuthorHandlers = (model: CreateModel) => ({
 	},
 });
 
-const handlers = _createNewAuthorHandlers(autorModel);
+const handlers = createInternalNewAuthorHandlers(autorModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

@@ -3,21 +3,17 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { updateCadastroFlag } from '../../../../../../src/lib/cadastros/flags';
 import Page from '../../../../../../src/routes/(protected)/secretaria/cadastros/+page.svelte';
+import { getRenderedAnchor, getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
 describe('secretaria registration list page', () => {
-	it('retains search values and renders accessible errors, empty states, and keyed results', () => {
-		const { body: invalid } = render(Page, {
-			props: {
-				form: {
-					values: { nome: 'Maria', trabalhadores: 'true' },
-					errors: { nome: ['Nome do trabalhador inválido.'] },
-				},
-			},
+	it('retains search values and renders accessible errors, empty states, and results', () => {
+		const { body: invalidBody } = render(Page, {
+			props: { form: { values: { nome: 'Maria', trabalhadores: 'true' }, errors: { nome: ['Nome inválido.'] } } },
 		});
-		const { body: empty } = render(Page, {
+		const { body: emptyBody } = render(Page, {
 			props: { form: { cadastros: [], values: { nome: '', trabalhadores: 'false' } } },
 		});
-		const { body: results } = render(Page, {
+		const { body: resultsBody } = render(Page, {
 			props: {
 				form: {
 					cadastros: [
@@ -34,17 +30,20 @@ describe('secretaria registration list page', () => {
 				},
 			},
 		});
+		const invalid = parseRenderedBody(invalidBody);
+		const empty = parseRenderedBody(emptyBody);
+		const results = parseRenderedBody(resultsBody);
 
-		expect(invalid).toContain('value="Maria"');
-		expect(invalid).toContain('name="trabalhadores" id="trabalhadores" value="true" checked');
-		expect(invalid).toContain('aria-describedby="nome-errors"');
-		expect(invalid).toContain('Nome do trabalhador inválido.');
-		expect(empty).toContain('Nenhum cadastro encontrado.');
-		expect(results).toContain('aria-label="Marcar MARIA como trabalhador"');
-		expect(results).toContain('aria-label="Editar cadastro de MARIA"');
+		expect(getRenderedInput(invalid, 'input[name="nome"]').value).toBe('Maria');
+		expect(getRenderedInput(invalid, 'input[type="checkbox"][name="trabalhadores"]').checked).toBe(true);
+		expect(getRenderedInput(invalid, 'input[name="nome"]').getAttribute('aria-describedby')).toBe('nome-errors');
+		expect(invalid.querySelector('#nome-errors')?.textContent).toContain('Nome inválido.');
+		expect(empty.body.textContent).toContain('Nenhum cadastro encontrado.');
+		expect(getRenderedInput(results, 'input[aria-label="Marcar MARIA como trabalhador"]').checked).toBe(true);
+		expect(getRenderedAnchor(results, 'tbody a').getAttribute('aria-label')).toBe('Editar cadastro de MARIA');
 	});
 
-	it('keeps only the affected flag pending and rolls it back with a visible Portuguese error', async () => {
+	it('rolls back a failed flag update with a visible error', async () => {
 		const checkbox = { checked: true };
 		const pending: boolean[] = [];
 		const errors: string[] = [];

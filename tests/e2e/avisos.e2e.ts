@@ -1,62 +1,47 @@
-import { randomUUID } from 'node:crypto';
+import { test, expect, waitForHydration } from './fixtures';
 
-import { expect, test } from '@playwright/test';
+import { createNoticeText } from './avisos-support';
 
-import { signIn } from './cadastros-browser';
-import { createTestUsers, deleteTestUsers, type TestUsers } from './cadastros-database';
-import { countNotices, createNoticeFixtures, createNoticeText, deleteNotices } from './avisos-support';
+test('E2E-15 creates and locates a notice', async ({ page, e2e }) => {
+	const fixture = await e2e.createNotice();
+	const createdText = createNoticeText(e2e.token, 'criado');
+	await e2e.authenticate(page);
+	await page.goto('/biblioteca/avisos');
+	await waitForHydration(page);
+	await expect(page.getByText(fixture.text, { exact: true })).toBeVisible();
+	await page.goto('/biblioteca');
+	await waitForHydration(page);
+	await expect(page.locator('p').filter({ hasText: fixture.text })).toBeVisible();
+	await page.getByRole('link', { name: 'avisos' }).click();
+	await page.getByLabel('Texto do aviso').fill(createdText);
+	const responsePromise = page.waitForResponse(
+		(response) =>
+			response.request().method() === 'POST' && new URL(response.url()).pathname === '/biblioteca/avisos',
+	);
+	await page.getByRole('button', { name: 'Novo' }).click();
+	expect((await responsePromise).ok()).toBe(true);
+	await expect(page.getByText('Aviso criado com sucesso!')).toBeVisible();
+	await expect(page.getByText(createdText, { exact: true })).toBeVisible();
+	expect(await e2e.countNotices(createdText)).toBe(1);
+});
 
-const token = randomUUID().replaceAll('-', '').slice(0, 12);
-const createdText = createNoticeText(token, 'criado');
-const updatedText = createNoticeText(token, 'atualizado');
-let users: TestUsers | undefined;
-let expectedFixtures: string[] = [];
-
-test.describe.serial('notice journey', () => {
-	test.beforeAll(async () => {
-		users = await createTestUsers(token);
-		expectedFixtures = await createNoticeFixtures(token);
-	});
-
-	test.afterAll(async () => {
-		await deleteNotices(token);
-		if (users) await deleteTestUsers(users);
-	});
-
-	test('E2E-01 creates, locates, and updates a notice', async ({ page }) => {
-		const owner = users?.owner;
-		if (!owner) throw new Error('Usuário Biblioteca E2E não foi preparado.');
-
-		await signIn(page, owner.email, owner.password, '**/sistemas');
-		await page.goto('/biblioteca/avisos');
-		await expect(page.getByText(expectedFixtures[0], { exact: true })).toBeVisible();
-		await expect(page.getByText(expectedFixtures[4], { exact: true })).toBeVisible();
-		await page.goto('/biblioteca');
-		await expect(page.locator('p').filter({ hasText: expectedFixtures[0] })).toBeVisible();
-		await expect(page.locator('p').filter({ hasText: expectedFixtures[4] })).toBeVisible();
-		await page.getByRole('link', { name: 'avisos' }).click();
-		await expect(page.getByLabel('Texto do aviso')).toBeVisible();
-		await page.getByLabel('Texto do aviso').fill(createdText);
-		await page.getByRole('button', { name: 'Novo' }).click();
-		await expect(page.getByText('Aviso criado com sucesso!')).toBeVisible();
-		await expect(page.getByText(createdText, { exact: true })).toBeVisible();
-		expect(await countNotices(createdText)).toBe(1);
-		const editPath = await page
-			.getByLabel(/^Editar aviso /)
-			.first()
-			.getAttribute('href');
-		if (!editPath) throw new Error('Ação de edição não foi encontrada.');
-		await page.goto(editPath);
-		await page.getByLabel('Texto do aviso').fill(updatedText);
-		await expect(page.getByLabel('Texto do aviso')).toHaveValue(updatedText);
-		const updateRequest = page.waitForRequest(
-			(candidate) =>
-				candidate.method() === 'POST' && /\/biblioteca\/avisos\/\d+$/.test(new URL(candidate.url()).pathname),
-		);
-		await page.getByRole('button', { name: 'Atualizar' }).click();
-		expect(new URLSearchParams((await updateRequest).postData() ?? '').get('texto')).toBe(updatedText);
-		await expect(page.getByText('Aviso atualizado com sucesso!')).toBeVisible();
-		await page.goto('/biblioteca/avisos');
-		await expect(page.getByText(updatedText, { exact: true })).toBeVisible();
-	});
+test('E2E-16 updates an existing notice', async ({ page, e2e }) => {
+	const fixture = await e2e.createNotice();
+	const updatedText = createNoticeText(e2e.token, 'atualizado');
+	await e2e.authenticate(page);
+	await page.goto(`/biblioteca/avisos/${fixture.id}`);
+	await waitForHydration(page);
+	await expect(page.getByLabel('Texto do aviso')).toHaveValue(fixture.text);
+	await page.getByLabel('Texto do aviso').fill(updatedText);
+	const responsePromise = page.waitForResponse(
+		(response) =>
+			response.request().method() === 'POST' &&
+			/\/biblioteca\/avisos\/\d+$/.test(new URL(response.url()).pathname),
+	);
+	await page.getByRole('button', { name: 'Atualizar' }).click();
+	expect((await responsePromise).ok()).toBe(true);
+	await expect(page.getByText('Aviso atualizado com sucesso!')).toBeVisible();
+	await page.goto('/biblioteca/avisos');
+	await waitForHydration(page);
+	await expect(page.getByText(updatedText, { exact: true })).toBeVisible();
 });

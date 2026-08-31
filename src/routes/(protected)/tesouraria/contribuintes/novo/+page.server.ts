@@ -12,7 +12,7 @@ type CreateModel = Pick<CadastroModel, 'createTesouraria'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
 
-export const _createNewContributorHandlers = (model: CreateModel) => ({
+const createInternalNewContributorHandlers = (model: CreateModel) => ({
 	load: ({ locals }: Pick<ActionContext, 'locals'>) => {
 		requireTesourariaAccess(locals.user);
 	},
@@ -44,7 +44,7 @@ export const _createNewContributorHandlers = (model: CreateModel) => ({
 	},
 });
 
-const handlers = _createNewContributorHandlers(cadastroModel);
+const handlers = createInternalNewContributorHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

@@ -21,7 +21,7 @@ const getRequestBody = async (request: Request): Promise<unknown> => {
 	}
 };
 
-export const _createCadastroFlagHandler =
+const createInternalCadastroFlagHandler =
 	(model: FlagModel) =>
 	async ({ locals, request }: RequestContext) => {
 		const user = locals.user;
@@ -47,4 +47,4 @@ export const _createCadastroFlagHandler =
 		}
 	};
 
-export const POST: RequestHandler = _createCadastroFlagHandler(cadastroModel);
+export const POST: RequestHandler = createInternalCadastroFlagHandler(cadastroModel);

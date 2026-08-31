@@ -50,6 +50,13 @@
 			"when": 1787855516310,
 			"tag": "0006_fat_zodiak",
 			"breakpoints": true
+		},
+		{
+			"idx": 7,
+			"version": "7",
+			"when": 1788182418826,
+			"tag": "0007_glamorous_wild_pack",
+			"breakpoints": true
 		}
 	]
 }

@@ -1,17 +1,20 @@
 import { autorModel, type AutorModel } from '$lib/server/models/autor';
 import { authorSchema } from '$lib/validation/autor';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
+
+import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
 
 import type { Actions, PageServerLoad } from './$types';
 
 type EditModel = Pick<AutorModel, 'get' | 'update'>;
+type User = { roles: string } | null;
 
 const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
 
-export const _createEditAuthorHandlers = (model: EditModel) => ({
-	load: async ({ locals, params }: { locals: { user: unknown }; params: { id: string } }) => {
-		if (!locals.user) redirect(302, '/');
+const createInternalEditAuthorHandlers = (model: EditModel) => ({
+	load: async ({ locals, params }: { locals: { user: User }; params: { id: string } }) => {
+		requireLibraryAccess(locals.user);
 
 		const id = Number(params.id);
 		let author;
@@ -28,7 +31,16 @@ export const _createEditAuthorHandlers = (model: EditModel) => ({
 		return { autor: author };
 	},
 	actions: {
-		default: async ({ request, params }: { request: Request; params: { id: string } }) => {
+		default: async ({
+			locals,
+			request,
+			params,
+		}: {
+			locals: { user: User };
+			request: Request;
+			params: { id: string };
+		}) => {
+			requireLibraryAccess(locals.user);
 			const formData = await request.formData();
 			const rawName = formData.get('nome');
 			const result = authorSchema.safeParse({ nome: rawName });
@@ -53,7 +65,7 @@ export const _createEditAuthorHandlers = (model: EditModel) => ({
 	},
 });
 
-const handlers = _createEditAuthorHandlers(autorModel);
+const handlers = createInternalEditAuthorHandlers(autorModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

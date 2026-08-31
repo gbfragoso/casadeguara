@@ -26,7 +26,7 @@ const getSecretaria = async (model: EditModel, id: number) => {
 	}
 };
 
-export const _createEditSecretariaHandlers = (model: EditModel, photoModel: PhotoModel = secretariaPhotoModel) => ({
+const createInternalEditSecretariaHandlers = (model: EditModel, photoModel: PhotoModel = secretariaPhotoModel) => ({
 	load: async ({ locals, params }: LoadContext) => {
 		requireSecretariaAccess(locals.user);
 		const id = Number(params.id);
@@ -69,7 +69,7 @@ export const _createEditSecretariaHandlers = (model: EditModel, photoModel: Phot
 	},
 });
 
-const handlers = _createEditSecretariaHandlers(cadastroModel);
+const handlers = createInternalEditSecretariaHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

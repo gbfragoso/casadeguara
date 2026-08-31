@@ -22,7 +22,7 @@ const getContributor = async (model: EditModel, id: number) => {
 	}
 };
 
-export const _createEditContributorHandlers = (model: EditModel) => ({
+const createInternalEditContributorHandlers = (model: EditModel) => ({
 	load: async ({ locals, params }: LoadContext) => {
 		requireTesourariaAccess(locals.user);
 		const contribuinte = await getContributor(model, Number(params.id));
@@ -59,7 +59,7 @@ export const _createEditContributorHandlers = (model: EditModel) => ({
 	},
 });
 
-const handlers = _createEditContributorHandlers(cadastroModel);
+const handlers = createInternalEditContributorHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

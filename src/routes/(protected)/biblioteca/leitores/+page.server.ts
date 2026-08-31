@@ -11,7 +11,7 @@ type ListModel = Pick<CadastroModel, 'fetchBiblioteca'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
 
-export const _createReaderListHandlers = (model: ListModel) => ({
+const createInternalReaderListHandlers = (model: ListModel) => ({
 	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireReaderAccess(locals.user),
 	actions: {
 		default: async ({ locals, request }: ActionContext) => {
@@ -39,7 +39,7 @@ export const _createReaderListHandlers = (model: ListModel) => ({
 	},
 });
 
-const handlers = _createReaderListHandlers(cadastroModel);
+const handlers = createInternalReaderListHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

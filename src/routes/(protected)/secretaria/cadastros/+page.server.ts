@@ -11,7 +11,7 @@ type ListModel = Pick<CadastroModel, 'fetchSecretaria'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
 
-export const _createSecretariaListHandlers = (model: ListModel) => ({
+const createInternalSecretariaListHandlers = (model: ListModel) => ({
 	load: ({ locals }: Pick<ActionContext, 'locals'>) => requireSecretariaAccess(locals.user),
 	actions: {
 		default: async ({ locals, request }: ActionContext) => {
@@ -45,7 +45,7 @@ export const _createSecretariaListHandlers = (model: ListModel) => ({
 	},
 });
 
-const handlers = _createSecretariaListHandlers(cadastroModel);
+const handlers = createInternalSecretariaListHandlers(cadastroModel);
 
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;

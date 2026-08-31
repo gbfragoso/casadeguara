@@ -1,9 +1,12 @@
 import { expect, type Page } from '@playwright/test';
 
 import type { CadastroFixture } from './cadastros-fixture';
+import { installHydrationProbe, waitForHydration } from './fixtures-hydration';
 
 export const signIn = async (page: Page, email: string, password: string, destination: string) => {
+	await installHydrationProbe(page);
 	await page.goto('/');
+	await waitForHydration(page);
 	const form = page.locator('form');
 	await form.getByLabel('Email').fill(email);
 	await form.getByLabel('Senha').fill(password);
@@ -11,8 +14,13 @@ export const signIn = async (page: Page, email: string, password: string, destin
 	await Promise.all([page.waitForURL(destination), form.getByRole('button', { name: 'Entrar' }).click()]);
 };
 
-export const createBibliotecaCadastro = async (page: Page, fixture: CadastroFixture) => {
+export const createBibliotecaCadastro = async (
+	page: Page,
+	fixture: CadastroFixture,
+	beforeSubmit?: () => Promise<void>,
+) => {
 	await page.goto('/biblioteca/leitores/novo');
+	await waitForHydration(page);
 	const form = page.locator('form.card');
 	await form.getByLabel('Nome').fill(fixture.name);
 	await expect(form.getByLabel('Nome')).toHaveValue(fixture.name);
@@ -27,22 +35,30 @@ export const createBibliotecaCadastro = async (page: Page, fixture: CadastroFixt
 	await form.getByLabel('Cidade').fill(fixture.city);
 	await form.getByLabel('CEP').fill(fixture.postalCode);
 	await form.getByLabel('Trabalhador').check();
+	await beforeSubmit?.();
+	const responsePromise = page.waitForResponse(
+		(candidate) =>
+			candidate.request().method() === 'POST' &&
+			new URL(candidate.url()).pathname === '/biblioteca/leitores/novo',
+	);
 	await form.getByRole('button', { name: 'Cadastrar' }).click();
+	expect((await responsePromise).ok()).toBe(true);
 	await expect(page.getByText('Leitor cadastrado com sucesso!')).toBeVisible();
 };
 
 const searchCadastro = async (page: Page, path: string, label: string, name: string) => {
 	await page.goto(path);
+	await waitForHydration(page);
 	const form = page.locator('form.card');
 	await form.getByLabel(label).fill(name);
 	await expect(form.getByLabel(label)).toHaveValue(name);
-	const request = page.waitForRequest(
-		(candidate) => candidate.method() === 'POST' && new URL(candidate.url()).pathname === path,
+	const responsePromise = page.waitForResponse(
+		(candidate) => candidate.request().method() === 'POST' && new URL(candidate.url()).pathname === path,
 	);
 
 	await form.getByRole('button', { name: 'Pesquisar' }).click();
-	const submittedName = new URLSearchParams((await request).postData() ?? '').get('nome');
-	expect(submittedName).toBe(name);
+	const response = await responsePromise;
+	expect(response.ok()).toBe(true);
 
 	await expect(page.getByText(name, { exact: true })).toBeVisible();
 };
@@ -67,6 +83,7 @@ export const assertPrivateCadastroViews = async (page: Page, id: number, fixture
 	const rgMask = `${fixture.rg.slice(0, 2)}.***.***-${fixture.rg.slice(-2)}`;
 
 	await page.goto(`/biblioteca/leitores/${id}`);
+	await waitForHydration(page);
 	await expect(page.getByText(`CPF cadastrado: ${cpfMask}`)).toBeVisible();
 	await expect(page.getByText(`RG cadastrado: ${rgMask}`)).toBeVisible();
 	await expect(page.getByLabel('Novo CPF')).toHaveValue('');
@@ -74,7 +91,9 @@ export const assertPrivateCadastroViews = async (page: Page, id: number, fixture
 	await assertNoRawIdentifiers(page, fixture);
 
 	await page.goto(`/secretaria/cadastros/${id}`);
+	await waitForHydration(page);
 	await assertNoRawIdentifiers(page, fixture);
 	await page.goto(`/tesouraria/contribuintes/${id}`);
+	await waitForHydration(page);
 	await assertNoRawIdentifiers(page, fixture);
 };
