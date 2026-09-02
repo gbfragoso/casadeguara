@@ -13,7 +13,7 @@ export type TestDatabase = postgres.Sql;
 export const createDatabase = (): TestDatabase => postgres(databaseUrl, { max: 4 });
 
 export type TestUser = { id: string; email: string; password: string };
-export type TestUsers = { owner: TestUser; wrongRole: TestUser; tesouraria: TestUser };
+export type TestUsers = { owner: TestUser; wrongRole: TestUser; tesouraria: TestUser; admin: TestUser };
 export type CadastroSnapshot = {
 	idleitor: number;
 	nome: string;
@@ -54,13 +54,15 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	const owner = createUser(token, 'owner', password);
 	const wrongRole = createUser(token, 'wrong', password);
 	const tesouraria = createUser(token, 'tesouraria', password);
+	const admin = createUser(token, 'admin', password);
 	const passwordHash = await hash(password);
 
 	await insertUser(database, owner, 'biblioteca,secretaria,tesouraria', passwordHash);
 	await insertUser(database, wrongRole, 'biblioteca', passwordHash);
 	await insertUser(database, tesouraria, 'tesouraria', passwordHash);
+	await insertUser(database, admin, 'biblioteca,biblioteca:admin', passwordHash);
 
-	return { owner, wrongRole, tesouraria };
+	return { owner, wrongRole, tesouraria, admin };
 };
 export const readCadastro = async (database: TestDatabase, name: string): Promise<CadastroSnapshot> => {
 	const [cadastro] = await database<CadastroSnapshot[]>`
@@ -80,8 +82,8 @@ export const readCadastro = async (database: TestDatabase, name: string): Promis
 export const deleteCadastro = (database: TestDatabase, name: string) =>
 	database`delete from cadastros where nome = ${name}`;
 
-export const deleteTestUsers = async (database: TestDatabase, { owner, wrongRole, tesouraria }: TestUsers) => {
-	const ids = [owner.id, wrongRole.id, tesouraria.id];
+export const deleteTestUsers = async (database: TestDatabase, { owner, wrongRole, tesouraria, admin }: TestUsers) => {
+	const ids = [owner.id, wrongRole.id, tesouraria.id, admin.id];
 	await database`delete from "Session" where "userId" = any(${ids})`;
 	await database`delete from "User" where id = any(${ids})`;
 };

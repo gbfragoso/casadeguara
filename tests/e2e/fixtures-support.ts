@@ -19,9 +19,15 @@ import {
 	setWorker,
 } from './amigo-fraterno-support';
 import { countNotices, createNoticeFixture, createNoticeFixtures, deleteNotices } from './avisos-support';
+import { countBooksByTitle, createBookCatalog, deleteBookCatalog, readBookByTitle } from './livros-database';
 import type { E2EData, FixtureResources } from './fixtures-types';
 
-const destinations = { owner: '**/sistemas', wrongRole: '**/biblioteca', tesouraria: '**/tesouraria' } as const;
+const destinations = {
+	owner: '**/sistemas',
+	wrongRole: '**/biblioteca',
+	tesouraria: '**/tesouraria',
+	admin: '**/sistemas',
+} as const;
 const createToken = () => randomUUID().replaceAll('-', '').slice(0, 12);
 
 const cleanupResources = async (
@@ -32,6 +38,7 @@ const cleanupResources = async (
 ) => {
 	const failures: unknown[] = [];
 	for (const operation of [
+		() => deleteBookCatalog(database, token),
 		() => deleteParticipants(database, [...names]),
 		() => deleteNotices(database, token),
 		() => deleteTestUsers(database, users),
@@ -89,6 +96,9 @@ export const createFixtureResources = async (): Promise<FixtureResources> => {
 		restoreCadastroSequence: async () => {
 			await restoreCadastroSequence(database);
 		},
+		createBookCatalog: async () => createBookCatalog(database, token),
+		countBooksByTitle: (titulo) => countBooksByTitle(database, titulo),
+		readBookByTitle: (titulo) => readBookByTitle(database, titulo),
 	};
 	return { data, cleanup: () => cleanupResources(database, token, users, names) };
 };

@@ -15,6 +15,8 @@ import { load as newReader } from '../../../src/routes/(protected)/biblioteca/le
 import { load as editReader } from '../../../src/routes/(protected)/biblioteca/leitores/[id=integer]/+page.server';
 import { load as notice } from '../../../src/routes/(protected)/biblioteca/avisos/+page.server';
 import { load as editNotice } from '../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
+import { load as bookList } from '../../../src/routes/(protected)/biblioteca/livros/+page.server';
+import { load as bookCreate } from '../../../src/routes/(protected)/biblioteca/livros/novo/+page.server';
 
 export const protectedBibliotecaLoads = [
 	dashboard,
@@ -34,6 +36,8 @@ export const protectedBibliotecaLoads = [
 	editReader,
 	notice,
 	editNotice,
+	bookList,
+	bookCreate,
 ];
 
 export const bibliotecaSimpleLoads = [
@@ -48,4 +52,6 @@ export const bibliotecaSimpleLoads = [
 	reader,
 	newReader,
 	notice,
+	bookList,
+	bookCreate,
 ];
