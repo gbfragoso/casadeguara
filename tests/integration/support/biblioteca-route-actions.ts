@@ -15,6 +15,8 @@ import { actions as newReader } from '../../../src/routes/(protected)/biblioteca
 import { actions as editReader } from '../../../src/routes/(protected)/biblioteca/leitores/[id=integer]/+page.server';
 import { actions as notice } from '../../../src/routes/(protected)/biblioteca/avisos/+page.server';
 import { actions as editNotice } from '../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
+import { actions as bookList } from '../../../src/routes/(protected)/biblioteca/livros/+page.server';
+import { actions as bookCreate } from '../../../src/routes/(protected)/biblioteca/livros/novo/+page.server';
 
 export const protectedBibliotecaActions = [
 	author.default,
@@ -34,6 +36,9 @@ export const protectedBibliotecaActions = [
 	editReader.default,
 	notice.default,
 	editNotice.default,
+	bookList.pesquisar,
+	bookList.excluir,
+	bookCreate.default,
 ];
 
 export const bibliotecaListActions = [

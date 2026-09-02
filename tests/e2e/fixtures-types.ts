@@ -4,6 +4,7 @@ import type { CadastroSnapshot, TestDatabase, TestUsers } from './cadastros-data
 import type { CadastroFixture } from './cadastros-fixture';
 import type { NoticeFixture } from './avisos-support';
 import type { PhotoSize } from './amigo-fraterno-support';
+import type { BookSnapshot, LivroCatalog } from './livros-database';
 
 export type Participant = { id: number; name: string };
 export type E2EData = {
@@ -23,5 +24,8 @@ export type E2EData = {
 	setDisincarnated: (id: number, value: boolean) => Promise<void>;
 	advanceCadastroSequence: (value: number) => Promise<void>;
 	restoreCadastroSequence: () => Promise<void>;
+	createBookCatalog: () => Promise<LivroCatalog>;
+	countBooksByTitle: (titulo: string) => Promise<number>;
+	readBookByTitle: (titulo: string) => Promise<BookSnapshot | null>;
 };
 export type FixtureResources = { data: E2EData; cleanup: () => Promise<void> };

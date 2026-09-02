@@ -1,16 +1,17 @@
 import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
 
-const SUITES = new Set(['integration', 'coverage', 'e2e']);
+const SUITES = new Set(['integration', 'coverage', 'e2e', 'performance']);
 const SIGNAL_EXIT_CODES = { SIGINT: 130, SIGTERM: 143 };
 
 /** @param {string} suite @returns {[string, string[]]} */
-function suiteCommand(suite) {
+export function suiteCommand(suite) {
 	const executable = process.execPath;
 	const vitest = resolve('node_modules/vitest/vitest.mjs');
 	const playwright = resolve('node_modules/@playwright/test/cli.js');
 	if (suite === 'integration') return [executable, [vitest, 'run', '--project', 'integration']];
 	if (suite === 'coverage') return [executable, [vitest, 'run', '--coverage']];
+	if (suite === 'performance') return [executable, [vitest, 'run', '--project', 'performance']];
 	return [executable, [playwright, 'test']];
 }
 

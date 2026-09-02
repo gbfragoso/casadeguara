@@ -53,6 +53,15 @@ export default defineConfig({
 					setupFiles: ['tests/integration/setup.ts'],
 				},
 			},
+			{
+				extends: true,
+				test: {
+					name: 'performance',
+					include: ['src/lib/scripts/performance/books/**/*.performance.test.ts'],
+					setupFiles: ['tests/integration/setup.ts'],
+					testTimeout: 120_000,
+				},
+			},
 		],
 	},
 });

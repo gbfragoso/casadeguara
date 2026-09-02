@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { requireLibraryAccess, requireLibraryAdminAccess } from '$lib/server/authorization/biblioteca';
 
 describe('requireLibraryAccess', () => {
 	it('redirects an unauthenticated request', () => {
@@ -20,5 +20,20 @@ describe('requireLibraryAccess', () => {
 		const user = { id: 'user-1', roles: 'biblioteca,biblioteca:admin', username: 'bibliotecaria' };
 
 		expect(requireLibraryAccess(user)).toBe(user);
+	});
+
+	it('accepts only the exact administrative token', () => {
+		const user = { roles: 'biblioteca:admin' };
+
+		expect(requireLibraryAdminAccess(user)).toBe(user);
+		expect(() => requireLibraryAdminAccess({ roles: 'biblioteca:administrator' })).toThrow(
+			expect.objectContaining({ status: 401 }),
+		);
+	});
+
+	it('rejects deceptive library role substrings', () => {
+		expect(() => requireLibraryAccess({ roles: 'notbiblioteca' })).toThrow(
+			expect.objectContaining({ status: 401 }),
+		);
 	});
 });
