@@ -1,13 +1,19 @@
 import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 
 import type { Page } from '@playwright/test';
 
 import { test, expect } from './fixtures';
+import { measureTreasuryBundle } from '../../src/lib/scripts/performance/tesouraria/bundle';
 import { captureClientEnvironment } from '../../src/lib/scripts/performance/tesouraria/environment';
+import {
+	compareLongTaskSamples,
+	writeFinalPerformanceReport,
+} from '../../src/lib/scripts/performance/tesouraria/final-report';
 import { captureLongTaskSamples } from '../../src/lib/scripts/performance/tesouraria/longtasks';
 import { writeBaselineReport } from '../../src/lib/scripts/performance/tesouraria/report';
 import type { BundleMeasurement } from '../../src/lib/scripts/performance/tesouraria/bundle';
+import type { LongTaskSample } from '../../src/lib/scripts/performance/tesouraria/longtasks';
 import {
 	findLancamentoRow,
 	openLancamentosPage,
@@ -15,6 +21,17 @@ import {
 	searchLancamentosByDescription,
 } from './lancamentos-browser';
 import { createEntrySeed, createExitSeed } from './lancamentos-fixture';
+
+const readChartAutoFiles = async (bundle: BundleMeasurement) => {
+	const output = resolve('.svelte-kit/output/client');
+	const matches = await Promise.all(
+		bundle.files.map(async ({ file }) => {
+			const source = await readFile(join(output, file), 'utf8');
+			return source.includes('chart.js/auto') ? file : null;
+		}),
+	);
+	return matches.filter((file): file is string => file !== null);
+};
 
 test.describe('prova técnica do gráfico da tesouraria', () => {
 	test.use({ hasTouch: true, viewport: { width: 320, height: 667 } });
@@ -248,5 +265,34 @@ test.describe('protected dashboard chart integration', () => {
 		await openDashboard(page);
 		await expect(region.locator('tbody tr').filter({ hasText: currentMonth.month })).toContainText('R$ 100,00');
 		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
+	});
+
+	test('E2E-06 cumpre os orcamentos do cliente', async ({ browser, e2e }) => {
+		const baselineBundle = JSON.parse(
+			await readFile(resolve('src/lib/scripts/performance/tesouraria/baseline-bundle.json'), 'utf8'),
+		) as BundleMeasurement;
+		const baselineLongTasks = JSON.parse(
+			await readFile(resolve('src/lib/scripts/performance/tesouraria/baseline-longtasks.json'), 'utf8'),
+		) as LongTaskSample[];
+		const counterpart = await e2e.createParticipant('dashboard-performance');
+		await e2e.createLancamento(createEntrySeed(e2e.token, 'dashboard-performance', counterpart.id));
+
+		const finalBundle = await measureTreasuryBundle();
+		const finalSamples = await captureLongTaskSamples(browser, (page) => e2e.authenticate(page, 'tesouraria'));
+		const chartAutoFiles = await readChartAutoFiles(finalBundle);
+		const comparisons = compareLongTaskSamples(baselineLongTasks, finalSamples);
+		await writeFinalPerformanceReport({
+			environment: captureClientEnvironment(browser.version()),
+			baselineBundle,
+			finalBundle,
+			chartAutoFiles,
+			longTasks: comparisons,
+		});
+
+		expect(finalSamples).toHaveLength(5);
+		expect(baselineLongTasks).toHaveLength(5);
+		expect(finalBundle.gzipBytes - baselineBundle.gzipBytes).toBeLessThanOrEqual(102_400);
+		expect(chartAutoFiles).toEqual([]);
+		expect(comparisons.every(({ newOverThreshold }) => newOverThreshold === 0)).toBe(true);
 	});
 });

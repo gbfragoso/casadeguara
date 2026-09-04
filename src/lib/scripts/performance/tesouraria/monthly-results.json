@@ -1,6 +1,6 @@
 {
 	"environment": {
-		"capturedAt": "2026-09-04T19:28:32.271Z",
+		"capturedAt": "2026-09-04T21:31:10.946Z",
 		"settings": {
 			"postgresVersion": "16.14",
 			"sharedBuffers": "128MB",
@@ -24,9 +24,9 @@
 			"sql": "select to_char(date_trunc('month', \"lancamentos\".\"data_lancamento\"), 'YYYY-MM') as \"competencia\", coalesce(sum(\"valor\") FILTER (WHERE \"tipo\" = 'entrada'), 0)::text as \"entradas\", coalesce(sum(\"valor\") FILTER (WHERE \"tipo\" = 'saida'), 0)::text as \"saidas\" from \"lancamentos\" where (\"lancamentos\".\"data_lancamento\" >= $1 and \"lancamentos\".\"data_lancamento\" < $2 and NOT EXISTS (SELECT 1 FROM \"estornos\" WHERE \"estornos\".\"idlancamento\" = \"lancamentos\".\"idlancamento\")) group by date_trunc('month', \"lancamentos\".\"data_lancamento\") order by date_trunc('month', \"lancamentos\".\"data_lancamento\")",
 			"params": ["2025-10-01T00:00:00.000Z", "2026-10-01T00:00:00.000Z"]
 		},
-		"p50Ms": 21.33060000000114,
-		"p95Ms": 27.87120000000141,
-		"minMs": 18.320999999999913,
-		"maxMs": 42.70980000000054
+		"p50Ms": 18.473500000000058,
+		"p95Ms": 24.071600000000217,
+		"minMs": 16.57549999999992,
+		"maxMs": 34.964600000000246
 	}
 }

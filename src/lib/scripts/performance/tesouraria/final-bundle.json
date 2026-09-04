@@ -1,0 +1,21 @@
+{
+	"route": "/(protected)/tesouraria",
+	"routeNodeIds": [54, 2, 5],
+	"files": [
+		{ "file": "_app/immutable/chunks/2e1JkXZW.js", "rawBytes": 36678, "gzipBytes": 13598 },
+		{ "file": "_app/immutable/chunks/CQjC1VGi.js", "rawBytes": 1727, "gzipBytes": 844 },
+		{ "file": "_app/immutable/chunks/D0kzDZBD.js", "rawBytes": 294, "gzipBytes": 168 },
+		{ "file": "_app/immutable/chunks/DLToX36f.js", "rawBytes": 57550, "gzipBytes": 21652 },
+		{ "file": "_app/immutable/chunks/DNCWvLQW.js", "rawBytes": 9399, "gzipBytes": 3737 },
+		{ "file": "_app/immutable/chunks/DyKyn5uY.js", "rawBytes": 2532, "gzipBytes": 1212 },
+		{ "file": "_app/immutable/chunks/pG-SAKvf.js", "rawBytes": 530, "gzipBytes": 376 },
+		{ "file": "_app/immutable/chunks/qjV-EdFe.js", "rawBytes": 123007, "gzipBytes": 38952 },
+		{ "file": "_app/immutable/chunks/xihTtKlq.js", "rawBytes": 65, "gzipBytes": 80 },
+		{ "file": "_app/immutable/entry/app.6WBEVTdz.js", "rawBytes": 16214, "gzipBytes": 4098 },
+		{ "file": "_app/immutable/nodes/2.By0xuHeQ.js", "rawBytes": 176, "gzipBytes": 159 },
+		{ "file": "_app/immutable/nodes/5.COQ0ToJh.js", "rawBytes": 2736, "gzipBytes": 1126 },
+		{ "file": "_app/immutable/nodes/54.BucB3TaX.js", "rawBytes": 2796, "gzipBytes": 1442 }
+	],
+	"rawBytes": 253704,
+	"gzipBytes": 87444
+}
