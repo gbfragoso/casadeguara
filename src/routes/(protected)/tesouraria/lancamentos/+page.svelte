@@ -202,17 +202,13 @@
 												target="_blank"
 												aria-label="Recibo"><i class="fa-regular fa-file-lines fa-fw"></i></a
 											>{/if}
-										{#if data?.isAdmin}<a
-												class="ml-3"
-												title="Estorno"
-												aria-label="Estornar"
-												href={resolve(
-													'/(protected)/tesouraria/lancamentos/[id=integer]/estorno',
-													{
-														id: `${item.id}`,
-													},
-												)}><i class="fa-regular fa-trash-can fa-fw"></i></a
-											>{/if}
+										<a
+											class="ml-3"
+											title="Estorno"
+											aria-label="Estornar"
+											href={resolve('/(protected)/tesouraria/lancamentos/[id=integer]/estorno', {
+												id: `${item.id}`,
+											})}><i class="fa-regular fa-trash-can fa-fw"></i></a>
 									</td>
 								</tr>
 							{/each}

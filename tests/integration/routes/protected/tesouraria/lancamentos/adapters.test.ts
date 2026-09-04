@@ -104,6 +104,18 @@ describe('tesouraria lancamento adapters', () => {
 		expect(model.search).not.toHaveBeenCalled();
 	});
 
+	it('accepts registration date for all launch types', async () => {
+		const model = createListModel();
+		const form = formEvent({ tipo: 'todos', dataRegistro: '2026-09-02' });
+
+		const result = await createLancamentoListHandlers({ model }).actions.pesquisar(form);
+
+		expect(result).toMatchObject({ page, values: { tipo: 'todos', dataRegistro: '2026-09-02' } });
+		expect(model.search).toHaveBeenCalledWith(
+			expect.objectContaining({ tipo: 'todos', dataRegistro: '2026-09-02' }),
+		);
+	});
+
 	it('loads filtered active results without counterpart options', async () => {
 		const model = createListModel();
 		const event = createRequestEvent({
@@ -113,7 +125,7 @@ describe('tesouraria lancamento adapters', () => {
 
 		const result = await createLancamentoListHandlers({ model }).load(event);
 
-		expect(result).toMatchObject({ page, isAdmin: false });
+		expect(result).toMatchObject({ page });
 		expect(result).not.toHaveProperty('contrapartes');
 		expect(model.search).toHaveBeenCalledWith(expect.objectContaining({ tipo: 'entrada', depositado: true }));
 	});
@@ -166,11 +178,11 @@ describe('tesouraria lancamento adapters', () => {
 		const info = vi.spyOn(console, 'info').mockImplementation(() => undefined);
 		await expect(
 			createLancamentoReversalHandlers({ model: success }).actions.default(
-				formEvent({ motivo: 'correção' }, admin, { id: '4' }),
+				formEvent({ motivo: 'correção' }, user, { id: '4' }),
 			),
 		).resolves.toEqual({ status: 200, message: 'Lançamento estornado com sucesso.' });
-		expect(success.reverse).toHaveBeenCalledWith(4, 'correção', admin.id);
-		expect(info).toHaveBeenCalledWith('treasury.launches.reversed', { id: 4, userId: admin.id });
+		expect(success.reverse).toHaveBeenCalledWith(4, 'correção', user.id);
+		expect(info).toHaveBeenCalledWith('treasury.launches.reversed', { id: 4, userId: user.id });
 		info.mockRestore();
 
 		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);

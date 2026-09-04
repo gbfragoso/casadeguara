@@ -4,6 +4,7 @@ import { listCounterparts } from './counterparts';
 import { getDashboardProjection } from './dashboard';
 import { listPendingDeposits } from './cash';
 import { confirmLancamentoDeposits } from './deposits';
+import { getMonthlyTotals as readMonthlyTotals } from './monthly-totals';
 import { getReceipt } from './receipt';
 import { getLancamentoForReversal, reverseLancamento } from './reversal';
 import { searchReversals } from './reversal-search';
@@ -22,6 +23,7 @@ import type {
 	CashEntry,
 	ReceiptState,
 } from './types';
+import type { MonthlyLancamentoTotal } from '$lib/tesouraria/monthly-totals';
 
 export class LancamentoModel {
 	constructor(private readonly database: LancamentoDatabase = db) {}
@@ -56,6 +58,10 @@ export class LancamentoModel {
 
 	getDashboard(today?: Date): Promise<DashboardProjection> {
 		return getDashboardProjection(this.database, today);
+	}
+
+	getMonthlyTotals(reference?: Date): Promise<MonthlyLancamentoTotal[]> {
+		return readMonthlyTotals(this.database, reference);
 	}
 
 	listPendingDeposits(): Promise<CashEntry[]> {

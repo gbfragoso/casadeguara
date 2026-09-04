@@ -74,7 +74,7 @@ const validateOperationalSearch = (
 	context: z.RefinementCtx,
 ) => {
 	if (value.tipo !== 'entrada') {
-		(['dataRegistro', 'depositado', 'trabalhadores'] as const).forEach((field) => {
+		(['depositado', 'trabalhadores'] as const).forEach((field) => {
 			if (value[field] !== null)
 				context.addIssue({ code: 'custom', message: INVALID_FILTER_MESSAGE, path: [field] });
 		});

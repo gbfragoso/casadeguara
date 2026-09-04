@@ -41,7 +41,7 @@ describe('lancamentos list page', () => {
 					userid: 'u',
 					page,
 					values: { tipo: 'todos' },
-					isAdmin: true,
+					isAdmin: false,
 				},
 			},
 		});
@@ -53,6 +53,7 @@ describe('lancamentos list page', () => {
 		expect(rows[0]?.textContent).toContain('01/09/2026');
 		expect(rows[0]?.querySelector('a[href*="/recibo/"]')).not.toBeNull();
 		expect(rows[1]?.querySelector('a[href*="/recibo/"]')).toBeNull();
+		expect(document.querySelectorAll('a[title="Estorno"]')).toHaveLength(2);
 		expect(document.querySelector('input[name="contraparte"]')).not.toBeNull();
 		expect(document.querySelector('nav[aria-label="Paginação de lançamentos"]')).toBeNull();
 		expect(document.querySelector('button[type="submit"]')?.getAttribute('aria-busy')).toBe('false');
