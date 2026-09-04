@@ -21,6 +21,7 @@
 		"performance:books": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/books/post.performance.test.ts",
 		"performance:books:baseline": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/books/baseline.performance.test.ts",
 		"performance:tesouraria:baseline": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/tesouraria/baseline.performance.test.ts",
+		"performance:tesouraria": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/tesouraria/monthly.performance.test.ts",
 		"performance:tesouraria:client-baseline": "npm run db:start && node src/lib/scripts/testing/run-suite.js e2e tests/e2e/tesouraria-dashboard.e2e.ts",
 		"test:e2e:install": "playwright install chromium",
 		"db:start": "docker compose up --wait --wait-timeout 60",
