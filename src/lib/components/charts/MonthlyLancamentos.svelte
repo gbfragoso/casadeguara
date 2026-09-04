@@ -18,22 +18,30 @@
 	const descriptionId = 'monthly-lancamentos-description';
 </script>
 
-<div class="monthly-lancamentos" role="region" aria-labelledby={titleId} aria-describedby={descriptionId}>
-	<h2 id={titleId}>Entradas e saídas — últimos 12 meses</h2>
-	<p id={descriptionId}>Totais mensais de lançamentos ativos, em reais.</p>
+<div class="card">
+	<div class="card-content">
+		<div class="monthly-lancamentos" role="region" aria-labelledby={titleId} aria-describedby={descriptionId}>
+			<h2 id={titleId}>Entradas e saídas — últimos 12 meses</h2>
+			<p id={descriptionId}>Totais mensais de lançamentos ativos, em reais.</p>
 
-	<div class="legend" aria-label="Legenda">
-		<span class="legend-entry"><i aria-hidden="true"></i>Entradas</span>
-		<span class="legend-exit"><i aria-hidden="true"></i>Saídas</span>
-	</div>
+			<div class="legend" aria-label="Legenda">
+				<span class="legend-entry"><i aria-hidden="true"></i>Entradas</span>
+				<span class="legend-exit"><i aria-hidden="true"></i>Saídas</span>
+			</div>
 
-	{#if hasMovement && chartConfig}
-		<div class="chart-container">
-			<Line data={chartConfig.data} options={chartConfig.options} aria-hidden="true" role="presentation" />
+			{#if hasMovement && chartConfig}
+				<div class="chart-container">
+					<Line
+						data={chartConfig.data}
+						options={chartConfig.options}
+						aria-hidden="true"
+						role="presentation" />
+				</div>
+			{:else}
+				<p class="empty-state" role="status">Não há lançamentos ativos no período.</p>
+			{/if}
 		</div>
-	{:else}
-		<p class="empty-state" role="status">Não há lançamentos ativos no período.</p>
-	{/if}
+	</div>
 </div>
 
 <style>

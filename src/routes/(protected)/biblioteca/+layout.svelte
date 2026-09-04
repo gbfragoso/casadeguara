@@ -14,7 +14,7 @@
 
 <main class="is-flex">
 	<nav id="sidebar" class="is-flex is-flex-direction-column is-justify-content-space-between is-hidden-touch">
-		<div class="p-3">
+		<div class="pt-3">
 			<div class="mb-5 pl-1 is-flex is-2 is-justify-content-center">
 				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
