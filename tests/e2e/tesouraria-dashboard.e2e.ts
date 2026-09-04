@@ -1,11 +1,20 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
+import type { Page } from '@playwright/test';
+
 import { test, expect } from './fixtures';
 import { captureClientEnvironment } from '../../src/lib/scripts/performance/tesouraria/environment';
 import { captureLongTaskSamples } from '../../src/lib/scripts/performance/tesouraria/longtasks';
 import { writeBaselineReport } from '../../src/lib/scripts/performance/tesouraria/report';
 import type { BundleMeasurement } from '../../src/lib/scripts/performance/tesouraria/bundle';
+import {
+	findLancamentoRow,
+	openLancamentosPage,
+	reverseFromRow,
+	searchLancamentosByDescription,
+} from './lancamentos-browser';
+import { createEntrySeed, createExitSeed } from './lancamentos-fixture';
 
 test.describe('prova técnica do gráfico da tesouraria', () => {
 	test.use({ hasTouch: true, viewport: { width: 320, height: 667 } });
@@ -38,5 +47,206 @@ test.describe('prova técnica do gráfico da tesouraria', () => {
 
 		expect(samples).toHaveLength(5);
 		expect(samples.every(({ durations }) => durations.every((duration) => duration >= 0))).toBe(true);
+	});
+});
+
+const openDashboard = async (page: Page) => {
+	await page.goto('/tesouraria');
+	await page.waitForLoadState('domcontentloaded');
+	await page.getByRole('heading', { name: /Balan/ }).waitFor();
+};
+
+const dashboardRegion = (page: Page) => page.getByRole('region', { name: /Entradas e sa/ });
+
+test.describe('protected dashboard chart integration', () => {
+	test.describe.configure({ mode: 'serial' });
+
+	test('T5 E2E-01 consulta o detalhe mensal com ponteiro', async ({ page, e2e }) => {
+		const counterpart = await e2e.createParticipant('dashboard-pointer');
+		await e2e.createLancamentos([
+			createEntrySeed(e2e.token, 'dashboard-pointer', counterpart.id, {
+				valor: '1234.56',
+				dataLancamento: '2026-09-01',
+			}),
+			createExitSeed(e2e.token, 'dashboard-pointer', { valor: '789.01', dataLancamento: '2026-09-02' }),
+		]);
+		await e2e.authenticate(page, 'tesouraria');
+		await openDashboard(page);
+
+		const region = dashboardRegion(page);
+		await expect(region).toBeVisible();
+		await expect(region.locator('.legend')).toContainText('Entradas');
+		await expect(region.locator('.legend')).toContainText('Saídas');
+		const canvas = region.locator('canvas');
+		await expect(canvas).toBeVisible();
+		await expect(canvas).toHaveAttribute('role', 'presentation');
+
+		const bounds = await canvas.boundingBox();
+		if (!bounds) throw new Error('Dashboard canvas has no geometry.');
+		await page.mouse.move(bounds.x + bounds.width * 0.94, bounds.y + bounds.height / 2);
+
+		await expect(region.locator('.selection')).toContainText('1.234,56');
+		await expect(region.locator('.selection')).toContainText('789,01');
+	});
+
+	test('T5 E2E-02 keeps indicators and chart within the four widths', async ({ page, e2e }) => {
+		const counterpart = await e2e.createParticipant('dashboard-responsive');
+		await e2e.createLancamento(createEntrySeed(e2e.token, 'dashboard-responsive', counterpart.id));
+		await e2e.authenticate(page, 'tesouraria');
+
+		for (const width of [320, 375, 768, 1280]) {
+			await page.setViewportSize({ width, height: 667 });
+			await openDashboard(page);
+
+			const region = dashboardRegion(page);
+			const indicators = page.locator('.mt-2.columns');
+			const legend = region.locator('.legend');
+			const canvas = region.locator('canvas');
+			const indicatorColumns = indicators.locator(':scope > .column');
+			await expect(indicatorColumns).toHaveCount(5);
+			await expect(canvas).toBeVisible();
+
+			expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+
+			const indicatorBoxes = await Promise.all(
+				Array.from({ length: await indicatorColumns.count() }, (_, index) =>
+					indicatorColumns.nth(index).boundingBox(),
+				),
+			);
+			for (const box of indicatorBoxes) {
+				if (!box) throw new Error('Dashboard card has no geometry.');
+				expect(box.x).toBeGreaterThanOrEqual(-1);
+				expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
+			}
+			for (let first = 0; first < indicatorBoxes.length; first += 1) {
+				for (let second = first + 1; second < indicatorBoxes.length; second += 1) {
+					const left = indicatorBoxes[first];
+					const right = indicatorBoxes[second];
+					if (!left || !right) continue;
+					const overlaps =
+						left.x < right.x + right.width &&
+						left.x + left.width > right.x &&
+						left.y < right.y + right.height &&
+						left.y + left.height > right.y;
+					expect(overlaps).toBe(false);
+				}
+			}
+
+			const [indicatorBox, regionBox, legendBox, canvasBox] = await Promise.all([
+				indicators.boundingBox(),
+				region.boundingBox(),
+				legend.boundingBox(),
+				canvas.boundingBox(),
+			]);
+			if (!indicatorBox || !regionBox || !legendBox || !canvasBox) {
+				throw new Error('Responsive dashboard element has no geometry.');
+			}
+			expect(regionBox.x + regionBox.width).toBeLessThanOrEqual(width + 1);
+			expect(indicatorBox.y + indicatorBox.height).toBeLessThanOrEqual(regionBox.y + 1);
+			expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(canvasBox.y + 1);
+		}
+	});
+
+	test.describe('T5 E2E-03 consulta qualquer competencia por toque', () => {
+		test.use({ hasTouch: true, viewport: { width: 375, height: 667 } });
+
+		test('seleciona primeira, intermediaria e ultima faixa', async ({ page, e2e }) => {
+			const counterpart = await e2e.createParticipant('dashboard-touch');
+			await e2e.createLancamentos([
+				createEntrySeed(e2e.token, 'dashboard-touch-first', counterpart.id, {
+					valor: '101.01',
+					dataLancamento: '2025-10-01',
+				}),
+				createExitSeed(e2e.token, 'dashboard-touch-first', { valor: '11.11', dataLancamento: '2025-10-01' }),
+				createEntrySeed(e2e.token, 'dashboard-touch-middle', counterpart.id, {
+					valor: '202.02',
+					dataLancamento: '2026-03-01',
+				}),
+				createExitSeed(e2e.token, 'dashboard-touch-middle', { valor: '22.22', dataLancamento: '2026-03-01' }),
+				createEntrySeed(e2e.token, 'dashboard-touch-last', counterpart.id, {
+					valor: '303.03',
+					dataLancamento: '2026-09-01',
+				}),
+				createExitSeed(e2e.token, 'dashboard-touch-last', { valor: '33.33', dataLancamento: '2026-09-01' }),
+			]);
+			await e2e.authenticate(page, 'tesouraria');
+			await openDashboard(page);
+
+			const region = dashboardRegion(page);
+			const canvas = region.locator('canvas');
+			const bounds = await canvas.boundingBox();
+			if (!bounds) throw new Error('Touch canvas has no geometry.');
+
+			for (const [fraction, month, entry, exit] of [
+				[0.18, '10/2025', '101,01', '11,11'],
+				[0.53, '03/2026', '202,02', '22,22'],
+				[0.96, '09/2026', '303,03', '33,33'],
+			] as const) {
+				await canvas.tap({ position: { x: bounds.width * fraction, y: bounds.height / 2 } });
+				await expect(region.locator('.selection')).toContainText(month);
+				await expect(region.locator('.selection')).toContainText(entry);
+				await expect(region.locator('.selection')).toContainText(exit);
+			}
+		});
+	});
+
+	test('T5 E2E-04 oferece tabela por teclado e estado vazio com movimento reduzido', async ({ page, e2e }) => {
+		await e2e.authenticate(page, 'tesouraria');
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		await openDashboard(page);
+
+		const region = dashboardRegion(page);
+		await expect(region.getByRole('status')).toContainText(/lan.amentos ativos/);
+		await expect(region.locator('canvas')).toHaveCount(0);
+		const details = region.locator('details');
+		const summary = details.locator('summary');
+		await summary.focus();
+		await page.keyboard.press('Enter');
+		await expect(details).toHaveAttribute('open', '');
+		await expect(region.locator('tbody tr')).toHaveCount(12);
+		await expect(region.locator('tbody td')).toHaveCount(24);
+
+		const counterpart = await e2e.createParticipant('dashboard-reduced-motion');
+		await e2e.createLancamento(createEntrySeed(e2e.token, 'dashboard-reduced-motion', counterpart.id));
+		await page.reload();
+		await page.getByRole('heading', { name: /Balan/ }).waitFor();
+		const animations = await region
+			.locator('canvas')
+			.evaluateAll((canvases) => canvases.map((canvas) => getComputedStyle(canvas).animationName));
+		expect(animations.every((name) => name === 'none')).toBe(true);
+	});
+
+	test('T5 E2E-05 protege o dashboard e atualiza a serie no recarregamento', async ({ page, e2e }) => {
+		await e2e.authenticate(page, 'wrongRole');
+		const denied = await page.goto('/tesouraria');
+		expect(denied?.status()).toBe(403);
+
+		const counterpart = await e2e.createParticipant('dashboard-reload');
+		const firstSeed = createEntrySeed(e2e.token, 'dashboard-reload-first', counterpart.id, { valor: '100.00' });
+		await e2e.createLancamento(firstSeed);
+		await e2e.authenticate(page, 'tesouraria');
+		await openDashboard(page);
+
+		const [currentMonth] = await e2e.database<{ month: string }[]>`
+			select to_char(current_date, 'MM/YYYY') as month
+		`;
+		if (!currentMonth) throw new Error('Current competence was not obtained.');
+		const region = dashboardRegion(page);
+		const currentRow = region.locator('tbody tr').filter({ hasText: currentMonth.month });
+		await expect(currentRow).toContainText('R$ 100,00');
+		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
+
+		const secondSeed = createEntrySeed(e2e.token, 'dashboard-reload-second', counterpart.id, { valor: '200.00' });
+		await e2e.createLancamento(secondSeed);
+		await page.reload();
+		await page.getByRole('heading', { name: /Balan/ }).waitFor();
+		await expect(region.locator('tbody tr').filter({ hasText: currentMonth.month })).toContainText('R$ 300,00');
+
+		await openLancamentosPage(page);
+		await searchLancamentosByDescription(page, e2e.token);
+		await reverseFromRow(page, findLancamentoRow(page, secondSeed.descricao), 'Dashboard reload');
+		await openDashboard(page);
+		await expect(region.locator('tbody tr').filter({ hasText: currentMonth.month })).toContainText('R$ 100,00');
+		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
 	});
 });

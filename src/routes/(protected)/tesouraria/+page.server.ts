@@ -6,11 +6,17 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	requireTesourariaAccess(locals.user);
+	const reference = new Date();
 	try {
-		const { entradaMesAtual, saidaMesAtual } = await lancamentoModel.getDashboard();
+		const [dashboard, lancamentosMensais] = await Promise.all([
+			lancamentoModel.getDashboard(reference),
+			lancamentoModel.getMonthlyTotals(reference),
+		]);
+
 		return {
-			entradaMesAtual: [entradaMesAtual],
-			saidaMesAtual: [saidaMesAtual],
+			entradaMesAtual: [dashboard.entradaMesAtual],
+			saidaMesAtual: [dashboard.saidaMesAtual],
+			lancamentosMensais,
 		};
 	} catch {
 		console.error('treasury.launches.dashboard_failed');

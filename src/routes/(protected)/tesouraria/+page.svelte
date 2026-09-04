@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import MonthlyLancamentos from '$lib/components/charts/MonthlyLancamentos.svelte';
 	import { moeda } from '$lib/utils/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -11,7 +12,7 @@
 
 	let { data }: Props = $props();
 
-	let { entradaMesAtual, saidaMesAtual } = $derived(data);
+	let { entradaMesAtual, saidaMesAtual, lancamentosMensais } = $derived(data);
 	dayjs.extend(utc);
 </script>
 
@@ -121,3 +122,5 @@
 		{/await}
 	{/await}
 </div>
+
+<MonthlyLancamentos totals={lancamentosMensais} />

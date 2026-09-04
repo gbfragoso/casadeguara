@@ -10,6 +10,7 @@ import { createRequestEvent, invoke, type TestUser } from '../../../support/requ
 
 const user: TestUser = { id: 'cash-user', roles: 'tesouraria', username: 'cash', name: 'Cash' };
 const admin: TestUser = { ...user, id: 'cash-admin', roles: 'tesouraria:admin' };
+const wrongRole: TestUser = { ...user, id: 'cash-biblioteca', roles: 'biblioteca' };
 
 const formEvent = (form: FormData, currentUser = user) =>
 	createRequestEvent({
@@ -21,27 +22,60 @@ describe('financial consumer route adapters', () => {
 	afterEach(() => vi.restoreAllMocks());
 
 	it('loads dashboard projections from the unified model', async () => {
-		vi.spyOn(lancamentoModel, 'getDashboard').mockResolvedValue({
+		const getDashboard = vi.spyOn(lancamentoModel, 'getDashboard').mockResolvedValue({
 			entradaMesAtual: { count: 2, median: 10, value: '20.00' },
 			saidaMesAtual: { value: '5.00' },
 		});
+		const getMonthlyTotals = vi
+			.spyOn(lancamentoModel, 'getMonthlyTotals')
+			.mockResolvedValue([{ competencia: '2025-10', entradas: '20.00', saidas: '5.00' }]);
 
 		const result = await invoke(dashboardLoad, createRequestEvent({ locals: { user, session: null } }));
+		const reference = getDashboard.mock.calls[0][0];
 
 		expect(result).toEqual({
 			entradaMesAtual: [{ count: 2, median: 10, value: '20.00' }],
 			saidaMesAtual: [{ value: '5.00' }],
+			lancamentosMensais: [{ competencia: '2025-10', entradas: '20.00', saidas: '5.00' }],
 		});
+		expect(getDashboard).toHaveBeenCalledOnce();
+		expect(getMonthlyTotals).toHaveBeenCalledOnce();
+		expect(getMonthlyTotals.mock.calls[0][0]).toBe(reference);
 	});
 
 	it('maps dashboard failures to a safe server error', async () => {
 		vi.spyOn(lancamentoModel, 'getDashboard').mockRejectedValue(new Error('database secret'));
+		vi.spyOn(lancamentoModel, 'getMonthlyTotals').mockResolvedValue([]);
 
 		await expect(
 			invoke(dashboardLoad, createRequestEvent({ locals: { user, session: null } })),
 		).rejects.toMatchObject({
 			status: 500,
 		});
+	});
+
+	it('authorizes before reading financial projections', async () => {
+		const getDashboard = vi.spyOn(lancamentoModel, 'getDashboard');
+		const getMonthlyTotals = vi.spyOn(lancamentoModel, 'getMonthlyTotals');
+
+		await expect(
+			invoke(dashboardLoad, createRequestEvent({ locals: { user: wrongRole, session: null } })),
+		).rejects.toMatchObject({ status: 403 });
+
+		expect(getDashboard).not.toHaveBeenCalled();
+		expect(getMonthlyTotals).not.toHaveBeenCalled();
+	});
+
+	it('maps monthly projection failures to a safe server error', async () => {
+		vi.spyOn(lancamentoModel, 'getDashboard').mockResolvedValue({
+			entradaMesAtual: { count: 2, median: 10, value: '20.00' },
+			saidaMesAtual: { value: '5.00' },
+		});
+		vi.spyOn(lancamentoModel, 'getMonthlyTotals').mockRejectedValue(new Error('database secret'));
+
+		await expect(
+			invoke(dashboardLoad, createRequestEvent({ locals: { user, session: null } })),
+		).rejects.toMatchObject({ status: 500 });
 	});
 
 	it('lists pending cash entries and confirms validated IDs through the model', async () => {
