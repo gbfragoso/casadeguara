@@ -1,4 +1,4 @@
-import { hasTesourariaAccess } from '$lib/server/authorization/cadastros';
+import { hasTesourariaAccess } from '$lib/server/authorization/tesouraria';
 import { error, redirect } from '@sveltejs/kit';
 
 type TesourariaUser = { id: string; roles: string } | null | undefined;

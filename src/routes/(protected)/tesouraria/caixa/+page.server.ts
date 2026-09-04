@@ -1,58 +1,50 @@
-import { db } from '$lib/server/database/connection';
-import { cadastros, entradas } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { requireTesourariaAdminAccess } from '$lib/server/authorization/tesouraria';
+import { LancamentoError, lancamentoModel } from '$lib/server/tesouraria/lancamentos';
+import { confirmDepositsSchema } from '$lib/validation/tesouraria/lancamentos';
+import { error, fail } from '@sveltejs/kit';
+
 import type { Actions, PageServerLoad } from './$types';
 
+const readIds = (form: FormData) => form.getAll('entradas').map((value) => (typeof value === 'string' ? value : ''));
+
+const mapFailure = (cause: unknown) => {
+	if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR')
+		return fail(400, { errors: { entradas: [cause.message] } });
+	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND')
+		return fail(404, { message: cause.message });
+	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_DEPOSITABLE')
+		return fail(409, { message: cause.message });
+	console.error('treasury.launches.deposit_failed');
+	error(500, { message: 'Falha ao confirmar o depósito.' });
+};
+
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-	if (!locals.user.roles.includes('tesouraria:admin')) redirect(302, '/tesouraria');
-
+	requireTesourariaAdminAccess(locals.user);
 	try {
-		const resultados = async () => {
-			return db
-				.select({
-					identrada: entradas.identrada,
-					descricao: entradas.descricao,
-					dataEntrada: entradas.dataEntrada,
-					valor: entradas.valor,
-					depositado: entradas.depositado,
-					uuid: entradas.uuid,
-					contribuinte: cadastros.nome,
-					idcontribuinte: cadastros.idleitor,
-					trabalhador: cadastros.trab,
-				})
-				.from(entradas)
-				.innerJoin(cadastros, eq(cadastros.idleitor, entradas.idcontribuinte))
-				.where(and(eq(entradas.depositado, false), isNull(entradas.motivoEstorno)))
-				.orderBy(desc(entradas.dataEntrada));
-		};
-
-		return { entradas: resultados() };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de entradas',
-		});
+		return { entradas: await lancamentoModel.listPendingDeposits() };
+	} catch {
+		console.error('treasury.launches.deposit_list_failed');
+		error(500, { message: 'Falha ao carregar a lista de entradas.' });
 	}
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ locals, request }) => {
+		const user = requireTesourariaAdminAccess(locals.user);
 		const form = await request.formData();
-		const ids = form.getAll('entradas') as string[];
-
-		try {
-			await db
-				.update(entradas)
-				.set({ depositado: true })
-				.where(inArray(entradas.identrada, ids.map(Number)));
-			return { status: 201, message: 'Depósito confirmado com sucesso' };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao confirmar o depósito',
+		const values = readIds(form);
+		const result = confirmDepositsSchema.safeParse({ ids: values });
+		if (!result.success)
+			return fail(400, {
+				values: { entradas: values },
+				errors: { entradas: ['Seleção de lançamentos inválida.'] },
 			});
+		try {
+			await lancamentoModel.confirmDeposits(result.data.ids, user.id);
+			console.info('treasury.launches.deposits_confirmed', { ids: result.data.ids, userId: user.id });
+			return { status: 201, message: 'Depósito confirmado com sucesso.' };
+		} catch (cause) {
+			return mapFailure(cause);
 		}
 	},
 } satisfies Actions;

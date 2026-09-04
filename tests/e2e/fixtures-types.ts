@@ -5,6 +5,8 @@ import type { CadastroFixture } from './cadastros-fixture';
 import type { NoticeFixture } from './avisos-support';
 import type { PhotoSize } from './amigo-fraterno-support';
 import type { BookSnapshot, LivroCatalog } from './livros-database';
+import type { LancamentoSeed } from './lancamentos-fixture';
+import type { LancamentoSnapshot, ReversalSnapshot } from './lancamentos-database';
 
 export type Participant = { id: number; name: string };
 export type E2EData = {
@@ -27,5 +29,10 @@ export type E2EData = {
 	createBookCatalog: () => Promise<LivroCatalog>;
 	countBooksByTitle: (titulo: string) => Promise<number>;
 	readBookByTitle: (titulo: string) => Promise<BookSnapshot | null>;
+	createLancamento: (seed: LancamentoSeed) => Promise<LancamentoSnapshot>;
+	createLancamentos: (seeds: LancamentoSeed[]) => Promise<LancamentoSnapshot[]>;
+	readLancamento: (id: number) => Promise<LancamentoSnapshot>;
+	readLancamentoByDescription: (description: string) => Promise<LancamentoSnapshot>;
+	readReversal: (id: number) => Promise<ReversalSnapshot | null>;
 };
 export type FixtureResources = { data: E2EData; cleanup: () => Promise<void> };

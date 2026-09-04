@@ -1,29 +1,21 @@
-import { db } from '$lib/server/database/connection';
-import { cadastros, entradas } from '$lib/server/database/schema';
+import { lancamentoModel } from '$lib/server/tesouraria/lancamentos';
+import { LancamentoError } from '$lib/server/tesouraria/lancamentos/errors';
+import type { ReceiptState } from '$lib/server/tesouraria/lancamentos/types';
 import { error } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
 
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const entrada = await db
-		.select({
-			id: entradas.identrada,
-			valor: entradas.valor,
-			descricao: entradas.descricao,
-			contribuinte: cadastros.nome,
-			dataEntrada: entradas.dataEntrada,
-			dataRegistro: entradas.dataRegistro,
-		})
-		.from(entradas)
-		.innerJoin(cadastros, eq(cadastros.idleitor, entradas.idcontribuinte))
-		.where(eq(entradas.uuid, params.uuid));
-
-	if (entrada.length == 0) {
-		return error(404, {
-			message: 'Recibo inexistente',
-		});
+	let receipt: ReceiptState | null = null;
+	try {
+		receipt = await lancamentoModel.getReceipt(params.uuid);
+	} catch (cause) {
+		if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR') {
+			error(400, { message: cause.message });
+		}
+		console.error('treasury.launches.receipt_lookup_failed');
+		error(500, { message: 'Falha ao carregar o recibo.' });
 	}
-
-	return { entrada: entrada[0] };
+	if (!receipt) error(404, { message: 'Recibo inexistente' });
+	return receipt;
 };

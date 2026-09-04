@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Navbar from '$lib/components/navigation/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 	interface Props {
@@ -19,60 +19,60 @@
 				<img src="/logo.png" id="user-avatar" alt="Avatar" />
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca'}>
+				<li class="sidebar-item" class:active={page.url.pathname === '/biblioteca'}>
 					<a aria-label="home" title="Página inicial" href={resolve('/biblioteca')}>
 						<i class="fa-solid fa-house fa-fw"></i>&nbsp;<strong>Início</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/autores'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/autores')}>
 					<a aria-label="autores" title="Autores" href={resolve('/biblioteca/autores')}>
 						<i class="fa-solid fa-user-pen fa-fw"></i>&nbsp;<strong>Autores</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/avisos'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/avisos')}>
 					<a aria-label="avisos" title="Avisos" href={resolve('/biblioteca/avisos')}>
 						<i class="fa-solid fa-inbox fa-fw"></i>&nbsp;<strong>Avisos</strong>
 					</a>
 				</li>
 				{#if isAdmin}
-					<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/cobrancas'}>
+					<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/cobrancas')}>
 						<a aria-label="cobranças" title="Cobranças" href={resolve('/biblioteca/cobrancas')}>
 							<i class="fa-solid fa-envelopes-bulk fa-fw"></i>&nbsp;<strong>Cobranças</strong>
 						</a>
 					</li>
 				{/if}
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/colecoes'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/colecoes')}>
 					<a aria-label="coleções" title="Coleções" href={resolve('/biblioteca/colecoes')}>
 						<i class="fa-solid fa-layer-group fa-fw"></i>&nbsp;<strong>Coleções</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/editoras'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/editoras')}>
 					<a aria-label="editoras" title="Editoras" href={resolve('/biblioteca/editoras')}>
 						<i class="fa-solid fa-landmark-flag fa-fw"></i>&nbsp;<strong>Editoras</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/emprestimos'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/emprestimos')}>
 					<a aria-label="empréstimos" title="Empréstimos" href={resolve('/biblioteca/emprestimos')}>
 						<i class="fa-solid fa-hand-holding fa-fw"></i>&nbsp;<strong>Empréstimos</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/leitores'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/leitores')}>
 					<a aria-label="leitores" title="Leitores" href={resolve('/biblioteca/leitores')}>
 						<i class=" fa-solid fa-book-open-reader fa-fw"></i>&nbsp;<strong>Leitores</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/livros'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/livros')}>
 					<a aria-label="livros" title="Livros" href={resolve('/biblioteca/livros')}>
 						<i class="fa-solid fa-book fa-fw"></i>&nbsp;<strong>Livros</strong>
 					</a>
 				</li>
-				<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/keywords'}>
+				<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/keywords')}>
 					<a aria-label="keywords" title="Palavras-chave" href={resolve('/biblioteca/keywords')}>
 						<i class="fa-solid fa-key fa-fw"></i>&nbsp;<strong>Palavras-chave</strong>
 					</a>
 				</li>
 				{#if isAdmin}
-					<li class="sidebar-item" class:active={$page.url.pathname === '/biblioteca/usuarios'}>
+					<li class="sidebar-item" class:active={page.url.pathname.includes('/biblioteca/usuarios')}>
 						<a aria-label="usuários" title="Usuários" href={resolve('/biblioteca/usuarios')}>
 							<i class="fa-solid fa-user-plus fa-fw"></i>&nbsp;<strong>Usuários</strong>
 						</a>

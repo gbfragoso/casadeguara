@@ -3,6 +3,7 @@ import {
 	HTMLButtonElement,
 	HTMLDivElement,
 	HTMLInputElement,
+	HTMLSelectElement,
 	HTMLTableCellElement,
 	HTMLTextAreaElement,
 	Window,
@@ -24,6 +25,12 @@ const getElement = (document: HappyDocument, selector: string) => {
 export const getRenderedInput = (document: HappyDocument, selector: string) => {
 	const element = getElement(document, selector);
 	if (!(element instanceof HTMLInputElement)) throw new Error(`Expected input: ${selector}`);
+	return element;
+};
+
+export const getRenderedSelect = (document: HappyDocument, selector: string) => {
+	const element = getElement(document, selector);
+	if (!(element instanceof HTMLSelectElement)) throw new Error(`Expected select: ${selector}`);
 	return element;
 };
 
