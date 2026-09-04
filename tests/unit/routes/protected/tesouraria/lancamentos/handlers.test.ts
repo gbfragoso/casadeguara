@@ -208,12 +208,29 @@ describe('create handlers', () => {
 });
 
 describe('reversal handlers', () => {
-	it('returns forbidden for non-administrators before loading a reversal', async () => {
+	it('loads a reversal for regular treasury users', async () => {
+		const model = reversalModel();
+		const result = await createLancamentoReversalHandlers({ model }).load(
+			createRequestEvent({ locals: { user, session: null }, params: { id: '4' } }),
+		);
+
+		expect(result).toEqual({ lancamento: { id: 3, tipo: 'entrada' } });
+		expect(model.getForReversal).toHaveBeenCalledWith(4);
+	});
+
+	it('returns forbidden for users without treasury access before loading a reversal', async () => {
+		const model = reversalModel();
+
 		await expect(
-			createLancamentoReversalHandlers({ model: reversalModel() }).load(
-				createRequestEvent({ locals: { user, session: null }, params: { id: '4' } }),
+			createLancamentoReversalHandlers({ model }).load(
+				createRequestEvent({
+					locals: { user: { ...user, roles: 'secretaria' }, session: null },
+					params: { id: '4' },
+				}),
 			),
 		).rejects.toMatchObject({ status: 403 });
+
+		expect(model.getForReversal).not.toHaveBeenCalled();
 	});
 
 	it('covers reversal load not-found and sanitized failures', async () => {

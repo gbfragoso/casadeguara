@@ -195,15 +195,18 @@ test('E2E-04 administrador estorna entrada e saída e audita ambas', async ({ pa
 	await expect(e2e.readReversal(entry.id)).resolves.toMatchObject({ userEstorno: e2e.users.admin.id });
 });
 
-test('E2E-05 nega estorno e auditoria a usuário sem administração', async ({ page, e2e }) => {
+test('E2E-05 permite estorno a usuário regular e mantém auditoria administrativa', async ({ page, e2e }) => {
 	const counterpart = await e2e.createParticipant('permissao');
 	const entry = await e2e.createLancamento(createEntrySeed(e2e.token, 'protegida', counterpart.id));
 	await e2e.authenticate(page, 'tesouraria');
+	await openLancamentosPage(page);
+	await searchLancamentosByDescription(page, entry.descricao);
+	await expect(findLancamentoRow(page, entry.descricao).getByRole('link', { name: 'Estornar' })).toBeVisible();
+	await reverseFromRow(page, findLancamentoRow(page, entry.descricao), 'Motivo usuário regular E2E');
+	await expect(e2e.readReversal(entry.id)).resolves.toMatchObject({ userEstorno: e2e.users.tesouraria.id });
+
 	const auditResponse = await page.goto('/tesouraria/estornos');
-	const reversalResponse = await page.goto(`/tesouraria/lancamentos/${entry.id}/estorno`);
 	await expect(auditResponse?.status()).toBe(403);
-	await expect(reversalResponse?.status()).toBe(403);
-	await expect(e2e.readReversal(entry.id)).resolves.toBeNull();
 });
 
 test('E2E-06 invalida recibo compartilhado depois do estorno', async ({ page, e2e }) => {
