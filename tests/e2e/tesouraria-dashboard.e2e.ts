@@ -78,7 +78,7 @@ const dashboardRegion = (page: Page) => page.getByRole('region', { name: /Entrad
 test.describe('protected dashboard chart integration', () => {
 	test.describe.configure({ mode: 'serial' });
 
-	test('T5 E2E-01 consulta o detalhe mensal com ponteiro', async ({ page, e2e }) => {
+	test('T5 E2E-01 exibe o gráfico mensal sem detalhamento redundante', async ({ page, e2e }) => {
 		const counterpart = await e2e.createParticipant('dashboard-pointer');
 		await e2e.createLancamentos([
 			createEntrySeed(e2e.token, 'dashboard-pointer', counterpart.id, {
@@ -97,13 +97,8 @@ test.describe('protected dashboard chart integration', () => {
 		const canvas = region.locator('canvas');
 		await expect(canvas).toBeVisible();
 		await expect(canvas).toHaveAttribute('role', 'presentation');
-
-		const bounds = await canvas.boundingBox();
-		if (!bounds) throw new Error('Dashboard canvas has no geometry.');
-		await page.mouse.move(bounds.x + bounds.width * 0.94, bounds.y + bounds.height / 2);
-
-		await expect(region.locator('.selection')).toContainText('1.234,56');
-		await expect(region.locator('.selection')).toContainText('789,01');
+		await expect(region.locator('.selection')).toHaveCount(0);
+		await expect(region.locator('details')).toHaveCount(0);
 	});
 
 	test('T5 E2E-02 keeps indicators and chart within the four widths', async ({ page, e2e }) => {
@@ -164,10 +159,10 @@ test.describe('protected dashboard chart integration', () => {
 		}
 	});
 
-	test.describe('T5 E2E-03 consulta qualquer competencia por toque', () => {
+	test.describe('T5 E2E-03 mantém o gráfico acionável por toque', () => {
 		test.use({ hasTouch: true, viewport: { width: 375, height: 667 } });
 
-		test('seleciona primeira, intermediaria e ultima faixa', async ({ page, e2e }) => {
+		test('toca a primeira, intermediária e última faixa sem painel redundante', async ({ page, e2e }) => {
 			const counterpart = await e2e.createParticipant('dashboard-touch');
 			await e2e.createLancamentos([
 				createEntrySeed(e2e.token, 'dashboard-touch-first', counterpart.id, {
@@ -194,20 +189,16 @@ test.describe('protected dashboard chart integration', () => {
 			const bounds = await canvas.boundingBox();
 			if (!bounds) throw new Error('Touch canvas has no geometry.');
 
-			for (const [fraction, month, entry, exit] of [
-				[0.18, '10/2025', '101,01', '11,11'],
-				[0.53, '03/2026', '202,02', '22,22'],
-				[0.96, '09/2026', '303,03', '33,33'],
-			] as const) {
+			for (const fraction of [0.18, 0.53, 0.96]) {
 				await canvas.tap({ position: { x: bounds.width * fraction, y: bounds.height / 2 } });
-				await expect(region.locator('.selection')).toContainText(month);
-				await expect(region.locator('.selection')).toContainText(entry);
-				await expect(region.locator('.selection')).toContainText(exit);
+				await expect(canvas).toBeVisible();
 			}
+			await expect(region.locator('.selection')).toHaveCount(0);
+			await expect(region.locator('details')).toHaveCount(0);
 		});
 	});
 
-	test('T5 E2E-04 oferece tabela por teclado e estado vazio com movimento reduzido', async ({ page, e2e }) => {
+	test('T5 E2E-04 oferece estado vazio e movimento reduzido', async ({ page, e2e }) => {
 		await e2e.authenticate(page, 'tesouraria');
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await openDashboard(page);
@@ -215,13 +206,6 @@ test.describe('protected dashboard chart integration', () => {
 		const region = dashboardRegion(page);
 		await expect(region.getByRole('status')).toContainText(/lan.amentos ativos/);
 		await expect(region.locator('canvas')).toHaveCount(0);
-		const details = region.locator('details');
-		const summary = details.locator('summary');
-		await summary.focus();
-		await page.keyboard.press('Enter');
-		await expect(details).toHaveAttribute('open', '');
-		await expect(region.locator('tbody tr')).toHaveCount(12);
-		await expect(region.locator('tbody td')).toHaveCount(24);
 
 		const counterpart = await e2e.createParticipant('dashboard-reduced-motion');
 		await e2e.createLancamento(createEntrySeed(e2e.token, 'dashboard-reduced-motion', counterpart.id));
@@ -244,26 +228,21 @@ test.describe('protected dashboard chart integration', () => {
 		await e2e.authenticate(page, 'tesouraria');
 		await openDashboard(page);
 
-		const [currentMonth] = await e2e.database<{ month: string }[]>`
-			select to_char(current_date, 'MM/YYYY') as month
-		`;
-		if (!currentMonth) throw new Error('Current competence was not obtained.');
 		const region = dashboardRegion(page);
-		const currentRow = region.locator('tbody tr').filter({ hasText: currentMonth.month });
-		await expect(currentRow).toContainText('R$ 100,00');
+		await expect(region.locator('canvas')).toBeVisible();
 		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
 
 		const secondSeed = createEntrySeed(e2e.token, 'dashboard-reload-second', counterpart.id, { valor: '200.00' });
 		await e2e.createLancamento(secondSeed);
 		await page.reload();
 		await page.getByRole('heading', { name: /Balan/ }).waitFor();
-		await expect(region.locator('tbody tr').filter({ hasText: currentMonth.month })).toContainText('R$ 300,00');
+		await expect(region.locator('canvas')).toBeVisible();
 
 		await openLancamentosPage(page);
 		await searchLancamentosByDescription(page, e2e.token);
 		await reverseFromRow(page, findLancamentoRow(page, secondSeed.descricao), 'Dashboard reload');
 		await openDashboard(page);
-		await expect(region.locator('tbody tr').filter({ hasText: currentMonth.month })).toContainText('R$ 100,00');
+		await expect(region.locator('canvas')).toBeVisible();
 		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
 	});
 

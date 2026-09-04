@@ -1,26 +1,18 @@
 <script lang="ts">
 	import { Line } from 'svelte-chartjs';
-	import type { Chart as ChartInstance } from 'chart.js';
 
-	import { buildMonthlyChart, formatMonthlyDetail } from '$lib/charts/monthly-lancamentos';
+	import { buildMonthlyChart } from '$lib/charts/monthly-lancamentos';
 	import type { MonthlyLancamentoTotal } from '$lib/tesouraria/monthly-totals';
-	import { formatBrlDecimal, formatMonthLabel } from '$lib/utils/currency';
 
 	interface Props {
 		totals: readonly MonthlyLancamentoTotal[];
 	}
 
 	let { totals }: Props = $props();
-	let selectedIndex = $state(-1);
-	let chart = $state<ChartInstance<'line'> | null>(null);
 
 	const isZero = (value: string) => /^[-+]?0(?:\.0+)?$/.test(value);
 	const hasMovement = $derived(totals.some(({ entradas, saidas }) => !isZero(entradas) || !isZero(saidas)));
-	const selectedTotal = $derived(totals[selectedIndex]);
-	const chartConfig = $derived.by(() =>
-		hasMovement ? buildMonthlyChart(totals, (index) => (selectedIndex = index)) : null,
-	);
-	const detail = $derived(formatMonthlyDetail(selectedTotal));
+	const chartConfig = $derived.by(() => (hasMovement ? buildMonthlyChart(totals) : null));
 
 	const titleId = 'monthly-lancamentos-title';
 	const descriptionId = 'monthly-lancamentos-description';
@@ -37,43 +29,11 @@
 
 	{#if hasMovement && chartConfig}
 		<div class="chart-container">
-			<Line
-				bind:chart
-				data={chartConfig.data}
-				options={chartConfig.options}
-				aria-hidden="true"
-				role="presentation" />
+			<Line data={chartConfig.data} options={chartConfig.options} aria-hidden="true" role="presentation" />
 		</div>
 	{:else}
 		<p class="empty-state" role="status">Não há lançamentos ativos no período.</p>
 	{/if}
-
-	<p class="selection" aria-live="polite">{detail}</p>
-
-	<details>
-		<summary>Consultar tabela dos últimos 12 meses</summary>
-		<div class="table-container">
-			<table>
-				<caption>Entradas e saídas por competência</caption>
-				<thead>
-					<tr>
-						<th scope="col">Competência</th>
-						<th scope="col">Entradas</th>
-						<th scope="col">Saídas</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each totals as total (total.competencia)}
-						<tr>
-							<th scope="row">{formatMonthLabel(total.competencia)}</th>
-							<td>{formatBrlDecimal(total.entradas)}</td>
-							<td>{formatBrlDecimal(total.saidas)}</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	</details>
 </div>
 
 <style>
@@ -123,34 +83,8 @@
 		height: clamp(220px, 55vw, 360px);
 	}
 
-	.selection,
 	.empty-state {
 		margin-block: 1rem;
-	}
-
-	.empty-state {
 		font-weight: 600;
-	}
-
-	.table-container {
-		overflow-x: auto;
-	}
-
-	table {
-		width: 100%;
-		border-collapse: collapse;
-	}
-
-	th,
-	td {
-		padding: 0.5rem;
-		border-bottom: 1px solid #d1d5db;
-		text-align: start;
-	}
-
-	caption {
-		padding: 0.5rem;
-		font-weight: 600;
-		text-align: start;
 	}
 </style>

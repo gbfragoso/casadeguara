@@ -5,7 +5,6 @@ import {
 	LinearScale,
 	PointElement,
 	Tooltip,
-	type ActiveElement,
 	type ChartData,
 	type ChartOptions,
 	type TooltipItem,
@@ -40,11 +39,6 @@ const getTotal = (totals: readonly MonthlyLancamentoTotal[], item: TooltipItem<'
 
 const formatAxisValue = (value: string | number) =>
 	compactCurrencyFormatter.format(typeof value === 'number' ? value : Number(value));
-
-export const formatMonthlyDetail = (total: MonthlyLancamentoTotal | undefined) => {
-	if (!total) return 'Selecione uma competência para consultar os valores exatos.';
-	return `Competência ${formatMonthLabel(total.competencia)} — Entradas: ${formatBrlDecimal(total.entradas)}; Saídas: ${formatBrlDecimal(total.saidas)}`;
-};
 
 const buildEntryDataset = (totals: readonly MonthlyLancamentoTotal[]) => ({
 	label: 'Entradas',
@@ -91,23 +85,12 @@ const buildTooltip = (totals: readonly MonthlyLancamentoTotal[], labels: string[
 	},
 });
 
-const selectFirstElement = (elements: ActiveElement[], onSelect: (index: number) => void) => {
-	const [element] = elements;
-	if (element) onSelect(element.index);
-};
-
-const buildChartOptions = (
-	totals: readonly MonthlyLancamentoTotal[],
-	labels: string[],
-	onSelect: (index: number) => void,
-): ChartOptions<'line'> => ({
+const buildChartOptions = (totals: readonly MonthlyLancamentoTotal[], labels: string[]): ChartOptions<'line'> => ({
 	responsive: true,
 	maintainAspectRatio: false,
 	animation: false,
 	locale: 'pt-BR',
 	interaction: { mode: 'index', axis: 'x', intersect: false },
-	onClick: (_event, elements) => selectFirstElement(elements, onSelect),
-	onHover: (_event, elements) => selectFirstElement(elements, onSelect),
 	plugins: { legend: { display: false }, tooltip: buildTooltip(totals, labels) },
 	scales: {
 		x: { ticks: { autoSkip: true, maxRotation: 0, minRotation: 0 } },
@@ -117,8 +100,7 @@ const buildChartOptions = (
 
 export const buildMonthlyChart = (
 	totals: readonly MonthlyLancamentoTotal[],
-	onSelect: (index: number) => void,
 ): { data: ChartData<'line'>; options: ChartOptions<'line'> } => {
 	const labels = totals.map(({ competencia }) => formatMonthLabel(competencia));
-	return { data: buildChartData(totals, labels), options: buildChartOptions(totals, labels, onSelect) };
+	return { data: buildChartData(totals, labels), options: buildChartOptions(totals, labels) };
 };

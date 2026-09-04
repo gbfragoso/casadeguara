@@ -12,7 +12,7 @@ const createTotals = (entradas: string, saidas: string) =>
 	}));
 
 describe('MonthlyLancamentos', () => {
-	it('renders named chart content and an equivalent twelve-row table in SSR', () => {
+	it('renders named chart content without redundant details in SSR', () => {
 		const { body } = render(MonthlyLancamentos, {
 			props: { totals: createTotals('1234.56', '78.9') },
 		});
@@ -24,12 +24,9 @@ describe('MonthlyLancamentos', () => {
 		expect(document.querySelector('[aria-label="Legenda"]')?.textContent).toContain('Entradas');
 		expect(document.querySelector('[aria-label="Legenda"]')?.textContent).toContain('Saídas');
 		expect(document.querySelector('canvas')?.getAttribute('aria-hidden')).toBe('true');
-		expect(document.querySelector('details summary')?.textContent).toContain('tabela');
-		expect(document.querySelector('caption')?.textContent).toContain('por competência');
-		expect(document.querySelectorAll('tbody tr')).toHaveLength(12);
-		expect(document.querySelectorAll('tbody td')).toHaveLength(24);
-		expect(document.body.textContent).toContain('R$ 1.234,56');
-		expect(document.body.textContent).toContain('R$ 78,90');
+		expect(document.querySelector('details')).toBeNull();
+		expect(document.querySelector('.selection')).toBeNull();
+		expect(document.querySelector('table')).toBeNull();
 	});
 
 	it('announces the empty state without rendering a canvas', () => {
@@ -42,10 +39,8 @@ describe('MonthlyLancamentos', () => {
 			'Não há lançamentos ativos no período',
 		);
 		expect(document.querySelector('canvas')).toBeNull();
-		expect(document.querySelectorAll('tbody tr')).toHaveLength(12);
-		expect(document.querySelectorAll('tbody td')).toHaveLength(24);
-		expect([...document.querySelectorAll('tbody td')].every((cell) => cell.textContent?.trim() === 'R$ 0,00')).toBe(
-			true,
-		);
+		expect(document.querySelector('details')).toBeNull();
+		expect(document.querySelector('.selection')).toBeNull();
+		expect(document.querySelector('table')).toBeNull();
 	});
 });

@@ -28,6 +28,7 @@ describe('tesouraria dashboard page', () => {
 		expect(document.querySelector('.mt-2.columns')?.textContent).toContain('Saldo');
 		expect(document.querySelector('.mt-2.columns + [role="region"]')).not.toBeNull();
 		expect(document.querySelector('[role="region"] h2')?.textContent).toContain('12 meses');
-		expect(document.querySelectorAll('[role="region"] tbody tr')).toHaveLength(12);
+		expect(document.querySelector('[role="region"] details')).toBeNull();
+		expect(document.querySelector('[role="region"] .selection')).toBeNull();
 	});
 });
