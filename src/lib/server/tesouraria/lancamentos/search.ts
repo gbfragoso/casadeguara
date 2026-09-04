@@ -45,34 +45,46 @@ const mapItem = (row: LancamentoRow): LancamentoItem => ({
 	dataRegistro: formatDate(row.dataRegistro),
 });
 
-const selectRows = (database: LancamentoDatabase, input: LancamentoSearch) =>
-	database
+const selectVisibleRows = (database: LancamentoDatabase, input: LancamentoSearch) => {
+	const visibleRows = database
 		.select(lancamentoProjection)
 		.from(lancamentos)
 		.leftJoin(cadastros, eq(cadastros.idleitor, lancamentos.idcontraparte))
 		.where(buildFilters(input))
 		.orderBy(desc(lancamentos.dataLancamento), desc(lancamentos.idlancamento))
-		.limit(LANCAMENTO_PAGE_SIZE);
+		.limit(LANCAMENTO_PAGE_SIZE)
+		.as('visible_lancamentos');
 
-const selectTotals = (database: LancamentoDatabase, input: LancamentoSearch) =>
-	database
-		.select({ tipo: lancamentos.tipo, total: sql<string>`coalesce(sum(${lancamentos.valor}), '0')` })
-		.from(lancamentos)
-		.leftJoin(cadastros, eq(cadastros.idleitor, lancamentos.idcontraparte))
-		.where(buildFilters(input))
-		.groupBy(lancamentos.tipo);
+	return database
+		.select({
+			id: visibleRows.id,
+			tipo: visibleRows.tipo,
+			descricao: visibleRows.descricao,
+			valor: visibleRows.valor,
+			dataLancamento: visibleRows.dataLancamento,
+			depositado: visibleRows.depositado,
+			reciboUuid: visibleRows.reciboUuid,
+			dataRegistro: visibleRows.dataRegistro,
+			contraparteId: visibleRows.contraparteId,
+			contraparteNome: visibleRows.contraparteNome,
+			entradasTotal: sql<string>`coalesce(sum(${visibleRows.valor}) filter (where ${visibleRows.tipo} = 'entrada') over (), '0')`,
+			saidasTotal: sql<string>`coalesce(sum(${visibleRows.valor}) filter (where ${visibleRows.tipo} = 'saida') over (), '0')`,
+		})
+		.from(visibleRows)
+		.orderBy(desc(visibleRows.dataLancamento), desc(visibleRows.id));
+};
 
 export const searchLancamentos = async (
 	database: LancamentoDatabase,
 	input: LancamentoSearch,
 ): Promise<LancamentoPage> => {
-	const [rows, totals] = await Promise.all([selectRows(database, input), selectTotals(database, input)]);
-	const totalsByType = totals.reduce(
-		(result, row) => ({ ...result, [row.tipo === 'entrada' ? 'entradas' : 'saidas']: row.total ?? '0' }),
-		{ entradas: '0', saidas: '0' },
-	);
+	const rows = await selectVisibleRows(database, input);
+	const firstRow = rows[0];
 	return {
 		items: rows.map((row) => mapItem(row)),
-		totais: totalsByType,
+		totais: {
+			entradas: firstRow?.entradasTotal ?? '0',
+			saidas: firstRow?.saidasTotal ?? '0',
+		},
 	};
 };

@@ -29,12 +29,18 @@ test('E2E-01 consulta lançamentos, filtros, totais e teclado', async ({ page, e
 	const entry = createEntrySeed(e2e.token, 'filtro', counterpart.id, { valor: '150.00' });
 	await e2e.createLancamento(entry);
 	await e2e.createLancamentos(createExitPageSeeds(e2e.token, 101));
+	const [today] = await e2e.database<{ today: string }[]>`select current_date::text as today`;
+	if (!today) throw new Error('Data atual não foi obtida.');
 	await e2e.authenticate(page, 'tesouraria');
 	await openLancamentosPage(page);
 	await searchLancamentosByDescription(page, e2e.token);
 
 	await expect(page.locator('tbody tr')).toHaveCount(100);
-	await expect(page.locator('body')).toContainText('R$ 150,00');
+	await expect(page.locator('body')).toContainText('Total de entradas: R$ 0,00');
+	await expect(page.locator('body')).toContainText('Total de saídas: R$ 8.000,00');
+	await page.getByLabel('Registrado em').fill(today.today);
+	await expect((await submitLancamentosSearch(page)).ok()).toBe(true);
+	await expect(page.locator('tbody tr')).toHaveCount(100);
 	await page.getByLabel('Tipo de lançamento').selectOption('entrada');
 	await expect(page.getByLabel('Tipo de lançamento')).toHaveValue('entrada');
 	await page.getByLabel('Descrição').focus();

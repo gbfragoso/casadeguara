@@ -104,6 +104,18 @@ describe('tesouraria lancamento adapters', () => {
 		expect(model.search).not.toHaveBeenCalled();
 	});
 
+	it('accepts registration date for all launch types', async () => {
+		const model = createListModel();
+		const form = formEvent({ tipo: 'todos', dataRegistro: '2026-09-02' });
+
+		const result = await createLancamentoListHandlers({ model }).actions.pesquisar(form);
+
+		expect(result).toMatchObject({ page, values: { tipo: 'todos', dataRegistro: '2026-09-02' } });
+		expect(model.search).toHaveBeenCalledWith(
+			expect.objectContaining({ tipo: 'todos', dataRegistro: '2026-09-02' }),
+		);
+	});
+
 	it('loads filtered active results without counterpart options', async () => {
 		const model = createListModel();
 		const event = createRequestEvent({
