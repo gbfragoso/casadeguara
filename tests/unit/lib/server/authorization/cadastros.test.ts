@@ -5,6 +5,7 @@ import {
 	hasBibliotecaAccess,
 	hasSecretariaAccess,
 	hasTesourariaAccess,
+	parseRoles,
 } from '$lib/server/authorization/cadastros';
 
 describe('cadastro authorization', () => {
@@ -32,8 +33,9 @@ describe('cadastro authorization', () => {
 		expect(hasTesourariaAccess({ roles: 'biblioteca,tesouraria:admin' })).toBe(true);
 	});
 
-	it('does not normalize whitespace absent from stored role tokens', () => {
-		expect(hasBibliotecaAccess({ roles: 'secretaria, biblioteca' })).toBe(false);
+	it('trims role tokens before exact matching', () => {
+		expect(parseRoles(' secretaria, biblioteca ')).toEqual(['secretaria', 'biblioteca']);
+		expect(hasBibliotecaAccess({ roles: 'secretaria, biblioteca' })).toBe(true);
 	});
 
 	it('rejects deceptive role substrings', () => {

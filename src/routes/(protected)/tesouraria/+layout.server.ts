@@ -1,16 +1,11 @@
-import { error } from '@sveltejs/kit';
+import { hasTesourariaAdminAccess, requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ locals }) => {
-	if (!locals.user?.roles.includes('tesouraria')) {
-		error(401, {
-			message: 'Usuário não possui acesso ao sistema da tesouraria',
-		});
-	}
-
+export const load: LayoutServerLoad = ({ locals }) => {
+	const user = requireTesourariaAccess(locals.user);
 	return {
-		username: locals.user.name,
-		userid: locals.user.id,
-		isAdmin: locals.user.roles.includes('tesouraria:admin'),
+		username: user.name,
+		userid: user.id,
+		isAdmin: hasTesourariaAdminAccess(user),
 	};
 };

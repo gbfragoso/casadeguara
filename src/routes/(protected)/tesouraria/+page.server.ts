@@ -1,46 +1,19 @@
-import { db } from '$lib/server/database/connection';
-import { entradas, saidas } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { and, count, gte, lte, sql, sum } from 'drizzle-orm';
+import { requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
+import { lancamentoModel } from '$lib/server/tesouraria/lancamentos';
+import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-
+	requireTesourariaAccess(locals.user);
 	try {
-		const date = new Date();
-		const year = date.getFullYear();
-		const month = date.getMonth();
-		const firstDay = new Date(year, month, 1);
-		const lastDay = new Date(year, month + 1, 0);
-
-		const entradaMesAtual = async () => {
-			return db
-				.select({
-					count: count(),
-					median: sql<number>`PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY valor)`,
-					value: sum(entradas.valor),
-				})
-				.from(entradas)
-				.where(and(gte(entradas.dataEntrada, firstDay), lte(entradas.dataEntrada, lastDay)));
-		};
-
-		const saidaMesAtual = async () => {
-			return db
-				.select({ value: sum(saidas.valor) })
-				.from(saidas)
-				.where(and(gte(saidas.dataSaida, firstDay), lte(saidas.dataSaida, lastDay)));
-		};
-
+		const { entradaMesAtual, saidaMesAtual } = await lancamentoModel.getDashboard();
 		return {
-			entradaMesAtual: entradaMesAtual(),
-			saidaMesAtual: saidaMesAtual(),
+			entradaMesAtual: [entradaMesAtual],
+			saidaMesAtual: [saidaMesAtual],
 		};
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de contribuintes',
-		});
+	} catch {
+		console.error('treasury.launches.dashboard_failed');
+		error(500, { message: 'Falha ao carregar o balanço da tesouraria.' });
 	}
 };

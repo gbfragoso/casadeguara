@@ -1,12 +1,18 @@
 export type CadastroDashboard = 'biblioteca' | 'secretaria' | 'tesouraria';
 export type CadastroAccess = 'authorized' | 'unauthenticated' | 'unauthorized';
 
-type CadastroUser = { roles: string } | null | undefined;
+export type CadastroUser = { roles: string } | null | undefined;
+
+export const parseRoles = (roles: string) =>
+	roles
+		.split(',')
+		.map((role) => role.trim())
+		.filter(Boolean);
 
 const hasDashboardRole = (roles: string, dashboard: CadastroDashboard) => {
 	const acceptedRoles = [dashboard, `${dashboard}:admin`];
 
-	return roles.split(',').some((role) => acceptedRoles.includes(role));
+	return parseRoles(roles).some((role) => acceptedRoles.includes(role));
 };
 
 export const getCadastroAccess = (user: CadastroUser, dashboard: CadastroDashboard): CadastroAccess => {

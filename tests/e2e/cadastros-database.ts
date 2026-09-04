@@ -60,7 +60,7 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	await insertUser(database, owner, 'biblioteca,secretaria,tesouraria', passwordHash);
 	await insertUser(database, wrongRole, 'biblioteca', passwordHash);
 	await insertUser(database, tesouraria, 'tesouraria', passwordHash);
-	await insertUser(database, admin, 'biblioteca,biblioteca:admin', passwordHash);
+	await insertUser(database, admin, 'biblioteca,biblioteca:admin,tesouraria:admin', passwordHash);
 
 	return { owner, wrongRole, tesouraria, admin };
 };
