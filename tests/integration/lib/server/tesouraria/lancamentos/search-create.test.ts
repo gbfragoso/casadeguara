@@ -33,26 +33,31 @@ describe('LancamentoModel search and creation', () => {
 					trabalhadores: true,
 				}),
 			);
+			const registered = await model.search(lancamentoSearchSchema.parse({ dataRegistro: today }));
+			const notRegistered = await model.search(lancamentoSearchSchema.parse({ dataRegistro: '2026-09-03' }));
 
 			expect(page.items.map((item) => item.tipo)).toEqual(['saida', 'entrada']);
 			expect(page.totais).toEqual({ entradas: '150.00', saidas: '80.00' });
 			expect(empty).toMatchObject({ items: [], totais: { entradas: '0', saidas: '0' } });
 			expect(empty).not.toHaveProperty('nextCursor');
 			expect(filtered.items.map((item) => item.id)).toEqual([entry.id]);
+			expect(registered.items.map((item) => item.tipo)).toEqual(['saida', 'entrada']);
+			expect(registered.totais).toEqual({ entradas: '150.00', saidas: '80.00' });
+			expect(notRegistered).toMatchObject({ items: [], totais: { entradas: '0', saidas: '0' } });
 		});
 	});
 
-	it('limits active records to 100 while keeping totals for the full filter', async () => {
+	it('limits active records and totals to the visible 100 rows', async () => {
 		await withProvisionedDatabase(async (database) => {
 			const model = new LancamentoModel(database);
 			await Promise.all(
 				Array.from({ length: 101 }, (_, index) => model.create(exitInput(`Saída limite ${index}`), 'actor')),
 			);
-			const first = await model.search(lancamentoSearchSchema.parse({ tipo: 'saida' }));
+			const first = await model.search(lancamentoSearchSchema.parse({}));
 
 			expect(first.items).toHaveLength(100);
 			expect(first).not.toHaveProperty('nextCursor');
-			expect(first.totais.saidas).toBe('8080.00');
+			expect(first.totais.saidas).toBe('8000.00');
 		});
 	});
 

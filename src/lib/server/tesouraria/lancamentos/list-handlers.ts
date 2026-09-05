@@ -1,4 +1,4 @@
-import { hasTesourariaAdminAccess, requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
+import { requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
 import type { LancamentoModel } from './model';
 import { LancamentoError } from './errors';
 import { getDomainErrors, getLancamentoErrors, getLancamentoSearchValues } from './form';
@@ -40,7 +40,7 @@ const parseSearch = (input: unknown) => {
 };
 
 const createLoadHandler = (model: ListModel, requireAccess: AccessChecker) => async (event: HandlerEvent) => {
-	const user = requireAccess(event.locals.user);
+	requireAccess(event.locals.user);
 	const input = toInput(event.url);
 	const result = parseSearch(input);
 	if (!result.success) error(400, { message: 'Parâmetros de pesquisa inválidos.' });
@@ -49,7 +49,6 @@ const createLoadHandler = (model: ListModel, requireAccess: AccessChecker) => as
 		return {
 			page,
 			values: getLancamentoSearchValues(result.data),
-			isAdmin: hasTesourariaAdminAccess(user),
 		};
 	} catch (cause) {
 		return mapLoadFailure(cause);

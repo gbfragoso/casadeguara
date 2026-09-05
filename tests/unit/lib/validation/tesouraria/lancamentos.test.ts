@@ -67,15 +67,23 @@ describe('lancamento validation', () => {
 			tipo: 'entrada',
 			contraparte: '  Ana  ',
 			dataInicio: ' 2026-01-01 ',
+			dataRegistro: ' 2026-09-02 ',
 			depositado: 'true',
 		});
+		const allTypesDateFilter = lancamentoSearchSchema.safeParse({ dataRegistro: '2026-09-02' });
+		const exitDateFilter = lancamentoSearchSchema.safeParse({ tipo: 'saida', dataRegistro: '2026-09-02' });
 		const exitFilters = lancamentoSearchSchema.safeParse({ tipo: 'saida', depositado: 'false' });
 		const cursor = lancamentoSearchSchema.safeParse({ cursor: 'abc' });
 
 		expect(entryFilters).toMatchObject({
 			success: true,
-			data: { dataInicio: '2026-01-01', contraparte: 'Ana', depositado: true },
+			data: { dataInicio: '2026-01-01', dataRegistro: '2026-09-02', contraparte: 'Ana', depositado: true },
 		});
+		expect(allTypesDateFilter).toMatchObject({
+			success: true,
+			data: { tipo: 'todos', dataRegistro: '2026-09-02' },
+		});
+		expect(exitDateFilter).toMatchObject({ success: true, data: { tipo: 'saida', dataRegistro: '2026-09-02' } });
 		expect(getFieldErrors(exitFilters)?.depositado).toEqual(['Filtro incompatível com o tipo selecionado.']);
 		expect(cursor.success).toBe(false);
 	});

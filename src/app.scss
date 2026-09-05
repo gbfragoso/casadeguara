@@ -98,7 +98,6 @@ body {
 
 #sidebar {
 	background-color: #ffffff;
-	border-radius: 0px 18px 18px 0px;
 	position: relative;
 	top: 0;
 	width: 250px;
@@ -140,15 +139,17 @@ tr td {
 }
 
 .sidebar-item {
-	border-radius: 8px;
 	width: 100%;
 }
 
 .sidebar-item.active {
+	border-right: 10px solid #ffb70f;
 	background-color: #017fc0;
 }
 
 .sidebar-item:hover:not(.active) {
+	transition: background-color 0.5s ease-out;
+	border-right: 10px solid #017fc0;
 	background-color: #ffb70f;
 }
 

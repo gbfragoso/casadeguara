@@ -1,40 +1,19 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import Autocomplete from '$lib/components/forms/Autocomplete.svelte';
 	import Notification from '$lib/components/feedback/Notification.svelte';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
-		form: ActionData;
+		form?: ActionData;
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
 	let { leitores, exemplares } = $derived(data);
-
-	let leitor = $state('');
-	let leitorid = $state(0);
-
-	function selecionarLeitor() {
-		const option = document.querySelector<HTMLInputElement>("option[value='" + leitor.toUpperCase() + "']");
-		if (option) {
-			leitorid = Number(option.getAttribute('data-value') as string);
-		} else {
-			leitorid = 0;
-		}
-	}
-
-	let exemplar = $state('');
-	let exemplarid = $state(0);
-
-	function selecionarExemplar() {
-		const option = document.querySelector<HTMLInputElement>("option[value='" + exemplar.toUpperCase() + "']");
-		if (option) {
-			exemplarid = Number(option.getAttribute('data-value') as string);
-		} else {
-			exemplarid = 0;
-		}
-	}
+	let readerId = $state('');
+	let copyId = $state('');
+	const formEnhancer = createFormEnhancer();
 </script>
 
 <div class="mb-2">
@@ -50,81 +29,70 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Novo empréstimo</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="column">
 				<div class="field">
 					<label class="label" for="leitor">Leitor</label>
-					<div class="control">
-						<input
-							class="input"
-							type="text"
-							name="leitor"
+					{#await leitores}
+						<p class="help" role="status">Carregando leitores...</p>
+					{:then items}
+						<Autocomplete
 							id="leitor"
-							list="leitores"
-							autocomplete="off"
-							bind:value={leitor}
-							onchange={selecionarLeitor}
+							name="leitorid"
+							options={items.map(({ idleitor, nome }) => ({ value: String(idleitor), label: nome }))}
+							bind:value={readerId}
+							placeholder="Pesquise e selecione um leitor"
+							optionLabel="Leitor"
+							listLabel="Leitores sugeridos"
+							emptyMessage="Nenhum leitor encontrado."
+							selectionMessage="Selecione um leitor da lista."
+							invalid={form?.field === 'leitor' ? 'true' : undefined}
+							describedBy={form?.field === 'leitor' ? 'emprestimo-errors' : undefined}
 							required />
-						<input type="hidden" name="leitorid" id="leitorid" bind:value={leitorid} />
-						<datalist id="leitores">
-							{#await leitores then item}
-								{#each item as leitor (leitor.idleitor)}
-									<option data-value={leitor.idleitor} value={leitor.nome}></option>
-								{/each}
-							{/await}
-						</datalist>
-					</div>
+					{:catch}
+						<p class="help is-danger" role="alert">Não foi possível carregar os leitores.</p>
+					{/await}
 				</div>
 			</div>
 			<div class="column">
 				<div class="field">
 					<label class="label" for="exemplar">Exemplar</label>
-					<div class="control">
-						<input
-							class="input"
-							type="text"
-							name="exemplar"
+					{#await exemplares}
+						<p class="help" role="status">Carregando exemplares...</p>
+					{:then items}
+						<Autocomplete
 							id="exemplar"
-							list="exemplares"
-							autocomplete="off"
-							bind:value={exemplar}
-							onchange={selecionarExemplar}
+							name="exemplarid"
+							options={items.map(({ idexemplar, tombo, titulo, numero }) => ({
+								value: String(idexemplar),
+								label: `${tombo} - ${titulo} - EX:${numero}`,
+							}))}
+							bind:value={copyId}
+							placeholder="Pesquise pelo título, tombo ou número do exemplar"
+							optionLabel="Exemplar"
+							listLabel="Exemplares sugeridos"
+							emptyMessage="Nenhum exemplar encontrado."
+							selectionMessage="Selecione um exemplar da lista."
+							invalid={form?.field === 'exemplar' ? 'true' : undefined}
+							describedBy={form?.field === 'exemplar' ? 'emprestimo-errors' : undefined}
 							required />
-						<input type="hidden" name="exemplarid" id="exemplarid" bind:value={exemplarid} />
-						<datalist id="exemplares">
-							{#await exemplares then item}
-								{#each item as exemplar (exemplar.idexemplar)}
-									<option
-										data-value={exemplar.idexemplar}
-										value={exemplar.tombo + ' - ' + exemplar.titulo + ' - EX:' + exemplar.numero}
-									></option>
-								{/each}
-							{/await}
-						</datalist>
-					</div>
+					{:catch}
+						<p class="help is-danger" role="alert">Não foi possível carregar os exemplares.</p>
+					{/await}
 				</div>
 			</div>
 		</div>
 		<div class="control mt-3">
 			<button
-				aria-busy={loading}
-				class:is-loading={loading}
-				class="button is-primary has-text-weight-semibold"
+				aria-busy={formEnhancer.loading}
+				disabled={!readerId || !copyId || formEnhancer.loading}
+				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
 				type="submit">Cadastrar</button>
 		</div>
 	</div>
 </form>
 {#if form?.status === 400}
-	<Notification class="is-danger">{form?.message}</Notification>
+	<div id="emprestimo-errors"><Notification class="is-danger">{form.message}</Notification></div>
 {/if}

@@ -29,12 +29,18 @@ test('E2E-01 consulta lançamentos, filtros, totais e teclado', async ({ page, e
 	const entry = createEntrySeed(e2e.token, 'filtro', counterpart.id, { valor: '150.00' });
 	await e2e.createLancamento(entry);
 	await e2e.createLancamentos(createExitPageSeeds(e2e.token, 101));
+	const [today] = await e2e.database<{ today: string }[]>`select current_date::text as today`;
+	if (!today) throw new Error('Data atual não foi obtida.');
 	await e2e.authenticate(page, 'tesouraria');
 	await openLancamentosPage(page);
 	await searchLancamentosByDescription(page, e2e.token);
 
 	await expect(page.locator('tbody tr')).toHaveCount(100);
-	await expect(page.locator('body')).toContainText('R$ 150,00');
+	await expect(page.locator('body')).toContainText('Total de entradas: R$ 0,00');
+	await expect(page.locator('body')).toContainText('Total de saídas: R$ 8.000,00');
+	await page.getByLabel('Registrado em').fill(today.today);
+	await expect((await submitLancamentosSearch(page)).ok()).toBe(true);
+	await expect(page.locator('tbody tr')).toHaveCount(100);
 	await page.getByLabel('Tipo de lançamento').selectOption('entrada');
 	await expect(page.getByLabel('Tipo de lançamento')).toHaveValue('entrada');
 	await page.getByLabel('Descrição').focus();
@@ -130,7 +136,8 @@ test('E2E-02 valida entrada com foco na contraparte e abre recibo numerado', asy
 	await page.getByRole('button', { name: 'Cadastrar' }).click();
 	await expect(page.getByLabel('Doador (obrigatório)')).toBeFocused();
 
-	await page.getByLabel('Doador (obrigatório)').selectOption(`${counterpart.id}`);
+	await page.getByLabel('Doador (obrigatório)').fill(counterpart.name);
+	await page.getByRole('option', { name: `${counterpart.name} — Cadastro #${counterpart.id}`, exact: true }).click();
 	await Promise.all([
 		page.waitForURL(/\/recibo\/[0-9a-f-]+$/),
 		page.getByRole('button', { name: 'Cadastrar' }).click(),
@@ -195,15 +202,18 @@ test('E2E-04 administrador estorna entrada e saída e audita ambas', async ({ pa
 	await expect(e2e.readReversal(entry.id)).resolves.toMatchObject({ userEstorno: e2e.users.admin.id });
 });
 
-test('E2E-05 nega estorno e auditoria a usuário sem administração', async ({ page, e2e }) => {
+test('E2E-05 permite estorno a usuário regular e mantém auditoria administrativa', async ({ page, e2e }) => {
 	const counterpart = await e2e.createParticipant('permissao');
 	const entry = await e2e.createLancamento(createEntrySeed(e2e.token, 'protegida', counterpart.id));
 	await e2e.authenticate(page, 'tesouraria');
+	await openLancamentosPage(page);
+	await searchLancamentosByDescription(page, entry.descricao);
+	await expect(findLancamentoRow(page, entry.descricao).getByRole('link', { name: 'Estornar' })).toBeVisible();
+	await reverseFromRow(page, findLancamentoRow(page, entry.descricao), 'Motivo usuário regular E2E');
+	await expect(e2e.readReversal(entry.id)).resolves.toMatchObject({ userEstorno: e2e.users.tesouraria.id });
+
 	const auditResponse = await page.goto('/tesouraria/estornos');
-	const reversalResponse = await page.goto(`/tesouraria/lancamentos/${entry.id}/estorno`);
 	await expect(auditResponse?.status()).toBe(403);
-	await expect(reversalResponse?.status()).toBe(403);
-	await expect(e2e.readReversal(entry.id)).resolves.toBeNull();
 });
 
 test('E2E-06 invalida recibo compartilhado depois do estorno', async ({ page, e2e }) => {

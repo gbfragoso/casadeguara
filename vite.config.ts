@@ -1,9 +1,33 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'node:path';
+import type { ViteDevServer } from 'vite';
+
+function treasuryChartProofPlugin() {
+	return {
+		name: 'treasury-chart-proof-fixture',
+		apply: 'serve' as const,
+		configureServer(server: ViteDevServer) {
+			if (process.env.NODE_ENV !== 'test') return;
+			const entry = `/@fs/${resolve('tests/e2e/chart-proof/main.ts').replaceAll('\\', '/')}`;
+			server.middlewares.use('/__test/tesouraria-chart', (request, response, next) => {
+				if (request.method !== 'GET' || (request.url !== '/' && request.url !== '')) return next();
+				response.statusCode = 200;
+				response.setHeader('content-type', 'text/html');
+				response.end(
+					`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Chart proof</title></head><body><main id="proof-target"></main><script type="module" src="${entry}"></script></body></html>`,
+				);
+			});
+		},
+	};
+}
 
 export default defineConfig({
-	plugins: [sveltekit()],
-	server: { hmr: process.env.NODE_ENV !== 'test' },
+	plugins: [sveltekit(), treasuryChartProofPlugin()],
+	server: {
+		hmr: process.env.NODE_ENV !== 'test',
+		fs: { allow: [resolve('.')] },
+	},
 	css: {
 		preprocessorOptions: {
 			scss: {
@@ -57,7 +81,10 @@ export default defineConfig({
 				extends: true,
 				test: {
 					name: 'performance',
-					include: ['src/lib/scripts/performance/books/**/*.performance.test.ts'],
+					include: [
+						'src/lib/scripts/performance/books/**/*.performance.test.ts',
+						'src/lib/scripts/performance/tesouraria/**/*.performance.test.ts',
+					],
 					setupFiles: ['tests/integration/setup.ts'],
 					testTimeout: 120_000,
 				},

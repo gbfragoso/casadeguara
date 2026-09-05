@@ -1,0 +1,95 @@
+{
+	"environment": {
+		"capturedAt": "2026-09-04T22:28:45.755Z",
+		"node": "v24.14.0",
+		"revision": "2fdb419ebd336a3e8a9b87c5eb583c000436a760",
+		"npm": "11.11.1",
+		"playwright": "1.62.1",
+		"chromium": "151.0.7922.34"
+	},
+	"baselineBundle": {
+		"route": "/(protected)/tesouraria",
+		"routeNodeIds": [54, 2, 5],
+		"files": [
+			{ "file": "_app/immutable/chunks/B8kihF2M.js", "rawBytes": 36677, "gzipBytes": 13593 },
+			{ "file": "_app/immutable/chunks/BBCEZUtQ.js", "rawBytes": 52083, "gzipBytes": 19774 },
+			{ "file": "_app/immutable/chunks/C0geZ_RD.js", "rawBytes": 123007, "gzipBytes": 38952 },
+			{ "file": "_app/immutable/chunks/CDGGPZzz.js", "rawBytes": 9399, "gzipBytes": 3738 },
+			{ "file": "_app/immutable/chunks/Cj6Qt3ZY.js", "rawBytes": 2531, "gzipBytes": 1207 },
+			{ "file": "_app/immutable/chunks/CLVX1juC.js", "rawBytes": 1727, "gzipBytes": 843 },
+			{ "file": "_app/immutable/chunks/Cpez8Fv6.js", "rawBytes": 108, "gzipBytes": 117 },
+			{ "file": "_app/immutable/chunks/DwxqC0ed.js", "rawBytes": 294, "gzipBytes": 167 },
+			{ "file": "_app/immutable/chunks/xihTtKlq.js", "rawBytes": 65, "gzipBytes": 80 },
+			{ "file": "_app/immutable/entry/app.DyiDTTbQ.js", "rawBytes": 16182, "gzipBytes": 4114 },
+			{ "file": "_app/immutable/nodes/2.DvcQP01k.js", "rawBytes": 176, "gzipBytes": 159 },
+			{ "file": "_app/immutable/nodes/5.CzGKja1x.js", "rawBytes": 2736, "gzipBytes": 1126 },
+			{ "file": "_app/immutable/nodes/54.BYhbiacN.js", "rawBytes": 2790, "gzipBytes": 1434 }
+		],
+		"rawBytes": 247775,
+		"gzipBytes": 85304
+	},
+	"finalBundle": {
+		"route": "/(protected)/tesouraria",
+		"routeNodeIds": [54, 2, 5],
+		"files": [
+			{ "file": "_app/immutable/chunks/B3pc7_jV.js", "rawBytes": 36678, "gzipBytes": 13596 },
+			{ "file": "_app/immutable/chunks/B4nkCmzd.js", "rawBytes": 1727, "gzipBytes": 845 },
+			{ "file": "_app/immutable/chunks/Bleo30Hi.js", "rawBytes": 2532, "gzipBytes": 1212 },
+			{ "file": "_app/immutable/chunks/DLToX36f.js", "rawBytes": 57550, "gzipBytes": 21652 },
+			{ "file": "_app/immutable/chunks/DNCWvLQW.js", "rawBytes": 9399, "gzipBytes": 3737 },
+			{ "file": "_app/immutable/chunks/DNy2KFAW.js", "rawBytes": 294, "gzipBytes": 168 },
+			{ "file": "_app/immutable/chunks/pG-SAKvf.js", "rawBytes": 530, "gzipBytes": 376 },
+			{ "file": "_app/immutable/chunks/qjV-EdFe.js", "rawBytes": 123007, "gzipBytes": 38952 },
+			{ "file": "_app/immutable/chunks/xihTtKlq.js", "rawBytes": 65, "gzipBytes": 80 },
+			{ "file": "_app/immutable/entry/app.RjOp13oW.js", "rawBytes": 16214, "gzipBytes": 4099 },
+			{ "file": "_app/immutable/nodes/2.By0xuHeQ.js", "rawBytes": 176, "gzipBytes": 159 },
+			{ "file": "_app/immutable/nodes/5.sdWd5Opx.js", "rawBytes": 2736, "gzipBytes": 1125 },
+			{ "file": "_app/immutable/nodes/54.e9mOXW2F.js", "rawBytes": 2796, "gzipBytes": 1442 }
+		],
+		"rawBytes": 253704,
+		"gzipBytes": 87443
+	},
+	"chartAutoFiles": [],
+	"longTasks": [
+		{
+			"index": 1,
+			"baseline": { "durations": [78, 50], "maxMs": 78 },
+			"final": { "durations": [76], "maxMs": 76 },
+			"baselineOverThreshold": 1,
+			"finalOverThreshold": 1,
+			"newOverThreshold": 0
+		},
+		{
+			"index": 2,
+			"baseline": { "durations": [59], "maxMs": 59 },
+			"final": { "durations": [59], "maxMs": 59 },
+			"baselineOverThreshold": 1,
+			"finalOverThreshold": 1,
+			"newOverThreshold": 0
+		},
+		{
+			"index": 3,
+			"baseline": { "durations": [57], "maxMs": 57 },
+			"final": { "durations": [56], "maxMs": 56 },
+			"baselineOverThreshold": 1,
+			"finalOverThreshold": 1,
+			"newOverThreshold": 0
+		},
+		{
+			"index": 4,
+			"baseline": { "durations": [55], "maxMs": 55 },
+			"final": { "durations": [57], "maxMs": 57 },
+			"baselineOverThreshold": 1,
+			"finalOverThreshold": 1,
+			"newOverThreshold": 0
+		},
+		{
+			"index": 5,
+			"baseline": { "durations": [53], "maxMs": 53 },
+			"final": { "durations": [60], "maxMs": 60 },
+			"baselineOverThreshold": 1,
+			"finalOverThreshold": 1,
+			"newOverThreshold": 0
+		}
+	]
+}
