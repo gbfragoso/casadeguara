@@ -148,7 +148,11 @@ tr td {
 }
 
 .sidebar-item:hover:not(.active) {
+<<<<<<< HEAD
 	transition: background-color 0.5s ease-out;
+=======
+	transition: all 0.4s ease-out;
+>>>>>>> master
 	border-right: 10px solid #017fc0;
 	background-color: #ffb70f;
 }
