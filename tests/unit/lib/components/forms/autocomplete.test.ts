@@ -24,8 +24,8 @@ describe('Autocomplete selection', () => {
 			await typeQuery(input, query);
 
 			expect(document.querySelectorAll('[role="option"]')).toHaveLength(2);
-			expect(getOption('7').textContent).toContain('Clício Fogaça');
-			expect(getOption('9').textContent).toContain('Cadastro #9');
+			expect(getOption('7').textContent?.trim()).toBe('Clício Fogaça');
+			expect(getOption('9').textContent?.trim()).toBe('Clício Fogaça');
 		},
 	);
 
@@ -45,6 +45,23 @@ describe('Autocomplete selection', () => {
 		expect(input.value).toBe('Clício Fogaça');
 		expect(input.checkValidity()).toBe(true);
 		expect(input.getAttribute('aria-expanded')).toBe('false');
+	});
+
+	it('shows only the copy label and submits its internal ID on selection', async () => {
+		const label = '42 - Dom Casmurro - EX:2';
+		const { form, input } = await renderAutocomplete({
+			name: 'exemplarid',
+			options: [{ value: '987', label }],
+		});
+		await typeQuery(input, 'Dom Casmurro');
+		const option = getOption('987');
+
+		expect(option.textContent?.trim()).toBe(label);
+		option.click();
+		await tick();
+
+		expect(input.value).toBe(label);
+		expect(new FormData(form).get('exemplarid')).toBe('987');
 	});
 
 	it('clears a selected ID immediately when the displayed name is edited', async () => {

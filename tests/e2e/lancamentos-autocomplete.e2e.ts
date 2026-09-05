@@ -11,9 +11,7 @@ test('pesquisa cadastro sem acento e caixa, seleciona pelo teclado e cadastra en
 	const input = page.getByRole('combobox', { name: 'Doador (obrigatório)' });
 
 	await input.fill(`CLICIO FOGACA-${e2e.token}`);
-	await expect(
-		page.getByRole('option', { name: `${counterpart.name} — Cadastro #${counterpart.id}`, exact: true }),
-	).toBeVisible();
+	await expect(page.getByRole('option', { name: counterpart.name, exact: true })).toBeVisible();
 	await input.press('ArrowDown');
 	await input.press('Enter');
 	await expect(input).toHaveValue(counterpart.name);
@@ -33,7 +31,7 @@ test('restaura o cadastro escolhido após erro de validação do lançamento', a
 	const input = page.getByRole('combobox', { name: 'Doador (obrigatório)' });
 
 	await input.fill('clebio medeiros fragoso');
-	await page.getByRole('option', { name: `${counterpart.name} — Cadastro #${counterpart.id}`, exact: true }).click();
+	await page.getByRole('option', { name: counterpart.name, exact: true }).click();
 	await page.getByRole('button', { name: 'Cadastrar' }).click();
 
 	await expect(page.locator('#valor-errors')).toBeVisible();
@@ -47,7 +45,7 @@ test('limpa a seleção editada e permite saída sem favorecido', async ({ page,
 	await openLancamentoForm(page);
 	const input = page.getByRole('combobox', { name: 'Doador (obrigatório)' });
 	await input.fill(counterpart.name);
-	await page.getByRole('option', { name: `${counterpart.name} — Cadastro #${counterpart.id}`, exact: true }).click();
+	await page.getByRole('option', { name: counterpart.name, exact: true }).click();
 
 	await input.fill('cadastro inexistente');
 	await expect(page.locator('input[name="contraparteId"]')).toHaveValue('');

@@ -10,7 +10,6 @@
 		placeholder?: string;
 		invalid?: 'true';
 		describedBy?: string;
-		optionLabel?: string;
 		listLabel?: string;
 		emptyMessage?: string;
 		selectionMessage?: string;
@@ -25,7 +24,6 @@
 		placeholder,
 		invalid,
 		describedBy,
-		optionLabel = 'Cadastro',
 		listLabel = 'Cadastros sugeridos',
 		emptyMessage = 'Nenhum cadastro encontrado.',
 		selectionMessage = 'Selecione um cadastro da lista.',
@@ -129,7 +127,7 @@
 					aria-selected={active === index}
 					onpointerdown={(event) => event.preventDefault()}
 					onclick={() => select(option)}>
-					{option.label} <span class="has-text-grey">— {optionLabel} #{option.value}</span>
+					{option.label}
 				</button>
 			{/each}
 		</div>

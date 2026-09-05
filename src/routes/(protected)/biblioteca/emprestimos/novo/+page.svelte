@@ -35,52 +35,38 @@
 			<div class="column">
 				<div class="field">
 					<label class="label" for="leitor">Leitor</label>
-					{#await leitores}
-						<p class="help" role="status">Carregando leitores...</p>
-					{:then items}
-						<Autocomplete
-							id="leitor"
-							name="leitorid"
-							options={items.map(({ idleitor, nome }) => ({ value: String(idleitor), label: nome }))}
-							bind:value={readerId}
-							placeholder="Pesquise e selecione um leitor"
-							optionLabel="Leitor"
-							listLabel="Leitores sugeridos"
-							emptyMessage="Nenhum leitor encontrado."
-							selectionMessage="Selecione um leitor da lista."
-							invalid={form?.field === 'leitor' ? 'true' : undefined}
-							describedBy={form?.field === 'leitor' ? 'emprestimo-errors' : undefined}
-							required />
-					{:catch}
-						<p class="help is-danger" role="alert">Não foi possível carregar os leitores.</p>
-					{/await}
+					<Autocomplete
+						id="leitor"
+						name="leitorid"
+						options={leitores.map(({ idleitor, nome }) => ({ value: String(idleitor), label: nome }))}
+						bind:value={readerId}
+						placeholder="Pesquise e selecione um leitor"
+						listLabel="Leitores sugeridos"
+						emptyMessage="Nenhum leitor encontrado."
+						selectionMessage="Selecione um leitor da lista."
+						invalid={form?.field === 'leitor' ? 'true' : undefined}
+						describedBy={form?.field === 'leitor' ? 'emprestimo-errors' : undefined}
+						required />
 				</div>
 			</div>
 			<div class="column">
 				<div class="field">
 					<label class="label" for="exemplar">Exemplar</label>
-					{#await exemplares}
-						<p class="help" role="status">Carregando exemplares...</p>
-					{:then items}
-						<Autocomplete
-							id="exemplar"
-							name="exemplarid"
-							options={items.map(({ idexemplar, tombo, titulo, numero }) => ({
-								value: String(idexemplar),
-								label: `${tombo} - ${titulo} - EX:${numero}`,
-							}))}
-							bind:value={copyId}
-							placeholder="Pesquise pelo título, tombo ou número do exemplar"
-							optionLabel="Exemplar"
-							listLabel="Exemplares sugeridos"
-							emptyMessage="Nenhum exemplar encontrado."
-							selectionMessage="Selecione um exemplar da lista."
-							invalid={form?.field === 'exemplar' ? 'true' : undefined}
-							describedBy={form?.field === 'exemplar' ? 'emprestimo-errors' : undefined}
-							required />
-					{:catch}
-						<p class="help is-danger" role="alert">Não foi possível carregar os exemplares.</p>
-					{/await}
+					<Autocomplete
+						id="exemplar"
+						name="exemplarid"
+						options={exemplares.map(({ idexemplar, tombo, titulo, numero }) => ({
+							value: String(idexemplar),
+							label: `${tombo} - ${titulo} - EX:${numero}`,
+						}))}
+						bind:value={copyId}
+						placeholder="Pesquise pelo título, tombo ou número do exemplar"
+						listLabel="Exemplares sugeridos"
+						emptyMessage="Nenhum exemplar encontrado."
+						selectionMessage="Selecione um exemplar da lista."
+						invalid={form?.field === 'exemplar' ? 'true' : undefined}
+						describedBy={form?.field === 'exemplar' ? 'emprestimo-errors' : undefined}
+						required />
 				</div>
 			</div>
 		</div>

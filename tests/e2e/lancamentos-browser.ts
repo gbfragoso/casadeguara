@@ -59,7 +59,7 @@ export const fillLancamentoForm = async (
 	await form.getByLabel('Tipo').selectOption(input.tipo);
 	if (input.contraparteId !== undefined) {
 		await form.getByLabel(getCounterpartLabel(input.tipo)).click();
-		await form.getByRole('option', { name: new RegExp(`Cadastro #${input.contraparteId}$`) }).click();
+		await form.locator(`[role="option"][id="contraparteId-option-${input.contraparteId}"]`).click();
 	}
 	await form.getByLabel('Descrição').fill(input.descricao);
 	await form.getByLabel('Valor').fill(input.valor);

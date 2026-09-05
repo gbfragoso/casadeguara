@@ -22,9 +22,7 @@ afterEach(async () => {
 	vi.clearAllMocks();
 });
 
-export async function mountPage(
-	data: Props['data'] = { leitores: Promise.resolve(readers), exemplares: Promise.resolve(copies) },
-) {
+export async function mountPage(data: Props['data'] = { leitores: readers, exemplares: copies }) {
 	const props = $state<Props>({ data });
 	const target = document.createElement('div');
 	document.body.append(target);
