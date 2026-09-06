@@ -26,11 +26,7 @@ describe('tesouraria dashboard page', () => {
 		expect(document.querySelectorAll('.mt-2.columns > .column')).toHaveLength(5);
 		expect(document.querySelector('.mt-2.columns')?.textContent).toContain('Total');
 		expect(document.querySelector('.mt-2.columns')?.textContent).toContain('Saldo');
-<<<<<<< HEAD
 		expect(document.querySelector('.mt-2.columns + .card [role="region"]')).not.toBeNull();
-=======
-		expect(document.querySelector('.mt-2.columns + [role="region"]')).not.toBeNull();
->>>>>>> master
 		expect(document.querySelector('[role="region"] h2')?.textContent).toContain('12 meses');
 		expect(document.querySelector('[role="region"] details')).toBeNull();
 		expect(document.querySelector('[role="region"] .selection')).toBeNull();
