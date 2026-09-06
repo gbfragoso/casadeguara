@@ -2,7 +2,7 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
 import CreatePage from '../../../../../../src/routes/(protected)/tesouraria/lancamentos/novo/+page.svelte';
-import { getRenderedSelect, parseRenderedBody } from '../../../../support/rendered-document';
+import { getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
 describe('novo lançamento page', () => {
 	it('requires counterpart and exposes deposit control for entries', () => {
@@ -16,7 +16,7 @@ describe('novo lançamento page', () => {
 			},
 		});
 		const document = parseRenderedBody(body);
-		const counterpart = getRenderedSelect(document, 'select[name="contraparteId"]');
+		const counterpart = getRenderedInput(document, '#contraparteId');
 
 		expect(counterpart?.required).toBe(true);
 		expect(document.querySelector('input[name="depositado"]')).not.toBeNull();
@@ -29,7 +29,7 @@ describe('novo lançamento page', () => {
 			props: { form: { values: { tipo: 'saida', contraparteId: '' }, errors: {} } },
 		});
 		const document = parseRenderedBody(body);
-		const counterpart = getRenderedSelect(document, 'select[name="contraparteId"]');
+		const counterpart = getRenderedInput(document, '#contraparteId');
 
 		expect(counterpart?.required).toBe(false);
 		expect(document.querySelector('input[name="depositado"]')).toBeNull();

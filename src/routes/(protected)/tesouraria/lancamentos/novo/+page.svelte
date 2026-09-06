@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Autocomplete from '$lib/components/forms/Autocomplete.svelte';
 	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData, PageData } from './$types';
 
@@ -13,6 +14,7 @@
 	let values = $derived(form?.values ?? {});
 	let errors = $derived(form?.errors ?? {});
 	let contrapartes = $derived(data?.contrapartes ?? []);
+	const counterpartOptions = $derived(contrapartes.map(({ id, nome }) => ({ value: String(id), label: nome })));
 	let counterpartId = $derived(values.contraparteId ?? '');
 	let depositado = $derived(values.depositado === 'true');
 
@@ -56,21 +58,21 @@
 					Favorecido (opcional)
 				{/if}
 			</label>
-			<div class="select is-fullwidth">
-				<select
-					class="select"
-					id="contraparteId"
-					name="contraparteId"
-					bind:value={counterpartId}
-					required={type === 'entrada'}
-					aria-invalid={ariaInvalid('contraparteId')}
-					aria-describedby={fieldErrors('contraparteId').length ? 'contraparteId-errors' : undefined}>
-					<option value="">{type === 'entrada' ? 'Selecione um contribuinte' : 'Nenhum'}</option>
-					{#each contrapartes as contraparte (contraparte.id)}<option value={contraparte.id}
-							>{contraparte.nome}</option
-						>{/each}
-				</select>
-			</div>
+			{#key form}
+				{#key type}
+					<Autocomplete
+						id="contraparteId"
+						name="contraparteId"
+						options={counterpartOptions}
+						bind:value={counterpartId}
+						required={type === 'entrada'}
+						placeholder={type === 'entrada'
+							? 'Pesquise e selecione um contribuinte'
+							: 'Pesquise um favorecido (opcional)'}
+						invalid={ariaInvalid('contraparteId')}
+						describedBy={fieldErrors('contraparteId').length ? 'contraparteId-errors' : undefined} />
+				{/key}
+			{/key}
 			{#if fieldErrors('contraparteId').length}<p id="contraparteId-errors" class="help is-danger">
 					{fieldErrors('contraparteId').join(' ')}
 				</p>{/if}

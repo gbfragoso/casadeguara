@@ -136,7 +136,8 @@ test('E2E-02 valida entrada com foco na contraparte e abre recibo numerado', asy
 	await page.getByRole('button', { name: 'Cadastrar' }).click();
 	await expect(page.getByLabel('Doador (obrigatório)')).toBeFocused();
 
-	await page.getByLabel('Doador (obrigatório)').selectOption(`${counterpart.id}`);
+	await page.getByLabel('Doador (obrigatório)').fill(counterpart.name);
+	await page.getByRole('option', { name: counterpart.name, exact: true }).click();
 	await Promise.all([
 		page.waitForURL(/\/recibo\/[0-9a-f-]+$/),
 		page.getByRole('button', { name: 'Cadastrar' }).click(),

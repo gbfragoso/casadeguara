@@ -1,43 +1,16 @@
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
-import { unaccent } from '$lib/server/database/functions';
 import { error, redirect } from '@sveltejs/kit';
-import dayjs from 'dayjs';
-import { and, eq, isNull, sql } from 'drizzle-orm';
-
+import { listReaders, listCopies, rejectLoan, validateReader, recordLoan } from '$lib/server/biblioteca/loans/create';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
 
 	try {
-		const leitores = async () => {
-			return db
-				.select({ idleitor: cadastros.idleitor, nome: sql<string>`unaccent(cadastros.nome)` })
-				.from(cadastros)
-				.orderBy(unaccent(cadastros.nome));
-		};
-
-		const exemplares = async () => {
-			return db
-				.select({
-					idexemplar: exemplar.idexemplar,
-					numero: exemplar.numero,
-					titulo: livro.titulo,
-					tombo: livro.tombo,
-				})
-				.from(exemplar)
-				.innerJoin(livro, eq(livro.idlivro, exemplar.livro))
-				.where(eq(exemplar.status, 'Disponível'))
-				.orderBy(sql<number>`cast(livro.tombo as decimal)`, exemplar.numero);
-		};
-
-		return { leitores: leitores(), exemplares: exemplares() };
+		const [leitores, exemplares] = await Promise.all([listReaders(), listCopies()]);
+		return { leitores, exemplares };
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar os dados para empréstimo',
-		});
+		error(500, { message: 'Falha ao carregar os dados para empréstimo' });
 	}
 };
 
@@ -46,63 +19,15 @@ export const actions: Actions = {
 		if (!locals.user) redirect(302, '/');
 
 		const form = await request.formData();
-		const idleitor = Number(form.get('leitorid'));
-		const idexemplar = Number(form.get('exemplarid'));
-		const isAdmin = locals.user.roles.includes('admin');
+		const readerId = Number(form.get('leitorid'));
+		const copyId = Number(form.get('exemplarid'));
+		if (!readerId) return rejectLoan('leitor', 'Leitor não encontrado');
+		if (!copyId) return rejectLoan('exemplar', 'Exemplar não encontrado');
 
-		if (!idleitor || idleitor === 0) {
-			return {
-				status: 400,
-				field: 'leitor',
-				message: 'Leitor não encontrado',
-			};
-		}
+		const rejection = await validateReader(readerId, locals.user.roles.includes('admin'));
+		if (rejection) return rejection;
 
-		if (!idexemplar || idexemplar === 0) {
-			return {
-				status: 400,
-				field: 'exemplar',
-				message: 'Exemplar não encontrado',
-			};
-		}
-
-		const leitores = await db
-			.select({ ativo: cadastros.status })
-			.from(cadastros)
-			.where(eq(cadastros.idleitor, idleitor));
-		if (!leitores[0].ativo && !isAdmin) {
-			return {
-				status: 400,
-				field: 'leitor',
-				message: 'Este leitor está inativo',
-			};
-		}
-
-		const emprestimos = await db
-			.select()
-			.from(emprestimo)
-			.where(and(eq(emprestimo.leitor, idleitor), isNull(emprestimo.dataDevolvido)));
-		if (emprestimos.length > 0 && !isAdmin) {
-			return {
-				status: 400,
-				field: 'leitor',
-				message: 'Este leitor já possui um empréstimo ativo',
-			};
-		}
-
-		const id = await db
-			.insert(emprestimo)
-			.values({
-				leitor: idleitor,
-				exemplar: idexemplar,
-				dataEmprestimo: new Date(),
-				dataDevolucao: dayjs().add(14, 'day').toDate(),
-				userEmprestimo: locals.user.id,
-			})
-			.returning({ id: emprestimo.idemp });
-
-		await db.update(exemplar).set({ status: 'Emprestado' }).where(eq(exemplar.idexemplar, idexemplar));
-
-		return redirect(302, '/biblioteca/emprestimos/' + id[0].id + '/recibo');
+		const id = await recordLoan(readerId, copyId, locals.user.id);
+		redirect(302, `/biblioteca/emprestimos/${id}/recibo`);
 	},
 } satisfies Actions;
