@@ -161,11 +161,11 @@
 		<div class="column"><strong>Total de entradas:</strong> {moeda(Number(page.totais.entradas))}</div>
 		<div class="column"><strong>Total de saídas:</strong> {moeda(Number(page.totais.saidas))}</div>
 	</div>
-	{#if page.items.length === 0}
-		<p class="notification is-info" role="status">Nenhum lançamento encontrado.</p>
-	{:else}
-		<div class="card">
-			<div class="card-content">
+	<div class="card">
+		<div class="card-content">
+			{#if page.items.length === 0}
+				<p role="status">Nenhum lançamento encontrado.</p>
+			{:else}
 				<div class="table-container">
 					<table class="table is-striped is-hoverable is-fullwidth">
 						<caption class="is-sr-only">Lançamentos ativos</caption>
@@ -215,7 +215,7 @@
 						</tbody>
 					</table>
 				</div>
-			</div>
+			{/if}
 		</div>
-	{/if}
+	</div>
 {/if}

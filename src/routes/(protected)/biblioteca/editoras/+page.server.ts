@@ -1,42 +1,8 @@
-import { editoraModel, type EditoraModel } from '$lib/server/models/editora';
-import { editoraSearchSchema } from '$lib/validation/editora';
-import { error, fail } from '@sveltejs/kit';
-import { flattenError } from 'zod';
-
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { editoraModel } from '$lib/server/models/editora';
+import { createPublisherListHandlers } from '$lib/server/biblioteca/editoras/list-handlers';
 
 import type { Actions, PageServerLoad } from './$types';
 
-type ListModel = Pick<EditoraModel, 'fetch'>;
-type User = { roles: string } | null;
-
-const getSubmittedName = (value: FormDataEntryValue | null) => (typeof value === 'string' ? value : '');
-
-const createInternalListHandlers = (model: ListModel) => ({
-	load: async ({ locals }: { locals: { user: User } }) => requireLibraryAccess(locals.user),
-	actions: {
-		default: async ({ locals, request }: { locals: { user: User }; request: Request }) => {
-			requireLibraryAccess(locals.user);
-			const formData = await request.formData();
-			const rawName = formData.get('nome');
-			const result = editoraSearchSchema.safeParse({ nome: rawName });
-			const values = { nome: getSubmittedName(rawName) };
-
-			if (!result.success) return fail(400, { values, errors: flattenError(result.error).fieldErrors });
-
-			try {
-				const editoras = await model.fetch(result.data.nome);
-
-				return { editoras, values: { nome: result.data.nome } };
-			} catch (cause) {
-				console.error(cause);
-				error(500, { message: 'Falha ao carregar a lista de editoras' });
-			}
-		},
-	},
-});
-
-const handlers = createInternalListHandlers(editoraModel);
-
+const handlers = createPublisherListHandlers({ model: editoraModel });
 export const load: PageServerLoad = handlers.load;
 export const actions: Actions = handlers.actions;
