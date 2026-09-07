@@ -1,33 +1,7 @@
-import { error, redirect } from '@sveltejs/kit';
-import { listReaders, listCopies, rejectLoan, validateReader, recordLoan } from '$lib/server/biblioteca/loans/create';
+import { createBibliotecaEmprestimosNovoHandlers } from '$lib/server/biblioteca/emprestimos/novo-handlers';
+
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
-
-	try {
-		const [leitores, exemplares] = await Promise.all([listReaders(), listCopies()]);
-		return { leitores, exemplares };
-	} catch (err) {
-		console.error(err);
-		error(500, { message: 'Falha ao carregar os dados para empréstimo' });
-	}
-};
-
-export const actions: Actions = {
-	default: async ({ request, locals }) => {
-		if (!locals.user) redirect(302, '/');
-
-		const form = await request.formData();
-		const readerId = Number(form.get('leitorid'));
-		const copyId = Number(form.get('exemplarid'));
-		if (!readerId) return rejectLoan('leitor', 'Leitor não encontrado');
-		if (!copyId) return rejectLoan('exemplar', 'Exemplar não encontrado');
-
-		const rejection = await validateReader(readerId, locals.user.roles.includes('admin'));
-		if (rejection) return rejection;
-
-		const id = await recordLoan(readerId, copyId, locals.user.id);
-		redirect(302, `/biblioteca/emprestimos/${id}/recibo`);
-	},
-} satisfies Actions;
+const handlers = createBibliotecaEmprestimosNovoHandlers();
+export const load: PageServerLoad = handlers.load;
+export const actions: Actions = handlers.actions;
