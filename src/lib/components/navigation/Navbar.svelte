@@ -1,38 +1,16 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	let isHidden = $state(true);
-	let theme = $state('light');
+	let dropdownOpen = $state(false);
+	let theme = $state<'light' | 'dark'>('light');
 
 	interface Props {
 		username: string;
 		userid: string;
+		sidebarExpanded: boolean;
+		onToggleSidebar: () => void;
 	}
 
-	let { username, userid }: Props = $props();
-
-	function showMenu() {
-		let menu = document.getElementById('sidebar');
-		if (menu) {
-			if (menu.classList.contains('is-hidden-touch')) {
-				menu.classList.remove('is-hidden-touch');
-				isHidden = false;
-			} else {
-				menu.classList.add('is-hidden-touch');
-				isHidden = true;
-			}
-		}
-	}
-
-	function showDropdown() {
-		let menu = document.getElementById('dropdown');
-		if (menu) {
-			if (menu.classList.contains('is-active')) {
-				menu.classList.remove('is-active');
-			} else {
-				menu.classList.add('is-active');
-			}
-		}
-	}
+	let { username, userid, sidebarExpanded, onToggleSidebar }: Props = $props();
 
 	function changeTheme() {
 		if (theme === 'light') {
@@ -48,11 +26,10 @@
 	<div>
 		<button
 			type="button"
-			class="navbar-burger"
-			class:is-active={!isHidden}
+			class={['navbar-burger', sidebarExpanded && 'is-active']}
 			aria-label="menu"
-			aria-expanded="false"
-			onclick={showMenu}>
+			aria-expanded={sidebarExpanded}
+			onclick={onToggleSidebar}>
 			<span aria-hidden="true"></span>
 			<span aria-hidden="true"></span>
 			<span aria-hidden="true"></span>
@@ -69,7 +46,7 @@
 			style="width:40px; height:40px;">
 			<i class="fa-regular {theme === 'light' ? 'fa-sun' : 'fa-moon'} fa-fw"></i>
 		</button>
-		<div id="dropdown" class="dropdown is-right">
+		<div id="dropdown" class={['dropdown is-right', dropdownOpen && 'is-active']}>
 			<div class="dropdown-trigger">
 				<button
 					class="button is-rounded is-primary mb-1"
@@ -77,7 +54,7 @@
 					aria-haspopup="true"
 					aria-controls="dropdown-menu"
 					style="width:40px; height:40px; border-radius: 50%"
-					onclick={showDropdown}>
+					onclick={() => (dropdownOpen = !dropdownOpen)}>
 					<span><strong>{username.substring(0, 1).toUpperCase()}</strong></span>
 				</button>
 			</div>

@@ -27,10 +27,8 @@
 	let objectUrl = $state<string | null>(null);
 	let localError = $state<string | null>(null);
 	let fileInput: HTMLInputElement | undefined;
+	let reframeButton = $state<HTMLButtonElement | undefined>(undefined);
 	let returnFocusElement: HTMLElement | null = null;
-	let handledSuccessForm: PhotoForm | null | undefined;
-	const uploadEnhancer = createFormEnhancer();
-	const reframeEnhancer = createFormEnhancer();
 	const removeEnhancer = createFormEnhancer();
 
 	let previewUrl = $derived(objectUrl ?? (editorMode === 'reframe' ? originalPhotoUrl : photoUrl));
@@ -57,9 +55,20 @@
 		if (!restoreFocus) return;
 		await tick();
 		if (previousFocusElement?.isConnected) previousFocusElement.focus();
-		else document.getElementById('reenquadrar-foto')?.focus();
+		else reframeButton?.focus();
 		returnFocusElement = null;
 	}
+
+	const uploadEnhancer = createFormEnhancer({
+		afterUpdate: async ({ result }) => {
+			if (result.type === 'success' && editorMode === 'upload') await closeEditor();
+		},
+	});
+	const reframeEnhancer = createFormEnhancer({
+		afterUpdate: async ({ result }) => {
+			if (result.type === 'success' && editorMode === 'reframe') await closeEditor();
+		},
+	});
 
 	function isValidFile(file: File) {
 		return ['image/jpeg', 'image/png'].includes(file.type) && file.size > 0 && file.size <= PHOTO_MAX_BYTES;
@@ -92,13 +101,6 @@
 	function cancelEditor() {
 		closeEditor();
 	}
-
-	$effect(() => {
-		const operation = form?.operation;
-		if (form?.status !== 200 || !operation || form === handledSuccessForm) return;
-		handledSuccessForm = form;
-		if (editorMode !== null && (operation === 'photoSaved' || operation === 'photoReframed')) closeEditor();
-	});
 </script>
 
 <section class="card mt-4 photo-section" aria-labelledby="foto-title">
@@ -159,7 +161,12 @@
 
 		<div class="buttons mt-2">
 			{#if hasPhoto && editorMode !== 'reframe'}
-				<button class="button is-link is-light" id="reenquadrar-foto" type="button" onclick={openReframe}>
+				<button
+					class="button is-link is-light"
+					id="reenquadrar-foto"
+					type="button"
+					bind:this={reframeButton}
+					onclick={openReframe}>
 					Reenquadrar foto
 				</button>
 			{/if}

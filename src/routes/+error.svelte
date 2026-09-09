@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 </script>
 
 <main>
@@ -8,14 +8,14 @@
 			<div class="card-content">
 				<div class="is-primary">
 					<p class="pb-3 is-size-3 has-text-weight-semibold has-text-primary has-text-centered">
-						{$page.status}
+						{page.status}
 					</p>
 				</div>
 				<div class="has-text-centered">
-					{#if $page.status === 404}
-						<p>{$page.error?.message ?? 'Página não encontrada'}</p>
+					{#if page.status === 404}
+						<p>{page.error?.message ?? 'Página não encontrada'}</p>
 					{:else}
-						<p>{$page.error?.message}</p>
+						<p>{page.error?.message}</p>
 					{/if}
 				</div>
 			</div>
