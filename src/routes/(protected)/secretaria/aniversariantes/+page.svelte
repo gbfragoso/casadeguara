@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
 	import dayjs from 'dayjs';
+	import 'dayjs/locale/pt.js';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData } from './$types';
 	interface Props {
