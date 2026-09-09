@@ -124,7 +124,7 @@ test('E2E-10 comunica carregamento e limpa o estado após sucesso e erro', async
 
 test('E2E-02 valida entrada com foco na contraparte e abre recibo numerado', async ({ page, e2e }) => {
 	const counterpart = await e2e.createParticipant('recibo');
-	const seed = createEntrySeed(e2e.token, 'cadastro', counterpart.id);
+	const seed = createEntrySeed(e2e.token, 'cadastro', counterpart.id, { valor: '1700.58' });
 	await e2e.authenticate(page, 'tesouraria');
 	await openLancamentoForm(page);
 	await fillLancamentoForm(page, {
@@ -133,6 +133,7 @@ test('E2E-02 valida entrada com foco na contraparte e abre recibo numerado', asy
 		valor: seed.valor,
 		dataLancamento: seed.dataLancamento,
 	});
+	await expect(page.getByLabel('Valor')).toHaveValue('1.700,58');
 	await page.getByRole('button', { name: 'Cadastrar' }).click();
 	await expect(page.getByLabel('Doador (obrigatório)')).toBeFocused();
 
@@ -144,12 +145,14 @@ test('E2E-02 valida entrada com foco na contraparte e abre recibo numerado', asy
 	]);
 	const created = await e2e.readLancamentoByDescription(seed.descricao);
 	await expect(page.locator('#recibo')).toBeVisible();
+	await expect(page.locator('#recibo')).toContainText('R$ 1.700,58');
+	await expect(page.locator('#recibo')).toContainText('MIL E SETECENTOS REAIS E CINQUENTA E OITO CENTAVOS');
 	await expect(page.locator('#recibo')).toContainText(seed.descricao.toUpperCase());
 	await expect(page.locator('#recibo')).toContainText(`${created.id}`);
 });
 
 test('E2E-03 cadastra saída sem contraparte, recibo ou ação de recibo', async ({ page, e2e }) => {
-	const seed = createExitSeed(e2e.token, 'sem-recibo');
+	const seed = createExitSeed(e2e.token, 'sem-recibo', { valor: '123.23' });
 	await e2e.authenticate(page, 'tesouraria');
 	await openLancamentoForm(page);
 	await fillLancamentoForm(page, {
@@ -158,6 +161,7 @@ test('E2E-03 cadastra saída sem contraparte, recibo ou ação de recibo', async
 		valor: seed.valor,
 		dataLancamento: seed.dataLancamento,
 	});
+	await expect(page.getByLabel('Valor')).toHaveValue('123,23');
 	await expect(page.getByLabel('Favorecido (opcional)')).not.toHaveAttribute('required');
 	await expect(page.locator('#depositado')).toHaveCount(0);
 	await Promise.all([
@@ -168,6 +172,7 @@ test('E2E-03 cadastra saída sem contraparte, recibo ou ação de recibo', async
 	await searchLancamentosByDescription(page, seed.descricao);
 	const row = findLancamentoRow(page, seed.descricao);
 	await expect(row).toBeVisible();
+	await expect(e2e.readLancamentoByDescription(seed.descricao)).resolves.toMatchObject({ valor: '123.23' });
 	await expect(row.getByRole('link', { name: 'Recibo' })).toHaveCount(0);
 });
 

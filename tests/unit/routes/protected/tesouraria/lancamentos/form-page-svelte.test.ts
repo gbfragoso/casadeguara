@@ -19,6 +19,9 @@ describe('novo lançamento page', () => {
 		const counterpart = getRenderedInput(document, '#contraparteId');
 
 		expect(counterpart?.required).toBe(true);
+		expect(getRenderedInput(document, '#valor').value).toBe('0,00');
+		expect(document.querySelectorAll('input[name="valor"]')).toHaveLength(1);
+		expect(document.querySelector('input[name="valor"]')?.getAttribute('type')).toBe('hidden');
 		expect(document.querySelector('input[name="depositado"]')).not.toBeNull();
 		expect(document.querySelector('#contraparteId-errors')?.textContent).toContain('Contraparte obrigatória.');
 		expect(counterpart?.getAttribute('aria-invalid')).toBe('true');

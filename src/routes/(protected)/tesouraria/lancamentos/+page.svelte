@@ -195,7 +195,7 @@
 									</td>
 									<td>{moeda(Number(item.valor))}</td>
 									<td>{formatCivilDate(item.dataLancamento)}</td>
-									<td class="table-actions">
+									<td class="table-actions is-flex is-justify-content-flex-end">
 										{#if item.tipo === 'entrada' && item.reciboUuid}<a
 												title="Recibo"
 												href={resolve('/recibo/[uuid=uuid]', { uuid: item.reciboUuid })}

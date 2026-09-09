@@ -16,7 +16,7 @@ export const INVALID_REASON_MESSAGE = 'Motivo do estorno inválido.';
 export const REQUIRED_IDS_MESSAGE = 'Selecione ao menos um lançamento.';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const DECIMAL_PATTERN = /^-?\d+(?:\.\d+)?$/;
+const DECIMAL_PATTERN = /^\d+(?:\.\d{1,2})?$/;
 const NUMERIC_ONLY_PATTERN = /^\d+(?:\.\d+)?$/;
 
 export const isCalendarDate = (value: string) => {
