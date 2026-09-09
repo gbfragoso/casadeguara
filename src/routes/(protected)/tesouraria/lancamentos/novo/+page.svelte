@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Autocomplete from '$lib/components/forms/Autocomplete.svelte';
+	import BrlAmountInput from '$lib/components/forms/BrlAmountInput.svelte';
 	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData, PageData } from './$types';
 
@@ -17,6 +18,7 @@
 	const counterpartOptions = $derived(contrapartes.map(({ id, nome }) => ({ value: String(id), label: nome })));
 	let counterpartId = $derived(values.contraparteId ?? '');
 	let depositado = $derived(values.depositado === 'true');
+	let amountValue = $derived(values.valor ?? '');
 
 	const formEnhancer = createFormEnhancer();
 	const value = (field: string) => values[field] ?? '';
@@ -95,17 +97,17 @@
 		</div>
 		<div class="columns">
 			<div class="field column">
-				<label class="label" for="valor">Valor</label><input
-					class="input"
-					id="valor"
-					name="valor"
-					inputmode="decimal"
-					required
-					value={value('valor')}
-					aria-invalid={ariaInvalid('valor')}
-					aria-describedby={fieldErrors('valor').length
-						? 'valor-errors'
-						: undefined} />{#if fieldErrors('valor').length}<p id="valor-errors" class="help is-danger">
+				<label class="label" for="valor">Valor</label>
+				{#key form}
+					<BrlAmountInput
+						id="valor"
+						name="valor"
+						bind:value={amountValue}
+						required
+						invalid={ariaInvalid('valor')}
+						describedBy={fieldErrors('valor').length ? 'valor-errors' : undefined} />
+				{/key}
+				{#if fieldErrors('valor').length}<p id="valor-errors" class="help is-danger">
 						{fieldErrors('valor').join(' ')}
 					</p>{/if}
 			</div>

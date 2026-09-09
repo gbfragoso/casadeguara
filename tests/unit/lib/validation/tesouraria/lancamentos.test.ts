@@ -28,6 +28,36 @@ describe('lancamento validation', () => {
 		});
 	});
 
+	it.each(['1700', '123.2', '123.23', '0.00'])('accepts canonical value %s', (valor) => {
+		const result = createLancamentoFormSchema.safeParse({ ...entry, valor });
+
+		expect(result.success).toBe(true);
+	});
+
+	it.each(['-1.00', '123.234', '123,23', 'R$ 123,23', '1e3'])('rejects non-canonical value %s', (valor) => {
+		const result = createLancamentoFormSchema.safeParse({ ...entry, valor });
+
+		expect(getFieldErrors(result)?.valor).toEqual(['Valor inválido.']);
+	});
+
+	it('uses the same value contract for exits', () => {
+		const valid = createLancamentoFormSchema.safeParse({
+			...entry,
+			tipo: 'saida',
+			contraparteId: '',
+			valor: '123.23',
+		});
+		const invalid = createLancamentoFormSchema.safeParse({
+			...entry,
+			tipo: 'saida',
+			contraparteId: '',
+			valor: '123.234',
+		});
+
+		expect(valid.success).toBe(true);
+		expect(getFieldErrors(invalid)?.valor).toEqual(['Valor inválido.']);
+	});
+
 	it('associates missing entry counterpart errors with the field', () => {
 		const result = createLancamentoFormSchema.safeParse({ ...entry, contraparteId: '' });
 

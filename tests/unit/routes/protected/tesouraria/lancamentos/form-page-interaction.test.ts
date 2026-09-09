@@ -23,6 +23,17 @@ describe('novo lançamento counterpart integration', () => {
 		expect(input.value).toBe('Clício Fogaça');
 	});
 
+	it('submits one canonical amount field with the other form values', async () => {
+		const { form } = await mountCreatePage();
+		const input = getInput('#valor');
+		input.value = '1700.58';
+		input.dispatchEvent(new Event('input', { bubbles: true }));
+		await tick();
+
+		expect(input.value).toBe('1.700,58');
+		expect(new FormData(form).getAll('valor')).toEqual(['1700.58']);
+	});
+
 	it('clears the selected donor and deposit when changing to an exit', async () => {
 		const { form } = await mountCreatePage({
 			values: { tipo: 'entrada', contraparteId: '7', depositado: 'true' },

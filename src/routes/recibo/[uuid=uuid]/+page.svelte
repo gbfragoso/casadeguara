@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { moeda } from '$lib/utils/currency';
+	import { formatBrlDecimal } from '$lib/utils/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import QRCode from 'qrcode';
@@ -49,7 +49,7 @@
 				</div>
 				<div class="columns is-mobile pl-5 pr-2">
 					<div class="column has-text-weight-bold py-1">Valor</div>
-					<div class="column border fit-content py-1">{moeda(Number(data.entrada.valor))}</div>
+					<div class="column border fit-content py-1">{formatBrlDecimal(data.entrada.valor)}</div>
 				</div>
 			</div>
 			<div>
@@ -60,7 +60,7 @@
 				<div class="columns is-mobile py-1 pr-2">
 					<div class="column is-one-quarter py-1">A quantia de</div>
 					<div class="column border fit-content py-1">
-						{extenso(Number(data.entrada.valor).toLocaleString('pt-BR'), {
+						{extenso(data.entrada.valor, {
 							mode: 'currency',
 						}).toUpperCase()}
 					</div>

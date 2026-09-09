@@ -6,28 +6,45 @@ vi.mock('$app/state', () => ({ page: { url: new URL('http://localhost/recibo/act
 import Page from '../../../../src/routes/recibo/[uuid=uuid]/+page.svelte';
 import { parseRenderedBody } from '../../support/rendered-document';
 
-describe('public receipt page', () => {
-	it('renders the active receipt document with its financial fields', () => {
-		const { body } = render(Page, {
-			props: {
-				data: {
-					status: 'ativo',
-					entrada: {
-						id: 4,
-						valor: '10.00',
-						descricao: 'Mensalidade',
-						contribuinte: 'Ana',
-						dataEntrada: '2026-09-02',
-						dataRegistro: '2026-09-02',
-					},
+const renderActiveReceipt = (valor: string) =>
+	render(Page, {
+		props: {
+			data: {
+				status: 'ativo',
+				entrada: {
+					id: 3568,
+					valor,
+					descricao: 'Mensalidade',
+					contribuinte: 'Ana',
+					dataEntrada: '2026-09-02',
+					dataRegistro: '2026-09-02',
 				},
 			},
-		});
+		},
+	});
+
+describe('public receipt page', () => {
+	it('renders the active receipt document with its financial fields', () => {
+		const { body } = renderActiveReceipt('1700');
 		const document = parseRenderedBody(body);
 
 		expect(document.querySelector('#recibo')?.textContent).toContain('ANA');
 		expect(document.querySelector('#recibo')?.textContent).toContain('MENSALIDADE');
+		expect(document.querySelector('#recibo')?.textContent).toContain('R$ 1.700,00');
+		expect(document.querySelector('#recibo')?.textContent).toContain('MIL E SETECENTOS REAIS');
 		expect(document.querySelector('button[aria-label="print"]')).not.toBeNull();
+	});
+
+	it.each([
+		['123.23', 'R$ 123,23', 'CENTO E VINTE E TRÊS REAIS E VINTE E TRÊS CENTAVOS'],
+		['1700.58', 'R$ 1.700,58', 'MIL E SETECENTOS REAIS E CINQUENTA E OITO CENTAVOS'],
+	])('renders exact financial text for %s', (valor, formatted, words) => {
+		const { body } = renderActiveReceipt(valor);
+		const document = parseRenderedBody(body);
+		const receiptText = document.querySelector('#recibo')?.textContent ?? '';
+
+		expect(receiptText).toContain(formatted);
+		expect(receiptText).toContain(words);
 	});
 
 	it('renders only the invalidation state and reason for a reversed receipt', () => {
