@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import dayjs from 'dayjs';
 	import 'dayjs/locale/pt.js';
 	import utc from 'dayjs/plugin/utc';
@@ -10,7 +10,7 @@
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	dayjs.extend(utc);
 </script>
 
@@ -28,16 +28,7 @@
 	</div>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="column is-full-mobile is-10-tablet">
@@ -60,9 +51,11 @@
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						formEnhancer.loading && 'is-loading',
+					]}
 					type="submit">
 					<i class="fa-regular fa-rectangle-list fa-fw"></i>&nbsp;Gerar lista
 				</button>

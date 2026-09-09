@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import Notification from '$lib/components/feedback/Notification.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -8,7 +8,7 @@
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let { usuario } = $derived(data);
 </script>
 
@@ -17,16 +17,7 @@
 		<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Meu cadastro</h1>
 	</div>
 
-	<form
-		class="card"
-		method="POST"
-		use:enhance={() => {
-			loading = true;
-			return async ({ update }) => {
-				await update();
-				loading = false;
-			};
-		}}>
+	<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 		<div class="card-content">
 			<div class="field">
 				<label class="label" for="name">Nome</label>
@@ -43,9 +34,8 @@
 			<div class="field">
 				<div class="control">
 					<button
-						aria-busy={loading}
-						class:is-loading={loading}
-						class="button is-primary has-text-weight-semibold"
+						aria-busy={formEnhancer.loading}
+						class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
 						type="submit">Atualizar</button>
 				</div>
 			</div>

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 </script>
 
 <div class="mb-2">
@@ -23,17 +23,7 @@
 	<h1 class="is-size-3 is-hidden-print has-text-weight-semibold has-text-primary">Registro de frequência</h1>
 </div>
 
-<form
-	class="card"
-	action="?/pesquisar"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" action="?/pesquisar" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			<div class="column">
@@ -92,9 +82,11 @@
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						formEnhancer.loading && 'is-loading',
+					]}
 					type="submit">
 					<i class="fa-regular fa-rectangle-list fa-fw">&nbsp;&nbsp;</i>Gerar Lista
 				</button>
@@ -104,17 +96,7 @@
 </form>
 
 {#if form?.leitores}
-	<form
-		class="card"
-		action="?/registrar"
-		method="POST"
-		use:enhance={() => {
-			loading = true;
-			return async ({ update }) => {
-				await update();
-				loading = false;
-			};
-		}}>
+	<form class="card" action="?/registrar" method="POST" {@attach formEnhancer.submitWithLoading}>
 		<div class="card-content">
 			<div class="table-container">
 				<table class="table is-striped is-hoverable is-fullwidth">
@@ -148,9 +130,11 @@
 		</div>
 		<div class="is-hidden-print" style="min-width: 200px">
 			<button
-				aria-busy={loading}
-				class:is-loading={loading}
-				class="button is-success is-fullwidth has-text-weight-semibold"
+				aria-busy={formEnhancer.loading}
+				class={[
+					'button is-success is-fullwidth has-text-weight-semibold',
+					formEnhancer.loading && 'is-loading',
+				]}
 				type="submit">
 				<i class="fa-solid fa-check fa-fw">&nbsp;</i>Concluir registro
 			</button>

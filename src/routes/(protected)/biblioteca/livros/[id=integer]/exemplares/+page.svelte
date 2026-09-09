@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer, enhanceForm } from '$lib/forms/enhancer.svelte';
 	import { page } from '$app/state';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -11,7 +11,7 @@
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let { exemplares, livros, role } = $derived(data);
 	let bookId = $derived(page.params.id);
 	dayjs.extend(utc);
@@ -36,17 +36,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de exemplares</h1>
 </div>
 
-<form
-	class="card"
-	action="?/adicionar"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" action="?/adicionar" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			{#await livros then livro}
@@ -71,9 +61,8 @@
 			</div>
 			<div class="control">
 				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary has-text-weight-semibold"
+					aria-busy={formEnhancer.loading}
+					class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
 					type="submit">Adicionar</button>
 			</div>
 		</div>
@@ -145,7 +134,7 @@
 												<form
 													action="?/disponivel&exemplar={exemplar.idexemplar}"
 													method="POST"
-													use:enhance>
+													{@attach enhanceForm}>
 													<button title="Disponibilizar" aria-label="Disponibilizar">
 														<i class="fa-solid fa-box-open fa-fw"></i>
 													</button>
@@ -155,7 +144,7 @@
 												<form
 													action="?/arquivar&exemplar={exemplar.idexemplar}"
 													method="POST"
-													use:enhance>
+													{@attach enhanceForm}>
 													<button title="Arquivar" aria-label="Arquivar">
 														<i class="fa-solid fa-box-archive fa-fw"></i>
 													</button>
@@ -164,7 +153,7 @@
 											<form
 												action="?/excluir&exemplar={exemplar.idexemplar}"
 												method="POST"
-												use:enhance>
+												{@attach enhanceForm}>
 												<button title="Excluir" aria-label="trash">
 													<i class="fa-regular fa-trash-can fa-fw"></i>
 												</button>

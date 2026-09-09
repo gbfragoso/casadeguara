@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer, enhanceForm } from '$lib/forms/enhancer.svelte';
 	import { page } from '$app/state';
 	import type { PageServerData } from './$types';
 	interface Props {
@@ -8,7 +8,7 @@
 	}
 
 	let { data }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let { autores, autoresLivro, livros, role } = $derived(data);
 	let bookId = $derived(page.params.id);
 </script>
@@ -32,17 +32,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de autores</h1>
 </div>
 
-<form
-	class="card"
-	action="?/adicionar"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" action="?/adicionar" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			{#await livros then livro}
@@ -75,9 +65,8 @@
 		</div>
 		<div class="control">
 			<button
-				aria-busy={loading}
-				class:is-loading={loading}
-				class="button is-primary has-text-weight-semibold"
+				aria-busy={formEnhancer.loading}
+				class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
 				type="submit">Adicionar</button>
 		</div>
 	</div>
@@ -113,7 +102,10 @@
 								<td>
 									{#if role.includes('admin')}
 										<div class="field is-grouped">
-											<form action="?/excluir&autor={autor.idautor}" method="POST" use:enhance>
+											<form
+												action="?/excluir&autor={autor.idautor}"
+												method="POST"
+												{@attach enhanceForm}>
 												<button aria-label="trash">
 													<i class="fa-regular fa-trash-can fa-fw"></i>
 												</button>

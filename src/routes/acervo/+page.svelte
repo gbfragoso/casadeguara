@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { enhance } from '$app/forms';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -8,7 +8,7 @@
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let { colecoes } = $derived(data);
 </script>
 
@@ -24,16 +24,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de livros</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="field columns">
 			<div class="column">
@@ -89,9 +80,11 @@
 		<div class="columns">
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
+					aria-busy={formEnhancer.loading}
+					class={[
+						'button is-primary is-fullwidth has-text-weight-semibold',
+						formEnhancer.loading && 'is-loading',
+					]}
 					type="submit">
 					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
 				</button>

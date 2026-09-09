@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import Notification from '$lib/components/feedback/Notification.svelte';
 	import validator from 'validator';
 	import type { ActionData } from './$types';
@@ -9,7 +9,7 @@
 	}
 
 	let { form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let password = $state('');
 </script>
 
@@ -25,16 +25,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de usuários</h1>
 </div>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="field">
 			<label class="label" for="username">Usuário</label>
@@ -71,9 +62,8 @@
 		<div class="field">
 			<div class="control">
 				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary has-text-weight-semibold"
+					aria-busy={formEnhancer.loading}
+					class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
 					type="submit">Cadastrar</button>
 			</div>
 		</div>
