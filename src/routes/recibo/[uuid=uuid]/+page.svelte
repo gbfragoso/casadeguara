@@ -43,11 +43,11 @@
 				</div>
 			</div>
 			<div class="is-flex is-justify-content-end mt-3">
-				<div class="columns is-mobile">
+				<div class="columns is-mobile" style="text-wrap: nowrap;">
 					<div class="column has-text-weight-bold py-1">N°</div>
 					<div class="column border fit-content py-1">{data.entrada.id}</div>
 				</div>
-				<div class="columns is-mobile pl-5 pr-2">
+				<div class="columns is-mobile pl-5 pr-2" style="text-wrap: nowrap;">
 					<div class="column has-text-weight-bold py-1">Valor</div>
 					<div class="column border fit-content py-1">{formatBrlDecimal(data.entrada.valor)}</div>
 				</div>
