@@ -17,6 +17,8 @@ describe('tesouraria layout', () => {
 			'/tesouraria/lancamentos',
 		);
 		expect(document.querySelector('li.sidebar-item.active a[href*="/tesouraria/lancamentos"]')).not.toBeNull();
+		expect(document.querySelector('#sidebar')?.classList.contains('is-hidden-touch')).toBe(true);
+		expect(document.querySelector('[aria-label="menu"]')?.getAttribute('aria-expanded')).toBe('false');
 		expect(document.querySelector('a[title="Estornos"]')).toBeNull();
 		expect(document.querySelector('a[title="Entradas"]')).toBeNull();
 		expect(document.querySelector('a[title="Histórico"]')).toBeNull();

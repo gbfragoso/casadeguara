@@ -10,7 +10,12 @@ const clickCancel = (target: HTMLDivElement) => {
 	cancel?.click();
 };
 
-vi.mock('$app/forms', () => ({ enhance: () => () => undefined }));
+const enhancerState = vi.hoisted(() => ({ submits: [] as Array<(input: unknown) => unknown> }));
+vi.mock('$app/forms', () => ({
+	enhance: (_element: unknown, submit?: (input: unknown) => unknown) => {
+		if (submit) enhancerState.submits.push(submit);
+	},
+}));
 
 const nativeCreateObjectUrl = URL.createObjectURL;
 const nativeRevokeObjectUrl = URL.revokeObjectURL;
@@ -21,6 +26,7 @@ describe('PhotoSection interactions', () => {
 	let revokeObjectUrl: ReturnType<typeof vi.fn>;
 
 	beforeEach(() => {
+		enhancerState.submits.length = 0;
 		target = document.createElement('div');
 		document.body.append(target);
 		createObjectUrl = vi.fn(() => 'blob:photo');
@@ -86,6 +92,51 @@ describe('PhotoSection interactions', () => {
 		await tick();
 
 		expect(document.activeElement).toBe(target.querySelector('#reenquadrar-foto'));
+		unmount(component);
+	});
+
+	it('closes the upload editor only after a successful enhanced submission', async () => {
+		const component = mount(PhotoSection, { target, props: { hasPhoto: false, alt: 'Foto de Maria' } });
+		const input = target.querySelector('#foto');
+		if (!(input instanceof HTMLInputElement)) throw new Error('Photo input was not rendered.');
+		Object.defineProperty(input, 'files', {
+			value: fileList(new File(['photo'], 'photo.jpg', { type: 'image/jpeg' })),
+			configurable: true,
+		});
+		input.dispatchEvent(new Event('change', { bubbles: true }));
+		await tick();
+
+		const submit = enhancerState.submits[0];
+		if (!submit) throw new Error('Upload enhancer was not attached.');
+		const submitInput = submit({
+			action: new URL('https://example.test/photo'),
+			formData: new FormData(),
+			formElement: document.createElement('form'),
+			controller: new AbortController(),
+			submitter: null,
+			cancel: vi.fn(),
+		});
+		if (typeof submitInput !== 'function') throw new Error('Upload enhancer did not return a completion handler.');
+
+		await submitInput({
+			action: new URL('https://example.test/photo'),
+			formData: new FormData(),
+			formElement: document.createElement('form'),
+			result: { type: 'failure', status: 400, data: {} },
+			update: vi.fn(async () => undefined),
+		});
+		await tick();
+		expect(target.querySelector('[data-testid="photo-cropper"]')).not.toBeNull();
+
+		await submitInput({
+			action: new URL('https://example.test/photo'),
+			formData: new FormData(),
+			formElement: document.createElement('form'),
+			result: { type: 'success', status: 200, data: {} },
+			update: vi.fn(async () => undefined),
+		});
+		await tick();
+		expect(target.querySelector('[data-testid="photo-cropper"]')).toBeNull();
 		unmount(component);
 	});
 });

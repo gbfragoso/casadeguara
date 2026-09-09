@@ -16,6 +16,19 @@ describe('Autocomplete selection', () => {
 		expect(input.getAttribute('aria-autocomplete')).toBe('list');
 	});
 
+	it('caps a large suggestion set without changing the selected option contract', async () => {
+		const options = Array.from({ length: 75 }, (_, index) => ({
+			value: String(index),
+			label: `Cadastro ${index}`,
+		}));
+		const { input } = await renderAutocomplete({ options });
+
+		input.focus();
+		await tick();
+
+		expect(document.querySelectorAll('[role="option"]')).toHaveLength(50);
+	});
+
 	it.each(['clicio fogaca', 'CLICIO FOGACA', 'clicio fogaça'])(
 		'suggests original names when typing %s',
 		async (query) => {

@@ -14,13 +14,12 @@
 	let amountState = $derived(createBrlAmountState(value));
 
 	function validateInput(element: HTMLInputElement) {
-		$effect(() => {
-			element.setCustomValidity(required && amountState.canonicalValue === '' ? 'Valor é obrigatório.' : '');
-		});
+		element.setCustomValidity(required && amountState.canonicalValue === '' ? 'Valor é obrigatório.' : '');
 	}
 
 	function handleInput(event: Event) {
-		const element = event.currentTarget as HTMLInputElement;
+		if (!(event.currentTarget instanceof HTMLInputElement)) return;
+		const element = event.currentTarget;
 		const nextState = updateBrlAmountState(amountState, element.value);
 		value = nextState.canonicalValue;
 		element.value = nextState.displayValue;

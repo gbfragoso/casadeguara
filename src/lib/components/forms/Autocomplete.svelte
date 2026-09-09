@@ -32,24 +32,21 @@
 	let open = $state(false);
 	let active = $state(-1);
 	let input: HTMLInputElement;
+	const MAX_VISIBLE_SUGGESTIONS = 50;
 	const indexed = $derived(indexOptions(options));
 	const selected = $derived(options.find((option) => option.value === value));
 	const query = $derived(selected?.label ?? draft);
-	const suggestions = $derived(filterOptions(indexed, selected ? '' : query));
+	const suggestions = $derived(filterOptions(indexed, selected ? '' : query).slice(0, MAX_VISIBLE_SUGGESTIONS));
 	const activeOption = $derived(open ? suggestions[active] : undefined);
 	const listId = $derived(`${id}-options`);
 	const optionId = (option: AutocompleteOption) => `${id}-option-${option.value}`;
 
 	function validateInput(element: HTMLInputElement) {
-		$effect(() => {
-			element.setCustomValidity(query && !selected ? selectionMessage : '');
-		});
+		element.setCustomValidity(query && !selected ? selectionMessage : '');
 	}
 
-	function revealOption(element: HTMLButtonElement, index: number) {
-		$effect(() => {
-			if (active === index) element.scrollIntoView({ block: 'nearest' });
-		});
+	function revealActiveOption(element: HTMLButtonElement) {
+		element.scrollIntoView({ block: 'nearest' });
 	}
 
 	function search(text: string) {
@@ -119,7 +116,7 @@
 		<div class="suggestions" id={listId} role="listbox" aria-label={listLabel}>
 			{#each suggestions as option, index (option.value)}
 				<button
-					{@attach (element) => revealOption(element, index)}
+					{@attach active === index && revealActiveOption}
 					id={optionId(option)}
 					type="button"
 					role="option"

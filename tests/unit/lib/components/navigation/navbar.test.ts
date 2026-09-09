@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { mount, tick, unmount } from 'svelte';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import Navbar from '$lib/components/navigation/Navbar.svelte';
 
@@ -21,13 +21,13 @@ describe('Navbar', () => {
 	});
 
 	it('toggles the sidebar, menu, and color theme', async () => {
-		const sidebar = document.createElement('aside');
-		sidebar.id = 'sidebar';
-		sidebar.classList.add('is-hidden-touch');
-		document.body.append(sidebar);
 		const target = document.createElement('div');
 		document.body.append(target);
-		mounted = mount(Navbar, { target, props: { username: 'Ana Silva', userid: 'ana-1' } });
+		const onToggleSidebar = vi.fn();
+		mounted = mount(Navbar, {
+			target,
+			props: { username: 'Ana Silva', userid: 'ana-1', sidebarExpanded: false, onToggleSidebar },
+		});
 		await tick();
 
 		const menuButton = getButton(target, '[aria-label="menu"]');
@@ -41,7 +41,8 @@ describe('Navbar', () => {
 		dropdownButton.click();
 		await tick();
 
-		expect(sidebar.classList.contains('is-hidden-touch')).toBe(false);
+		expect(onToggleSidebar).toHaveBeenCalledOnce();
+		expect(menuButton.getAttribute('aria-expanded')).toBe('false');
 		expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
 		expect(dropdown.classList.contains('is-active')).toBe(true);
 
@@ -50,23 +51,27 @@ describe('Navbar', () => {
 		dropdownButton.click();
 		await tick();
 
-		expect(sidebar.classList.contains('is-hidden-touch')).toBe(true);
+		expect(onToggleSidebar).toHaveBeenCalledTimes(2);
 		expect(document.documentElement.getAttribute('data-theme')).toBe('light');
 		expect(dropdown.classList.contains('is-active')).toBe(false);
 	});
 
-	it('keeps controls operable when their document targets are absent', async () => {
+	it('reflects the controlled expanded sidebar state', async () => {
 		const target = document.createElement('div');
 		document.body.append(target);
-		mounted = mount(Navbar, { target, props: { username: 'Ana Silva', userid: 'ana-1' } });
+		mounted = mount(Navbar, {
+			target,
+			props: {
+				username: 'Ana Silva',
+				userid: 'ana-1',
+				sidebarExpanded: true,
+				onToggleSidebar: vi.fn(),
+			},
+		});
 		await tick();
-		const dropdownButton = getButton(target, '[aria-haspopup="true"]');
-		target.querySelector('#dropdown')?.remove();
+		const menuButton = getButton(target, '[aria-label="menu"]');
 
-		getButton(target, '[aria-label="menu"]').click();
-		dropdownButton.click();
-		await tick();
-
-		expect(target.querySelector('[aria-label="menu"]')).not.toBeNull();
+		expect(menuButton.getAttribute('aria-expanded')).toBe('true');
+		expect(menuButton.classList.contains('is-active')).toBe(true);
 	});
 });

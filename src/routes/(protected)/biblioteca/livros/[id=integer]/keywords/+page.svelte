@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer, enhanceForm } from '$lib/forms/enhancer.svelte';
 	import { page } from '$app/state';
 	import type { PageServerData } from './$types';
 	interface Props {
@@ -8,7 +8,7 @@
 	}
 
 	let { data }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let { keywords, keywordsLivro, livros, role } = $derived(data);
 	let bookId = $derived(page.params.id);
 </script>
@@ -32,17 +32,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de palavras-chave</h1>
 </div>
 
-<form
-	class="card"
-	action="?/adicionar"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" action="?/adicionar" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="columns">
 			{#await livros then livro}
@@ -87,9 +77,8 @@
 		</div>
 		<div class="control">
 			<button
-				aria-busy={loading}
-				class:is-loading={loading}
-				class="button is-primary has-text-weight-semibold"
+				aria-busy={formEnhancer.loading}
+				class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
 				type="submit">Adicionar</button>
 		</div>
 	</div>
@@ -135,7 +124,7 @@
 											<form
 												action="?/excluir&keyword={keyword.idkeyword}"
 												method="POST"
-												use:enhance>
+												{@attach enhanceForm}>
 												<button aria-label="trash">
 													<i class="fa-regular fa-trash-can fa-fw"></i>
 												</button>

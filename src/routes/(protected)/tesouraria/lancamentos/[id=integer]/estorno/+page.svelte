@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import { moeda } from '$lib/utils/currency';
 	import { formatCivilDate } from '$lib/utils/date';
 	import type { ActionData, PageData } from './$types';
@@ -11,14 +11,12 @@
 	}
 
 	let { data, form }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let reason = $derived(form?.values?.motivo ?? '');
 	let errors = $derived(form?.errors ?? {});
 	let lancamento = $derived(data?.lancamento);
 	const reasonErrors = $derived(errors.motivo ?? []);
-	const focusError = (node: HTMLElement) => {
-		queueMicrotask(() => node.focus());
-	};
+	const focusError = (node: HTMLElement) => node.focus();
 </script>
 
 <div class="mb-2">
@@ -40,18 +38,7 @@
 			<p class="mb-3"><strong>Descrição:</strong> {lancamento.descricao}</p>
 			<p class="mb-3"><strong>Valor:</strong> {moeda(Number(lancamento.valor))}</p>
 			<p class="mb-3"><strong>Data:</strong> {formatCivilDate(lancamento.dataLancamento)}</p>
-			<form
-				method="POST"
-				use:enhance={() => {
-					loading = true;
-					return async ({ update }) => {
-						try {
-							await update();
-						} finally {
-							loading = false;
-						}
-					};
-				}}>
+			<form method="POST" {@attach formEnhancer.submitWithLoading}>
 				<label class="label" for="motivo">Motivo do estorno</label>
 				<textarea
 					class="textarea"
@@ -65,7 +52,7 @@
 					aria-errormessage={reasonErrors.length ? 'motivo-errors' : undefined}>
 				</textarea>
 				{#if reasonErrors.length}
-					<p id="motivo-errors" class="help is-danger" role="alert" tabindex="-1" use:focusError>
+					<p id="motivo-errors" class="help is-danger" role="alert" tabindex="-1" {@attach focusError}>
 						{reasonErrors.join(' ')}
 					</p>
 				{/if}
@@ -80,7 +67,9 @@
 						</p>
 					{/if}
 				{/if}
-				<button class="button is-danger mt-3" type="submit" aria-busy={loading}>Confirmar estorno</button>
+				<button class="button is-danger mt-3" type="submit" aria-busy={formEnhancer.loading}>
+					Confirmar estorno
+				</button>
 			</form>
 		</div>
 	</div>

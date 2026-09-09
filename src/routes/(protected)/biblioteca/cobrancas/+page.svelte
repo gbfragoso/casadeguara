@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { enhanceForm } from '$lib/forms/enhancer.svelte';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -57,6 +57,7 @@
 						</tr>
 					{:then item}
 						{#each item as emprestimo (emprestimo.idemp)}
+							{@const dueDate = dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}
 							<tr>
 								<td>
 									<a
@@ -68,7 +69,7 @@
 								</td>
 								<td>{emprestimo.titulo}</td>
 								<td>{emprestimo.numero}</td>
-								<td>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
+								<td>{dueDate}</td>
 								{#if emprestimo.cobranca}
 									<td
 										><span class="tag is-success"
@@ -80,43 +81,34 @@
 								<td class="table-actions">
 									<div class="field is-grouped">
 										{#if emprestimo.telefone}
-											<form action="?/whatsapp" method="POST" use:enhance>
+											<form action="?/whatsapp" method="POST" {@attach enhanceForm}>
 												<input type="hidden" name="id" value={emprestimo.idemp} />
 												<input type="hidden" name="leitor" value={emprestimo.leitor} />
 												<input type="hidden" name="titulo" value={emprestimo.titulo} />
 												<input type="hidden" name="telefone" value={emprestimo.telefone} />
-												<input
-													type="hidden"
-													name="prazo"
-													value={dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')} />
+												<input type="hidden" name="prazo" value={dueDate} />
 												<button aria-label="Whatsapp" title="Whatsapp" class="control"
 													><i class="fa-brands fa-whatsapp fa-fw"></i></button>
 											</form>
 										{/if}
 										{#if emprestimo.celular}
-											<form action="?/whatsapp" method="POST" use:enhance>
+											<form action="?/whatsapp" method="POST" {@attach enhanceForm}>
 												<input type="hidden" name="id" value={emprestimo.idemp} />
 												<input type="hidden" name="leitor" value={emprestimo.leitor} />
 												<input type="hidden" name="titulo" value={emprestimo.titulo} />
 												<input type="hidden" name="telefone" value={emprestimo.celular} />
-												<input
-													type="hidden"
-													name="prazo"
-													value={dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')} />
+												<input type="hidden" name="prazo" value={dueDate} />
 												<button aria-label="Whatsapp" title="Whatsapp" class="control"
 													><i class="fa-brands fa-whatsapp fa-fw"></i></button>
 											</form>
 										{/if}
 										{#if emprestimo.email}
-											<form action="?/email" method="POST" use:enhance>
+											<form action="?/email" method="POST" {@attach enhanceForm}>
 												<input type="hidden" name="id" value={emprestimo.idemp} />
 												<input type="hidden" name="leitor" value={emprestimo.leitor} />
 												<input type="hidden" name="titulo" value={emprestimo.titulo} />
 												<input type="hidden" name="email" value={emprestimo.email} />
-												<input
-													type="hidden"
-													name="prazo"
-													value={dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')} />
+												<input type="hidden" name="prazo" value={dueDate} />
 												<button aria-label="Whatsapp" title="Whatsapp" class="control"
 													><i class="fa-regular fa-envelope fa-fw"></i></button>
 											</form>

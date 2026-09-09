@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
 	import { moeda } from '$lib/utils/currency';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -11,7 +11,7 @@
 	}
 
 	let { data }: Props = $props();
-	let loading = $state(false);
+	const formEnhancer = createFormEnhancer();
 	let { entradas } = $derived(data);
 
 	dayjs.extend(utc);
@@ -29,17 +29,7 @@
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Caixa</h1>
 </div>
 
-<form
-	class="card"
-	style="display: block !important"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
+<form class="card" style="display: block !important" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="card-content">
 		<div class="table-container">
 			<table class="table is-striped is-hoverable is-fullwidth">
@@ -94,9 +84,11 @@
 		</div>
 		<div class="is-hidden-print" style="min-width: 200px">
 			<button
-				aria-busy={loading}
-				class:is-loading={loading}
-				class="button is-success is-fullwidth has-text-weight-semibold"
+				aria-busy={formEnhancer.loading}
+				class={[
+					'button is-success is-fullwidth has-text-weight-semibold',
+					formEnhancer.loading && 'is-loading',
+				]}
 				type="submit">
 				<i class="fa-solid fa-check fa-fw">&nbsp;</i>Confirmar depósito
 			</button>
