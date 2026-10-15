@@ -1,4 +1,8 @@
-import { requireLibraryAccess, requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import {
+	hasLibraryAdminAccess,
+	requireLibraryAccess,
+	requireLibraryAdminAccess,
+} from '#lib/server/authorization/biblioteca.js';
 import type { LivroModel } from '#lib/server/models/livro.js';
 import { LivroHasDependentsError, LivroNotFoundError } from '#lib/server/models/livro-error.js';
 import { livroDeleteSchema, livroSearchSchema } from '#lib/validation/livro.js';
@@ -25,14 +29,12 @@ const getDeleteValues = (input: unknown) => {
 	return { idlivro: typeof value === 'string' ? value : '' };
 };
 
-const isAdmin = (user: { roles: string }) => user.roles.split(',').some((role) => role === 'biblioteca:admin');
-
 const createLoadHandler = (model: ListModel, requireAccess: AccessChecker) => async (event: LoadEvent) => {
 	const user = requireAccess(event.locals.user);
 
 	try {
 		const colecoes = await model.listCollectionOptions();
-		return { colecoes, isAdmin: isAdmin(user), role: user.roles };
+		return { colecoes, isAdmin: hasLibraryAdminAccess(user), role: user.roles };
 	} catch {
 		console.error('library.books.load_failed');
 		error(500, 'Falha ao carregar os dados dos livros.');

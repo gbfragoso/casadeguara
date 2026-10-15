@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from '../../../../support/fake-database';
 import { expectHttpError, expectRedirect, runHandler } from '../../../../support/handler-event';
+import { describeLibraryAdminFlag } from '../../../../support/library-admin-flag-suite';
 
 vi.mock('#lib/server/database/connection.js', () => import('../../../../support/fake-database'));
 
@@ -37,14 +38,15 @@ describe('createBibliotecaLivrosIdIntegerExemplaresHandlers load', () => {
 		expect(error.status).toBe(401);
 	});
 
-	it('streams the book copies with the user roles', async () => {
+	it('streams the book copies', async () => {
 		fakeDatabase.resolveWith([{ idexemplar: 11 }]);
 
 		const { result } = await runHandler(load, librarian);
 
-		expect(result).toMatchObject({ role: 'biblioteca' });
 		await expect((result as { exemplares: Promise<unknown> }).exemplares).resolves.toEqual([{ idexemplar: 11 }]);
 	});
+
+	describeLibraryAdminFlag(() => load, params);
 });
 
 describe('createBibliotecaLivrosIdIntegerExemplaresHandlers adicionar', () => {

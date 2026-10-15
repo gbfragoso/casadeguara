@@ -6,6 +6,8 @@ import { user } from '#lib/server/database/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 
+const listedUserFields = { id: user.id, name: user.name };
+
 const load = async ({ locals, url }: RequestEvent) => {
 	if (!locals.user) redirect(302, '/');
 
@@ -16,7 +18,7 @@ const load = async ({ locals, url }: RequestEvent) => {
 	try {
 		const usuarios = async () => {
 			return db
-				.select()
+				.select(listedUserFields)
 				.from(user)
 				.offset((page - 1) * 5)
 				.where(and(nameFilter, ulike(user.roles, 'biblioteca%')))

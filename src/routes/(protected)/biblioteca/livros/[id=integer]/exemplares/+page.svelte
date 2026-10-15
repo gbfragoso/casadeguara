@@ -12,7 +12,7 @@
 
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
-	let { exemplares, livros, role } = $derived(data);
+	let { exemplares, livros, isAdmin } = $derived(data);
 	let bookId = $derived(page.params.id);
 	dayjs.extend(utc);
 </script>
@@ -82,7 +82,7 @@
 						<th>Ex</th>
 						<th>Data cadastro</th>
 						<th>Status</th>
-						{#if role.includes('admin')}
+						{#if isAdmin}
 							<th class="table-actions">Ações</th>
 						{/if}
 					</tr>
@@ -105,7 +105,7 @@
 									<div></div>
 								</div>
 							</td>
-							{#if role.includes('admin')}
+							{#if isAdmin}
 								<td>
 									<div class="skeleton-lines">
 										<div></div>
@@ -128,7 +128,7 @@
 									{/if}
 								</td>
 								<td class="table-actions">
-									{#if role.includes('admin') && exemplar.status !== 'Emprestado'}
+									{#if isAdmin && exemplar.status !== 'Emprestado'}
 										<div class="field is-grouped">
 											{#if exemplar.status !== 'Disponível'}
 												<form

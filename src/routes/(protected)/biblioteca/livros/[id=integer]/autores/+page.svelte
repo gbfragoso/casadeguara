@@ -9,7 +9,7 @@
 
 	let { data }: Props = $props();
 	const formEnhancer = createFormEnhancer();
-	let { autores, autoresLivro, livros, role } = $derived(data);
+	let { autores, autoresLivro, livros, isAdmin } = $derived(data);
 	let bookId = $derived(page.params.id);
 </script>
 
@@ -100,7 +100,7 @@
 							<tr>
 								<td>{autor.nome}</td>
 								<td>
-									{#if role.includes('admin')}
+									{#if isAdmin}
 										<div class="field is-grouped">
 											<form
 												action="?/excluir&autor={autor.idautor}"

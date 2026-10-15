@@ -2,12 +2,16 @@ import type { Actions, RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
 import { keyword, livroHasKeyword, livro } from '#lib/server/database/schema.js';
-import { requireLibraryAccess, requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import {
+	hasLibraryAdminAccess,
+	requireLibraryAccess,
+	requireLibraryAdminAccess,
+} from '#lib/server/authorization/biblioteca.js';
 import { error, fail } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
 const load = async ({ locals, params }: RequestEvent) => {
-	const user = requireLibraryAccess(locals.user);
+	const isAdmin = hasLibraryAdminAccess(requireLibraryAccess(locals.user));
 
 	try {
 		const livros = async () => {
@@ -30,7 +34,7 @@ const load = async ({ locals, params }: RequestEvent) => {
 				.orderBy(keyword.chave);
 		};
 
-		return { keywords: keywords(), keywordsLivro: keywordsLivro(), livros: livros(), role: user.roles };
+		return { keywords: keywords(), keywordsLivro: keywordsLivro(), livros: livros(), isAdmin };
 	} catch (err) {
 		console.error(err);
 		return error(500, 'Falha ao carregar a lista de keywords');

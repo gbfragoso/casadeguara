@@ -2,6 +2,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from './fake-database';
 import { expectHttpError, expectRedirect, runHandler } from './handler-event';
+import { describeLibraryAdminFlag } from './library-admin-flag-suite';
 
 type Handler = (...args: never[]) => unknown;
 type AssociationHandlers = { load: Handler; actions: Record<string, Handler> };
@@ -29,18 +30,19 @@ const describeLoad = ({ listKeys, createHandlers }: SuiteOptions) => {
 		expect(error.status).toBe(401);
 	});
 
-	it('streams the book associations with the user roles', async () => {
+	it('streams the book associations', async () => {
 		fakeDatabase.resolveWith([{ idlivro: 3 }]);
 
 		const { result } = await runHandler(createHandlers().load, librarian);
 
-		expect(result).toMatchObject({ role: 'biblioteca' });
 		await Promise.all(
 			[...listKeys, 'livros'].map((key) =>
 				expect((result as Record<string, unknown>)[key]).resolves.toEqual([{ idlivro: 3 }]),
 			),
 		);
 	});
+
+	describeLibraryAdminFlag(() => createHandlers().load, params);
 };
 
 const describeAddition = ({ field, createHandlers }: SuiteOptions) => {

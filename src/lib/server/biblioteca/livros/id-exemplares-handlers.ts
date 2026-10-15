@@ -2,12 +2,16 @@ import type { Actions, RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
 import { exemplar, livro } from '#lib/server/database/schema.js';
-import { requireLibraryAccess, requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import {
+	hasLibraryAdminAccess,
+	requireLibraryAccess,
+	requireLibraryAdminAccess,
+} from '#lib/server/authorization/biblioteca.js';
 import { error, fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
 const load = async ({ locals, params }: RequestEvent) => {
-	const user = requireLibraryAccess(locals.user);
+	const isAdmin = hasLibraryAdminAccess(requireLibraryAccess(locals.user));
 
 	try {
 		const livros = async () => {
@@ -23,7 +27,7 @@ const load = async ({ locals, params }: RequestEvent) => {
 				.where(eq(exemplar.livro, Number(params.id)))
 				.orderBy(exemplar.numero);
 		};
-		return { exemplares: exemplares(), livros: livros(), role: user.roles };
+		return { exemplares: exemplares(), livros: livros(), isAdmin };
 	} catch (err) {
 		console.error(err);
 		return error(500, 'Falha ao carregar a lista de autores');

@@ -9,7 +9,7 @@
 
 	let { data }: Props = $props();
 	const formEnhancer = createFormEnhancer();
-	let { keywords, keywordsLivro, livros, role } = $derived(data);
+	let { keywords, keywordsLivro, livros, isAdmin } = $derived(data);
 	let bookId = $derived(page.params.id);
 </script>
 
@@ -119,7 +119,7 @@
 								<td>{keyword.chave}</td>
 								<td>{keyword.referencia}</td>
 								<td>
-									{#if role.includes('admin')}
+									{#if isAdmin}
 										<div class="field is-grouped">
 											<form
 												action="?/excluir&keyword={keyword.idkeyword}"
