@@ -1,8 +1,8 @@
-import { createCardPhoto } from '$lib/server/image/cropper';
-import { InvalidPhotoError, normalizePhotoSource } from '$lib/server/image/normalizer';
-import type { SecretariaPhotoModel } from '$lib/server/models/secretaria-photo';
+import { createCardPhoto } from '#lib/server/image/cropper.js';
+import { InvalidPhotoError, normalizePhotoSource } from '#lib/server/image/normalizer.js';
+import type { SecretariaPhotoModel } from '#lib/server/models/secretaria-photo.js';
 
-import { INVALID_PHOTO_MESSAGE, PHOTO_POSITION_MESSAGE } from '$lib/validation/cadastros/foto';
+import { INVALID_PHOTO_MESSAGE, PHOTO_POSITION_MESSAGE } from '#lib/validation/cadastros/foto.js';
 import { error, fail } from '@sveltejs/kit';
 
 import {
@@ -14,8 +14,8 @@ import {
 	rejectMalformedInput,
 	requireSource,
 	type PhotoActionData,
-} from '$lib/server/secretaria/photo/input';
-import { requireSecretariaAccess } from '$lib/server/secretaria/access';
+} from '#lib/server/secretaria/photo/input.js';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
 
 type SavePhotoModel = Pick<SecretariaPhotoModel, 'replace'>;
 type ReframePhotoModel = Pick<SecretariaPhotoModel, 'getSource' | 'reframe'>;
@@ -43,7 +43,7 @@ export const savePhoto = async (model: SavePhotoModel, { locals, params, request
 			});
 		}
 		console.error('Falha ao salvar a foto do trabalhador.');
-		error(500, { message: 'Falha ao salvar a foto do trabalhador.' });
+		error(500, 'Falha ao salvar a foto do trabalhador.');
 	}
 
 	missingCadastro();
@@ -61,7 +61,7 @@ export const reframePhoto = async (model: ReframePhotoModel, { locals, params, r
 		source = await model.getSource(id);
 	} catch {
 		console.error('Falha ao ler a origem da foto do trabalhador.');
-		error(500, { message: 'Falha ao reenquadrar a foto do trabalhador.' });
+		error(500, 'Falha ao reenquadrar a foto do trabalhador.');
 	}
 	const sourceBytes = requireSource(source);
 
@@ -78,7 +78,7 @@ export const reframePhoto = async (model: ReframePhotoModel, { locals, params, r
 			});
 	} catch {
 		console.error('Falha ao reenquadrar a foto do trabalhador.');
-		error(500, { message: 'Falha ao reenquadrar a foto do trabalhador.' });
+		error(500, 'Falha ao reenquadrar a foto do trabalhador.');
 	}
 
 	missingPhoto();
@@ -92,7 +92,7 @@ export const removePhoto = async (model: RemovePhotoModel, { locals, params }: A
 		}
 	} catch {
 		console.error('Falha ao remover a foto do trabalhador.');
-		error(500, { message: 'Falha ao remover a foto do trabalhador.' });
+		error(500, 'Falha ao remover a foto do trabalhador.');
 	}
 
 	missingCadastro();

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { SvelteSet } from 'svelte/reactivity';
-	import { updateCadastroFlag, type CadastroFlagField } from '$lib/cadastros/flags';
+	import { updateCadastroFlag, type CadastroFlagField } from '#lib/cadastros/flags.js';
 	import type { ActionData } from './$types';
 
 	type CheckboxEvent = Event & { currentTarget: HTMLInputElement };
@@ -29,7 +29,7 @@
 	}
 
 	function sendFlag(data: { id: number; field: CadastroFlagField; value: boolean }) {
-		return fetch(resolve('/api/cadastros'), {
+		return fetch(resolve('api/cadastros'), {
 			method: 'POST',
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify(data),
@@ -47,9 +47,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href={resolve('/secretaria/cadastros')} aria-current="page">Cadastros</a>
+				<a href={resolve('secretaria/cadastros')} aria-current="page">Cadastros</a>
 			</li>
 		</ul>
 	</nav>
@@ -110,7 +110,7 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<a
 					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('/secretaria/cadastros/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+					href={resolve('secretaria/cadastros/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 		{#if form?.errors}

@@ -41,7 +41,7 @@ test('E2E-02 corrige e confirma um cadastro em etapas', async ({ page, e2e }) =>
 
 	const invalidResponsePromise = waitForCreateResponse(page);
 	await form.getByRole('button', { name: 'Cadastrar livro' }).click();
-	expect((await invalidResponsePromise).ok()).toBe(true);
+	expect((await invalidResponsePromise).status()).toBe(400);
 	await form.getByRole('button', { name: 'Voltar aos autores' }).click();
 	await form.getByRole('button', { name: 'Voltar', exact: true }).click();
 	await expect(form.getByLabel('Tombo')).toHaveValue(tombo);

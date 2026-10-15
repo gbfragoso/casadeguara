@@ -1,34 +1,42 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { user } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { user } from '#lib/server/database/schema.js';
+import { error, redirect } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
 
-const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
-	if (locals.user.id !== String(params.id)) redirect(302, '/');
+const requireAccountOwner = (accountUser: App.Locals['user'], accountId: string) => {
+	if (!accountUser || accountUser.id !== accountId) redirect(302, '/');
 
+	return accountUser;
+};
+
+const accountFields = { id: user.id, username: user.username, name: user.name };
+
+const findUser = async (id: string) => {
 	try {
-		const resultado = await db
-			.select()
-			.from(user)
-			.where(eq(user.id, String(params.id)));
-
-		if (!resultado) {
-			throw fail(404, { message: 'Usuário não encontrado' });
-		}
-
-		return { usuario: resultado[0] };
+		const [usuario] = await db.select(accountFields).from(user).where(eq(user.id, id));
+		return usuario;
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao baixar os dados do usuário' });
+		error(500, 'Falha ao baixar os dados do usuário');
 	}
 };
 
+const load = async ({ locals, params }: RequestEvent) => {
+	requireAccountOwner(locals.user, String(params.id));
+
+	const usuario = await findUser(String(params.id));
+	if (!usuario) error(404, 'Usuário não encontrado');
+
+	return { usuario };
+};
+
 const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request, params, locals }) => {
+		requireAccountOwner(locals.user, String(params.id));
+
 		const formData = await request.formData();
 		const password = formData.get('password') as string;
 		const name = formData.get('name') as string;
@@ -51,9 +59,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do usuário',
-			});
+			return error(500, 'Falha ao atualizar os dados do usuário');
 		}
 	},
 };

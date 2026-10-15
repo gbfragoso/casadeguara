@@ -15,9 +15,9 @@
 <div>
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href={resolve('/biblioteca')} aria-current="page">Página Inicial</a>
+				<a href={resolve('biblioteca')} aria-current="page">Página Inicial</a>
 			</li>
 		</ul>
 	</nav>

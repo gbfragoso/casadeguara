@@ -1,9 +1,9 @@
-import { type EditoraModel } from '$lib/server/models/editora';
-import { editoraSchema } from '$lib/validation/editora';
+import { type EditoraModel } from '#lib/server/models/editora.js';
+import { editoraSchema } from '#lib/validation/editora.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
 
 type EditModel = Pick<EditoraModel, 'get' | 'update'>;
 type User = { roles: string } | null;
@@ -15,7 +15,7 @@ const getPublisher = async (model: EditModel, id: number) => {
 		return await model.get(id);
 	} catch (cause) {
 		console.error(cause);
-		error(500, { message: 'Falha ao buscar os dados da editora' });
+		error(500, 'Falha ao buscar os dados da editora');
 	}
 };
 
@@ -24,7 +24,7 @@ const updatePublisher = async (model: EditModel, id: number, name: string) => {
 		return await model.update(id, name);
 	} catch (cause) {
 		console.error(cause);
-		error(500, { message: 'Falha ao atualizar os dados da editora' });
+		error(500, 'Falha ao atualizar os dados da editora');
 	}
 };
 
@@ -34,7 +34,7 @@ export const createPublisherEditHandlers = ({ model }: { model: EditModel }) => 
 
 		const publisher = await getPublisher(model, Number(params.id));
 
-		if (!publisher) error(404, { message: 'Editora não encontrada.' });
+		if (!publisher) error(404, 'Editora não encontrada.');
 
 		return { editora: publisher };
 	},
@@ -58,7 +58,7 @@ export const createPublisherEditHandlers = ({ model }: { model: EditModel }) => 
 
 			const updated = await updatePublisher(model, Number(params.id), result.data.nome);
 
-			if (!updated) error(404, { message: 'Editora não encontrada.' });
+			if (!updated) error(404, 'Editora não encontrada.');
 
 			return { status: 200 };
 		},

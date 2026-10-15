@@ -1,4 +1,4 @@
-import { createSecretariaFrequenciaRegistroHandlers } from '$lib/server/secretaria/frequencia/registro-handlers';
+import { createSecretariaFrequenciaRegistroHandlers } from '#lib/server/secretaria/frequencia/registro-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

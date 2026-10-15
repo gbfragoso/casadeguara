@@ -1,8 +1,8 @@
-import { requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
+import { requireTesourariaAccess } from '#lib/server/authorization/tesouraria.js';
 import type { LancamentoModel } from './model';
 import { LancamentoError } from './errors';
 import { getDomainErrors, getLancamentoErrors, getLancamentoSearchValues } from './form';
-import { lancamentoSearchSchema } from '$lib/validation/tesouraria/lancamentos';
+import { lancamentoSearchSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { error, fail } from '@sveltejs/kit';
 
 type User = { id: string; roles: string } | null | undefined;
@@ -23,15 +23,14 @@ const mapActionFailure = (cause: unknown, values: ReturnType<typeof getLancament
 	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND')
 		return fail(404, { values, message: cause.message });
 	console.error('treasury.launches.search_failed');
-	error(500, { message: 'Falha ao carregar a lista de lançamentos.' });
+	error(500, 'Falha ao carregar a lista de lançamentos.');
 };
 
 const mapLoadFailure = (cause: unknown) => {
-	if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR') error(400, { message: cause.message });
-	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND')
-		error(404, { message: cause.message });
+	if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR') error(400, cause.message);
+	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND') error(404, cause.message);
 	console.error('treasury.launches.search_failed');
-	error(500, { message: 'Falha ao carregar a lista de lançamentos.' });
+	error(500, 'Falha ao carregar a lista de lançamentos.');
 };
 
 const parseSearch = (input: unknown) => {
@@ -43,7 +42,7 @@ const createLoadHandler = (model: ListModel, requireAccess: AccessChecker) => as
 	requireAccess(event.locals.user);
 	const input = toInput(event.url);
 	const result = parseSearch(input);
-	if (!result.success) error(400, { message: 'Parâmetros de pesquisa inválidos.' });
+	if (!result.success) error(400, 'Parâmetros de pesquisa inválidos.');
 	try {
 		const page = await model.search(result.data);
 		return {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { requireLibraryAccess, requireLibraryAdminAccess } from '$lib/server/authorization/biblioteca';
+import { requireLibraryAccess, requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
 
 describe('requireLibraryAccess', () => {
 	it('redirects an unauthenticated request', () => {
@@ -11,7 +11,7 @@ describe('requireLibraryAccess', () => {
 		expect(() => requireLibraryAccess({ roles: 'secretaria' })).toThrow(
 			expect.objectContaining({
 				status: 401,
-				body: { message: 'Usuário não possui acesso ao sistema da biblioteca' },
+				body: { message: 'Usuário não possui acesso ao sistema da biblioteca', status: 401 },
 			}),
 		);
 	});

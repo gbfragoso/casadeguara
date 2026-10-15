@@ -1,5 +1,5 @@
-import { cadastroModel } from '$lib/server/models/cadastro';
-import { createRegistrationListHandlers } from '$lib/server/secretaria/cadastros/list-handlers';
+import { cadastroModel } from '#lib/server/models/cadastro.js';
+import { createRegistrationListHandlers } from '#lib/server/secretaria/cadastros/list-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

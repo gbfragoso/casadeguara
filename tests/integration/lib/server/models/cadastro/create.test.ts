@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { CadastroModel } from '$lib/server/models/cadastro';
-import { cadastros } from '$lib/server/database/schema';
+import { CadastroModel } from '#lib/server/models/cadastro.js';
+import { cadastros } from '#lib/server/database/schema.js';
 import { eq, sql } from 'drizzle-orm';
 
 import { withProvisionedDatabase } from '../../database/migration-test-support';

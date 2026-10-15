@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { serie } from '$lib/server/database/schema';
-import { COLLECTION_FETCH_LIMIT, ColecaoModel } from '$lib/server/models/colecao';
+import { db } from '#lib/server/database/connection.js';
+import { serie } from '#lib/server/database/schema.js';
+import { COLLECTION_FETCH_LIMIT, ColecaoModel } from '#lib/server/models/colecao.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

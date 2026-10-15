@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -13,9 +13,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href={resolve('/secretaria/frequencia')} aria-current="page">Frequência</a>
+				<a href={resolve('secretaria/frequencia')} aria-current="page">Frequência</a>
 			</li>
 		</ul>
 	</nav>
@@ -91,7 +91,7 @@
 				</button>
 			</div>
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px; line-height: 40px;">
-				<a class="has-text-primary is-underlined" href={resolve('/secretaria/frequencia/registro')}
+				<a class="has-text-primary is-underlined" href={resolve('secretaria/frequencia/registro')}
 					>Clique aqui para registrar as frequências</a>
 			</div>
 		</div>

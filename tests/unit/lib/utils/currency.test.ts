@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatBrlDecimal, formatMonthLabel, moeda } from '$lib/utils/currency';
+import { formatBrlDecimal, formatMonthLabel, moeda } from '#lib/utils/currency.js';
 
 describe('moeda', () => {
 	it('formats amounts as Brazilian reais', () => {

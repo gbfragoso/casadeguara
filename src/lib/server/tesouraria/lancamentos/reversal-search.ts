@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, ilike, lte } from 'drizzle-orm';
-import { cadastros, estornos, lancamentos, user } from '$lib/server/database/schema';
-import { ulike } from '$lib/server/database/functions';
+import { cadastros, estornos, lancamentos, user } from '#lib/server/database/schema.js';
+import { ulike } from '#lib/server/database/functions.js';
 import type { EstornoItem, EstornoPage, EstornoSearch, LancamentoDatabase } from './types';
 import { formatDate, toDate } from './format';
 

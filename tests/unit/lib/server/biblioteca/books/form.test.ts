@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getLivroErrors, getLivroFormValues, getLivroSearchValues } from '$lib/server/biblioteca/books/form';
+import { getLivroErrors, getLivroFormValues, getLivroSearchValues } from '#lib/server/biblioteca/books/form.js';
 
 describe('livro form state helpers', () => {
 	it('keeps only known string search values', () => {

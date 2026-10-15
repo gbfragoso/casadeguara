@@ -4,7 +4,7 @@ import {
 	secretariaCreateSchema,
 	secretariaSearchSchema,
 	secretariaUpdateSchema,
-} from '$lib/validation/cadastros/secretaria';
+} from '#lib/validation/cadastros/secretaria.js';
 import { getFieldErrors } from '../field-errors';
 
 describe('secretaria registration schemas', () => {

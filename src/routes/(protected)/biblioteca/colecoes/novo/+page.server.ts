@@ -1,5 +1,5 @@
-import { colecaoModel } from '$lib/server/models/colecao';
-import { createCollectionCreateHandlers } from '$lib/server/biblioteca/colecoes/create-handlers';
+import { colecaoModel } from '#lib/server/models/colecao.js';
+import { createCollectionCreateHandlers } from '#lib/server/biblioteca/colecoes/create-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

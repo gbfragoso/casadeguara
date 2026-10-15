@@ -15,10 +15,10 @@
 <div id="breadcrumb" class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
-			<li><a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
+			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
 			<li class="is-active">
-				<a href={resolve('/biblioteca/emprestimos')} aria-current="page">Recibo</a>
+				<a href={resolve('biblioteca/emprestimos')} aria-current="page">Recibo</a>
 			</li>
 		</ul>
 	</nav>

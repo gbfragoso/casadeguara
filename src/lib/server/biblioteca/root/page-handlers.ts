@@ -1,9 +1,9 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { emprestimo } from '$lib/server/database/schema';
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { avisoModel, type Aviso } from '$lib/server/models/aviso';
+import { db } from '#lib/server/database/connection.js';
+import { emprestimo } from '#lib/server/database/schema.js';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { avisoModel, type Aviso } from '#lib/server/models/aviso.js';
 import { error } from '@sveltejs/kit';
 import { and, count, gte, isNotNull, lte, sum } from 'drizzle-orm';
 
@@ -41,7 +41,7 @@ const createInternalLibraryDashboardLoad = (sources: DashboardSources) => {
 			return { avisos, emprestimos, devolucoes, username: user.name, userid: user.id };
 		} catch (cause) {
 			console.error('Falha ao carregar o painel da biblioteca', { cause });
-			error(500, { message: 'Falha ao carregar as informações da biblioteca' });
+			error(500, 'Falha ao carregar as informações da biblioteca');
 		}
 	};
 };

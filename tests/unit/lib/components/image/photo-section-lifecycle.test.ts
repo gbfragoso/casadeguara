@@ -2,7 +2,7 @@
 import { mount, tick, unmount } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import PhotoSection from '$lib/components/image/PhotoSection.svelte';
+import PhotoSection from '#lib/components/image/PhotoSection.svelte';
 
 const fileList = (file: File) => Object.defineProperty({}, '0', { value: file, enumerable: true });
 

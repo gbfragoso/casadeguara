@@ -1,8 +1,8 @@
-import { assertTestDatabaseContext } from '$lib/scripts/testing/database-url.js';
+import { assertTestDatabaseContext } from '#lib/scripts/testing/database-url.js';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
-import * as schema from '$lib/server/database/schema';
+import * as schema from '#lib/server/database/schema.js';
 
 function getDatabaseUrl(environment: NodeJS.ProcessEnv) {
 	return assertTestDatabaseContext({

@@ -1,14 +1,8 @@
-import { enhance } from '$app/forms';
-import type { ActionResult } from '@sveltejs/kit';
+import { enhance, type SubmitFunction } from '$app/forms';
 import { fromAction } from 'svelte/attachments';
 
-interface SubmissionUpdate {
-	formData: FormData;
-	formElement: HTMLFormElement;
-	action: URL;
-	result: ActionResult;
-	update: (options?: { reset?: boolean; invalidateAll?: boolean }) => Promise<void>;
-}
+type SubmissionCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
+type SubmissionUpdate = Parameters<SubmissionCallback>[0];
 
 interface FormEnhancerOptions {
 	afterUpdate?: (submission: SubmissionUpdate) => void | Promise<void>;

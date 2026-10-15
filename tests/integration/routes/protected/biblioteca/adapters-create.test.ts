@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
 
-import { db } from '$lib/server/database/connection';
-import { autor, cadastros, editora, keyword, serie } from '$lib/server/database/schema';
-import { cadastroModel } from '$lib/server/models/cadastro';
+import { db } from '#lib/server/database/connection.js';
+import { autor, cadastros, editora, keyword, serie } from '#lib/server/database/schema.js';
+import { cadastroModel } from '#lib/server/models/cadastro.js';
 import { bibliotecaCreateActions } from '../../../support/biblioteca-route-actions';
 import { bibliotecaUser } from '../../../support/auth';
 import { createTestName } from '../../../lib/server/models/cadastro/test-support';

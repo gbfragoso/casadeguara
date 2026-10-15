@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createBookCreateHandlers } from '$lib/server/biblioteca/books/create-handlers';
-import { DuplicateLivroTomboError, LivroReferenceNotFoundError } from '$lib/server/models/livro-error';
+import { createBookCreateHandlers } from '#lib/server/biblioteca/books/create-handlers.js';
+import { DuplicateLivroTomboError, LivroReferenceNotFoundError } from '#lib/server/models/livro-error.js';
 
 type CreateModel = Parameters<typeof createBookCreateHandlers>[0]['model'];
 

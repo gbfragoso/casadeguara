@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { aviso } from '$lib/server/database/schema';
-import type { Aviso } from '$lib/server/models/aviso';
+import { db } from '#lib/server/database/connection.js';
+import { aviso } from '#lib/server/database/schema.js';
+import type { Aviso } from '#lib/server/models/aviso.js';
 import { eq } from 'drizzle-orm';
 
 type NoticeFixture = { date: Date | null; suffix: string };

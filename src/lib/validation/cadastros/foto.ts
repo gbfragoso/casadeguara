@@ -23,7 +23,6 @@ const positionField = (minimum: number, maximum: number) =>
 		.pipe(
 			z
 				.number({ error: PHOTO_POSITION_MESSAGE })
-				.finite(PHOTO_POSITION_MESSAGE)
 				.min(minimum, PHOTO_POSITION_MESSAGE)
 				.max(maximum, PHOTO_POSITION_MESSAGE),
 		);

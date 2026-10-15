@@ -33,6 +33,7 @@ const createCookies = (): Cookies => ({
 	set: () => undefined,
 	delete: () => undefined,
 	serialize: (name, value) => `${name}=${value}`,
+	parse: () => ({ name: '', value: '' }),
 });
 
 export const createRequestEvent = (overrides: Partial<RouteEvent> = {}): RouteEvent => {

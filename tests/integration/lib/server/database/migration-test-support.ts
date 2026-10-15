@@ -1,7 +1,7 @@
-import { createTestDatabase, dropTestDatabase, provisionTestDatabase } from '$lib/scripts/testing/database.js';
-import { withDatabaseName } from '$lib/scripts/testing/database-url.js';
+import { createTestDatabase, dropTestDatabase, provisionTestDatabase } from '#lib/scripts/testing/database.js';
+import { withDatabaseName } from '#lib/scripts/testing/database-url.js';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import * as schema from '$lib/server/database/schema';
+import * as schema from '#lib/server/database/schema.js';
 import { getTestDatabaseUrl } from '../../../../support/database';
 import postgres from 'postgres';
 

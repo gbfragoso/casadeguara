@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createLancamentoAuditHandlers } from '$lib/server/tesouraria/lancamentos/audit-handlers';
-import { createLancamentoCreateHandlers } from '$lib/server/tesouraria/lancamentos/create-handlers';
+import { createLancamentoAuditHandlers } from '#lib/server/tesouraria/lancamentos/audit-handlers.js';
+import { createLancamentoCreateHandlers } from '#lib/server/tesouraria/lancamentos/create-handlers.js';
 import {
 	alreadyReversedError,
 	notDepositableError,
 	notFoundError,
 	persistenceError,
 	validationError,
-} from '$lib/server/tesouraria/lancamentos/errors';
-import { createLancamentoListHandlers } from '$lib/server/tesouraria/lancamentos/list-handlers';
-import { createLancamentoReversalHandlers } from '$lib/server/tesouraria/lancamentos/reversal-handlers';
+} from '#lib/server/tesouraria/lancamentos/errors.js';
+import { createLancamentoListHandlers } from '#lib/server/tesouraria/lancamentos/list-handlers.js';
+import { createLancamentoReversalHandlers } from '#lib/server/tesouraria/lancamentos/reversal-handlers.js';
 import {
 	getDomainErrors,
 	getEstornoSearchValues,
@@ -18,9 +18,9 @@ import {
 	getLancamentoFormValues,
 	getLancamentoSearchValues,
 	getReasonValues,
-} from '$lib/server/tesouraria/lancamentos/form';
+} from '#lib/server/tesouraria/lancamentos/form.js';
 import { createRequestEvent } from '../../../../../integration/support/request-event';
-import { estornoReasonSchema } from '$lib/validation/tesouraria/lancamentos';
+import { estornoReasonSchema } from '#lib/validation/tesouraria/lancamentos.js';
 
 const user = { id: 'user', roles: 'tesouraria', username: 'user', name: 'User' };
 const admin = { id: 'admin', roles: 'tesouraria:admin', username: 'admin', name: 'Admin' };

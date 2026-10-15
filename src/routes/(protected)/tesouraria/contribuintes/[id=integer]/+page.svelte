@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Notification from '$lib/components/feedback/Notification.svelte';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import Notification from '#lib/components/feedback/Notification.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 
 	interface Props {
@@ -20,9 +20,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
+			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href={resolve('/tesouraria/contribuintes')} aria-current="page">Contribuintes</a>
+				<a href={resolve('tesouraria/contribuintes')} aria-current="page">Contribuintes</a>
 			</li>
 		</ul>
 	</nav>

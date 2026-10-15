@@ -1,7 +1,7 @@
 import { and, gte, lt, sql } from 'drizzle-orm';
 
-import { activeLancamentoPredicate, lancamentos } from '$lib/server/database/schema';
-import type { MonthlyLancamentoTotal } from '$lib/tesouraria/monthly-totals';
+import { activeLancamentoPredicate, lancamentos } from '#lib/server/database/schema.js';
+import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
 import { getBahiaMonthWindow, type MonthWindow } from './month-window';
 import type { LancamentoDatabase } from './types';
 

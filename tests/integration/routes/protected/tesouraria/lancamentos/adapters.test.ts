@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { alreadyReversedError, LancamentoError } from '$lib/server/tesouraria/lancamentos/errors';
-import { createLancamentoAuditHandlers } from '$lib/server/tesouraria/lancamentos/audit-handlers';
-import { createLancamentoCreateHandlers } from '$lib/server/tesouraria/lancamentos/create-handlers';
-import { createLancamentoListHandlers } from '$lib/server/tesouraria/lancamentos/list-handlers';
-import { createLancamentoReversalHandlers } from '$lib/server/tesouraria/lancamentos/reversal-handlers';
+import { alreadyReversedError, LancamentoError } from '#lib/server/tesouraria/lancamentos/errors.js';
+import { createLancamentoAuditHandlers } from '#lib/server/tesouraria/lancamentos/audit-handlers.js';
+import { createLancamentoCreateHandlers } from '#lib/server/tesouraria/lancamentos/create-handlers.js';
+import { createLancamentoListHandlers } from '#lib/server/tesouraria/lancamentos/list-handlers.js';
+import { createLancamentoReversalHandlers } from '#lib/server/tesouraria/lancamentos/reversal-handlers.js';
 import { createRequestEvent } from '../../../../support/request-event';
 import {
 	actions as listRouteActions,

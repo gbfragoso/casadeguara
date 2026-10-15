@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { formatCivilDate } from '$lib/utils/date';
+import { formatCivilDate } from '#lib/utils/date.js';
 
 const originalTimeZone = process.env.TZ;
 

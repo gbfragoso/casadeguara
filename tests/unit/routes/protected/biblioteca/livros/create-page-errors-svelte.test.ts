@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import Page from '../../../../../../src/routes/(protected)/biblioteca/livros/novo/+page.svelte';
 
-vi.mock('$lib/forms/enhancer.svelte', () => ({
+vi.mock('#lib/forms/enhancer.svelte.js', () => ({
 	createFormEnhancer: () => ({ loading: false, submitWithLoading: () => undefined }),
 }));
 

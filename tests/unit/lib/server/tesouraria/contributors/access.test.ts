@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { requireTesourariaAccess } from '$lib/server/tesouraria/contributors/access';
+import { requireTesourariaAccess } from '#lib/server/tesouraria/contributors/access.js';
 
 describe('treasury contributor access', () => {
 	it('preserves the contributor guard redirect for anonymous users', () => {

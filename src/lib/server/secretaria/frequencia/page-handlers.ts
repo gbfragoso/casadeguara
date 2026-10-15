@@ -1,18 +1,21 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { unaccent } from '$lib/server/database/functions';
-import { cadastros } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { unaccent } from '#lib/server/database/functions.js';
+import { cadastros } from '#lib/server/database/schema.js';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
+import { error } from '@sveltejs/kit';
 import dayjs from 'dayjs';
 import { and, eq } from 'drizzle-orm';
 
 const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireSecretariaAccess(locals.user);
 };
 
 const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		requireSecretariaAccess(locals.user);
+
 		const form = await request.formData();
 
 		let dataInicial = dayjs(form.get('dataInicio') as string);
@@ -37,9 +40,7 @@ const actions: Actions = {
 			return { leitores, datas };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de leitores',
-			});
+			return error(500, 'Falha ao carregar a lista de leitores');
 		}
 	},
 };

@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { autor } from '$lib/server/database/schema';
-import { AUTHOR_FETCH_LIMIT, AutorModel } from '$lib/server/models/autor';
+import { db } from '#lib/server/database/connection.js';
+import { autor } from '#lib/server/database/schema.js';
+import { AUTHOR_FETCH_LIMIT, AutorModel } from '#lib/server/models/autor.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

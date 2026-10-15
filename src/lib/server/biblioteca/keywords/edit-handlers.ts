@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type KeywordModel } from '$lib/server/models/keyword';
-import { keywordSchema } from '$lib/validation/keyword';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type KeywordModel } from '#lib/server/models/keyword.js';
+import { keywordSchema } from '#lib/validation/keyword.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -21,10 +21,10 @@ export const createKeywordEditHandlers = ({ model }: { model: EditModel }) => ({
 			found = await model.get(id);
 		} catch (cause) {
 			console.error(cause);
-			error(500, { message: 'Falha ao recuperar os dados da palavra-chave' });
+			error(500, 'Falha ao recuperar os dados da palavra-chave');
 		}
 
-		if (!found) error(404, { message: 'Palavra-chave não encontrada.' });
+		if (!found) error(404, 'Palavra-chave não encontrada.');
 		return { keyword: found };
 	},
 	actions: {
@@ -44,10 +44,10 @@ export const createKeywordEditHandlers = ({ model }: { model: EditModel }) => ({
 				updated = await model.update(id, result.data.chave);
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao atualizar os dados da palavra-chave' });
+				error(500, 'Falha ao atualizar os dados da palavra-chave');
 			}
 
-			if (!updated) error(404, { message: 'Palavra-chave não encontrada.' });
+			if (!updated) error(404, 'Palavra-chave não encontrada.');
 			return { status: 200 };
 		},
 	},

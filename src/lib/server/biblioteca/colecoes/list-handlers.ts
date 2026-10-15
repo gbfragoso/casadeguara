@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type ColecaoModel } from '$lib/server/models/colecao';
-import { colecaoSearchSchema } from '$lib/validation/colecao';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type ColecaoModel } from '#lib/server/models/colecao.js';
+import { colecaoSearchSchema } from '#lib/validation/colecao.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -30,7 +30,7 @@ export const createCollectionListHandlers = ({ model }: { model: ListModel }) =>
 				return { colecoes, values: { nome: result.data.nome } };
 			} catch (cause) {
 				console.error('Falha ao carregar a lista de coleções', cause);
-				error(500, { message: 'Falha ao carregar a lista de coleções' });
+				error(500, 'Falha ao carregar a lista de coleções');
 			}
 		},
 	},

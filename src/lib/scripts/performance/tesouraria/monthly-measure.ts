@@ -1,8 +1,8 @@
 import type { Sql } from 'postgres';
 
-import { buildMonthlyTotalsQuery } from '$lib/server/tesouraria/lancamentos/monthly-totals';
-import { getBahiaMonthWindow } from '$lib/server/tesouraria/lancamentos/month-window';
-import type { LancamentoDatabase } from '$lib/server/tesouraria/lancamentos/types';
+import { buildMonthlyTotalsQuery } from '#lib/server/tesouraria/lancamentos/monthly-totals.js';
+import { getBahiaMonthWindow } from '#lib/server/tesouraria/lancamentos/month-window.js';
+import type { LancamentoDatabase } from '#lib/server/tesouraria/lancamentos/types.js';
 import { treasuryMonthlyProfile } from './profile';
 
 export const MONTHLY_WARMUP_RUNS = 20;

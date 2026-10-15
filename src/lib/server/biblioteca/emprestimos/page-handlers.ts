@@ -1,19 +1,20 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { ulike } from '$lib/server/database/functions';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { ulike } from '#lib/server/database/functions.js';
+import { cadastros, emprestimo, exemplar, livro } from '#lib/server/database/schema.js';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { error } from '@sveltejs/kit';
 import { and, desc, eq, isNull, lte } from 'drizzle-orm';
 
 const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
-	return { isAdmin: locals.user.roles.includes('biblioteca:admin') };
+	const user = requireLibraryAccess(locals.user);
+	return { isAdmin: user.roles.includes('biblioteca:admin') };
 };
 
 const actions: Actions = {
 	default: async ({ request, locals }) => {
-		if (!locals.user) redirect(302, '/');
+		requireLibraryAccess(locals.user);
 
 		const form = await request.formData();
 		const nome = form.get('leitor') as string;
@@ -58,9 +59,7 @@ const actions: Actions = {
 			return { emprestimos, status: 200, message: 'OK' };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de empréstimos',
-			});
+			return error(500, 'Falha ao carregar a lista de empréstimos');
 		}
 	},
 };

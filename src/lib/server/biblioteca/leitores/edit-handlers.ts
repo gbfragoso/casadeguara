@@ -1,12 +1,12 @@
-import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { bibliotecaUpdateSchema } from '$lib/validation/cadastros/biblioteca';
+import { DuplicateCadastroNameError } from '#lib/server/models/cadastro-error.js';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { bibliotecaUpdateSchema } from '#lib/validation/cadastros/biblioteca.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireReaderAccess } from '$lib/server/biblioteca/readers/access';
-import { toReaderDetail } from '$lib/server/biblioteca/readers/detail';
-import { getReaderErrors, getReaderFormValues } from '$lib/server/biblioteca/readers/form';
+import { requireReaderAccess } from '#lib/server/biblioteca/readers/access.js';
+import { toReaderDetail } from '#lib/server/biblioteca/readers/detail.js';
+import { getReaderErrors, getReaderFormValues } from '#lib/server/biblioteca/readers/form.js';
 type EditModel = Pick<CadastroModel, 'getBiblioteca' | 'updateBiblioteca'>;
 type User = { id: string; roles: string } | null;
 type LoadContext = { locals: { user: User }; params: { id: string } };
@@ -17,7 +17,7 @@ const getReader = async (model: EditModel, id: number) => {
 		return await model.getBiblioteca(id);
 	} catch {
 		console.error('Falha ao recuperar os dados do leitor.');
-		error(500, { message: 'Falha ao recuperar os dados do leitor.' });
+		error(500, 'Falha ao recuperar os dados do leitor.');
 	}
 };
 
@@ -27,7 +27,7 @@ export const createReaderEditHandlers = ({ model }: { model: EditModel }) => ({
 		const id = Number(params.id);
 		const reader = await getReader(model, id);
 
-		if (!reader) error(404, { message: 'Leitor não encontrado.' });
+		if (!reader) error(404, 'Leitor não encontrado.');
 		return { leitor: toReaderDetail(reader) };
 	},
 	actions: {
@@ -51,10 +51,10 @@ export const createReaderEditHandlers = ({ model }: { model: EditModel }) => ({
 				}
 
 				console.error('Falha ao atualizar os dados do leitor.');
-				error(500, { message: 'Falha ao atualizar os dados do leitor.' });
+				error(500, 'Falha ao atualizar os dados do leitor.');
 			}
 
-			error(404, { message: 'Leitor não encontrado.' });
+			error(404, 'Leitor não encontrado.');
 		},
 	},
 });

@@ -1,7 +1,7 @@
 import { expect, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/database/connection';
-import { cadastros, exemplar } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, exemplar } from '#lib/server/database/schema.js';
 import { actions } from '../../../../../../src/routes/(protected)/biblioteca/emprestimos/novo/+page.server';
 import { bibliotecaUser } from '../../../../support/auth';
 import { invoke } from '../../../../support/request-event';

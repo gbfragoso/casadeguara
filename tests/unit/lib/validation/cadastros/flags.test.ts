@@ -1,7 +1,7 @@
 import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
-import { secretariaFlagsSchema } from '$lib/validation/cadastros/flags';
+import { secretariaFlagsSchema } from '#lib/validation/cadastros/flags.js';
 import { getFieldErrors } from '../field-errors';
 
 const INVALID = 'Cadastro ou campo de atualização inválido.';

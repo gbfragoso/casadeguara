@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { LancamentoError, lancamentoModel } from '$lib/server/tesouraria/lancamentos';
+import { LancamentoError, lancamentoModel } from '#lib/server/tesouraria/lancamentos/index.js';
 import { load as dashboardLoad } from '../../../../../src/routes/(protected)/tesouraria/+page.server';
 import {
 	actions as cashActions,

@@ -1,6 +1,6 @@
 import type { Sql } from 'postgres';
 
-import { getBahiaMonthWindow } from '$lib/server/tesouraria/lancamentos/month-window';
+import { getBahiaMonthWindow } from '#lib/server/tesouraria/lancamentos/month-window.js';
 import { treasuryMonthlyProfile } from './profile';
 
 type SettingsRow = {

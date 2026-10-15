@@ -1,6 +1,6 @@
-import { generateAmigoFraternoPdf } from '$lib/server/pdf/amigo-fraterno/generator';
-import { amigoFraternoParticipants } from '$lib/server/pdf/amigo-fraterno/participants';
-import { createPdfHandler } from '$lib/server/pdf/amigo-fraterno/handler';
+import { generateAmigoFraternoPdf } from '#lib/server/pdf/amigo-fraterno/generator.js';
+import { amigoFraternoParticipants } from '#lib/server/pdf/amigo-fraterno/participants.js';
+import { createPdfHandler } from '#lib/server/pdf/amigo-fraterno/handler.js';
 
 import type { RequestHandler } from './$types';
 

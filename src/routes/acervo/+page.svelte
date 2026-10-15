@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		form: ActionData;
@@ -15,9 +15,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/acervo')}>Acervo</a></li>
+			<li><a href={resolve('acervo')}>Acervo</a></li>
 			<li class="is-active">
-				<a href={resolve('/acervo')} aria-current="page">Livros</a>
+				<a href={resolve('acervo')} aria-current="page">Livros</a>
 			</li>
 		</ul>
 	</nav>

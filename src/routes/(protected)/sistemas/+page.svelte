@@ -4,14 +4,14 @@
 	interface Props {
 		data: PageServerData;
 	}
-	type ModulePath = '/biblioteca' | '/secretaria' | '/tesouraria';
+	type ModulePath = 'biblioteca' | 'secretaria' | 'tesouraria';
 
 	let { data }: Props = $props();
 	let { roles } = $derived(data);
 	const modules: Array<{ role: string; path: ModulePath }> = [
-		{ role: 'biblioteca', path: '/biblioteca' },
-		{ role: 'secretaria', path: '/secretaria' },
-		{ role: 'tesouraria', path: '/tesouraria' },
+		{ role: 'biblioteca', path: 'biblioteca' },
+		{ role: 'secretaria', path: 'secretaria' },
+		{ role: 'tesouraria', path: 'tesouraria' },
 	];
 	let availableModules = $derived(
 		modules.filter((module) => roles.some((role) => role.replace(':admin', '') === module.role)),

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createBrlAmountState, updateBrlAmountState } from '$lib/forms/brl-amount';
+	import { createBrlAmountState, updateBrlAmountState } from '#lib/forms/brl-amount.js';
 
 	interface Props {
 		id: string;

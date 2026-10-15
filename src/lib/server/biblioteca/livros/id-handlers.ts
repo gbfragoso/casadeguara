@@ -1,33 +1,37 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { editora, livro, serie } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { editora, livro, serie } from '#lib/server/database/schema.js';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import validator from 'validator';
 
-const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
-
+const loadBookForm = async (id: number) => {
 	try {
-		const resultado = await db
-			.select()
-			.from(livro)
-			.where(eq(livro.idlivro, Number(params.id)));
-		if (!resultado) {
-			throw fail(404, { message: 'Livro não encontrado' });
-		}
+		const [book] = await db.select().from(livro).where(eq(livro.idlivro, id));
 		const editoras = await db.select().from(editora).orderBy(editora.nome);
 		const colecoes = await db.select().from(serie).orderBy(serie.nome);
-		return { livro: resultado[0], editoras, colecoes };
+		return { book, editoras, colecoes };
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao baixar os dados do livro' });
+		error(500, 'Falha ao baixar os dados do livro');
 	}
 };
 
+const load = async ({ locals, params }: RequestEvent) => {
+	requireLibraryAccess(locals.user);
+
+	const { book, editoras, colecoes } = await loadBookForm(Number(params.id));
+	if (!book) error(404, 'Livro não encontrado');
+
+	return { livro: book, editoras, colecoes };
+};
+
 const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request, params, locals }) => {
+		requireLibraryAccess(locals.user);
+
 		const form = await request.formData();
 		const tombo = form.get('tombo') as string;
 		const titulo = form.get('titulo') as string;
@@ -73,9 +77,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do livro',
-			});
+			return error(500, 'Falha ao atualizar os dados do livro');
 		}
 	},
 };

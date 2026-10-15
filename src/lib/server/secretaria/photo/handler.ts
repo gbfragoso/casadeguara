@@ -1,5 +1,4 @@
-import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
-import { json } from '@sveltejs/kit';
+import { hasSecretariaAccess } from '#lib/server/authorization/cadastros.js';
 
 type User = { roles: string } | null;
 type RequestContext = { locals: { user: User }; params: { id: string } };
@@ -23,15 +22,15 @@ export const createPhotoHandler =
 	(readPhoto: PhotoReader) =>
 	async ({ locals, params }: RequestContext) => {
 		if (!locals.user || !hasSecretariaAccess(locals.user))
-			return json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
+			return Response.json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
 
 		try {
 			const photo = await readPhoto(Number(params.id));
-			if (!photo) return json({ message: 'Foto não encontrada.' }, { status: 404 });
+			if (!photo) return Response.json({ message: 'Foto não encontrada.' }, { status: 404 });
 
 			return new Response(toResponseBody(photo), { headers: PHOTO_HEADERS });
 		} catch {
 			console.error('Falha ao recuperar a foto do trabalhador.');
-			return json({ message: 'Falha ao recuperar a foto do trabalhador.' }, { status: 500 });
+			return Response.json({ message: 'Falha ao recuperar a foto do trabalhador.' }, { status: 500 });
 		}
 	};

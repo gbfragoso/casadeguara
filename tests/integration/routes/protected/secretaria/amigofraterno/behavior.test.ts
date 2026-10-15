@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros } from '#lib/server/database/schema.js';
 import { createTestName, deleteCadastro } from '../../../../lib/server/models/cadastro/test-support';
 import { secretariaUser } from '../../../../support/auth';
 import { createRequestEvent, invoke } from '../../../../support/request-event';

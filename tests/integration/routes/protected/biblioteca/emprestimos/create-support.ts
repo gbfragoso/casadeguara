@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
 import { test } from 'vitest';
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, emprestimo, exemplar, livro } from '#lib/server/database/schema.js';
 import { bibliotecaUser } from '../../../../support/auth';
 import { createRequestEvent } from '../../../../support/request-event';
 import { createTestName } from '../../../../lib/server/models/cadastro/test-support';

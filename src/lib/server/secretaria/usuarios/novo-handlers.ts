@@ -1,18 +1,21 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { user } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { user } from '#lib/server/database/schema.js';
+import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
-import { generateIdFromEntropySize } from 'lucia';
+import { generateUserId } from '#lib/server/auth/user-id.js';
+import { requireSecretariaAdminAccess } from '#lib/server/secretaria/access.js';
 import validator from 'validator';
 
 const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireSecretariaAdminAccess(locals.user);
 };
 
 const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		requireSecretariaAdminAccess(locals.user);
+
 		const formData = await request.formData();
 		const username = formData.get('username') as string;
 		const password = formData.get('password') as string;
@@ -34,7 +37,7 @@ const actions: Actions = {
 			};
 		}
 
-		const id = generateIdFromEntropySize(10);
+		const id = generateUserId();
 		const passwordHash = await hash(password);
 
 		try {
@@ -42,9 +45,7 @@ const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar um novo usuário',
-			});
+			return error(500, 'Falha ao criar um novo usuário');
 		}
 	},
 };

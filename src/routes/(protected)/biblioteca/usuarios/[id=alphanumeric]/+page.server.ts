@@ -1,4 +1,4 @@
-import { createBibliotecaUsuariosIdAlphanumericHandlers } from '$lib/server/biblioteca/usuarios/id-handlers';
+import { createBibliotecaUsuariosIdAlphanumericHandlers } from '#lib/server/biblioteca/usuarios/id-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

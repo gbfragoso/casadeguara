@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import MonthlyLancamentos from '$lib/components/charts/MonthlyLancamentos.svelte';
-	import { moeda } from '$lib/utils/currency';
+	import MonthlyLancamentos from '#lib/components/charts/MonthlyLancamentos.svelte';
+	import { moeda } from '#lib/utils/currency.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 
@@ -19,9 +19,9 @@
 <div>
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
+			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href={resolve('/tesouraria')} aria-current="page">Página Inicial</a>
+				<a href={resolve('tesouraria')} aria-current="page">Página Inicial</a>
 			</li>
 		</ul>
 	</nav>

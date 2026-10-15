@@ -1,18 +1,21 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { unaccent } from '$lib/server/database/functions';
-import { cadastros, frequencia } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { unaccent } from '#lib/server/database/functions.js';
+import { cadastros, frequencia } from '#lib/server/database/schema.js';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
+import { error } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 import dayjs from 'dayjs';
 
 const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireSecretariaAccess(locals.user);
 };
 
 const actions: Actions = {
-	pesquisar: async ({ request }) => {
+	pesquisar: async ({ request, locals }) => {
+		requireSecretariaAccess(locals.user);
+
 		const form = await request.formData();
 
 		let dataInicial = dayjs(form.get('dataInicio') as string);
@@ -39,12 +42,12 @@ const actions: Actions = {
 			return { leitores, fulldates, datas };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de leitores',
-			});
+			return error(500, 'Falha ao carregar a lista de leitores');
 		}
 	},
-	registrar: async ({ request }) => {
+	registrar: async ({ request, locals }) => {
+		requireSecretariaAccess(locals.user);
+
 		const form = await request.formData();
 		const array: { trabalhador: number; dataPresenca: Date }[] = [];
 		form.forEach((value, key) => {
@@ -60,9 +63,7 @@ const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar um novo autor',
-			});
+			return error(500, 'Falha ao criar um novo autor');
 		}
 	},
 };

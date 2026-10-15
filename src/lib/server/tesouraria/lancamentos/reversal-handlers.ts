@@ -1,8 +1,8 @@
-import { requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
+import { requireTesourariaAccess } from '#lib/server/authorization/tesouraria.js';
 import type { LancamentoModel } from './model';
 import { LancamentoError } from './errors';
 import { getDomainErrors, getReasonValues } from './form';
-import { estornoReasonSchema } from '$lib/validation/tesouraria/lancamentos';
+import { estornoReasonSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { error, fail } from '@sveltejs/kit';
 
 type User = { id: string; roles: string } | null | undefined;
@@ -20,17 +20,16 @@ const parseId = (value: string | undefined) => {
 const createLoadHandler = (model: ReversalModel, requireAccess: AccessChecker) => async (event: HandlerEvent) => {
 	requireAccess(event.locals.user);
 	const id = parseId(event.params.id);
-	if (id === null) error(404, { message: 'Lançamento não encontrado.' });
+	if (id === null) error(404, 'Lançamento não encontrado.');
 	let lancamento;
 	try {
 		lancamento = await model.getForReversal(id);
 	} catch (cause) {
-		if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND')
-			error(404, { message: cause.message });
+		if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND') error(404, cause.message);
 		console.error('treasury.launches.reverse_failed');
-		error(500, { message: 'Falha ao carregar o lançamento.' });
+		error(500, 'Falha ao carregar o lançamento.');
 	}
-	if (!lancamento) error(404, { message: 'Lançamento não encontrado.' });
+	if (!lancamento) error(404, 'Lançamento não encontrado.');
 	return { lancamento };
 };
 
@@ -45,7 +44,7 @@ const mapFailure = (cause: unknown, values: ReturnType<typeof getReasonValues>) 
 	)
 		return fail(409, { values, message: cause.message });
 	console.error('treasury.launches.reverse_failed');
-	error(500, { message: 'Falha ao estornar o lançamento.' });
+	error(500, 'Falha ao estornar o lançamento.');
 };
 
 const createActionHandler = (model: ReversalModel, requireAccess: AccessChecker) => async (event: HandlerEvent) => {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
-import { db } from '$lib/server/database/connection';
-import { autor, serie } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { autor, serie } from '#lib/server/database/schema.js';
 import { bibliotecaUser } from '../../../support/auth';
 import { createRequestEvent, invoke } from '../../../support/request-event';
 import {

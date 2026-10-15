@@ -1,5 +1,5 @@
 import { v7 as uuidv7 } from 'uuid';
-import { lancamentos } from '$lib/server/database/schema';
+import { lancamentos } from '#lib/server/database/schema.js';
 import type { CreateLancamento, CreatedLancamento, LancamentoDatabase, LancamentoTransaction } from './types';
 import { assertCounterpart } from './counterparts';
 import { currentDate, formatDate, toDate } from './format';

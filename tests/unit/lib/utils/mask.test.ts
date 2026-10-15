@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { cpf, rg } from '$lib/utils/mask';
+import { cpf, rg } from '#lib/utils/mask.js';
 
 describe('cpf', () => {
 	it('masks a synthetic valid CPF with only the approved digits', () => {

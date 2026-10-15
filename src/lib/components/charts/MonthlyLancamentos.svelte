@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Line } from 'svelte-chartjs';
 
-	import { buildMonthlyChart } from '$lib/charts/monthly-lancamentos';
-	import type { MonthlyLancamentoTotal } from '$lib/tesouraria/monthly-totals';
+	import { buildMonthlyChart } from '#lib/charts/monthly-lancamentos.js';
+	import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
 
 	interface Props {
 		totals: readonly MonthlyLancamentoTotal[];

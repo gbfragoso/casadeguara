@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type AvisoModel } from '$lib/server/models/aviso';
-import { avisoSchema } from '$lib/validation/aviso';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type AvisoModel } from '#lib/server/models/aviso.js';
+import { avisoSchema } from '#lib/validation/aviso.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -23,10 +23,10 @@ export const createNoticeEditHandlers = ({ model }: { model: NoticeModel }) => (
 			aviso = await model.get(id);
 		} catch (cause) {
 			logFailure('Falha ao baixar os dados do aviso', cause);
-			error(500, { message: 'Falha ao baixar os dados do aviso' });
+			error(500, 'Falha ao baixar os dados do aviso');
 		}
 
-		if (!aviso) error(404, { message: 'Aviso não encontrado' });
+		if (!aviso) error(404, 'Aviso não encontrado');
 
 		return { aviso };
 	},
@@ -45,10 +45,10 @@ export const createNoticeEditHandlers = ({ model }: { model: NoticeModel }) => (
 				updated = await model.update(Number(params.id), result.data.texto);
 			} catch (cause) {
 				logFailure('Falha ao atualizar o texto do aviso', cause);
-				error(500, { message: 'Falha ao atualizar o texto do aviso' });
+				error(500, 'Falha ao atualizar o texto do aviso');
 			}
 
-			if (!updated) error(404, { message: 'Aviso não encontrado' });
+			if (!updated) error(404, 'Aviso não encontrado');
 
 			return { status: 200 };
 		},

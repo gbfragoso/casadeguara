@@ -1,4 +1,4 @@
-import { db } from '$lib/server/database/connection';
+import { db } from '#lib/server/database/connection.js';
 import { createLancamento } from './creation';
 import { listCounterparts } from './counterparts';
 import { getDashboardProjection } from './dashboard';
@@ -23,7 +23,7 @@ import type {
 	CashEntry,
 	ReceiptState,
 } from './types';
-import type { MonthlyLancamentoTotal } from '$lib/tesouraria/monthly-totals';
+import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
 
 export class LancamentoModel {
 	constructor(private readonly database: LancamentoDatabase = db) {}

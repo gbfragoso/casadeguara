@@ -4,7 +4,7 @@ import {
 	DUPLICATE_CADASTRO_NAME_MESSAGE,
 	DuplicateCadastroNameError,
 	translateCadastroError,
-} from '$lib/server/models/cadastro-error';
+} from '#lib/server/models/cadastro-error.js';
 
 import { createTestName, model, withBibliotecaCadastros } from './test-support';
 

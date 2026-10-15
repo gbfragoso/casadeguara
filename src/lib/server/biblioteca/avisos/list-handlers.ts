@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type AvisoModel } from '$lib/server/models/aviso';
-import { avisoSchema } from '$lib/validation/aviso';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type AvisoModel } from '#lib/server/models/aviso.js';
+import { avisoSchema } from '#lib/validation/aviso.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -20,7 +20,7 @@ export const createNoticeListHandlers = ({ model }: { model: NoticeModel }) => (
 			return { avisos: await model.listRecent() };
 		} catch (cause) {
 			logFailure('Falha ao carregar a lista de avisos', cause);
-			error(500, { message: 'Falha ao carregar a lista de avisos' });
+			error(500, 'Falha ao carregar a lista de avisos');
 		}
 	},
 	actions: {
@@ -38,7 +38,7 @@ export const createNoticeListHandlers = ({ model }: { model: NoticeModel }) => (
 				return { status: 201 };
 			} catch (cause) {
 				logFailure('Falha ao criar um novo aviso', cause);
-				error(500, { message: 'Falha ao criar um novo aviso' });
+				error(500, 'Falha ao criar um novo aviso');
 			}
 		},
 	},

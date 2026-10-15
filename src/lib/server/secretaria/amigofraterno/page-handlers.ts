@@ -1,7 +1,7 @@
-import { type AmigoFraternoParticipant } from '$lib/server/pdf/amigo-fraterno/participant-projections';
-import { amigoFraternoParticipants } from '$lib/server/pdf/amigo-fraterno/participants';
+import { type AmigoFraternoParticipant } from '#lib/server/pdf/amigo-fraterno/participant-projections.js';
+import { amigoFraternoParticipants } from '#lib/server/pdf/amigo-fraterno/participants.js';
 
-import { requireSecretariaAccess } from '$lib/server/secretaria/access';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
 
 type ParticipantReader = { listSummary: () => PromiseLike<AmigoFraternoParticipant[]> };
 type User = { id: string; roles: string } | null;

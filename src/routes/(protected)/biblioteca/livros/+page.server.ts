@@ -1,5 +1,5 @@
-import { createBookListHandlers } from '$lib/server/biblioteca/books/list-handlers';
-import { livroModel } from '$lib/server/models/livro';
+import { createBookListHandlers } from '#lib/server/biblioteca/books/list-handlers.js';
+import { livroModel } from '#lib/server/models/livro.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

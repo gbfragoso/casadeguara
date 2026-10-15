@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import dayjs from 'dayjs';
 	import 'dayjs/locale/pt.js';
 	import utc from 'dayjs/plugin/utc';
@@ -17,9 +17,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href={resolve('/secretaria/aniversariantes')} aria-current="page">Aniversariantes</a>
+				<a href={resolve('secretaria/aniversariantes')} aria-current="page">Aniversariantes</a>
 			</li>
 		</ul>
 	</nav>

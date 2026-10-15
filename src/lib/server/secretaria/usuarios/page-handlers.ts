@@ -1,8 +1,8 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { ulike, unaccent } from '$lib/server/database/functions';
-import { user } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { ulike, unaccent } from '#lib/server/database/functions.js';
+import { user } from '#lib/server/database/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { and, not } from 'drizzle-orm';
 
@@ -26,7 +26,7 @@ const load = async ({ locals, url }: RequestEvent) => {
 		return { usuarios: usuarios() };
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao carregar a lista de usuários' });
+		return error(500, 'Falha ao carregar a lista de usuários');
 	}
 };
 

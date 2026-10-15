@@ -1,5 +1,5 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { activeLancamentoPredicate, cadastros, lancamentos } from '$lib/server/database/schema';
+import { activeLancamentoPredicate, cadastros, lancamentos } from '#lib/server/database/schema.js';
 import type { CashEntry, LancamentoDatabase } from './types';
 
 export const listPendingDeposits = (database: LancamentoDatabase): Promise<CashEntry[]> =>

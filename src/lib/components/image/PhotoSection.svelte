@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { onDestroy, tick } from 'svelte';
 
 	import PhotoCropper from './PhotoCropper.svelte';

@@ -92,7 +92,7 @@ it('disables repeat submissions until the action result is applied', async () =>
 		action,
 		formData: new FormData(form),
 		formElement: form,
-		result: { type: 'failure', status: 400, data: {} },
+		result: { type: 'failure', status: 400, data: {}, location: action.href },
 		update: vi.fn(),
 	});
 	await tick();

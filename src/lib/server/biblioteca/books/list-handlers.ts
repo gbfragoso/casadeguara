@@ -1,7 +1,7 @@
-import { requireLibraryAccess, requireLibraryAdminAccess } from '$lib/server/authorization/biblioteca';
-import type { LivroModel } from '$lib/server/models/livro';
-import { LivroHasDependentsError, LivroNotFoundError } from '$lib/server/models/livro-error';
-import { livroDeleteSchema, livroSearchSchema } from '$lib/validation/livro';
+import { requireLibraryAccess, requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import type { LivroModel } from '#lib/server/models/livro.js';
+import { LivroHasDependentsError, LivroNotFoundError } from '#lib/server/models/livro-error.js';
+import { livroDeleteSchema, livroSearchSchema } from '#lib/validation/livro.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -35,7 +35,7 @@ const createLoadHandler = (model: ListModel, requireAccess: AccessChecker) => as
 		return { colecoes, isAdmin: isAdmin(user), role: user.roles };
 	} catch {
 		console.error('library.books.load_failed');
-		error(500, { message: 'Falha ao carregar os dados dos livros.' });
+		error(500, 'Falha ao carregar os dados dos livros.');
 	}
 };
 
@@ -54,7 +54,7 @@ const createSearchHandler = (model: ListModel, requireAccess: AccessChecker) => 
 		return { livros, values };
 	} catch {
 		console.error('library.books.search_failed');
-		error(500, { message: 'Falha ao carregar a lista de livros.' });
+		error(500, 'Falha ao carregar a lista de livros.');
 	}
 };
 
@@ -76,7 +76,7 @@ const createDeleteHandler = (model: ListModel, requireAdminAccess: AccessChecker
 		if (cause instanceof LivroHasDependentsError) return fail(409, { values, message: cause.message });
 
 		console.error('library.books.delete_failed');
-		error(500, { message: 'Falha ao excluir o livro.' });
+		error(500, 'Falha ao excluir o livro.');
 	}
 };
 

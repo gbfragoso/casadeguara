@@ -1,7 +1,7 @@
 import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
-import { AUTHOR_NAME_MAX_LENGTH, authorSchema, authorSearchSchema } from '$lib/validation/autor';
+import { AUTHOR_NAME_MAX_LENGTH, authorSchema, authorSearchSchema } from '#lib/validation/autor.js';
 import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Nome do autor é obrigatório.';

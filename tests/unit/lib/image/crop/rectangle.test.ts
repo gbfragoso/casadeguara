@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { PHOTO_FRAME } from '$lib/image/geometry/card';
-import { createCropRectangle, type ImageSize } from '$lib/image/crop/rectangle';
+import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
+import { createCropRectangle, type ImageSize } from '#lib/image/crop/rectangle.js';
 
 const FRAME_ASPECT_RATIO = PHOTO_FRAME.outputWidth / PHOTO_FRAME.outputHeight;
 const CENTERED_POSITION = { focalX: 0.5, focalY: 0.5, zoom: 1 };

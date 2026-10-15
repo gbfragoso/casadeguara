@@ -1,7 +1,7 @@
 import type { BookPerformanceScenario } from './scenarios';
-import { buildBookSearchQuery, type LegacyBookSearchInput } from '$lib/server/models/livro-search';
-import type { LivroSearchInput } from '$lib/validation/livro';
-import type { db } from '$lib/server/database/connection';
+import { buildBookSearchQuery, type LegacyBookSearchInput } from '#lib/server/models/livro-search.js';
+import type { LivroSearchInput } from '#lib/validation/livro.js';
+import type { db } from '#lib/server/database/connection.js';
 import type { Sql } from 'postgres';
 
 export const WARMUP_RUNS = 20;

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
-	import { moeda } from '$lib/utils/currency';
-	import { formatCivilDate } from '$lib/utils/date';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import { moeda } from '#lib/utils/currency.js';
+	import { formatCivilDate } from '#lib/utils/date.js';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -26,8 +26,8 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
-			<li class="is-active"><a href={resolve('/tesouraria/lancamentos')} aria-current="page">Lançamentos</a></li>
+			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
+			<li class="is-active"><a href={resolve('tesouraria/lancamentos')} aria-current="page">Lançamentos</a></li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lançamentos</h1>
@@ -148,7 +148,7 @@
 			<div class="column is-3">
 				<a
 					class="button is-warning has-text-weight-semibold is-fullwidth"
-					href={resolve('/tesouraria/lancamentos/novo')}
+					href={resolve('tesouraria/lancamentos/novo')}
 					><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo lançamento</a>
 			</div>
 		</div>

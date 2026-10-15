@@ -6,7 +6,7 @@ import {
 	ServiceError,
 	UnauthorizedError,
 	ValidationError,
-} from '$lib/errors/application';
+} from '#lib/errors/application.js';
 
 describe('application errors', () => {
 	it('serializes internal errors with default and explicit status codes', () => {

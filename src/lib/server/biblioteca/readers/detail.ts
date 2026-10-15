@@ -1,5 +1,5 @@
-import { cpf, rg } from '$lib/utils/mask';
-import type { CadastroModel } from '$lib/server/models/cadastro';
+import { cpf, rg } from '#lib/utils/mask.js';
+import type { CadastroModel } from '#lib/server/models/cadastro.js';
 
 type BibliotecaReader = Exclude<Awaited<ReturnType<CadastroModel['getBiblioteca']>>, undefined>;
 

@@ -1,7 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, emprestimo, exemplar, livro } from '#lib/server/database/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { desc, eq } from 'drizzle-orm';
 
@@ -34,9 +34,7 @@ const load = async ({ locals, params }: RequestEvent) => {
 		return { emprestimos };
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar os dados do empréstimo',
-		});
+		return error(500, 'Falha ao carregar os dados do empréstimo');
 	}
 };
 

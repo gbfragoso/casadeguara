@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Autocomplete from '$lib/components/forms/Autocomplete.svelte';
-	import Notification from '$lib/components/feedback/Notification.svelte';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
+	import Notification from '#lib/components/feedback/Notification.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -19,10 +19,10 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
-			<li><a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
+			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
 			<li class="is-active">
-				<a href={resolve('/biblioteca/emprestimos/novo')} aria-current="page">Novo</a>
+				<a href={resolve('biblioteca/emprestimos/novo')} aria-current="page">Novo</a>
 			</li>
 		</ul>
 	</nav>

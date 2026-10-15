@@ -1,5 +1,5 @@
-import { autorModel } from '$lib/server/models/autor';
-import { createAuthorCreateHandlers } from '$lib/server/biblioteca/autores/create-handlers';
+import { autorModel } from '#lib/server/models/autor.js';
+import { createAuthorCreateHandlers } from '#lib/server/biblioteca/autores/create-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { cadastroModel } from '$lib/server/models/cadastro';
+import { cadastroModel } from '#lib/server/models/cadastro.js';
 import { tesourariaUser } from '../../../support/auth';
 import { createRequestEvent, invoke } from '../../../support/request-event';
 import { actions as editActions } from '../../../../../src/routes/(protected)/tesouraria/contribuintes/[id=integer]/+page.server';

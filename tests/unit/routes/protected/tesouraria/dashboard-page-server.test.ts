@@ -6,10 +6,10 @@ const mocks = vi.hoisted(() => ({
 	getMonthlyTotals: vi.fn(),
 }));
 
-vi.mock('$lib/server/authorization/tesouraria', () => ({
+vi.mock('#lib/server/authorization/tesouraria.js', () => ({
 	requireTesourariaAccess: mocks.requireAccess,
 }));
-vi.mock('$lib/server/tesouraria/lancamentos', () => ({
+vi.mock('#lib/server/tesouraria/lancamentos/index.js', () => ({
 	lancamentoModel: {
 		getDashboard: mocks.getDashboard,
 		getMonthlyTotals: mocks.getMonthlyTotals,

@@ -1,12 +1,12 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import type { LivroModel } from '$lib/server/models/livro';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import type { LivroModel } from '#lib/server/models/livro.js';
 import {
 	DuplicateLivroTomboError,
 	LivroHasDependentsError,
 	LivroNotFoundError,
 	LivroReferenceNotFoundError,
-} from '$lib/server/models/livro-error';
-import { livroCreateSchema, type LivroCreateInput } from '$lib/validation/livro';
+} from '#lib/server/models/livro-error.js';
+import { livroCreateSchema, type LivroCreateInput } from '#lib/validation/livro.js';
 import { error, fail } from '@sveltejs/kit';
 import type { ActionFailure } from '@sveltejs/kit';
 import { flattenError } from 'zod';
@@ -43,7 +43,7 @@ const createLoadHandler = (model: CreateModel, requireAccess: AccessChecker) => 
 		return { editoras, colecoes, autores };
 	} catch {
 		console.error('library.books.create_options_failed');
-		error(500, { message: 'Falha ao carregar os dados do livro.' });
+		error(500, 'Falha ao carregar os dados do livro.');
 	}
 };
 
@@ -71,7 +71,7 @@ const persistBook = async (
 		if (cause instanceof LivroHasDependentsError) return fail(409, { values, message: cause.message });
 
 		console.error('library.books.create_failed');
-		error(500, { message: 'Falha ao cadastrar um novo livro.' });
+		error(500, 'Falha ao cadastrar um novo livro.');
 	}
 };
 

@@ -1,6 +1,6 @@
-import { db } from '$lib/server/database/connection';
-import { autor, autorHasLivro, exemplar, livro } from '$lib/server/database/schema';
-import type { LivroCreateInput } from '$lib/validation/livro';
+import { db } from '#lib/server/database/connection.js';
+import { autor, autorHasLivro, exemplar, livro } from '#lib/server/database/schema.js';
+import type { LivroCreateInput } from '#lib/validation/livro.js';
 
 type LivroTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 

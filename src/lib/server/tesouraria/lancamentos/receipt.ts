@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { cadastros, estornos, lancamentos } from '$lib/server/database/schema';
+import { cadastros, estornos, lancamentos } from '#lib/server/database/schema.js';
 import type { LancamentoDatabase, ReceiptData, ReceiptState } from './types';
 import { formatDate } from './format';
 import { validationError } from './errors';

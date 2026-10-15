@@ -1,4 +1,4 @@
-import type { LivroListItem } from '$lib/server/models/livro';
+import type { LivroListItem } from '#lib/server/models/livro.js';
 
 export type LivroFormErrors = Record<string, string[] | undefined>;
 export type LivroFormValues = Record<string, string | string[]>;

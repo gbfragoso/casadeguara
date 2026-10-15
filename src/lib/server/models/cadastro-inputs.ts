@@ -1,7 +1,7 @@
-import type { BibliotecaCreateInput, BibliotecaUpdateInput } from '$lib/validation/cadastros/biblioteca';
-import type { SecretariaFlagsInput } from '$lib/validation/cadastros/flags';
-import type { SecretariaCreateInput, SecretariaUpdateInput } from '$lib/validation/cadastros/secretaria';
-import type { TesourariaCreateInput, TesourariaUpdateInput } from '$lib/validation/cadastros/tesouraria';
+import type { BibliotecaCreateInput, BibliotecaUpdateInput } from '#lib/validation/cadastros/biblioteca.js';
+import type { SecretariaFlagsInput } from '#lib/validation/cadastros/flags.js';
+import type { SecretariaCreateInput, SecretariaUpdateInput } from '#lib/validation/cadastros/secretaria.js';
+import type { TesourariaCreateInput, TesourariaUpdateInput } from '#lib/validation/cadastros/tesouraria.js';
 
 type BibliotecaField =
 	| 'nome'

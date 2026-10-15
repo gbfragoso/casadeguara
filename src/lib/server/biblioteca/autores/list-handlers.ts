@@ -1,9 +1,9 @@
-import { authorSearchSchema } from '$lib/validation/autor';
+import { authorSearchSchema } from '#lib/validation/autor.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import type { AutorModel } from '$lib/server/models/autor';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import type { AutorModel } from '#lib/server/models/autor.js';
 
 type ListModel = Pick<AutorModel, 'fetch'>;
 type User = { roles: string } | null;
@@ -28,7 +28,7 @@ export const createAuthorListHandlers = ({ model }: { model: ListModel }) => ({
 				return { autores, values: { nome: result.data.nome } };
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao carregar a lista de autores' });
+				error(500, 'Falha ao carregar a lista de autores');
 			}
 		},
 	},

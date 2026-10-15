@@ -1,12 +1,13 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { keyword, livroHasKeyword, livro } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { keyword, livroHasKeyword, livro } from '#lib/server/database/schema.js';
+import { requireLibraryAccess, requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import { error, fail } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
 const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	const user = requireLibraryAccess(locals.user);
 
 	try {
 		const livros = async () => {
@@ -29,17 +30,17 @@ const load = async ({ locals, params }: RequestEvent) => {
 				.orderBy(keyword.chave);
 		};
 
-		return { keywords: keywords(), keywordsLivro: keywordsLivro(), livros: livros(), role: locals.user.roles };
+		return { keywords: keywords(), keywordsLivro: keywordsLivro(), livros: livros(), role: user.roles };
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de keywords',
-		});
+		return error(500, 'Falha ao carregar a lista de keywords');
 	}
 };
 
 const actions: Actions = {
-	adicionar: async ({ request, params }) => {
+	adicionar: async ({ request, params, locals }) => {
+		requireLibraryAccess(locals.user);
+
 		const form = await request.formData();
 		const livro = Number(params.id);
 		const keyword = Number(form.get('keyword'));
@@ -49,12 +50,12 @@ const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar uma nova palavra-chave',
-			});
+			return error(500, 'Falha ao criar uma nova palavra-chave');
 		}
 	},
-	excluir: async ({ url, params }) => {
+	excluir: async ({ url, params, locals }) => {
+		requireLibraryAdminAccess(locals.user);
+
 		const livro = Number(params.id);
 		const keyword = url.searchParams.get('keyword');
 		if (!keyword) {
@@ -70,9 +71,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao excluir a palavra-chave',
-			});
+			return error(500, 'Falha ao excluir a palavra-chave');
 		}
 	},
 };

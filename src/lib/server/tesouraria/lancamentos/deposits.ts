@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-import { estornos, lancamentos } from '$lib/server/database/schema';
+import { estornos, lancamentos } from '#lib/server/database/schema.js';
 import type { LancamentoDatabase, LancamentoTransaction } from './types';
 import { mapPersistenceError, notDepositableError, notFoundError, validationError } from './errors';
 

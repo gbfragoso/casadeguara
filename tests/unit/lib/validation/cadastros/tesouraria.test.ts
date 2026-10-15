@@ -4,7 +4,7 @@ import {
 	tesourariaCreateSchema,
 	tesourariaSearchSchema,
 	tesourariaUpdateSchema,
-} from '$lib/validation/cadastros/tesouraria';
+} from '#lib/validation/cadastros/tesouraria.js';
 import { getFieldErrors } from '../field-errors';
 
 describe('tesouraria registration schemas', () => {

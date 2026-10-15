@@ -6,7 +6,7 @@ import {
 	hasTesourariaAdminAccess,
 	requireTesourariaAccess,
 	requireTesourariaAdminAccess,
-} from '$lib/server/authorization/tesouraria';
+} from '#lib/server/authorization/tesouraria.js';
 
 describe('tesouraria authorization', () => {
 	it('distinguishes anonymous, foreign and treasury access', () => {

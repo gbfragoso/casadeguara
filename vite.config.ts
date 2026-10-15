@@ -1,4 +1,6 @@
+import adapter from '@sveltejs/adapter-vercel';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vitest/config';
 import { resolve } from 'node:path';
 import type { ViteDevServer } from 'vite';
@@ -23,7 +25,25 @@ function treasuryChartProofPlugin() {
 }
 
 export default defineConfig({
-	plugins: [sveltekit(), treasuryChartProofPlugin()],
+	plugins: [
+		sveltekit({
+			preprocess: vitePreprocess(),
+			adapter: adapter({
+				runtime: 'nodejs24.x',
+				images: {
+					sizes: [640, 828, 1200, 1920, 3840],
+					formats: ['image/avif', 'image/webp'],
+					minimumCacheTTL: 300,
+					domains: ['casadeguara.vercel.app'],
+				},
+			}),
+		}),
+		treasuryChartProofPlugin(),
+	],
+	optimizeDeps: {
+		// SvelteKit builds its own scan entries with Windows separators, which match no file there.
+		entries: ['src/routes/**/+*.{svelte,js,ts}', '!src/routes/**/+*server.*', 'src/params/index.ts'],
+	},
 	server: {
 		hmr: process.env.NODE_ENV !== 'test',
 		fs: { allow: [resolve('.')] },

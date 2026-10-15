@@ -1,5 +1,5 @@
-import { cadastroModel } from '$lib/server/models/cadastro';
-import { createReaderListHandlers } from '$lib/server/biblioteca/leitores/list-handlers';
+import { cadastroModel } from '#lib/server/models/cadastro.js';
+import { createReaderListHandlers } from '#lib/server/biblioteca/leitores/list-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

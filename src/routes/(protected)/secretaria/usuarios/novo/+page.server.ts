@@ -1,4 +1,4 @@
-import { createSecretariaUsuariosNovoHandlers } from '$lib/server/secretaria/usuarios/novo-handlers';
+import { createSecretariaUsuariosNovoHandlers } from '#lib/server/secretaria/usuarios/novo-handlers.js';
 
 import type { Actions, PageServerLoad } from '../$types';
 

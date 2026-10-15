@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { CADASTRO_FETCH_LIMIT, WORKER_CADASTRO_FETCH_LIMIT } from '$lib/server/models/cadastro-reader';
+import { CADASTRO_FETCH_LIMIT, WORKER_CADASTRO_FETCH_LIMIT } from '#lib/server/models/cadastro-reader.js';
 
 import { createTestName, model, withBibliotecaCadastros } from './test-support';
 

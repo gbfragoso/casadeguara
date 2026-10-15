@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros } from '$lib/server/database/schema';
-import { CadastroModel } from '$lib/server/models/cadastro';
-import type { BibliotecaCreateData } from '$lib/server/models/cadastro-inputs';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros } from '#lib/server/database/schema.js';
+import { CadastroModel } from '#lib/server/models/cadastro.js';
+import type { BibliotecaCreateData } from '#lib/server/models/cadastro-inputs.js';
 import { eq } from 'drizzle-orm';
 
 export const model = new CadastroModel(db);

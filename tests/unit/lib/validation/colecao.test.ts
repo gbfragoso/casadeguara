@@ -2,7 +2,7 @@ import { File } from 'node:buffer';
 
 import { describe, expect, it } from 'vitest';
 
-import { COLLECTION_NAME_MAX_LENGTH, colecaoSchema, colecaoSearchSchema } from '$lib/validation/colecao';
+import { COLLECTION_NAME_MAX_LENGTH, colecaoSchema, colecaoSearchSchema } from '#lib/validation/colecao.js';
 import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Nome da coleção é obrigatório.';

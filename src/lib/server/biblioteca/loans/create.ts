@@ -1,6 +1,6 @@
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
-import { unaccent } from '$lib/server/database/functions';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, emprestimo, exemplar, livro } from '#lib/server/database/schema.js';
+import { unaccent } from '#lib/server/database/functions.js';
 import { fail } from '@sveltejs/kit';
 import { and, eq, isNull, sql } from 'drizzle-orm';
 import dayjs from 'dayjs';

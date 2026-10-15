@@ -1,11 +1,11 @@
-import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { tesourariaUpdateSchema } from '$lib/validation/cadastros/tesouraria';
+import { DuplicateCadastroNameError } from '#lib/server/models/cadastro-error.js';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { tesourariaUpdateSchema } from '#lib/validation/cadastros/tesouraria.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireTesourariaAccess } from '$lib/server/tesouraria/contributors/access';
-import { getTesourariaErrors, getTesourariaFormValues } from '$lib/server/tesouraria/contributors/form';
+import { requireTesourariaAccess } from '#lib/server/tesouraria/contributors/access.js';
+import { getTesourariaErrors, getTesourariaFormValues } from '#lib/server/tesouraria/contributors/form.js';
 type EditModel = Pick<CadastroModel, 'getTesouraria' | 'updateTesouraria'>;
 type User = { id: string; roles: string } | null;
 type LoadContext = { locals: { user: User }; params: { id: string } };
@@ -16,7 +16,7 @@ const getContributor = async (model: EditModel, id: number) => {
 		return await model.getTesouraria(id);
 	} catch {
 		console.error('Falha ao recuperar os dados do contribuinte.');
-		error(500, { message: 'Falha ao recuperar os dados do contribuinte.' });
+		error(500, 'Falha ao recuperar os dados do contribuinte.');
 	}
 };
 
@@ -25,7 +25,7 @@ export const createContributorEditHandlers = ({ model }: { model: EditModel }) =
 		requireTesourariaAccess(locals.user);
 		const contribuinte = await getContributor(model, Number(params.id));
 
-		if (!contribuinte) error(404, { message: 'Contribuinte não encontrado.' });
+		if (!contribuinte) error(404, 'Contribuinte não encontrado.');
 		return { contribuinte: { nome: contribuinte.nome, telefone: contribuinte.telefone, trab: contribuinte.trab } };
 	},
 	actions: {
@@ -49,10 +49,10 @@ export const createContributorEditHandlers = ({ model }: { model: EditModel }) =
 				}
 
 				console.error('Falha ao atualizar os dados do contribuinte.');
-				error(500, { message: 'Falha ao atualizar os dados do contribuinte.' });
+				error(500, 'Falha ao atualizar os dados do contribuinte.');
 			}
 
-			error(404, { message: 'Contribuinte não encontrado.' });
+			error(404, 'Contribuinte não encontrado.');
 		},
 	},
 });

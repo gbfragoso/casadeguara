@@ -1,4 +1,4 @@
-import { createLogoutHandlers } from '$lib/server/auth/logout-handlers';
+import { createLogoutHandlers } from '#lib/server/auth/logout-handlers.js';
 
 import type { Actions } from './$types';
 

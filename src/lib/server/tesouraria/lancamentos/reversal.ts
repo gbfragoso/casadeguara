@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import { cadastros, estornos, lancamentos } from '$lib/server/database/schema';
-import { estornoReasonSchema } from '$lib/validation/tesouraria/lancamentos';
+import { cadastros, estornos, lancamentos } from '#lib/server/database/schema.js';
+import { estornoReasonSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import type { LancamentoDatabase, LancamentoDetail, LancamentoTransaction } from './types';
 import { alreadyReversedError, mapPersistenceError, notFoundError, validationError } from './errors';
 import { currentDate, formatDate } from './format';

@@ -1,6 +1,6 @@
-import { unaccent } from '$lib/server/database/functions';
-import { db } from '$lib/server/database/connection';
-import { cadastroFotos, cadastros } from '$lib/server/database/schema';
+import { unaccent } from '#lib/server/database/functions.js';
+import { db } from '#lib/server/database/connection.js';
+import { cadastroFotos, cadastros } from '#lib/server/database/schema.js';
 import { and, asc, eq } from 'drizzle-orm';
 
 import { participantPdfFields, participantSummaryFields } from './participant-projections';

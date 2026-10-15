@@ -1,4 +1,4 @@
-import { createLoginHandlers } from '$lib/server/public/login-handlers';
+import { createLoginHandlers } from '#lib/server/public/login-handlers.js';
 
 import type { Actions } from './$types';
 

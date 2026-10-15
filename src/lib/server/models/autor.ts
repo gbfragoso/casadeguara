@@ -1,6 +1,6 @@
-import { db } from '$lib/server/database/connection';
-import { ulike, unaccent } from '$lib/server/database/functions';
-import { autor } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { ulike, unaccent } from '#lib/server/database/functions.js';
+import { autor } from '#lib/server/database/schema.js';
 import { eq } from 'drizzle-orm';
 
 export const AUTHOR_FETCH_LIMIT = 50;

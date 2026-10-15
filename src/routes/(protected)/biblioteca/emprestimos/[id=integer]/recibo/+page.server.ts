@@ -1,4 +1,4 @@
-import { createBibliotecaEmprestimosIdIntegerReciboHandlers } from '$lib/server/biblioteca/emprestimos/id-recibo-handlers';
+import { createBibliotecaEmprestimosIdIntegerReciboHandlers } from '#lib/server/biblioteca/emprestimos/id-recibo-handlers.js';
 
 import type { PageServerLoad } from './$types';
 

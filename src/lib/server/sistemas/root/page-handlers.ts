@@ -1,7 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { user } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { user } from '#lib/server/database/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
@@ -20,7 +20,7 @@ const load = async ({ locals }: RequestEvent) => {
 		return { roles: resultado[0].roles.split(',') };
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao baixar os dados do usuário' });
+		return error(500, 'Falha ao baixar os dados do usuário');
 	}
 };
 

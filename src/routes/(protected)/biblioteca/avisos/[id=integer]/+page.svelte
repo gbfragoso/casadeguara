@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Notification from '$lib/components/feedback/Notification.svelte';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
-	import { NOTICE_TEXT_MAX_LENGTH } from '$lib/validation/aviso';
+	import Notification from '#lib/components/feedback/Notification.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import { NOTICE_TEXT_MAX_LENGTH } from '#lib/validation/aviso.js';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -19,9 +19,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href={resolve('/biblioteca/avisos')} aria-current="page">Avisos</a>
+				<a href={resolve('biblioteca/avisos')} aria-current="page">Avisos</a>
 			</li>
 		</ul>
 	</nav>

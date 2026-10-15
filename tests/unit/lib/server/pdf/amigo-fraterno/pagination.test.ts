@@ -8,8 +8,8 @@ import {
 	PAGE_MARGIN,
 	VISIBLE_CARD_GAP,
 	createCardSlots,
-} from '$lib/image/geometry/card';
-import { numberParticipants, paginateCards } from '$lib/server/pdf/amigo-fraterno/pagination';
+} from '#lib/image/geometry/card.js';
+import { numberParticipants, paginateCards } from '#lib/server/pdf/amigo-fraterno/pagination.js';
 
 describe('PDF card pagination', () => {
 	it.each([0, 1, 6, 7, 12, 13])('creates the required number of pages for %i cards', (count) => {

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
-	import { moeda } from '$lib/utils/currency';
-	import { formatCivilDate } from '$lib/utils/date';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import { moeda } from '#lib/utils/currency.js';
+	import { formatCivilDate } from '#lib/utils/date.js';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -22,9 +22,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
-			<li><a href={resolve('/tesouraria/lancamentos')}>Lançamentos</a></li>
-			<li class="is-active"><a href={resolve('/tesouraria/lancamentos')} aria-current="page">Estorno</a></li>
+			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
+			<li><a href={resolve('tesouraria/lancamentos')}>Lançamentos</a></li>
+			<li class="is-active"><a href={resolve('tesouraria/lancamentos')} aria-current="page">Estorno</a></li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Confirmar estorno</h1>

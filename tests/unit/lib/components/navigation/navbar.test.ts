@@ -2,7 +2,7 @@
 import { mount, tick, unmount } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import Navbar from '$lib/components/navigation/Navbar.svelte';
+import Navbar from '#lib/components/navigation/Navbar.svelte';
 
 const getButton = (target: HTMLElement, selector: string) => {
 	const button = target.querySelector(selector);

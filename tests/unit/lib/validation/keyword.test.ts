@@ -2,7 +2,7 @@ import { File } from 'node:buffer';
 
 import { describe, expect, it } from 'vitest';
 
-import { KEYWORD_MAX_LENGTH, keywordSchema, keywordSearchSchema } from '$lib/validation/keyword';
+import { KEYWORD_MAX_LENGTH, keywordSchema, keywordSearchSchema } from '#lib/validation/keyword.js';
 import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Palavra-chave é obrigatória.';

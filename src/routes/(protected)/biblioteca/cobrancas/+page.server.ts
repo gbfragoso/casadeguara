@@ -1,4 +1,4 @@
-import { createBibliotecaCobrancasHandlers } from '$lib/server/biblioteca/cobrancas/page-handlers';
+import { createBibliotecaCobrancasHandlers } from '#lib/server/biblioteca/cobrancas/page-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

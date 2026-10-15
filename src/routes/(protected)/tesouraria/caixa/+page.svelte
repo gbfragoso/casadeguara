@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
-	import { moeda } from '$lib/utils/currency';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import { moeda } from '#lib/utils/currency.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -20,9 +20,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
+			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
 			<li class="is-active">
-				<a href={resolve('/tesouraria/caixa')} aria-current="page">Caixa</a>
+				<a href={resolve('tesouraria/caixa')} aria-current="page">Caixa</a>
 			</li>
 		</ul>
 	</nav>

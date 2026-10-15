@@ -1,11 +1,11 @@
-import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { tesourariaCreateSchema } from '$lib/validation/cadastros/tesouraria';
+import { DuplicateCadastroNameError } from '#lib/server/models/cadastro-error.js';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { tesourariaCreateSchema } from '#lib/validation/cadastros/tesouraria.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireTesourariaAccess } from '$lib/server/tesouraria/contributors/access';
-import { getTesourariaErrors, getTesourariaFormValues } from '$lib/server/tesouraria/contributors/form';
+import { requireTesourariaAccess } from '#lib/server/tesouraria/contributors/access.js';
+import { getTesourariaErrors, getTesourariaFormValues } from '#lib/server/tesouraria/contributors/form.js';
 type CreateModel = Pick<CadastroModel, 'createTesouraria'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
@@ -36,7 +36,7 @@ export const createContributorCreateHandlers = ({ model }: { model: CreateModel 
 				}
 
 				console.error('Falha ao criar um novo contribuinte.');
-				error(500, { message: 'Falha ao criar um novo contribuinte.' });
+				error(500, 'Falha ao criar um novo contribuinte.');
 			}
 		},
 	},

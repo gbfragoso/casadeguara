@@ -1,7 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
-import { lancamentoModel } from '$lib/server/tesouraria/lancamentos';
+import { requireTesourariaAccess } from '#lib/server/authorization/tesouraria.js';
+import { lancamentoModel } from '#lib/server/tesouraria/lancamentos/index.js';
 import { error } from '@sveltejs/kit';
 
 const load = async ({ locals }: RequestEvent) => {
@@ -20,7 +20,7 @@ const load = async ({ locals }: RequestEvent) => {
 		};
 	} catch {
 		console.error('treasury.launches.dashboard_failed');
-		error(500, { message: 'Falha ao carregar o balanço da tesouraria.' });
+		error(500, 'Falha ao carregar o balanço da tesouraria.');
 	}
 };
 

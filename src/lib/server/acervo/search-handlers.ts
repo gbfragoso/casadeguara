@@ -1,7 +1,7 @@
 import type { Actions } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { ulike, unaccent } from '$lib/server/database/functions';
+import { db } from '#lib/server/database/connection.js';
+import { ulike, unaccent } from '#lib/server/database/functions.js';
 import {
 	autor,
 	autorHasLivro,
@@ -11,7 +11,7 @@ import {
 	livroHasKeyword,
 	serie,
 	exemplar,
-} from '$lib/server/database/schema';
+} from '#lib/server/database/schema.js';
 import { error } from '@sveltejs/kit';
 import { and, eq, sql, inArray } from 'drizzle-orm';
 
@@ -23,7 +23,7 @@ const load = async () => {
 		return { colecoes: colecoes() };
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao carregar os dados da página' });
+		return error(500, 'Falha ao carregar os dados da página');
 	}
 };
 
@@ -101,9 +101,7 @@ const actions: Actions = {
 			return { livros };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de livros',
-			});
+			return error(500, 'Falha ao carregar a lista de livros');
 		}
 	},
 };

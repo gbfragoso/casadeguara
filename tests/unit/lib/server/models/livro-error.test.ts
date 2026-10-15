@@ -7,7 +7,7 @@ import {
 	LivroHasDependentsError,
 	LivroReferenceNotFoundError,
 	translateLivroError,
-} from '$lib/server/models/livro-error';
+} from '#lib/server/models/livro-error.js';
 
 const databaseError = (code: string, constraint_name: string) => {
 	const cause = new postgres.PostgresError('database failure');

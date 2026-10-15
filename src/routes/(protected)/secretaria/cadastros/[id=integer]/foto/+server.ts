@@ -1,6 +1,6 @@
-import { secretariaPhotoModel, type SecretariaPhotoModel } from '$lib/server/models/secretaria-photo';
+import { secretariaPhotoModel, type SecretariaPhotoModel } from '#lib/server/models/secretaria-photo.js';
 
-import { createPhotoHandler } from '$lib/server/secretaria/photo/handler';
+import { createPhotoHandler } from '#lib/server/secretaria/photo/handler.js';
 
 import type { RequestHandler } from './$types';
 

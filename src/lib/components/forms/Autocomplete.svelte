@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { filterOptions, indexOptions, type AutocompleteOption } from '$lib/forms/autocomplete';
+	import { filterOptions, indexOptions, type AutocompleteOption } from '#lib/forms/autocomplete.js';
 
 	interface Props {
 		id: string;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filterOptions, indexOptions } from '$lib/forms/autocomplete';
+import { filterOptions, indexOptions } from '#lib/forms/autocomplete.js';
 
 const options = [
 	{ value: '1', label: 'Clício Fogaça' },

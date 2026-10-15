@@ -9,8 +9,8 @@ import {
 	livro,
 	livroHasKeyword,
 	serie,
-} from '$lib/server/database/schema';
-import type { db } from '$lib/server/database/connection';
+} from '#lib/server/database/schema.js';
+import type { db } from '#lib/server/database/connection.js';
 import { sql } from 'drizzle-orm';
 
 async function resetSequences(database: typeof db) {

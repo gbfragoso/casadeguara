@@ -6,7 +6,7 @@ import {
 	hasSecretariaAccess,
 	hasTesourariaAccess,
 	parseRoles,
-} from '$lib/server/authorization/cadastros';
+} from '#lib/server/authorization/cadastros.js';
 
 describe('cadastro authorization', () => {
 	it('distinguishes unauthenticated callers', () => {

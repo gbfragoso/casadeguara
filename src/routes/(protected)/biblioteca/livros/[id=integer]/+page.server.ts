@@ -1,4 +1,4 @@
-import { createBibliotecaLivrosIdIntegerHandlers } from '$lib/server/biblioteca/livros/id-handlers';
+import { createBibliotecaLivrosIdIntegerHandlers } from '#lib/server/biblioteca/livros/id-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

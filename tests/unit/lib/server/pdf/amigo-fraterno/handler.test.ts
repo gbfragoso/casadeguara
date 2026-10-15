@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createPdfHandler } from '$lib/server/pdf/amigo-fraterno/handler';
+import { createPdfHandler } from '#lib/server/pdf/amigo-fraterno/handler.js';
 
 const secretariaUser = { roles: 'secretaria' };
 const request = () => ({

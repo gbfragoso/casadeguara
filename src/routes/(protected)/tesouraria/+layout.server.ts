@@ -1,4 +1,4 @@
-import { hasTesourariaAdminAccess, requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
+import { hasTesourariaAdminAccess, requireTesourariaAccess } from '#lib/server/authorization/tesouraria.js';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = ({ locals }) => {

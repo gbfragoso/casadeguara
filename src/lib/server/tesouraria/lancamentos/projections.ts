@@ -1,4 +1,4 @@
-import { cadastros, estornos, lancamentos } from '$lib/server/database/schema';
+import { cadastros, estornos, lancamentos } from '#lib/server/database/schema.js';
 
 export const lancamentoProjection = {
 	id: lancamentos.idlancamento,

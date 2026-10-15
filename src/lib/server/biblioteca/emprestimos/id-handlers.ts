@@ -1,16 +1,15 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro, user } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, emprestimo, exemplar, livro, user } from '#lib/server/database/schema.js';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { error } from '@sveltejs/kit';
 import { and, eq, not } from 'drizzle-orm';
 import validator from 'validator';
 
-const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
-
+const findLoan = async (id: number) => {
 	try {
-		const resultado = await db
+		const [loan] = await db
 			.select({
 				leitor: cadastros.nome,
 				livro: livro.titulo,
@@ -26,45 +25,45 @@ const load = async ({ locals, params }: RequestEvent) => {
 			.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
 			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
 			.innerJoin(user, eq(user.id, emprestimo.userEmprestimo))
-			.where(eq(emprestimo.idemp, Number(params.id)));
-
-		if (!resultado) {
-			throw fail(404, { message: 'Empréstimo não encontrado' });
-		}
-
-		const idlivro = resultado[0].idlivro;
-		const idexemplar = resultado[0].idexemplar;
-
-		const exemplares = async () => {
-			return db
-				.select({
-					idexemplar: exemplar.idexemplar,
-					livro: livro.titulo,
-					numero: exemplar.numero,
-				})
-				.from(exemplar)
-				.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
-				.where(
-					and(
-						eq(exemplar.livro, idlivro),
-						eq(exemplar.status, 'Disponível'),
-						not(eq(exemplar.idexemplar, idexemplar)),
-					),
-				)
-				.orderBy(exemplar.numero);
-		};
-
-		return { emprestimo: resultado[0], exemplares: exemplares() };
+			.where(eq(emprestimo.idemp, id));
+		return loan;
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao baixar os dados do empréstimo',
-		});
+		error(500, 'Falha ao baixar os dados do empréstimo');
 	}
 };
 
+const listSwappableCopies = async (idlivro: number, idexemplar: number) =>
+	db
+		.select({
+			idexemplar: exemplar.idexemplar,
+			livro: livro.titulo,
+			numero: exemplar.numero,
+		})
+		.from(exemplar)
+		.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
+		.where(
+			and(
+				eq(exemplar.livro, idlivro),
+				eq(exemplar.status, 'Disponível'),
+				not(eq(exemplar.idexemplar, idexemplar)),
+			),
+		)
+		.orderBy(exemplar.numero);
+
+const load = async ({ locals, params }: RequestEvent) => {
+	requireLibraryAccess(locals.user);
+
+	const loan = await findLoan(Number(params.id));
+	if (!loan) error(404, 'Empréstimo não encontrado');
+
+	return { emprestimo: loan, exemplares: listSwappableCopies(loan.idlivro, loan.idexemplar) };
+};
+
 const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request, params, locals }) => {
+		requireLibraryAccess(locals.user);
+
 		const form = await request.formData();
 		const idexemplar = form.get('idexemplar') as string;
 		const novoexemplar = form.get('novoexemplar') as string;
@@ -93,9 +92,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do empréstimo',
-			});
+			return error(500, 'Falha ao atualizar os dados do empréstimo');
 		}
 	},
 };

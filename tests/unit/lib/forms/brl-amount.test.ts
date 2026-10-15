@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createBrlAmountState, updateBrlAmountState } from '$lib/forms/brl-amount';
+import { createBrlAmountState, updateBrlAmountState } from '#lib/forms/brl-amount.js';
 
 describe('brl amount transformations', () => {
 	it('keeps the banking sequence while digits are appended', () => {

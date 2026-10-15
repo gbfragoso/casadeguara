@@ -1,5 +1,5 @@
-import { db } from '$lib/server/database/connection';
-import { emprestimo, exemplar } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { emprestimo, exemplar } from '#lib/server/database/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
@@ -24,8 +24,6 @@ export const POST: RequestHandler = async ({ url, locals }) => {
 		return new Response('Empréstimo devolvido com sucesso');
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao devolver o empréstimo',
-		});
+		return error(500, 'Falha ao devolver o empréstimo');
 	}
 };

@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { keyword } from '$lib/server/database/schema';
-import { KEYWORD_FETCH_LIMIT, KeywordModel } from '$lib/server/models/keyword';
+import { db } from '#lib/server/database/connection.js';
+import { keyword } from '#lib/server/database/schema.js';
+import { KEYWORD_FETCH_LIMIT, KeywordModel } from '#lib/server/models/keyword.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

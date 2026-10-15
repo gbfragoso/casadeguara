@@ -1,9 +1,9 @@
-import { authorSchema } from '$lib/validation/autor';
+import { authorSchema } from '#lib/validation/autor.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import type { AutorModel } from '$lib/server/models/autor';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import type { AutorModel } from '#lib/server/models/autor.js';
 
 type EditModel = Pick<AutorModel, 'get' | 'update'>;
 type User = { roles: string } | null;
@@ -20,9 +20,9 @@ export const createAuthorEditHandlers = ({ model }: { model: EditModel }) => ({
 			author = await model.get(Number(params.id));
 		} catch (cause) {
 			console.error(cause);
-			error(500, { message: 'Falha ao baixar os dados do autor' });
+			error(500, 'Falha ao baixar os dados do autor');
 		}
-		if (!author) error(404, { message: 'Autor nÃ£o encontrado.' });
+		if (!author) error(404, 'Autor nÃ£o encontrado.');
 		return { autor: author };
 	},
 	actions: {
@@ -38,9 +38,9 @@ export const createAuthorEditHandlers = ({ model }: { model: EditModel }) => ({
 				updated = await model.update(Number(params.id), result.data.nome);
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao atualizar os dados do autor' });
+				error(500, 'Falha ao atualizar os dados do autor');
 			}
-			if (!updated) error(404, { message: 'Autor nÃ£o encontrado.' });
+			if (!updated) error(404, 'Autor nÃ£o encontrado.');
 			return { status: 200 };
 		},
 	},

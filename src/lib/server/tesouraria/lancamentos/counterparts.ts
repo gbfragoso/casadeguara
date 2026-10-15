@@ -1,5 +1,5 @@
 import { asc, eq } from 'drizzle-orm';
-import { cadastros } from '$lib/server/database/schema';
+import { cadastros } from '#lib/server/database/schema.js';
 import type { CounterpartOption, LancamentoDatabase, LancamentoTransaction } from './types';
 import { validationError } from './errors';
 

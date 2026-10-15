@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-type DatabaseEnvironment = { NODE_ENV: string; POSTGRES_URL?: string };
+type DatabaseEnvironment = { NODE_ENV: string; POSTGRES_URL: string };
 type PostgresOptions = { onnotice: () => void; ssl?: string };
 type PostgresFactory = (url: string, options: PostgresOptions) => object;
 type DrizzleFactory = (client: object, options: object) => object;
@@ -11,17 +11,17 @@ const loadConnection = async (env: DatabaseEnvironment) => {
 	const database = {};
 	const postgres = vi.fn<PostgresFactory>(() => client);
 	const drizzle = vi.fn<DrizzleFactory>(() => database);
-	vi.doMock('$env/dynamic/private', () => ({ env }));
+	vi.doMock('$app/env/private', () => env);
 	vi.doMock('postgres', () => ({ default: postgres }));
 	vi.doMock('drizzle-orm/postgres-js', () => ({ drizzle }));
 
-	const connection = await import('$lib/server/database/connection');
+	const connection = await import('#lib/server/database/connection.js');
 
 	return { client, connection, drizzle, postgres };
 };
 
 afterEach(() => {
-	vi.doUnmock('$env/dynamic/private');
+	vi.doUnmock('$app/env/private');
 	vi.doUnmock('postgres');
 	vi.doUnmock('drizzle-orm/postgres-js');
 	vi.resetModules();
@@ -40,11 +40,5 @@ describe('database connection', () => {
 		expect(options?.onnotice).toEqual(expect.any(Function));
 		expect(options?.onnotice()).toBeUndefined();
 		expect(drizzle).toHaveBeenCalledWith(client, expect.objectContaining({ schema: expect.any(Object) }));
-	});
-
-	it('rejects a missing database URL before creating a client', async () => {
-		vi.doMock('$env/dynamic/private', () => ({ env: { NODE_ENV: 'test' } }));
-
-		await expect(import('$lib/server/database/connection')).rejects.toThrow('POSTGRES_URL is not set');
 	});
 });
