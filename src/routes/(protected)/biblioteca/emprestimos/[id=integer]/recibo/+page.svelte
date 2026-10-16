@@ -40,6 +40,6 @@
 
 <LoanReceipt {recibo} />
 
-<div class="mt-4 has-text-centered">
-	<button type="button" class="button is-primary is-hidden-print" onclick={printReceipt}>Imprimir recibo</button>
+<div class="mt-4 has-text-centered is-hidden-print">
+	<button type="button" class="button is-primary" onclick={printReceipt}>Imprimir recibo</button>
 </div>

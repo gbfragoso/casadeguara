@@ -3,6 +3,8 @@ import { assertTestDatabase } from './tests/support/database';
 
 assertTestDatabase();
 
+const PERFORMANCE_TAG = /@performance/;
+
 const webServerEnv = Object.fromEntries(
 	Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined),
 );
@@ -20,5 +22,9 @@ export default defineConfig({
 		env: webServerEnv,
 	},
 	testMatch: '**/*.e2e.{ts,js}',
+	projects: [
+		{ name: 'e2e', grepInvert: PERFORMANCE_TAG },
+		{ name: 'performance', grep: PERFORMANCE_TAG, dependencies: ['e2e'] },
+	],
 	use: { baseURL: 'http://127.0.0.1:5173', trace: 'retain-on-failure' },
 });

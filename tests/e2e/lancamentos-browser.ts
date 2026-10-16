@@ -13,12 +13,15 @@ export const openLancamentosPage = async (page: Page) => {
 };
 
 export const submitLancamentosSearch = async (page: Page) => {
+	const button = page.getByRole('button', { name: 'Pesquisar' });
 	const responsePromise = page.waitForResponse(
 		(response) =>
 			response.request().method() === 'POST' && new URL(response.url()).pathname === '/tesouraria/lancamentos',
 	);
-	await page.getByRole('button', { name: 'Pesquisar' }).click();
-	return responsePromise;
+	await button.click();
+	const response = await responsePromise;
+	await expect(button).toHaveAttribute('aria-busy', 'false');
+	return response;
 };
 
 export const searchLancamentosByDescription = async (page: Page, description: string) => {

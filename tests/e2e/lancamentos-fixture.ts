@@ -15,6 +15,9 @@ export type LancamentoSeed =
 			contraparteId?: number | null;
 	  };
 
+export const createCurrentMonthDate = (today = new Date()) =>
+	`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`;
+
 const dateForIndex = (index: number) => (index % 2 === 0 ? '2026-09-01' : '2026-09-02');
 
 export const createEntrySeed = (

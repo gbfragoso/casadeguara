@@ -246,7 +246,7 @@ test.describe('protected dashboard chart integration', () => {
 		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
 	});
 
-	test('E2E-06 cumpre os orcamentos do cliente', async ({ browser, e2e }) => {
+	test('E2E-06 cumpre os orcamentos do cliente', { tag: '@performance' }, async ({ browser, e2e }) => {
 		const baselineBundle = JSON.parse(
 			await readFile(resolve('src/lib/scripts/performance/tesouraria/baseline-bundle.json'), 'utf8'),
 		) as BundleMeasurement;
