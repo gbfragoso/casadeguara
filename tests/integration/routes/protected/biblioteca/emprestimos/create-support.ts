@@ -60,3 +60,13 @@ export const createExistingLoan = (loan: LoanFixture, returned = false) =>
 		exemplar: loan.copy.idexemplar,
 		dataDevolvido: returned ? new Date('2026-08-01T12:00:00Z') : null,
 	});
+
+type LoanDates = { dataEmprestimo: Date | null; dataDevolucao: Date | null };
+
+export const createDatedLoan = async (loan: LoanFixture, dates: LoanDates) => {
+	const [created] = await db
+		.insert(emprestimo)
+		.values({ leitor: loan.reader.idleitor, exemplar: loan.copy.idexemplar, ...dates })
+		.returning({ idemp: emprestimo.idemp });
+	return created;
+};
