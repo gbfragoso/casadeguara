@@ -1,7 +1,7 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
 import { appendPrintRequest } from '#lib/printing/print-request.js';
-import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { hasLibraryAdminAccess, requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
 import { error, redirect } from '@sveltejs/kit';
 import {
 	listReaders,
@@ -33,7 +33,7 @@ const actions: Actions = {
 		if (!readerId) return rejectLoan('leitor', 'Leitor não encontrado');
 		if (!copyId) return rejectLoan('exemplar', 'Exemplar não encontrado');
 
-		const rejection = await validateReader(readerId, user.roles.includes('admin'));
+		const rejection = await validateReader(readerId, hasLibraryAdminAccess(user));
 		if (rejection) return rejection;
 
 		const id = await recordLoan(readerId, copyId, user.id);

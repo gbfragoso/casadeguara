@@ -6,7 +6,13 @@ import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
 import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
-import validator from 'validator';
+import { hasBibliotecaAccess } from '#lib/server/authorization/cadastros.js';
+import {
+	administersOtherAreasOf,
+	replaceLibraryRoles,
+	selectLibraryRoles,
+} from '#lib/server/biblioteca/usuarios/roles.js';
+import { readUserForm, validateUserForm, type UserForm } from '#lib/server/biblioteca/usuarios/user-form.js';
 
 const editableUserFields = { id: user.id, username: user.username, name: user.name, roles: user.roles };
 
@@ -20,52 +26,47 @@ const findUser = async (id: string) => {
 	}
 };
 
+const findEditableUser = async (id: string, editor: { roles: string }) => {
+	const usuario = await findUser(id);
+	if (!usuario || !hasBibliotecaAccess(usuario)) error(404, 'Usuário não encontrado');
+	if (!administersOtherAreasOf(editor, usuario)) {
+		error(401, 'Usuário não possui acesso administrativo às demais áreas deste usuário');
+	}
+
+	return usuario;
+};
+
+const updateUser = async (id: string, { username, name, password }: UserForm, roles?: string) => {
+	const passwordHash = await hash(password);
+
+	try {
+		await db.update(user).set({ username, name, passwordHash, roles }).where(eq(user.id, id));
+		return { status: 200 };
+	} catch (err) {
+		console.error(err);
+		return error(500, 'Falha ao atualizar os dados do usuário');
+	}
+};
+
 const load = async ({ locals, params }: RequestEvent) => {
-	requireLibraryAdminAccess(locals.user);
+	const editor = requireLibraryAdminAccess(locals.user);
 
-	const usuario = await findUser(String(params.id));
-	if (!usuario) error(404, 'Usuário não encontrado');
+	const usuario = await findEditableUser(String(params.id), editor);
 
-	return { usuario };
+	return { usuario: { ...usuario, roles: selectLibraryRoles(usuario.roles) } };
 };
 
 const actions: Actions = {
 	default: async ({ request, params, locals }) => {
-		requireLibraryAdminAccess(locals.user);
+		const editor = requireLibraryAdminAccess(locals.user);
 
-		const formData = await request.formData();
-		const username = formData.get('username') as string;
-		const password = formData.get('password') as string;
-		const name = formData.get('name') as string;
-		const roles = formData.get('roles') as string;
+		const form = await readUserForm(request);
+		const rejection = validateUserForm(form, { requireRoles: false });
+		if (rejection) return rejection;
 
-		if (!validator.isEmail(username)) {
-			return {
-				status: 400,
-				field: 'username',
-				message: 'E-mail inválido',
-			};
-		}
-		if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-			return {
-				status: 400,
-				field: 'password',
-				message: 'Senha não atente aos requisitos mínimos de segurança',
-			};
-		}
-
-		const passwordHash = await hash(password);
-
-		try {
-			await db
-				.update(user)
-				.set({ username, name, passwordHash, roles: roles ? roles : undefined })
-				.where(eq(user.id, String(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, 'Falha ao atualizar os dados do usuário');
-		}
+		const target = await findEditableUser(String(params.id), editor);
+		const roles = form.roles ? replaceLibraryRoles(target.roles, form.roles) : undefined;
+		return updateUser(String(params.id), form, roles);
 	},
 };
 

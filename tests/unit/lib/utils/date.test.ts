@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { formatCivilDate } from '#lib/utils/date.js';
+import { addCivilDays, formatCivilDate, readBahiaCivilDate } from '#lib/utils/date.js';
 
 const originalTimeZone = process.env.TZ;
 
@@ -23,5 +23,31 @@ describe('formatCivilDate', () => {
 
 	it('preserves an unexpected representation', () => {
 		expect(formatCivilDate('2026/09/02')).toBe('2026/09/02');
+	});
+});
+
+describe('readBahiaCivilDate', () => {
+	it('keeps the Bahia day for an evening instant that is already tomorrow in UTC', () => {
+		const eveningInBahia = new Date('2026-10-16T01:00:00Z');
+
+		const civilDate = readBahiaCivilDate(eveningInBahia);
+
+		expect(civilDate).toEqual(new Date('2026-10-15T00:00:00Z'));
+	});
+
+	it.each(['UTC', 'Pacific/Auckland'])('ignores the server time zone %s', (timeZone) => {
+		process.env.TZ = timeZone;
+
+		const civilDate = readBahiaCivilDate(new Date('2026-10-15T15:00:00Z'));
+
+		expect(civilDate).toEqual(new Date('2026-10-15T00:00:00Z'));
+	});
+});
+
+describe('addCivilDays', () => {
+	it('moves the civil date across a month boundary', () => {
+		const civilDate = addCivilDays(new Date('2026-10-25T00:00:00Z'), 14);
+
+		expect(civilDate).toEqual(new Date('2026-11-08T00:00:00Z'));
 	});
 });

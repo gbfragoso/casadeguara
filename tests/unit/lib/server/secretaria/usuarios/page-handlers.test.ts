@@ -7,5 +7,5 @@ vi.mock('#lib/server/database/connection.js', () => import('../../../../support/
 const { createSecretariaUsuariosHandlers } = await import('#lib/server/secretaria/usuarios/page-handlers.js');
 
 describe('createSecretariaUsuariosHandlers', () => {
-	describeUserListHandlers({ domain: 'secretaria', createHandlers: createSecretariaUsuariosHandlers });
+	describeUserListHandlers({ viewerRoles: 'secretaria', createHandlers: createSecretariaUsuariosHandlers });
 });

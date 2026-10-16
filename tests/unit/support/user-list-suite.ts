@@ -4,13 +4,13 @@ import { fakeDatabase } from './fake-database';
 import { expectRedirect, runHandler } from './handler-event';
 
 type Handler = (...args: never[]) => unknown;
-type SuiteOptions = { domain: string; createHandlers: () => { load: Handler } };
+type SuiteOptions = { viewerRoles: string; createHandlers: () => { load: Handler } };
 
 const listUrl = 'http://localhost/usuarios';
 
-const describeListQuery = ({ domain, createHandlers }: SuiteOptions) => {
+const describeListQuery = ({ viewerRoles, createHandlers }: SuiteOptions) => {
 	it('never selects the password hash', async () => {
-		await runHandler(createHandlers().load, { roles: domain, url: listUrl });
+		await runHandler(createHandlers().load, { roles: viewerRoles, url: listUrl });
 
 		expect(Object.keys(fakeDatabase.argumentsOf('select')?.[0] as object)).toEqual(['id', 'name']);
 	});
@@ -19,13 +19,13 @@ const describeListQuery = ({ domain, createHandlers }: SuiteOptions) => {
 		['the first page by default', listUrl, 0],
 		['the requested page', `${listUrl}?page=3`, 10],
 	])('starts the listing at %s', async (_scenario, url, offset) => {
-		await runHandler(createHandlers().load, { roles: domain, url });
+		await runHandler(createHandlers().load, { roles: viewerRoles, url });
 
 		expect(fakeDatabase.argumentsOf('offset')).toEqual([offset]);
 	});
 };
 
-export const describeUserListHandlers = ({ domain, createHandlers }: SuiteOptions) => {
+export const describeUserListHandlers = ({ viewerRoles, createHandlers }: SuiteOptions) => {
 	afterEach(() => {
 		fakeDatabase.reset();
 		vi.restoreAllMocks();
@@ -40,12 +40,12 @@ export const describeUserListHandlers = ({ domain, createHandlers }: SuiteOption
 	it('streams the listed users', async () => {
 		fakeDatabase.resolveWith([{ id: 'user-9', name: 'Ana' }]);
 
-		const { result } = await runHandler(createHandlers().load, { roles: domain, url: listUrl });
+		const { result } = await runHandler(createHandlers().load, { roles: viewerRoles, url: listUrl });
 
 		await expect((result as { usuarios: Promise<unknown> }).usuarios).resolves.toEqual([
 			{ id: 'user-9', name: 'Ana' },
 		]);
 	});
 
-	describeListQuery({ domain, createHandlers });
+	describeListQuery({ viewerRoles, createHandlers });
 };

@@ -1,11 +1,12 @@
 import { db } from '#lib/server/database/connection.js';
 import { emprestimo } from '#lib/server/database/schema.js';
-import { error, redirect } from '@sveltejs/kit';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { error } from '@sveltejs/kit';
 import { eq, sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ url, locals }) => {
-	if (!locals.user) redirect(302, '/');
+	requireLibraryAccess(locals.user);
 
 	const id = url.searchParams.get('id');
 

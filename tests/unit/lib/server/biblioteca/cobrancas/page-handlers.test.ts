@@ -63,12 +63,17 @@ describe('createBibliotecaCobrancasHandlers', () => {
 		expect(redirect).toMatchObject({ status: 302, location: '/' });
 	});
 
-	it('redirects a library user without administrative access', async () => {
+	it.each([
+		['a library user without administrative access', 'biblioteca'],
+		['a librarian who administers another area', 'biblioteca,tesouraria:admin'],
+	])('rejects %s', async (_viewer, roles) => {
 		const { load } = createBibliotecaCobrancasHandlers();
 
-		const redirect = await captureRedirect(load({ locals: createLocals('biblioteca') }));
+		const thrown = await Promise.resolve()
+			.then(() => load({ locals: createLocals(roles) }))
+			.catch((reason: unknown) => reason);
 
-		expect(redirect).toMatchObject({ status: 302, location: '/biblioteca' });
+		expect(thrown).toMatchObject({ status: 401 });
 	});
 
 	it('lists overdue loans for a library administrator', async () => {

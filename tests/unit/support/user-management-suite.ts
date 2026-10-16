@@ -108,6 +108,7 @@ export const describeUserCreationHandlers = (options: SuiteOptions) => {
 
 export const describeUserEditHandlers = (options: SuiteOptions) => {
 	const admin = { roles: `${options.domain}:admin`, params: { id: 'user-9' } };
+	const editedUser = { id: 'user-9', name: 'Novo Usuário', roles: options.domain };
 
 	afterEach(() => {
 		fakeDatabase.reset();
@@ -118,15 +119,15 @@ export const describeUserEditHandlers = (options: SuiteOptions) => {
 	describeCredentialValidation(options);
 
 	it('returns the edited user to an administrator', async () => {
-		fakeDatabase.resolveWith([{ id: 'user-9', name: 'Novo Usuário' }]);
+		fakeDatabase.resolveWith([editedUser]);
 
 		const { result } = await runHandler(options.createHandlers().load, admin);
 
-		expect(result).toEqual({ usuario: { id: 'user-9', name: 'Novo Usuário' } });
+		expect(result).toEqual({ usuario: editedUser });
 	});
 
 	it('never selects the password hash', async () => {
-		fakeDatabase.resolveWith([{ id: 'user-9' }]);
+		fakeDatabase.resolveWith([editedUser]);
 
 		await runHandler(options.createHandlers().load, admin);
 
@@ -158,6 +159,8 @@ export const describeUserEditHandlers = (options: SuiteOptions) => {
 		['the submitted roles', 'biblioteca', 'biblioteca'],
 		['the current roles when none are submitted', '', undefined],
 	])('updates the user keeping %s', async (_scenario, roles, storedRoles) => {
+		fakeDatabase.resolveWith([editedUser]);
+
 		const { result } = await runHandler(options.createHandlers().actions.default, {
 			...admin,
 			form: { ...validForm, roles },

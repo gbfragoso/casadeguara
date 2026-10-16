@@ -33,6 +33,23 @@ it('creates the loan, marks the copy borrowed and redirects to its receipt with 
 	}
 });
 
+it('dates an evening loan by the Bahia civil day instead of the UTC day', async ({ loan }) => {
+	vi.useFakeTimers({ toFake: ['Date'] });
+	vi.setSystemTime(new Date('2026-09-06T01:00:00Z'));
+	try {
+		await expect(invoke(actions.default, createLoanEvent(loanValues(loan)))).rejects.toMatchObject({ status: 302 });
+
+		const [created] = await readLoans(loan);
+
+		expect(created).toMatchObject({
+			dataEmprestimo: new Date('2026-09-05'),
+			dataDevolucao: new Date('2026-09-19'),
+		});
+	} finally {
+		vi.useRealTimers();
+	}
+});
+
 it('allows borrowing when the previous loan was returned', async ({ loan }) => {
 	await createExistingLoan(loan, true);
 

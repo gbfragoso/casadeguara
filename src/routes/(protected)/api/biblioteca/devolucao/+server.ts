@@ -1,11 +1,13 @@
 import { db } from '#lib/server/database/connection.js';
 import { emprestimo, exemplar } from '#lib/server/database/schema.js';
-import { error, redirect } from '@sveltejs/kit';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { readBahiaCivilDate } from '#lib/utils/date.js';
+import { error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ url, locals }) => {
-	if (!locals.user) redirect(302, '/');
+	const user = requireLibraryAccess(locals.user);
 	const idemprestimo = url.searchParams.get('id');
 
 	try {
@@ -15,7 +17,7 @@ export const POST: RequestHandler = async ({ url, locals }) => {
 			.where(eq(emprestimo.idemp, Number(idemprestimo)));
 		await db
 			.update(emprestimo)
-			.set({ dataDevolvido: new Date(), userDevolucao: locals.user.id })
+			.set({ dataDevolvido: readBahiaCivilDate(new Date()), userDevolucao: user.id })
 			.where(eq(emprestimo.idemp, Number(idemprestimo)));
 		await db
 			.update(exemplar)

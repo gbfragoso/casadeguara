@@ -6,7 +6,7 @@ import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { generateUserId } from '#lib/server/auth/user-id.js';
 import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
-import validator from 'validator';
+import { readUserForm, validateUserForm } from '#lib/server/biblioteca/usuarios/user-form.js';
 
 const load = async ({ locals }: RequestEvent) => {
 	requireLibraryAdminAccess(locals.user);
@@ -16,27 +16,11 @@ const actions: Actions = {
 	default: async ({ request, locals }) => {
 		requireLibraryAdminAccess(locals.user);
 
-		const formData = await request.formData();
-		const username = formData.get('username') as string;
-		const password = formData.get('password') as string;
-		const name = formData.get('name') as string;
-		const roles = formData.get('roles') as string;
+		const form = await readUserForm(request);
+		const rejection = validateUserForm(form, { requireRoles: true });
+		if (rejection) return rejection;
 
-		if (!validator.isEmail(username)) {
-			return {
-				status: 400,
-				field: 'username',
-				message: 'E-mail inválido',
-			};
-		}
-		if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-			return {
-				status: 400,
-				field: 'password',
-				message: 'Senha não atente aos requisitos mínimos de segurança',
-			};
-		}
-
+		const { username, name, password, roles } = form;
 		const id = generateUserId();
 		const passwordHash = await hash(password);
 

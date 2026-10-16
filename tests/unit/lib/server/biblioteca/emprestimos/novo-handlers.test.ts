@@ -70,6 +70,15 @@ describe('createBibliotecaEmprestimosNovoHandlers default action', () => {
 		expect(result).toMatchObject({ status: 400, field });
 	});
 
+	it.each([
+		['a library administrator', 'biblioteca:admin', true],
+		['a librarian who administers another area', 'biblioteca,tesouraria:admin', false],
+	])('validates the reader as %s', async (_viewer, roles, isAdmin) => {
+		await expectRedirect(actions.default, { roles, form: loanForm });
+
+		expect(loans.validateReader).toHaveBeenCalledWith(1, isAdmin);
+	});
+
 	it('returns the reader rejection without recording the loan', async () => {
 		loans.validateReader.mockResolvedValueOnce({ status: 400, field: 'leitor', message: 'Leitor suspenso' });
 

@@ -31,8 +31,7 @@ const listOverdueLoans = async () =>
 		.orderBy(desc(emprestimo.dataEmprestimo));
 
 const load = async ({ locals }: { locals: App.Locals }) => {
-	if (!locals.user) redirect(302, '/');
-	if (!locals.user.roles.includes('biblioteca:admin')) redirect(302, '/biblioteca');
+	requireLibraryAdminAccess(locals.user);
 
 	return { emprestimos: listOverdueLoans() };
 };
