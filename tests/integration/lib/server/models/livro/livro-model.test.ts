@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
+import { db } from '#lib/server/database/connection.js';
 import {
 	autor,
 	autorHasLivro,
@@ -10,9 +10,9 @@ import {
 	livro,
 	livroHasKeyword,
 	serie,
-} from '$lib/server/database/schema';
-import { LivroModel } from '$lib/server/models/livro';
-import { buildBookSearchQuery } from '$lib/server/models/livro-search';
+} from '#lib/server/database/schema.js';
+import { LivroModel } from '#lib/server/models/livro.js';
+import { buildBookSearchQuery } from '#lib/server/models/livro-search.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

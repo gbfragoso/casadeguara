@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { SecretariaFlagData } from '$lib/server/models/cadastro-inputs';
+import type { SecretariaFlagData } from '#lib/server/models/cadastro-inputs.js';
 
 import { createRawCadastro, createTestName, deleteCadastro, model, readCadastro } from './test-support';
 

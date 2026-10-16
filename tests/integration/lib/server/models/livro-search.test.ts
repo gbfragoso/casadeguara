@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '$lib/server/database/schema';
-import { buildBookSearchQuery, type LegacyBookSearchInput } from '$lib/server/models/livro-search';
+import { db } from '#lib/server/database/connection.js';
+import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword, serie } from '#lib/server/database/schema.js';
+import { buildBookSearchQuery, type LegacyBookSearchInput } from '#lib/server/models/livro-search.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

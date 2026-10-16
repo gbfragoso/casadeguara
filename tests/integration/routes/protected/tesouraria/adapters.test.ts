@@ -14,8 +14,8 @@ import {
 	load as editContributorLoad,
 } from '../../../../../src/routes/(protected)/tesouraria/contribuintes/[id=integer]/+page.server';
 import { createRequestEvent, invoke } from '../../../support/request-event';
-import { db } from '$lib/server/database/connection';
-import { cadastros } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros } from '#lib/server/database/schema.js';
 import { bibliotecaUser, tesourariaUser } from '../../../support/auth';
 
 const event = () =>

@@ -1,4 +1,4 @@
-import { cadastros } from '$lib/server/database/schema';
+import { cadastros } from '#lib/server/database/schema.js';
 import { eq } from 'drizzle-orm';
 
 import type { CadastroDatabase } from './cadastro-database';

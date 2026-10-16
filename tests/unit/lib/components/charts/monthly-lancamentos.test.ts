@@ -1,7 +1,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
-import MonthlyLancamentos from '$lib/components/charts/MonthlyLancamentos.svelte';
+import MonthlyLancamentos from '#lib/components/charts/MonthlyLancamentos.svelte';
 import { parseRenderedBody } from '../../../support/rendered-document';
 
 const createTotals = (entradas: string, saidas: string) =>

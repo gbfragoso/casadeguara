@@ -7,7 +7,7 @@ function createSubmission(update: () => Promise<void>) {
 		formData: new FormData(),
 		formElement: {} as HTMLFormElement,
 		action: new URL('https://example.test/action'),
-		result: { type: 'success' as const, status: 200 },
+		result: { type: 'success' as const, status: 200, location: 'https://example.test/action' },
 		update,
 	};
 }

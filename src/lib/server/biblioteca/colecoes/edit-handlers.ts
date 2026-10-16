@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type ColecaoModel } from '$lib/server/models/colecao';
-import { colecaoSchema } from '$lib/validation/colecao';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type ColecaoModel } from '#lib/server/models/colecao.js';
+import { colecaoSchema } from '#lib/validation/colecao.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -16,7 +16,7 @@ async function getColecao(model: Pick<ColecaoModel, 'get'>, id: number) {
 		return await model.get(id);
 	} catch (cause) {
 		console.error('Falha ao recuperar os dados da coleção', cause);
-		error(500, { message: 'Falha ao recuperar os dados da coleção' });
+		error(500, 'Falha ao recuperar os dados da coleção');
 	}
 }
 
@@ -25,7 +25,7 @@ async function updateColecao(model: Pick<ColecaoModel, 'update'>, id: number, na
 		return await model.update(id, name);
 	} catch (cause) {
 		console.error('Falha ao atualizar os dados da coleção', cause);
-		error(500, { message: 'Falha ao atualizar os dados da coleção' });
+		error(500, 'Falha ao atualizar os dados da coleção');
 	}
 }
 
@@ -36,7 +36,7 @@ const createEditLoad =
 		const id = Number(params.id);
 		const colecao = await getColecao(model, id);
 
-		if (!colecao) error(404, { message: 'Coleção não encontrada.' });
+		if (!colecao) error(404, 'Coleção não encontrada.');
 		return { colecao };
 	};
 
@@ -53,7 +53,7 @@ const createEditAction =
 
 		const id = Number(params.id);
 		const updated = await updateColecao(model, id, result.data.nome);
-		if (!updated) error(404, { message: 'Coleção não encontrada.' });
+		if (!updated) error(404, 'Coleção não encontrada.');
 
 		return { status: 200 };
 	};

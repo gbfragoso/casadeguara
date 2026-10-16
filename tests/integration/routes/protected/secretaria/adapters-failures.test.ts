@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { cadastroModel } from '$lib/server/models/cadastro';
+import { cadastroModel } from '#lib/server/models/cadastro.js';
 import { secretariaUser } from '../../../support/auth';
 import { createRequestEvent, invoke } from '../../../support/request-event';
 import { actions as newActions } from '../../../../../src/routes/(protected)/secretaria/cadastros/novo/+page.server';

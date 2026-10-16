@@ -1,5 +1,5 @@
-import { db } from '$lib/server/database/connection';
-import { AvisoModel, RECENT_NOTICE_LIMIT } from '$lib/server/models/aviso';
+import { db } from '#lib/server/database/connection.js';
+import { AvisoModel, RECENT_NOTICE_LIMIT } from '#lib/server/models/aviso.js';
 import { describe, expect, it } from 'vitest';
 
 import { withNotices } from './aviso-test-support';

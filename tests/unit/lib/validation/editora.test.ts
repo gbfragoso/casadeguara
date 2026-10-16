@@ -1,7 +1,7 @@
 import { File } from 'node:buffer';
 import { describe, expect, it } from 'vitest';
 
-import { PUBLISHER_NAME_MAX_LENGTH, editoraSchema, editoraSearchSchema } from '$lib/validation/editora';
+import { PUBLISHER_NAME_MAX_LENGTH, editoraSchema, editoraSearchSchema } from '#lib/validation/editora.js';
 import { getFieldErrors } from './field-errors';
 
 const REQUIRED = 'Nome da editora é obrigatório.';

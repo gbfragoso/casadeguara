@@ -1,7 +1,7 @@
 import { authorName, bookTitle, keywordName, publisherName } from './labels';
 import { entityIdWithDegree, profile } from './profile';
-import type { LegacyBookSearchInput } from '$lib/server/models/livro-search';
-import type { LivroSearchInput } from '$lib/validation/livro';
+import type { LegacyBookSearchInput } from '#lib/server/models/livro-search.js';
+import type { LivroSearchInput } from '#lib/validation/livro.js';
 
 export type BookPerformanceScenario = {
 	name: string;

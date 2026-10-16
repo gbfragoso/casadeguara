@@ -1,4 +1,4 @@
-import { cadastroFotos, cadastros } from '$lib/server/database/schema';
+import { cadastroFotos, cadastros } from '#lib/server/database/schema.js';
 import { sql } from 'drizzle-orm';
 
 export type AmigoFraternoParticipant = {

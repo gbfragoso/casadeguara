@@ -1,8 +1,8 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
-import { PHOTO_FRAME } from '$lib/image/geometry/card';
-import { createCardPhoto } from '$lib/server/image/cropper';
+import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
+import { createCardPhoto } from '#lib/server/image/cropper.js';
 
 const RGB_CHANNEL_COUNT = 3;
 

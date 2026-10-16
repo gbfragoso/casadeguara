@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
-import { db } from '$lib/server/database/connection';
-import { aviso } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { aviso } from '#lib/server/database/schema.js';
 import { actions as noticeActions } from '../../../../../src/routes/(protected)/biblioteca/avisos/+page.server';
 import { load as libraryDashboardLoad } from '../../../../../src/routes/(protected)/biblioteca/+page.server';
 import { bibliotecaUser } from '../../../support/auth';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { PHOTO_FRAME } from '$lib/image/geometry/card';
-	import { createCropRectangle, type ImageSize, type PhotoPositionInput } from '$lib/image/crop/rectangle';
+	import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
+	import { createCropRectangle, type ImageSize, type PhotoPositionInput } from '#lib/image/crop/rectangle.js';
 
 	interface Props {
 		src: string;

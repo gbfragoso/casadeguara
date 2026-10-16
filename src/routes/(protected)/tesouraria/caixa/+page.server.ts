@@ -1,4 +1,4 @@
-import { createTesourariaCaixaHandlers } from '$lib/server/tesouraria/caixa/page-handlers';
+import { createTesourariaCaixaHandlers } from '#lib/server/tesouraria/caixa/page-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

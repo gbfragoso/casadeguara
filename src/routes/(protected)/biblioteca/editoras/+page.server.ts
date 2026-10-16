@@ -1,5 +1,5 @@
-import { editoraModel } from '$lib/server/models/editora';
-import { createPublisherListHandlers } from '$lib/server/biblioteca/editoras/list-handlers';
+import { editoraModel } from '#lib/server/models/editora.js';
+import { createPublisherListHandlers } from '#lib/server/biblioteca/editoras/list-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

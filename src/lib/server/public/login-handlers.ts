@@ -1,8 +1,9 @@
 import type { Actions } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { user } from '$lib/server/database/schema';
-import { lucia } from '$lib/server/auth';
+import { db } from '#lib/server/database/connection.js';
+import { user } from '#lib/server/database/schema.js';
+import { setSessionCookie } from '#lib/server/auth/cookie.js';
+import { generateSessionToken, sessionModel } from '#lib/server/auth/session.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { verify } from 'argon2';
 import { eq } from 'drizzle-orm';
@@ -31,12 +32,9 @@ const actions: Actions = {
 			return fail(400, { failedLogin: true });
 		}
 
-		const session = await lucia.createSession(existingUser[0].id, {});
-		const sessionCookie = lucia.createSessionCookie(session.id);
-		cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
-		});
+		const token = generateSessionToken();
+		const session = await sessionModel.create(token, existingUser[0].id);
+		setSessionCookie(cookies, token, session.expiresAt);
 
 		const role = existingUser[0].roles;
 		if (role.includes(',')) {

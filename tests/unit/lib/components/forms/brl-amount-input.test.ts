@@ -2,7 +2,7 @@
 import { mount, tick, unmount, type ComponentProps } from 'svelte';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import BrlAmountInput from '$lib/components/forms/BrlAmountInput.svelte';
+import BrlAmountInput from '#lib/components/forms/BrlAmountInput.svelte';
 import { createAmountProps } from './brl-amount-input-support.svelte';
 
 let mounted: ReturnType<typeof mount> | undefined;

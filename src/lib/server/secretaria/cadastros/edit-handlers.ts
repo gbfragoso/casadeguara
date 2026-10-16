@@ -1,14 +1,14 @@
-import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { type SecretariaPhotoModel } from '$lib/server/models/secretaria-photo';
-import { secretariaUpdateSchema } from '$lib/validation/cadastros/secretaria';
+import { DuplicateCadastroNameError } from '#lib/server/models/cadastro-error.js';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { type SecretariaPhotoModel } from '#lib/server/models/secretaria-photo.js';
+import { secretariaUpdateSchema } from '#lib/validation/cadastros/secretaria.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireSecretariaAccess } from '$lib/server/secretaria/access';
-import { toSecretariaDetail } from '$lib/server/secretaria/detail';
-import { getSecretariaErrors, getSecretariaFormValues } from '$lib/server/secretaria/form';
-import { reframePhoto, removePhoto, savePhoto } from '$lib/server/secretaria/photo/actions';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
+import { toSecretariaDetail } from '#lib/server/secretaria/detail.js';
+import { getSecretariaErrors, getSecretariaFormValues } from '#lib/server/secretaria/form.js';
+import { reframePhoto, removePhoto, savePhoto } from '#lib/server/secretaria/photo/actions.js';
 type EditModel = Pick<CadastroModel, 'getSecretaria' | 'updateSecretaria'>;
 type PhotoModel = Pick<SecretariaPhotoModel, 'replace' | 'remove' | 'getSource' | 'reframe'>;
 type User = { id: string; roles: string } | null;
@@ -20,7 +20,7 @@ const getSecretaria = async (model: EditModel, id: number) => {
 		return await model.getSecretaria(id);
 	} catch {
 		console.error('Falha ao recuperar os dados do trabalhador.');
-		error(500, { message: 'Falha ao recuperar os dados do trabalhador.' });
+		error(500, 'Falha ao recuperar os dados do trabalhador.');
 	}
 };
 
@@ -36,7 +36,7 @@ export const createSecretariaRegistrationEditHandlers = ({
 		const id = Number(params.id);
 		const cadastro = await getSecretaria(model, id);
 
-		if (!cadastro) error(404, { message: 'Trabalhador não encontrado.' });
+		if (!cadastro) error(404, 'Trabalhador não encontrado.');
 		return { id, trabalhador: toSecretariaDetail(cadastro) };
 	},
 	actions: {
@@ -62,10 +62,10 @@ export const createSecretariaRegistrationEditHandlers = ({
 				}
 
 				console.error('Falha ao atualizar os dados do trabalhador.');
-				error(500, { message: 'Falha ao atualizar os dados do trabalhador.' });
+				error(500, 'Falha ao atualizar os dados do trabalhador.');
 			}
 
-			error(404, { message: 'Trabalhador não encontrado.' });
+			error(404, 'Trabalhador não encontrado.');
 		},
 		salvarFoto: (context: ActionContext) => savePhoto(photoModel, context),
 		reenquadrarFoto: (context: ActionContext) => reframePhoto(photoModel, context),

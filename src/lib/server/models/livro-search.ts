@@ -1,7 +1,7 @@
-import type { db } from '$lib/server/database/connection';
-import { ulike, unaccent } from '$lib/server/database/functions';
-import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword } from '$lib/server/database/schema';
-import type { LivroSearchInput } from '$lib/validation/livro';
+import type { db } from '#lib/server/database/connection.js';
+import { ulike, unaccent } from '#lib/server/database/functions.js';
+import { autor, autorHasLivro, editora, keyword, livro, livroHasKeyword } from '#lib/server/database/schema.js';
+import type { LivroSearchInput } from '#lib/validation/livro.js';
 import { and, eq, sql } from 'drizzle-orm';
 
 export type LegacyBookSearchInput = {

@@ -10,8 +10,8 @@ import {
 	type TooltipItem,
 } from 'chart.js';
 
-import type { MonthlyLancamentoTotal } from '$lib/tesouraria/monthly-totals';
-import { formatBrlDecimal, formatMonthLabel } from '$lib/utils/currency';
+import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
+import { formatBrlDecimal, formatMonthLabel } from '#lib/utils/currency.js';
 
 const ENTRY_COLOR = '#007a3d';
 const EXIT_COLOR = '#b42318';

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import Navbar from '$lib/components/navigation/Navbar.svelte';
+	import Navbar from '#lib/components/navigation/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 
 	interface Props {
@@ -28,31 +28,31 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
 				<li class={['sidebar-item', page.url.pathname === '/tesouraria' && 'active']}>
-					<a aria-label="home" title="Página Inicial" href={resolve('/tesouraria')}>
+					<a aria-label="home" title="Página Inicial" href={resolve('tesouraria')}>
 						<i class="fa-solid fa-house fa-fw"></i>&nbsp;<strong>Início</strong>
 					</a>
 				</li>
 				<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/lancamentos') && 'active']}>
-					<a aria-label="lançamentos" title="Lançamentos" href={resolve('/tesouraria/lancamentos')}>
+					<a aria-label="lançamentos" title="Lançamentos" href={resolve('tesouraria/lancamentos')}>
 						<i class="fa-solid fa-wallet fa-fw"></i>&nbsp;<strong>Lançamentos</strong>
 					</a>
 				</li>
 				{#if isAdmin}
 					<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/estornos') && 'active']}>
-						<a aria-label="estornos" title="Estornos" href={resolve('/tesouraria/estornos')}>
+						<a aria-label="estornos" title="Estornos" href={resolve('tesouraria/estornos')}>
 							<i class="fa-solid fa-clock-rotate-left fa-fw"></i>&nbsp;<strong>Estornos</strong>
 						</a>
 					</li>
 				{/if}
 				{#if isAdmin}
 					<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/caixa') && 'active']}>
-						<a aria-label="caixa" title="Caixa" href={resolve('/tesouraria/caixa')}>
+						<a aria-label="caixa" title="Caixa" href={resolve('tesouraria/caixa')}>
 							<i class="fa-solid fa-cash-register fa-fw"></i>&nbsp;<strong>Caixa</strong>
 						</a>
 					</li>
 				{/if}
 				<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/contribuintes') && 'active']}>
-					<a aria-label="contribuintes" title="Contribuintes" href={resolve('/tesouraria/contribuintes')}>
+					<a aria-label="contribuintes" title="Contribuintes" href={resolve('tesouraria/contribuintes')}>
 						<i class="fa-solid fa-user fa-fw"></i>&nbsp;<strong>Contribuintes</strong>
 					</a>
 				</li>

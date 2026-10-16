@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { fitName } from '$lib/server/pdf/amigo-fraterno/text';
+import { fitName } from '#lib/server/pdf/amigo-fraterno/text.js';
 
 describe('PDF name fitting', () => {
 	it('keeps a long name in at most two lines without omitting words', () => {

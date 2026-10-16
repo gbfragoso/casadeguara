@@ -1,4 +1,4 @@
-import { createSecretariaAmigofraternoHandlers } from '$lib/server/secretaria/amigofraterno/page-handlers';
+import { createSecretariaAmigofraternoHandlers } from '#lib/server/secretaria/amigofraterno/page-handlers.js';
 
 import type { PageServerLoad } from './$types';
 

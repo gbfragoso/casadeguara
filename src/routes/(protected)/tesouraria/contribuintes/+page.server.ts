@@ -1,5 +1,5 @@
-import { cadastroModel } from '$lib/server/models/cadastro';
-import { createContributorListHandlers } from '$lib/server/tesouraria/contribuintes/list-handlers';
+import { cadastroModel } from '#lib/server/models/cadastro.js';
+import { createContributorListHandlers } from '#lib/server/tesouraria/contribuintes/list-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

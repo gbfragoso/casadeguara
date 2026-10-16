@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { livro } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { livro } from '#lib/server/database/schema.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

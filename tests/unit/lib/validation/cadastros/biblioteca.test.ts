@@ -5,7 +5,7 @@ import {
 	bibliotecaCreateSchema,
 	bibliotecaSearchSchema,
 	bibliotecaUpdateSchema,
-} from '$lib/validation/cadastros/biblioteca';
+} from '#lib/validation/cadastros/biblioteca.js';
 import { getFieldErrors } from '../field-errors';
 
 const validReader = {

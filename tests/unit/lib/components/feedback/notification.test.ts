@@ -2,7 +2,7 @@
 import { mount, tick, unmount } from 'svelte';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import Notification from '$lib/components/feedback/Notification.svelte';
+import Notification from '#lib/components/feedback/Notification.svelte';
 
 describe('Notification', () => {
 	let mounted: ReturnType<typeof mount> | undefined;

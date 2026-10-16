@@ -1,6 +1,6 @@
 import { PDFDocument } from 'pdf-lib';
 
-import { A4_HEIGHT, A4_WIDTH } from '$lib/image/geometry/card';
+import { A4_HEIGHT, A4_WIDTH } from '#lib/image/geometry/card.js';
 import type { AmigoFraternoPdfParticipant } from './participant-projections';
 import { loadPdfAssets } from './assets';
 import { drawCard } from './card';

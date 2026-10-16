@@ -1,4 +1,4 @@
-import { createSecretariaAniversariantesHandlers } from '$lib/server/secretaria/aniversariantes/page-handlers';
+import { createSecretariaAniversariantesHandlers } from '#lib/server/secretaria/aniversariantes/page-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

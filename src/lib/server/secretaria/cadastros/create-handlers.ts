@@ -1,11 +1,11 @@
-import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { secretariaCreateSchema } from '$lib/validation/cadastros/secretaria';
+import { DuplicateCadastroNameError } from '#lib/server/models/cadastro-error.js';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { secretariaCreateSchema } from '#lib/validation/cadastros/secretaria.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireSecretariaAccess } from '$lib/server/secretaria/access';
-import { getSecretariaErrors, getSecretariaFormValues } from '$lib/server/secretaria/form';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
+import { getSecretariaErrors, getSecretariaFormValues } from '#lib/server/secretaria/form.js';
 
 type CreateModel = Pick<CadastroModel, 'createSecretaria'>;
 type User = { id: string; roles: string } | null;
@@ -34,7 +34,7 @@ export const createRegistrationCreateHandlers = ({ model }: { model: CreateModel
 				}
 
 				console.error('Falha ao criar um novo trabalhador.');
-				error(500, { message: 'Falha ao criar um novo trabalhador.' });
+				error(500, 'Falha ao criar um novo trabalhador.');
 			}
 		},
 	},

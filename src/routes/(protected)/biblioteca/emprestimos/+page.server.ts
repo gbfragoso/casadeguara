@@ -1,4 +1,4 @@
-import { createBibliotecaEmprestimosHandlers } from '$lib/server/biblioteca/emprestimos/page-handlers';
+import { createBibliotecaEmprestimosHandlers } from '#lib/server/biblioteca/emprestimos/page-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

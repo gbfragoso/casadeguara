@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type KeywordModel } from '$lib/server/models/keyword';
-import { keywordSchema } from '$lib/validation/keyword';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type KeywordModel } from '#lib/server/models/keyword.js';
+import { keywordSchema } from '#lib/validation/keyword.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -30,7 +30,7 @@ export const createKeywordCreateHandlers = ({ model }: { model: CreateModel }) =
 				return { status: 201 };
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao cadastrar nova palavra-chave' });
+				error(500, 'Falha ao cadastrar nova palavra-chave');
 			}
 		},
 	},

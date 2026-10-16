@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { editora } from '$lib/server/database/schema';
-import { EditoraModel, PUBLISHER_FETCH_LIMIT } from '$lib/server/models/editora';
+import { db } from '#lib/server/database/connection.js';
+import { editora } from '#lib/server/database/schema.js';
+import { EditoraModel, PUBLISHER_FETCH_LIMIT } from '#lib/server/models/editora.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

@@ -1,7 +1,7 @@
 import { error, fail } from '@sveltejs/kit';
 import { flattenError, type ZodError } from 'zod';
 
-import { photoPositionSchema, photoUploadSchema } from '$lib/validation/cadastros/foto';
+import { photoPositionSchema, photoUploadSchema } from '#lib/validation/cadastros/foto.js';
 
 export type PhotoActionData = {
 	operation: 'photoSaved' | 'photoReframed' | 'photoRemoved';
@@ -47,10 +47,10 @@ export const rejectMalformedInput = (
 	return fail<PhotoActionData>(400, { operation, errors: { [field]: [message] } });
 };
 
-export const missingCadastro = (): never => error(404, { message: 'Trabalhador não encontrado.' });
-export const missingPhoto = (): never => error(404, { message: 'Foto não encontrada.' });
+export const missingCadastro = (): never => error(404, 'Trabalhador não encontrado.');
+export const missingPhoto = (): never => error(404, 'Foto não encontrada.');
 
 export const requireSource = (source: Uint8Array | null | undefined): Uint8Array => {
-	if (!source) throw error(404, { message: 'Foto não encontrada.' });
+	if (!source) throw error(404, 'Foto não encontrada.');
 	return source;
 };

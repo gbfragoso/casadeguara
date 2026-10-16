@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { LancamentoModel } from '$lib/server/tesouraria/lancamentos/model';
+import { LancamentoModel } from '#lib/server/tesouraria/lancamentos/model.js';
 import { withProvisionedDatabase } from '../../database/migration-test-support';
 import { createCounterpart, entryInput, exitInput } from './model-support';
 

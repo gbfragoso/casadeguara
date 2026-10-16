@@ -2,7 +2,7 @@
 import { mount, tick, unmount } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import PhotoCropper from '$lib/components/image/PhotoCropper.svelte';
+import PhotoCropper from '#lib/components/image/PhotoCropper.svelte';
 
 const pointerEvent = (type: string, init: Record<string, number | string>) => {
 	const event = new Event(type, { bubbles: true });

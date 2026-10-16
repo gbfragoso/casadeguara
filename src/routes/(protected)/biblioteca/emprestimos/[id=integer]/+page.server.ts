@@ -1,4 +1,4 @@
-import { createBibliotecaEmprestimosIdIntegerHandlers } from '$lib/server/biblioteca/emprestimos/id-handlers';
+import { createBibliotecaEmprestimosIdIntegerHandlers } from '#lib/server/biblioteca/emprestimos/id-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

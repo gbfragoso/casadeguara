@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { LancamentoError, lancamentoModel } from '$lib/server/tesouraria/lancamentos';
+import { LancamentoError, lancamentoModel } from '#lib/server/tesouraria/lancamentos/index.js';
 import { load } from '../../../../src/routes/recibo/[uuid=uuid]/+page.server';
 import { createRequestEvent, invoke } from '../../support/request-event';
 

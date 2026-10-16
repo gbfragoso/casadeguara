@@ -1,8 +1,8 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
-import PhotoCropper from '$lib/components/image/PhotoCropper.svelte';
-import PhotoSection from '$lib/components/image/PhotoSection.svelte';
+import PhotoCropper from '#lib/components/image/PhotoCropper.svelte';
+import PhotoSection from '#lib/components/image/PhotoSection.svelte';
 import {
 	getRenderedButton,
 	getRenderedDiv,

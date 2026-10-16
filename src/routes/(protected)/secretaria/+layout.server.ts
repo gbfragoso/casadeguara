@@ -3,9 +3,7 @@ import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ locals }) => {
 	if (!locals.user?.roles.includes('secretaria')) {
-		error(401, {
-			message: 'Usuário não possui acesso ao sistema da secretaria',
-		});
+		error(401, 'Usuário não possui acesso ao sistema da secretaria');
 	}
 
 	return {

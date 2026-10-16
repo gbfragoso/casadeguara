@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData } from './$types';
 	interface Props {
 		form: ActionData;

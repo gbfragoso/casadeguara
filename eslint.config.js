@@ -31,8 +31,22 @@ export default [
 		},
 	},
 	{
+		files: ['**/*.{js,ts,svelte}'],
+		languageOptions: {
+			parserOptions: {
+				projectService: true,
+				extraFileExtensions: ['.svelte'],
+				tsconfigRootDir: import.meta.dirname,
+			},
+		},
+		rules: {
+			'@typescript-eslint/no-deprecated': 'error',
+		},
+	},
+	{
 		ignores: [
 			'.agents/**',
+			'.claude/**',
 			'build/',
 			'.svelte-kit/',
 			'.vercel/',

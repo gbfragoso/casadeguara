@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type KeywordModel } from '$lib/server/models/keyword';
-import { keywordSearchSchema } from '$lib/validation/keyword';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type KeywordModel } from '#lib/server/models/keyword.js';
+import { keywordSearchSchema } from '#lib/validation/keyword.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -30,7 +30,7 @@ export const createKeywordListHandlers = ({ model }: { model: ListModel }) => ({
 				return { keywords, values: { chave: result.data.chave } };
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao carregar a lista de palavras-chave' });
+				error(500, 'Falha ao carregar a lista de palavras-chave');
 			}
 		},
 	},

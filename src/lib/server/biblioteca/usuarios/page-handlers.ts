@@ -1,13 +1,16 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { ulike, unaccent } from '$lib/server/database/functions';
-import { user } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { ulike, unaccent } from '#lib/server/database/functions.js';
+import { user } from '#lib/server/database/schema.js';
+import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import { error } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 
+const listedUserFields = { id: user.id, name: user.name };
+
 const load = async ({ locals, url }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireLibraryAdminAccess(locals.user);
 
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') || undefined;
@@ -16,7 +19,7 @@ const load = async ({ locals, url }: RequestEvent) => {
 	try {
 		const usuarios = async () => {
 			return db
-				.select()
+				.select(listedUserFields)
 				.from(user)
 				.offset((page - 1) * 5)
 				.where(and(nameFilter, ulike(user.roles, 'biblioteca%')))
@@ -26,7 +29,7 @@ const load = async ({ locals, url }: RequestEvent) => {
 		return { usuarios: usuarios() };
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao carregar a lista de usuários' });
+		return error(500, 'Falha ao carregar a lista de usuários');
 	}
 };
 

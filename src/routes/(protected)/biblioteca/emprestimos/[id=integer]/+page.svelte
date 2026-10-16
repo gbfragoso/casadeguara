@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import dayjs from 'dayjs';
-	import Notification from '$lib/components/feedback/Notification.svelte';
+	import Notification from '#lib/components/feedback/Notification.svelte';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -19,9 +19,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
 			<li class="is-active">
-				<a href={resolve('/biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
+				<a href={resolve('biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
 			</li>
 		</ul>
 	</nav>

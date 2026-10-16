@@ -6,7 +6,7 @@ import { GET as getOriginalPhoto } from '../../../../../../src/routes/(protected
 import { load as loadAmigoFraterno } from '../../../../../../src/routes/(protected)/secretaria/amigofraterno/+page.server';
 import { GET as getPdf } from '../../../../../../src/routes/(protected)/secretaria/amigofraterno/pdf/+server';
 import { createRawCadastro, createTestName, deleteCadastro } from '../../../../lib/server/models/cadastro/test-support';
-import { secretariaPhotoModel } from '$lib/server/models/secretaria-photo';
+import { secretariaPhotoModel } from '#lib/server/models/secretaria-photo.js';
 import { createRequestEvent, invoke } from '../../../../support/request-event';
 import { bibliotecaUser, secretariaUser } from '../../../../support/auth';
 

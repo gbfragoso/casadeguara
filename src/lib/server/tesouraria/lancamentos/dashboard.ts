@@ -1,5 +1,5 @@
 import { and, count, eq, gte, lte, sql } from 'drizzle-orm';
-import { activeLancamentoPredicate, lancamentos } from '$lib/server/database/schema';
+import { activeLancamentoPredicate, lancamentos } from '#lib/server/database/schema.js';
 import type { DashboardProjection, LancamentoDatabase } from './types';
 
 type MonthRange = { start: Date; end: Date };

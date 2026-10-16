@@ -12,9 +12,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href={resolve('/secretaria/usuarios')} aria-current="page">Usuários</a>
+				<a href={resolve('secretaria/usuarios')} aria-current="page">Usuários</a>
 			</li>
 		</ul>
 	</nav>
@@ -38,7 +38,7 @@
 			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
 				<a
 					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('/secretaria/usuarios/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
+					href={resolve('secretaria/usuarios/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
 			</div>
 		</div>
 	</div>

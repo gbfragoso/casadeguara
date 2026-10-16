@@ -1,6 +1,6 @@
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import { type ColecaoModel } from '$lib/server/models/colecao';
-import { colecaoSchema } from '$lib/validation/colecao';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type ColecaoModel } from '#lib/server/models/colecao.js';
+import { colecaoSchema } from '#lib/validation/colecao.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
@@ -30,7 +30,7 @@ export const createCollectionCreateHandlers = ({ model }: { model: CreateModel }
 				return { status: 201 };
 			} catch (cause) {
 				console.error('Falha ao criar uma nova coleção', cause);
-				error(500, { message: 'Falha ao criar uma nova coleção' });
+				error(500, 'Falha ao criar uma nova coleção');
 			}
 		},
 	},

@@ -2,7 +2,7 @@ import { File } from 'node:buffer';
 
 import { describe, expect, it } from 'vitest';
 
-import { NOTICE_TEXT_MAX_LENGTH, avisoSchema } from '$lib/validation/aviso';
+import { NOTICE_TEXT_MAX_LENGTH, avisoSchema } from '#lib/validation/aviso.js';
 import { getFieldErrors } from './field-errors';
 
 const REQUIRED_NOTICE_TEXT_MESSAGE = 'O texto do aviso é obrigatório.';

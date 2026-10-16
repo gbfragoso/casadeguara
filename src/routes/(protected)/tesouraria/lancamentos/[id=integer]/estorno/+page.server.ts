@@ -1,5 +1,5 @@
-import { lancamentoModel } from '$lib/server/tesouraria/lancamentos/model';
-import { createLancamentoReversalHandlers } from '$lib/server/tesouraria/lancamentos/reversal-handlers';
+import { lancamentoModel } from '#lib/server/tesouraria/lancamentos/model.js';
+import { createLancamentoReversalHandlers } from '#lib/server/tesouraria/lancamentos/reversal-handlers.js';
 import type { Actions, PageServerLoad } from './$types';
 
 const handlers = createLancamentoReversalHandlers({ model: lancamentoModel });

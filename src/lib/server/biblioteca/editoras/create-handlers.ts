@@ -1,9 +1,9 @@
-import { type EditoraModel } from '$lib/server/models/editora';
-import { editoraSchema } from '$lib/validation/editora';
+import { type EditoraModel } from '#lib/server/models/editora.js';
+import { editoraSchema } from '#lib/validation/editora.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
 
 type CreateModel = Pick<EditoraModel, 'create'>;
 type User = { roles: string } | null;
@@ -27,7 +27,7 @@ export const createPublisherCreateHandlers = ({ model }: { model: CreateModel })
 				return { status: 201 };
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao criar uma nova editora' });
+				error(500, 'Falha ao criar uma nova editora');
 			}
 		},
 	},

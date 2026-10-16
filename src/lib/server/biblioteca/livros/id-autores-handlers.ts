@@ -1,12 +1,17 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { autor, autorHasLivro, livro } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { autor, autorHasLivro, livro } from '#lib/server/database/schema.js';
+import {
+	hasLibraryAdminAccess,
+	requireLibraryAccess,
+	requireLibraryAdminAccess,
+} from '#lib/server/authorization/biblioteca.js';
+import { error, fail } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
 const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	const isAdmin = hasLibraryAdminAccess(requireLibraryAccess(locals.user));
 
 	try {
 		const livros = async () => {
@@ -27,17 +32,17 @@ const load = async ({ locals, params }: RequestEvent) => {
 				.orderBy(autor.nome);
 		};
 
-		return { autores: autores(), autoresLivro: autoresLivro(), livros: livros(), role: locals.user.roles };
+		return { autores: autores(), autoresLivro: autoresLivro(), livros: livros(), isAdmin };
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de autores',
-		});
+		return error(500, 'Falha ao carregar a lista de autores');
 	}
 };
 
 const actions: Actions = {
-	adicionar: async ({ request, params }) => {
+	adicionar: async ({ request, params, locals }) => {
+		requireLibraryAccess(locals.user);
+
 		const form = await request.formData();
 		const livro = Number(params.id);
 		const autor = Number(form.get('autor'));
@@ -47,12 +52,12 @@ const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar um novo autor',
-			});
+			return error(500, 'Falha ao criar um novo autor');
 		}
 	},
-	excluir: async ({ url, params }) => {
+	excluir: async ({ url, params, locals }) => {
+		requireLibraryAdminAccess(locals.user);
+
 		const livro = Number(params.id);
 		const autor = url.searchParams.get('autor');
 		if (!autor) {
@@ -68,9 +73,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao excluir o autor',
-			});
+			return error(500, 'Falha ao excluir o autor');
 		}
 	},
 };

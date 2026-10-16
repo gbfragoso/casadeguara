@@ -1,7 +1,6 @@
-import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
-import { cadastroModel, type CadastroModel } from '$lib/server/models/cadastro';
-import { secretariaFlagsSchema } from '$lib/validation/cadastros/flags';
-import { json } from '@sveltejs/kit';
+import { hasSecretariaAccess } from '#lib/server/authorization/cadastros.js';
+import { cadastroModel, type CadastroModel } from '#lib/server/models/cadastro.js';
+import { secretariaFlagsSchema } from '#lib/validation/cadastros/flags.js';
 import { flattenError } from 'zod';
 
 import type { RequestHandler } from './$types';
@@ -25,11 +24,11 @@ const createInternalCadastroFlagHandler =
 	(model: FlagModel) =>
 	async ({ locals, request }: RequestContext) => {
 		const user = locals.user;
-		if (!user || !hasSecretariaAccess(user)) return json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
+		if (!user || !hasSecretariaAccess(user)) return Response.json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
 
 		const result = secretariaFlagsSchema.safeParse(await getRequestBody(request));
 		if (!result.success) {
-			return json(
+			return Response.json(
 				{ message: INVALID_UPDATE_MESSAGE, errors: flattenError(result.error).fieldErrors },
 				{ status: 400 },
 			);
@@ -38,12 +37,12 @@ const createInternalCadastroFlagHandler =
 		try {
 			const { id, field, value } = result.data;
 			const updated = await model.updateSecretariaFlag(id, { field, value }, user.id);
-			if (!updated) return json({ message: 'Cadastro não encontrado.' }, { status: 404 });
+			if (!updated) return Response.json({ message: 'Cadastro não encontrado.' }, { status: 404 });
 
-			return json({ message: 'Cadastro atualizado com sucesso.' });
+			return Response.json({ message: 'Cadastro atualizado com sucesso.' });
 		} catch {
 			console.error('Falha ao atualizar um campo do cadastro.');
-			return json({ message: 'Falha ao atualizar o cadastro.' }, { status: 500 });
+			return Response.json({ message: 'Falha ao atualizar o cadastro.' }, { status: 500 });
 		}
 	};
 

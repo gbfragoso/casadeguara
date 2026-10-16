@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { formatBrlDecimal } from '$lib/utils/currency';
+	import { formatBrlDecimal } from '#lib/utils/currency.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import QRCode from 'qrcode';

@@ -1,8 +1,8 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { requireTesourariaAdminAccess } from '$lib/server/authorization/tesouraria';
-import { LancamentoError, lancamentoModel } from '$lib/server/tesouraria/lancamentos';
-import { confirmDepositsSchema } from '$lib/validation/tesouraria/lancamentos';
+import { requireTesourariaAdminAccess } from '#lib/server/authorization/tesouraria.js';
+import { LancamentoError, lancamentoModel } from '#lib/server/tesouraria/lancamentos/index.js';
+import { confirmDepositsSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { error, fail } from '@sveltejs/kit';
 
 const readIds = (form: FormData) => form.getAll('entradas').map((value) => (typeof value === 'string' ? value : ''));
@@ -15,7 +15,7 @@ const mapFailure = (cause: unknown) => {
 	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_DEPOSITABLE')
 		return fail(409, { message: cause.message });
 	console.error('treasury.launches.deposit_failed');
-	error(500, { message: 'Falha ao confirmar o depósito.' });
+	error(500, 'Falha ao confirmar o depósito.');
 };
 
 const load = async ({ locals }: RequestEvent) => {
@@ -24,7 +24,7 @@ const load = async ({ locals }: RequestEvent) => {
 		return { entradas: await lancamentoModel.listPendingDeposits() };
 	} catch {
 		console.error('treasury.launches.deposit_list_failed');
-		error(500, { message: 'Falha ao carregar a lista de entradas.' });
+		error(500, 'Falha ao carregar a lista de entradas.');
 	}
 };
 

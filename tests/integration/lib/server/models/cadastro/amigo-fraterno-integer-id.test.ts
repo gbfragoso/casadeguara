@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { cadastroFotos, cadastros, emprestimo } from '$lib/server/database/schema';
+import { cadastroFotos, cadastros, emprestimo } from '#lib/server/database/schema.js';
 import { eq, sql } from 'drizzle-orm';
 
 import { withProvisionedDatabase } from '../../database/migration-test-support';

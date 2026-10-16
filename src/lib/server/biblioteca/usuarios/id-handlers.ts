@@ -1,69 +1,72 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { user } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { user } from '#lib/server/database/schema.js';
+import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
-import validator from 'validator';
+import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import { hasBibliotecaAccess } from '#lib/server/authorization/cadastros.js';
+import {
+	administersOtherAreasOf,
+	replaceLibraryRoles,
+	selectLibraryRoles,
+} from '#lib/server/biblioteca/usuarios/roles.js';
+import { readUserForm, validateUserForm, type UserForm } from '#lib/server/biblioteca/usuarios/user-form.js';
 
-const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+const editableUserFields = { id: user.id, username: user.username, name: user.name, roles: user.roles };
 
+const findUser = async (id: string) => {
 	try {
-		const resultado = await db
-			.select()
-			.from(user)
-			.where(eq(user.id, String(params.id)));
-
-		if (!resultado) {
-			throw fail(404, { message: 'Usuário não encontrado' });
-		}
-
-		return { usuario: resultado[0] };
+		const [usuario] = await db.select(editableUserFields).from(user).where(eq(user.id, id));
+		return usuario;
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao baixar os dados do usuário' });
+		error(500, 'Falha ao baixar os dados do usuário');
 	}
 };
 
+const findEditableUser = async (id: string, editor: { roles: string }) => {
+	const usuario = await findUser(id);
+	if (!usuario || !hasBibliotecaAccess(usuario)) error(404, 'Usuário não encontrado');
+	if (!administersOtherAreasOf(editor, usuario)) {
+		error(401, 'Usuário não possui acesso administrativo às demais áreas deste usuário');
+	}
+
+	return usuario;
+};
+
+const updateUser = async (id: string, { username, name, password }: UserForm, roles?: string) => {
+	const passwordHash = await hash(password);
+
+	try {
+		await db.update(user).set({ username, name, passwordHash, roles }).where(eq(user.id, id));
+		return { status: 200 };
+	} catch (err) {
+		console.error(err);
+		return error(500, 'Falha ao atualizar os dados do usuário');
+	}
+};
+
+const load = async ({ locals, params }: RequestEvent) => {
+	const editor = requireLibraryAdminAccess(locals.user);
+
+	const usuario = await findEditableUser(String(params.id), editor);
+
+	return { usuario: { ...usuario, roles: selectLibraryRoles(usuario.roles) } };
+};
+
 const actions: Actions = {
-	default: async ({ request, params }) => {
-		const formData = await request.formData();
-		const username = formData.get('username') as string;
-		const password = formData.get('password') as string;
-		const name = formData.get('name') as string;
-		const roles = formData.get('roles') as string;
+	default: async ({ request, params, locals }) => {
+		const editor = requireLibraryAdminAccess(locals.user);
 
-		if (!validator.isEmail(username)) {
-			return {
-				status: 400,
-				field: 'username',
-				message: 'E-mail inválido',
-			};
-		}
-		if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
-			return {
-				status: 400,
-				field: 'password',
-				message: 'Senha não atente aos requisitos mínimos de segurança',
-			};
-		}
+		const form = await readUserForm(request);
+		const rejection = validateUserForm(form, { requireRoles: false });
+		if (rejection) return rejection;
 
-		const passwordHash = await hash(password);
-
-		try {
-			await db
-				.update(user)
-				.set({ username, name, passwordHash, roles: roles ? roles : undefined })
-				.where(eq(user.id, String(params.id)));
-			return { status: 200 };
-		} catch (err) {
-			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do usuário',
-			});
-		}
+		const target = await findEditableUser(String(params.id), editor);
+		const roles = form.roles ? replaceLibraryRoles(target.roles, form.roles) : undefined;
+		return updateUser(String(params.id), form, roles);
 	},
 };
 

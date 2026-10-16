@@ -1,9 +1,9 @@
-import { type EditoraModel } from '$lib/server/models/editora';
-import { editoraSearchSchema } from '$lib/validation/editora';
+import { type EditoraModel } from '#lib/server/models/editora.js';
+import { editoraSearchSchema } from '#lib/validation/editora.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
 
 type ListModel = Pick<EditoraModel, 'fetch'>;
 type User = { roles: string } | null;
@@ -28,7 +28,7 @@ export const createPublisherListHandlers = ({ model }: { model: ListModel }) => 
 				return { editoras, values: { nome: result.data.nome } };
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao carregar a lista de editoras' });
+				error(500, 'Falha ao carregar a lista de editoras');
 			}
 		},
 	},

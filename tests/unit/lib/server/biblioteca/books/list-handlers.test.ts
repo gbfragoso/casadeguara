@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createBookListHandlers } from '$lib/server/biblioteca/books/list-handlers';
-import { LivroHasDependentsError, LivroNotFoundError } from '$lib/server/models/livro-error';
+import { createBookListHandlers } from '#lib/server/biblioteca/books/list-handlers.js';
+import { LivroHasDependentsError, LivroNotFoundError } from '#lib/server/models/livro-error.js';
 
 type ListModel = Parameters<typeof createBookListHandlers>[0]['model'];
 

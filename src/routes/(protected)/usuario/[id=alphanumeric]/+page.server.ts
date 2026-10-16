@@ -1,4 +1,4 @@
-import { createUsuarioDetailHandlers } from '$lib/server/usuario/detail-handlers';
+import { createUsuarioDetailHandlers } from '#lib/server/usuario/detail-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

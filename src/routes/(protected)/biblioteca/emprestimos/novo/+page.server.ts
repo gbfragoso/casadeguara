@@ -1,4 +1,4 @@
-import { createBibliotecaEmprestimosNovoHandlers } from '$lib/server/biblioteca/emprestimos/novo-handlers';
+import { createBibliotecaEmprestimosNovoHandlers } from '#lib/server/biblioteca/emprestimos/novo-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

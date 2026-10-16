@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { cadastros, lancamentos } from '$lib/server/database/schema';
-import { LancamentoModel } from '$lib/server/tesouraria/lancamentos/model';
+import { cadastros, lancamentos } from '#lib/server/database/schema.js';
+import { LancamentoModel } from '#lib/server/tesouraria/lancamentos/model.js';
 import { withProvisionedDatabase } from '../../database/migration-test-support';
-import { lancamentoSearchSchema } from '$lib/validation/tesouraria/lancamentos';
+import { lancamentoSearchSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { createCounterpart, entryInput, exitInput } from './model-support';
-import { currentDate, formatDate } from '$lib/server/tesouraria/lancamentos/format';
+import { currentDate, formatDate } from '#lib/server/tesouraria/lancamentos/format.js';
 
 describe('LancamentoModel search and creation', () => {
 	it('searches active entries and exits with independent totals and filters', async () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { livroCreateSchema, livroDeleteSchema, livroSearchSchema } from '$lib/validation/livro';
+import { livroCreateSchema, livroDeleteSchema, livroSearchSchema } from '#lib/validation/livro.js';
 
 describe('livro validation', () => {
 	it('normalizes empty search values and form aliases', () => {

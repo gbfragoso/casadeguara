@@ -1,13 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
-import { cadastros, estornos, lancamentos } from '$lib/server/database/schema';
-import { LancamentoError } from '$lib/server/tesouraria/lancamentos';
-import { LancamentoModel } from '$lib/server/tesouraria/lancamentos/model';
+import { cadastros, estornos, lancamentos } from '#lib/server/database/schema.js';
+import { LancamentoError } from '#lib/server/tesouraria/lancamentos/index.js';
+import { LancamentoModel } from '#lib/server/tesouraria/lancamentos/model.js';
 import { withProvisionedDatabase } from '../../database/migration-test-support';
-import { estornoSearchSchema } from '$lib/validation/tesouraria/lancamentos';
+import { estornoSearchSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { createCounterpart, entryInput, exitInput } from './model-support';
-import { currentDate, formatDate } from '$lib/server/tesouraria/lancamentos/format';
+import { currentDate, formatDate } from '#lib/server/tesouraria/lancamentos/format.js';
 
 describe('LancamentoModel reversals', () => {
 	it('rejects invalid reasons and missing or non-depositable records', async () => {

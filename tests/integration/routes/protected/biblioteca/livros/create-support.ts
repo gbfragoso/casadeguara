@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { autor, autorHasLivro, editora, exemplar, livro, serie } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { autor, autorHasLivro, editora, exemplar, livro, serie } from '#lib/server/database/schema.js';
 import { eq } from 'drizzle-orm';
 
 export async function createBookReferences() {

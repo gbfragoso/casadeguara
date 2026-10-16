@@ -1,7 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros, frequencia } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, frequencia } from '#lib/server/database/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { and, count, eq, gte, lte } from 'drizzle-orm';
 
@@ -30,9 +30,7 @@ const load = async ({ locals }: RequestEvent) => {
 		};
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar as informações da secretaria',
-		});
+		return error(500, 'Falha ao carregar as informações da secretaria');
 	}
 };
 

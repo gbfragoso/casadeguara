@@ -1,10 +1,15 @@
 import { error, redirect } from '@sveltejs/kit';
 import { hasBibliotecaAccess } from './cadastros';
 
+const LIBRARY_ADMIN_ROLE = 'biblioteca:admin';
+
+export const hasLibraryAdminAccess = (user: { roles: string }) =>
+	user.roles.split(',').some((role) => role === LIBRARY_ADMIN_ROLE);
+
 export const requireLibraryAccess = <User extends { roles: string }>(user: User | null | undefined): User => {
 	if (!user) redirect(302, '/');
 	if (!hasBibliotecaAccess(user)) {
-		error(401, { message: 'Usuário não possui acesso ao sistema da biblioteca' });
+		error(401, 'Usuário não possui acesso ao sistema da biblioteca');
 	}
 
 	return user;
@@ -12,10 +17,9 @@ export const requireLibraryAccess = <User extends { roles: string }>(user: User 
 
 export const requireLibraryAdminAccess = <User extends { roles: string }>(user: User | null | undefined): User => {
 	const authorizedUser = requireLibraryAccess(user);
-	const isAdministrator = authorizedUser.roles.split(',').some((role) => role === 'biblioteca:admin');
 
-	if (!isAdministrator) {
-		error(401, { message: 'Usuário não possui acesso administrativo à biblioteca' });
+	if (!hasLibraryAdminAccess(authorizedUser)) {
+		error(401, 'Usuário não possui acesso administrativo à biblioteca');
 	}
 
 	return authorizedUser;

@@ -1,4 +1,4 @@
-import { CARDS_PER_PAGE, createCardSlots, type CardSlot } from '$lib/image/geometry/card';
+import { CARDS_PER_PAGE, createCardSlots, type CardSlot } from '#lib/image/geometry/card.js';
 
 export type NumberedParticipant<T> = T & { number: string };
 export type CardPage<T> = Array<{ participant: NumberedParticipant<T>; slot: CardSlot }>;

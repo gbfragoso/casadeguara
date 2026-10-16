@@ -1,4 +1,4 @@
-import { createSecretariaUsuariosIdAlphanumericHandlers } from '$lib/server/secretaria/usuarios/id-handlers';
+import { createSecretariaUsuariosIdAlphanumericHandlers } from '#lib/server/secretaria/usuarios/id-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

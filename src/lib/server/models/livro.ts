@@ -1,7 +1,7 @@
-import { db } from '$lib/server/database/connection';
-import { unaccent } from '$lib/server/database/functions';
-import { autor, exemplar, editora, livro, serie } from '$lib/server/database/schema';
-import { BOOK_SMALLINT_MAX, type LivroCreateInput, type LivroSearchInput } from '$lib/validation/livro';
+import { db } from '#lib/server/database/connection.js';
+import { unaccent } from '#lib/server/database/functions.js';
+import { autor, exemplar, editora, livro, serie } from '#lib/server/database/schema.js';
+import { BOOK_SMALLINT_MAX, type LivroCreateInput, type LivroSearchInput } from '#lib/validation/livro.js';
 import { eq, inArray } from 'drizzle-orm';
 
 import { insertLivroAggregate } from './livro-create';

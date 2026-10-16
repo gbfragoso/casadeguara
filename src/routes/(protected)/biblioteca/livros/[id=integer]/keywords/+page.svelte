@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer, enhanceForm } from '$lib/forms/enhancer.svelte';
+	import { createFormEnhancer, enhanceForm } from '#lib/forms/enhancer.svelte.js';
 	import { page } from '$app/state';
 	import type { PageServerData } from './$types';
 	interface Props {
@@ -9,15 +9,15 @@
 
 	let { data }: Props = $props();
 	const formEnhancer = createFormEnhancer();
-	let { keywords, keywordsLivro, livros, role } = $derived(data);
+	let { keywords, keywordsLivro, livros, isAdmin } = $derived(data);
 	let bookId = $derived(page.params.id);
 </script>
 
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/biblioteca')}>Biblioteca</a></li>
-			<li><a href={resolve('/biblioteca/livros')}>Livros</a></li>
+			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
+			<li><a href={resolve('biblioteca/livros')}>Livros</a></li>
 			<li class="is-active">
 				{#if bookId}
 					<a
@@ -119,7 +119,7 @@
 								<td>{keyword.chave}</td>
 								<td>{keyword.referencia}</td>
 								<td>
-									{#if role.includes('admin')}
+									{#if isAdmin}
 										<div class="field is-grouped">
 											<form
 												action="?/excluir&keyword={keyword.idkeyword}"

@@ -24,7 +24,7 @@ export const getTesourariaAccess = (user: TesourariaUser): TesourariaAccess => {
 export const requireTesourariaAccess = <User extends { roles: string }>(user: User | null | undefined): User => {
 	if (!user) redirect(302, '/');
 	if (!hasTesourariaAccess(user)) {
-		error(403, { message: 'Usuário não possui acesso ao sistema da tesouraria.' });
+		error(403, 'Usuário não possui acesso ao sistema da tesouraria.');
 	}
 
 	return user;
@@ -33,7 +33,7 @@ export const requireTesourariaAccess = <User extends { roles: string }>(user: Us
 export const requireTesourariaAdminAccess = <User extends { roles: string }>(user: User | null | undefined): User => {
 	const authorizedUser = requireTesourariaAccess(user);
 	if (!hasTesourariaAdminAccess(authorizedUser)) {
-		error(403, { message: 'Usuário não possui acesso administrativo à tesouraria.' });
+		error(403, 'Usuário não possui acesso administrativo à tesouraria.');
 	}
 
 	return authorizedUser;

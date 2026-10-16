@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getBahiaMonthWindow } from '$lib/server/tesouraria/lancamentos/month-window';
+import { getBahiaMonthWindow } from '#lib/server/tesouraria/lancamentos/month-window.js';
 
 const originalTimeZone = process.env.TZ;
 const referenceInstant = new Date('2026-09-15T12:00:00.000Z');

@@ -1,4 +1,4 @@
-import { db } from '$lib/server/database/connection';
+import { db } from '#lib/server/database/connection.js';
 
 import { createBiblioteca, updateBiblioteca } from './cadastro-biblioteca';
 import type { CadastroDatabase } from './cadastro-database';

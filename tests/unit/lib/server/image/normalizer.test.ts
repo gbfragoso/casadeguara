@@ -2,8 +2,8 @@ import { File } from 'node:buffer';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { InvalidPhotoError, normalizePhoto, normalizePhotoSource } from '$lib/server/image/normalizer';
-import type { PhotoUploadInput } from '$lib/validation/cadastros/foto';
+import { InvalidPhotoError, normalizePhoto, normalizePhotoSource } from '#lib/server/image/normalizer.js';
+import type { PhotoUploadInput } from '#lib/validation/cadastros/foto.js';
 
 const toArrayBuffer = (bytes: Uint8Array) => {
 	const buffer = new ArrayBuffer(bytes.byteLength);

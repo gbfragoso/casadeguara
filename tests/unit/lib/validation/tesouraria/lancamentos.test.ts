@@ -7,7 +7,7 @@ import {
 	estornoReasonSchema,
 	estornoSearchSchema,
 	lancamentoSearchSchema,
-} from '$lib/validation/tesouraria/lancamentos';
+} from '#lib/validation/tesouraria/lancamentos.js';
 import { getFieldErrors } from '../field-errors';
 
 const entry = {

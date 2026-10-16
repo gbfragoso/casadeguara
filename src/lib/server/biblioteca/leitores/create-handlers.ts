@@ -1,11 +1,11 @@
-import { DuplicateCadastroNameError } from '$lib/server/models/cadastro-error';
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { bibliotecaCreateSchema } from '$lib/validation/cadastros/biblioteca';
+import { DuplicateCadastroNameError } from '#lib/server/models/cadastro-error.js';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { bibliotecaCreateSchema } from '#lib/validation/cadastros/biblioteca.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireReaderAccess } from '$lib/server/biblioteca/readers/access';
-import { getReaderErrors, getReaderFormValues } from '$lib/server/biblioteca/readers/form';
+import { requireReaderAccess } from '#lib/server/biblioteca/readers/access.js';
+import { getReaderErrors, getReaderFormValues } from '#lib/server/biblioteca/readers/form.js';
 type CreateModel = Pick<CadastroModel, 'createBiblioteca'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
@@ -32,7 +32,7 @@ export const createReaderCreateHandlers = ({ model }: { model: CreateModel }) =>
 				}
 
 				console.error('Falha ao criar um novo leitor.');
-				error(500, { message: 'Falha ao criar um novo leitor.' });
+				error(500, 'Falha ao criar um novo leitor.');
 			}
 		},
 	},

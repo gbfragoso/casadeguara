@@ -1,8 +1,8 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
-import { lancamentoModel } from '$lib/server/tesouraria/lancamentos';
-import { LancamentoError } from '$lib/server/tesouraria/lancamentos/errors';
-import type { ReceiptState } from '$lib/server/tesouraria/lancamentos/types';
+import { lancamentoModel } from '#lib/server/tesouraria/lancamentos/index.js';
+import { LancamentoError } from '#lib/server/tesouraria/lancamentos/errors.js';
+import type { ReceiptState } from '#lib/server/tesouraria/lancamentos/types.js';
 import { error } from '@sveltejs/kit';
 
 const load = async ({ params }: RequestEvent) => {
@@ -11,12 +11,12 @@ const load = async ({ params }: RequestEvent) => {
 		receipt = await lancamentoModel.getReceipt(String(params.uuid));
 	} catch (cause) {
 		if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR') {
-			error(400, { message: cause.message });
+			error(400, cause.message);
 		}
 		console.error('treasury.launches.receipt_lookup_failed');
-		error(500, { message: 'Falha ao carregar o recibo.' });
+		error(500, 'Falha ao carregar o recibo.');
 	}
-	if (!receipt) error(404, { message: 'Recibo inexistente' });
+	if (!receipt) error(404, 'Recibo inexistente');
 	return receipt;
 };
 

@@ -1,8 +1,8 @@
-import { requireTesourariaAccess } from '$lib/server/authorization/tesouraria';
+import { requireTesourariaAccess } from '#lib/server/authorization/tesouraria.js';
 import type { LancamentoModel } from './model';
 import { LancamentoError } from './errors';
 import { getDomainErrors, getLancamentoErrors, getLancamentoFormValues } from './form';
-import { createLancamentoFormSchema } from '$lib/validation/tesouraria/lancamentos';
+import { createLancamentoFormSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 
 type User = { id: string; roles: string } | null | undefined;
@@ -21,7 +21,7 @@ const createLoadHandler =
 			return { contrapartes: await model.listCounterpartOptions() };
 		} catch {
 			console.error('treasury.launches.create_failed');
-			error(500, { message: 'Falha ao carregar as contrapartes.' });
+			error(500, 'Falha ao carregar as contrapartes.');
 		}
 	};
 
@@ -33,7 +33,7 @@ const mapCreateFailure = (cause: unknown, values: ReturnType<typeof getLancament
 	if (cause instanceof LancamentoError && cause.code === 'LANCAMENTO_NOT_FOUND')
 		return fail(404, { values, message: cause.message });
 	console.error('treasury.launches.create_failed');
-	error(500, { message: 'Falha ao cadastrar o lançamento.' });
+	error(500, 'Falha ao cadastrar o lançamento.');
 };
 
 const createActionHandler = (model: CreateModel, requireAccess: AccessChecker) => async (event: HandlerEvent) => {

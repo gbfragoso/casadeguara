@@ -1,4 +1,4 @@
-import { db } from '$lib/server/database/connection';
+import { db } from '#lib/server/database/connection.js';
 
 import type { CadastroDatabase } from './cadastro-database';
 import { getCardPhoto, getSourcePhoto } from './cadastro-photo-read';

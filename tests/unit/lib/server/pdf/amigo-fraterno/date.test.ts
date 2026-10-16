@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseAmigoFraternoPdfRequest } from '$lib/validation/pdf/amigo-fraterno';
-import { formatNextDrawDate } from '$lib/server/pdf/amigo-fraterno/date';
+import { parseAmigoFraternoPdfRequest } from '#lib/validation/pdf/amigo-fraterno.js';
+import { formatNextDrawDate } from '#lib/server/pdf/amigo-fraterno/date.js';
 
 describe('Amigo Fraterno PDF date', () => {
 	it('validates and formats a calendar date without a timezone', () => {

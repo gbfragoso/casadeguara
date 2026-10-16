@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { PDFDocument } from 'pdf-lib';
 import { describe, expect, it, vi } from 'vitest';
 
-import { calculateCoverPlacement, drawPhoto, type PhotoFrame } from '$lib/server/pdf/amigo-fraterno/photo';
+import { calculateCoverPlacement, drawPhoto, type PhotoFrame } from '#lib/server/pdf/amigo-fraterno/photo.js';
 
 const frame: PhotoFrame = { x: 10, y: 20, width: 86, height: 108 };
 

@@ -1,5 +1,5 @@
-import { avisoModel } from '$lib/server/models/aviso';
-import { createNoticeEditHandlers } from '$lib/server/biblioteca/avisos/edit-handlers';
+import { avisoModel } from '#lib/server/models/aviso.js';
+import { createNoticeEditHandlers } from '#lib/server/biblioteca/avisos/edit-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

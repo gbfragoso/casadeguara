@@ -15,9 +15,9 @@
 <div>
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href={resolve('/secretaria')} aria-current="page">Página Inicial</a>
+				<a href={resolve('secretaria')} aria-current="page">Página Inicial</a>
 			</li>
 		</ul>
 	</nav>

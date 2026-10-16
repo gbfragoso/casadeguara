@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { db } from '$lib/server/database/connection';
-import { cadastros } from '$lib/server/database/schema';
-import { amigoFraternoParticipants } from '$lib/server/pdf/amigo-fraterno/participants';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros } from '#lib/server/database/schema.js';
+import { amigoFraternoParticipants } from '#lib/server/pdf/amigo-fraterno/participants.js';
 import { createPdfHandler } from '../../../../../../../src/lib/server/pdf/amigo-fraterno/handler';
 import { createTestName, deleteCadastro } from '../../../../../lib/server/models/cadastro/test-support';
 

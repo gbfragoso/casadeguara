@@ -1,16 +1,19 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros } from '#lib/server/database/schema.js';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
+import { error } from '@sveltejs/kit';
 import { and, eq, sql } from 'drizzle-orm';
 
 const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireSecretariaAccess(locals.user);
 };
 
 const actions: Actions = {
-	default: async ({ request }) => {
+	default: async ({ request, locals }) => {
+		requireSecretariaAccess(locals.user);
+
 		const form = await request.formData();
 		const mes = form.get('mes') as string;
 
@@ -30,9 +33,7 @@ const actions: Actions = {
 			return { leitores };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao carregar a lista de leitores',
-			});
+			return error(500, 'Falha ao carregar a lista de leitores');
 		}
 	},
 };

@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { editora, exemplar, livro } from '$lib/server/database/schema';
-import { LivroModel } from '$lib/server/models/livro';
-import { LivroHasDependentsError, LivroNotFoundError } from '$lib/server/models/livro-error';
+import { db } from '#lib/server/database/connection.js';
+import { editora, exemplar, livro } from '#lib/server/database/schema.js';
+import { LivroModel } from '#lib/server/models/livro.js';
+import { LivroHasDependentsError, LivroNotFoundError } from '#lib/server/models/livro-error.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

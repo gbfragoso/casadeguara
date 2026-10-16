@@ -1,10 +1,10 @@
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { secretariaSearchSchema } from '$lib/validation/cadastros/secretaria';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { secretariaSearchSchema } from '#lib/validation/cadastros/secretaria.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireSecretariaAccess } from '$lib/server/secretaria/access';
-import { getSecretariaErrors, getSecretariaSearchValues } from '$lib/server/secretaria/form';
+import { requireSecretariaAccess } from '#lib/server/secretaria/access.js';
+import { getSecretariaErrors, getSecretariaSearchValues } from '#lib/server/secretaria/form.js';
 type ListModel = Pick<CadastroModel, 'fetchSecretaria'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
@@ -37,7 +37,7 @@ export const createRegistrationListHandlers = ({ model }: { model: ListModel }) 
 				return { cadastros: lista, values };
 			} catch {
 				console.error('Falha ao carregar a lista de cadastros.');
-				error(500, { message: 'Falha ao carregar a lista de cadastros.' });
+				error(500, 'Falha ao carregar a lista de cadastros.');
 			}
 		},
 	},

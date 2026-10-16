@@ -24,7 +24,7 @@ test('pesquisa cadastro sem acento e caixa, seleciona pelo teclado e cadastra en
 
 test('restaura o cadastro escolhido após erro de validação do lançamento', async ({ page, e2e }) => {
 	const counterpart = await e2e.createParticipant('Clébio Medeiros Fragoso');
-	const seed = createEntrySeed(e2e.token, 'autocomplete-validacao', counterpart.id, { valor: 'inválido' });
+	const seed = createEntrySeed(e2e.token, 'autocomplete-validacao', counterpart.id, { descricao: '12345' });
 	await e2e.authenticate(page, 'tesouraria');
 	await openLancamentoForm(page);
 	await fillLancamentoForm(page, seed);
@@ -34,7 +34,7 @@ test('restaura o cadastro escolhido após erro de validação do lançamento', a
 	await page.getByRole('option', { name: counterpart.name, exact: true }).click();
 	await page.getByRole('button', { name: 'Cadastrar' }).click();
 
-	await expect(page.locator('#valor-errors')).toBeVisible();
+	await expect(page.locator('#descricao-errors')).toBeVisible();
 	await expect(input).toHaveValue(counterpart.name);
 	await expect(page.locator('input[name="contraparteId"]')).toHaveValue(String(counterpart.id));
 });

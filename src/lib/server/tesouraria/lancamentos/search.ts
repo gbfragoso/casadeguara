@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, ilike, lte, sql } from 'drizzle-orm';
-import { activeLancamentoPredicate, cadastros, lancamentos } from '$lib/server/database/schema';
-import { ulike } from '$lib/server/database/functions';
+import { activeLancamentoPredicate, cadastros, lancamentos } from '#lib/server/database/schema.js';
+import { ulike } from '#lib/server/database/functions.js';
 import type { LancamentoDatabase, LancamentoItem, LancamentoPage, LancamentoSearch } from './types';
 import { formatDate, toDate } from './format';
 import { lancamentoProjection } from './projections';

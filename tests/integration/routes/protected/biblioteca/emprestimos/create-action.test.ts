@@ -1,18 +1,21 @@
 import { expect, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/database/connection';
-import { cadastros, exemplar } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, exemplar } from '#lib/server/database/schema.js';
 import { actions } from '../../../../../../src/routes/(protected)/biblioteca/emprestimos/novo/+page.server';
 import { bibliotecaUser } from '../../../../support/auth';
 import { invoke } from '../../../../support/request-event';
 import { it, createLoanEvent, loanValues, readLoans, createExistingLoan } from './create-support';
 
-it('creates the loan, marks the copy borrowed and redirects to its receipt', async ({ loan }) => {
+const receiptWithPrintRequest = /^\/biblioteca\/emprestimos\/\d+\/recibo\?imprimir=1$/;
+
+it('creates the loan, marks the copy borrowed and redirects to its receipt with a print request', async ({ loan }) => {
 	vi.useFakeTimers({ toFake: ['Date'] });
 	vi.setSystemTime(new Date('2026-09-05T12:00:00Z'));
 	try {
 		await expect(invoke(actions.default, createLoanEvent(loanValues(loan)))).rejects.toMatchObject({
 			status: 302,
+			location: expect.stringMatching(receiptWithPrintRequest),
 		});
 		const [created] = await readLoans(loan);
 		const [copy] = await db.select().from(exemplar).where(eq(exemplar.idexemplar, loan.copy.idexemplar));
@@ -25,6 +28,23 @@ it('creates the loan, marks the copy borrowed and redirects to its receipt', asy
 			dataDevolucao: new Date('2026-09-19'),
 		});
 		expect(copy.status).toBe('Emprestado');
+	} finally {
+		vi.useRealTimers();
+	}
+});
+
+it('dates an evening loan by the Bahia civil day instead of the UTC day', async ({ loan }) => {
+	vi.useFakeTimers({ toFake: ['Date'] });
+	vi.setSystemTime(new Date('2026-09-06T01:00:00Z'));
+	try {
+		await expect(invoke(actions.default, createLoanEvent(loanValues(loan)))).rejects.toMatchObject({ status: 302 });
+
+		const [created] = await readLoans(loan);
+
+		expect(created).toMatchObject({
+			dataEmprestimo: new Date('2026-09-05'),
+			dataDevolucao: new Date('2026-09-19'),
+		});
 	} finally {
 		vi.useRealTimers();
 	}
@@ -45,7 +65,7 @@ it('preserves the administrator exception for inactive readers with an active lo
 
 	await expect(invoke(actions.default, event)).rejects.toMatchObject({
 		status: 302,
-		location: expect.stringMatching(/^\/biblioteca\/emprestimos\/\d+\/recibo$/),
+		location: expect.stringMatching(receiptWithPrintRequest),
 	});
 
 	expect(await readLoans(loan)).toHaveLength(2);

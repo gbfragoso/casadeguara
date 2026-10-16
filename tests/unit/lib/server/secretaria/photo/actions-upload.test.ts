@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { INVALID_PHOTO_MESSAGE } from '$lib/validation/cadastros/foto';
+import { INVALID_PHOTO_MESSAGE } from '#lib/validation/cadastros/foto.js';
 import { savePhoto } from '../../../../../../src/lib/server/secretaria/photo/actions';
 import { context, createPhotoRequest, validPhoto } from './actions-test-support';
 

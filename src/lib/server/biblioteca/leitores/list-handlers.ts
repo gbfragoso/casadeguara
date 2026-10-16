@@ -1,10 +1,10 @@
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { bibliotecaSearchSchema } from '$lib/validation/cadastros/biblioteca';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { bibliotecaSearchSchema } from '#lib/validation/cadastros/biblioteca.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireReaderAccess } from '$lib/server/biblioteca/readers/access';
-import { getReaderSearchValues } from '$lib/server/biblioteca/readers/form';
+import { requireReaderAccess } from '#lib/server/biblioteca/readers/access.js';
+import { getReaderSearchValues } from '#lib/server/biblioteca/readers/form.js';
 type ListModel = Pick<CadastroModel, 'fetchBiblioteca'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
@@ -31,7 +31,7 @@ export const createReaderListHandlers = ({ model }: { model: ListModel }) => ({
 				return { leitores, values: { nome: result.data.nome } };
 			} catch {
 				console.error('Falha ao carregar a lista de leitores.');
-				error(500, { message: 'Falha ao carregar a lista de leitores.' });
+				error(500, 'Falha ao carregar a lista de leitores.');
 			}
 		},
 	},

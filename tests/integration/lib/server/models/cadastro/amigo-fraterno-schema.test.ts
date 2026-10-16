@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { db } from '$lib/server/database/connection';
-import { cadastroFotos, cadastros } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastroFotos, cadastros } from '#lib/server/database/schema.js';
 import { eq } from 'drizzle-orm';
 
 import { createTestName, deleteCadastro, readCadastro } from './test-support';

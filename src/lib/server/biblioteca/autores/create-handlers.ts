@@ -1,9 +1,9 @@
-import { authorSchema } from '$lib/validation/autor';
+import { authorSchema } from '#lib/validation/autor.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireLibraryAccess } from '$lib/server/authorization/biblioteca';
-import type { AutorModel } from '$lib/server/models/autor';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import type { AutorModel } from '#lib/server/models/autor.js';
 
 type CreateModel = Pick<AutorModel, 'create'>;
 type User = { roles: string } | null;
@@ -28,7 +28,7 @@ export const createAuthorCreateHandlers = ({ model }: { model: CreateModel }) =>
 				return { status: 201 };
 			} catch (cause) {
 				console.error(cause);
-				error(500, { message: 'Falha ao criar um novo autor' });
+				error(500, 'Falha ao criar um novo autor');
 			}
 		},
 	},

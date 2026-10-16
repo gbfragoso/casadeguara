@@ -1,34 +1,38 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { user } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { user } from '#lib/server/database/schema.js';
+import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
+import { requireSecretariaAdminAccess } from '#lib/server/secretaria/access.js';
 import validator from 'validator';
 
-const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+const editableUserFields = { id: user.id, username: user.username, name: user.name, roles: user.roles };
 
+const findUser = async (id: string) => {
 	try {
-		const resultado = await db
-			.select()
-			.from(user)
-			.where(eq(user.id, String(params.id)));
-
-		if (!resultado) {
-			throw fail(404, { message: 'Usuário não encontrado' });
-		}
-
-		return { usuario: resultado[0] };
+		const [usuario] = await db.select(editableUserFields).from(user).where(eq(user.id, id));
+		return usuario;
 	} catch (err) {
 		console.error(err);
-		return error(500, { message: 'Falha ao baixar os dados do usuário' });
+		error(500, 'Falha ao baixar os dados do usuário');
 	}
 };
 
+const load = async ({ locals, params }: RequestEvent) => {
+	requireSecretariaAdminAccess(locals.user);
+
+	const usuario = await findUser(String(params.id));
+	if (!usuario) error(404, 'Usuário não encontrado');
+
+	return { usuario };
+};
+
 const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request, params, locals }) => {
+		requireSecretariaAdminAccess(locals.user);
+
 		const formData = await request.formData();
 		const username = formData.get('username') as string;
 		const password = formData.get('password') as string;
@@ -60,9 +64,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao atualizar os dados do usuário',
-			});
+			return error(500, 'Falha ao atualizar os dados do usuário');
 		}
 	},
 };

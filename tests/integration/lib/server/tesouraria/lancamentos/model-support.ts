@@ -1,5 +1,5 @@
-import { cadastros } from '$lib/server/database/schema';
-import type { LancamentoDatabase } from '$lib/server/tesouraria/lancamentos/types';
+import { cadastros } from '#lib/server/database/schema.js';
+import type { LancamentoDatabase } from '#lib/server/tesouraria/lancamentos/types.js';
 import { createTestName } from '../../models/cadastro/test-support';
 
 export const entryInput = (contraparteId: number, descricao: string) => ({

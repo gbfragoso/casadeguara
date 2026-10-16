@@ -1,4 +1,4 @@
-import { createReceiptHandlers } from '$lib/server/public/receipt-handlers';
+import { createReceiptHandlers } from '#lib/server/public/receipt-handlers.js';
 
 import type { PageServerLoad } from './$types';
 

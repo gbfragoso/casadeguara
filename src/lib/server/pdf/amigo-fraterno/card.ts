@@ -1,5 +1,5 @@
 import type { AmigoFraternoPdfParticipant } from './participant-projections';
-import { PHOTO_FRAME, type CardSlot } from '$lib/image/geometry/card';
+import { PHOTO_FRAME, type CardSlot } from '#lib/image/geometry/card.js';
 import { PDF_COLORS } from './layout';
 import { drawPhoto } from './photo';
 import { fitName } from './text';

@@ -1,4 +1,4 @@
-import { createBibliotecaUsuariosHandlers } from '$lib/server/biblioteca/usuarios/page-handlers';
+import { createBibliotecaUsuariosHandlers } from '#lib/server/biblioteca/usuarios/page-handlers.js';
 
 import type { PageServerLoad } from './$types';
 

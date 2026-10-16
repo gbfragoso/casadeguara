@@ -1,4 +1,4 @@
-import { createAcervoHandlers } from '$lib/server/acervo/search-handlers';
+import { createAcervoHandlers } from '#lib/server/acervo/search-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

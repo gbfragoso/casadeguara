@@ -1,12 +1,17 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { exemplar, livro } from '$lib/server/database/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { db } from '#lib/server/database/connection.js';
+import { exemplar, livro } from '#lib/server/database/schema.js';
+import {
+	hasLibraryAdminAccess,
+	requireLibraryAccess,
+	requireLibraryAdminAccess,
+} from '#lib/server/authorization/biblioteca.js';
+import { error, fail } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
 const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	const isAdmin = hasLibraryAdminAccess(requireLibraryAccess(locals.user));
 
 	try {
 		const livros = async () => {
@@ -22,17 +27,17 @@ const load = async ({ locals, params }: RequestEvent) => {
 				.where(eq(exemplar.livro, Number(params.id)))
 				.orderBy(exemplar.numero);
 		};
-		return { exemplares: exemplares(), livros: livros(), role: locals.user.roles };
+		return { exemplares: exemplares(), livros: livros(), isAdmin };
 	} catch (err) {
 		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar a lista de autores',
-		});
+		return error(500, 'Falha ao carregar a lista de autores');
 	}
 };
 
 const actions: Actions = {
-	adicionar: async ({ request, params }) => {
+	adicionar: async ({ request, params, locals }) => {
+		requireLibraryAccess(locals.user);
+
 		const form = await request.formData();
 		const id = Number(params.id);
 		const numero = Number(form.get('numero'));
@@ -53,12 +58,12 @@ const actions: Actions = {
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao criar um novo autor',
-			});
+			return error(500, 'Falha ao criar um novo autor');
 		}
 	},
-	disponivel: async ({ url }) => {
+	disponivel: async ({ url, locals }) => {
+		requireLibraryAdminAccess(locals.user);
+
 		const id = url.searchParams.get('exemplar');
 		if (!id) {
 			return fail(400, {
@@ -74,12 +79,12 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao disponibilizar o exemplar',
-			});
+			return error(500, 'Falha ao disponibilizar o exemplar');
 		}
 	},
-	arquivar: async ({ url }) => {
+	arquivar: async ({ url, locals }) => {
+		requireLibraryAdminAccess(locals.user);
+
 		const id = url.searchParams.get('exemplar');
 		if (!id) {
 			return fail(400, {
@@ -95,12 +100,12 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao arquivar o exemplar',
-			});
+			return error(500, 'Falha ao arquivar o exemplar');
 		}
 	},
-	excluir: async ({ url }) => {
+	excluir: async ({ url, locals }) => {
+		requireLibraryAdminAccess(locals.user);
+
 		const id = url.searchParams.get('exemplar');
 		if (!id) {
 			return fail(400, {
@@ -113,9 +118,7 @@ const actions: Actions = {
 			return { status: 200 };
 		} catch (err) {
 			console.error(err);
-			return error(500, {
-				message: 'Falha ao excluir o exemplar',
-			});
+			return error(500, 'Falha ao excluir o exemplar');
 		}
 	},
 };

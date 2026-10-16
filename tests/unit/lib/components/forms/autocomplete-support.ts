@@ -1,6 +1,6 @@
 import { mount, tick, unmount, type ComponentProps } from 'svelte';
 import { afterEach } from 'vitest';
-import Autocomplete from '$lib/components/forms/Autocomplete.svelte';
+import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
 
 export const options = [
 	{ value: '7', label: 'Clício Fogaça' },

@@ -1,7 +1,7 @@
 import type { Scale, TooltipItem, TooltipModel } from 'chart.js';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonthlyChart } from '$lib/charts/monthly-lancamentos';
+import { buildMonthlyChart } from '#lib/charts/monthly-lancamentos.js';
 
 const totals = Array.from({ length: 12 }, (_, index) => ({
 	competencia: `2025-${String(index + 1).padStart(2, '0')}`,

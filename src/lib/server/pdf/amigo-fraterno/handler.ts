@@ -1,8 +1,7 @@
-import { hasSecretariaAccess } from '$lib/server/authorization/cadastros';
-import { createPdfStream } from '$lib/server/pdf/amigo-fraterno/stream';
-import type { AmigoFraternoPdfParticipant } from '$lib/server/pdf/amigo-fraterno/participant-projections';
-import { parseAmigoFraternoPdfRequest } from '$lib/validation/pdf/amigo-fraterno';
-import { json } from '@sveltejs/kit';
+import { hasSecretariaAccess } from '#lib/server/authorization/cadastros.js';
+import { createPdfStream } from '#lib/server/pdf/amigo-fraterno/stream.js';
+import type { AmigoFraternoPdfParticipant } from '#lib/server/pdf/amigo-fraterno/participant-projections.js';
+import { parseAmigoFraternoPdfRequest } from '#lib/validation/pdf/amigo-fraterno.js';
 
 type ParticipantReader = { listForPdf: () => Promise<AmigoFraternoPdfParticipant[]> };
 type PdfGenerator = (
@@ -23,14 +22,14 @@ export const createPdfHandler =
 	(participants: ParticipantReader, generatePdf: PdfGenerator) =>
 	async ({ locals, url }: RequestContext) => {
 		if (!locals.user || !hasSecretariaAccess(locals.user))
-			return json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
+			return Response.json({ message: FORBIDDEN_MESSAGE }, { status: 401 });
 		const request = parseAmigoFraternoPdfRequest(url.searchParams);
-		if (!request.success) return json({ message: 'Informe uma data de sorteio válida.' }, { status: 400 });
+		if (!request.success) return Response.json({ message: 'Informe uma data de sorteio válida.' }, { status: 400 });
 		try {
 			const currentParticipants = await participants.listForPdf();
 			if (!currentParticipants.length) {
 				console.warn('amigo_fraterno.pdf_empty');
-				return json({ message: 'Não há participantes elegíveis para gerar o PDF.' }, { status: 409 });
+				return Response.json({ message: 'Não há participantes elegíveis para gerar o PDF.' }, { status: 409 });
 			}
 			const startedAt = performance.now();
 			const { bytes, pageCount } = await generatePdf(currentParticipants, request.data.nextDrawDate);
@@ -43,6 +42,6 @@ export const createPdfHandler =
 			return new Response(createPdfStream(bytes), { headers: PDF_HEADERS });
 		} catch (cause) {
 			console.error('amigo_fraterno.pdf_generation_failed', cause);
-			return json({ message: 'Não foi possível gerar o PDF do Amigo Fraterno.' }, { status: 500 });
+			return Response.json({ message: 'Não foi possível gerar o PDF do Amigo Fraterno.' }, { status: 500 });
 		}
 	};

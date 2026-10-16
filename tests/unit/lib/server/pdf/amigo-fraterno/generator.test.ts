@@ -13,7 +13,7 @@ vi.mock('$app/server', async () => {
 	return { read: () => new Response(assets[readCount++ % assets.length]) };
 });
 
-import { generateAmigoFraternoPdf, sortPdfParticipants } from '$lib/server/pdf/amigo-fraterno/generator';
+import { generateAmigoFraternoPdf, sortPdfParticipants } from '#lib/server/pdf/amigo-fraterno/generator.js';
 
 describe('amigo fraterno PDF generator', () => {
 	it('sorts participant names and uses identifier as a stable tiebreaker', () => {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
 
-import { cadastros } from '$lib/server/database/schema';
-import { LancamentoModel } from '$lib/server/tesouraria/lancamentos/model';
+import { cadastros } from '#lib/server/database/schema.js';
+import { LancamentoModel } from '#lib/server/tesouraria/lancamentos/model.js';
 import { withProvisionedDatabase } from '../../database/migration-test-support';
 import { createCounterpart, entryInput, exitInput } from './model-support';
 

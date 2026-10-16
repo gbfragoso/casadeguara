@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
-import { db } from '$lib/server/database/connection';
-import { autor, autorHasLivro, keyword, livro, livroHasKeyword } from '$lib/server/database/schema';
-import { LivroModel } from '$lib/server/models/livro';
+import { db } from '#lib/server/database/connection.js';
+import { autor, autorHasLivro, keyword, livro, livroHasKeyword } from '#lib/server/database/schema.js';
+import { LivroModel } from '#lib/server/models/livro.js';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 

@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 
-import { PHOTO_FRAME } from '$lib/image/geometry/card';
-import { createCropRectangle, type ImageSize, type PhotoPositionInput } from '$lib/image/crop/rectangle';
+import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
+import { createCropRectangle, type ImageSize, type PhotoPositionInput } from '#lib/image/crop/rectangle.js';
 
 import { MAXIMUM_PHOTO_PIXELS, PHOTO_JPEG_QUALITY } from './normalizer';
 

@@ -1,9 +1,9 @@
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
-import { unaccent } from '$lib/server/database/functions';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, emprestimo, exemplar, livro } from '#lib/server/database/schema.js';
+import { unaccent } from '#lib/server/database/functions.js';
 import { fail } from '@sveltejs/kit';
 import { and, eq, isNull, sql } from 'drizzle-orm';
-import dayjs from 'dayjs';
+import { addCivilDays, readBahiaCivilDate } from '#lib/utils/date.js';
 
 const LOAN_DURATION_DAYS = 14;
 
@@ -36,13 +36,14 @@ export async function validateReader(readerId: number, isAdmin: boolean) {
 }
 
 export async function recordLoan(readerId: number, copyId: number, userId: string) {
+	const loanDate = readBahiaCivilDate(new Date());
 	const [created] = await db
 		.insert(emprestimo)
 		.values({
 			leitor: readerId,
 			exemplar: copyId,
-			dataEmprestimo: new Date(),
-			dataDevolucao: dayjs().add(LOAN_DURATION_DAYS, 'day').toDate(),
+			dataEmprestimo: loanDate,
+			dataDevolucao: addCivilDays(loanDate, LOAN_DURATION_DAYS),
 			userEmprestimo: userId,
 		})
 		.returning({ id: emprestimo.idemp });

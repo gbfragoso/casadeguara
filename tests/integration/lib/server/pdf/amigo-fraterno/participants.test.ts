@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { db } from '$lib/server/database/connection';
-import { cadastroFotos, cadastros } from '$lib/server/database/schema';
-import { AmigoFraternoParticipants } from '$lib/server/pdf/amigo-fraterno/participants';
+import { db } from '#lib/server/database/connection.js';
+import { cadastroFotos, cadastros } from '#lib/server/database/schema.js';
+import { AmigoFraternoParticipants } from '#lib/server/pdf/amigo-fraterno/participants.js';
 
 import { createTestName, deleteCadastro } from '../../models/cadastro/test-support';
 

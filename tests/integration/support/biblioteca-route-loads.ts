@@ -17,6 +17,7 @@ import { load as notice } from '../../../src/routes/(protected)/biblioteca/aviso
 import { load as editNotice } from '../../../src/routes/(protected)/biblioteca/avisos/[id=integer]/+page.server';
 import { load as bookList } from '../../../src/routes/(protected)/biblioteca/livros/+page.server';
 import { load as bookCreate } from '../../../src/routes/(protected)/biblioteca/livros/novo/+page.server';
+import { load as loanReceipt } from '../../../src/routes/(protected)/biblioteca/emprestimos/[id=integer]/recibo/+page.server';
 
 export const protectedBibliotecaLoads = [
 	dashboard,
@@ -38,6 +39,7 @@ export const protectedBibliotecaLoads = [
 	editNotice,
 	bookList,
 	bookCreate,
+	loanReceipt,
 ];
 
 export const bibliotecaSimpleLoads = [

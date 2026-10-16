@@ -10,7 +10,7 @@ import {
 	submitAuditSearch,
 	submitLancamentosSearch,
 } from './lancamentos-browser';
-import { createEntrySeed, createExitPageSeeds, createExitSeed } from './lancamentos-fixture';
+import { createCurrentMonthDate, createEntrySeed, createExitPageSeeds, createExitSeed } from './lancamentos-fixture';
 import { insertReversals } from './lancamentos-database';
 
 const removedTreasuryPaths = [
@@ -84,14 +84,14 @@ test('E2E-10 comunica carregamento e limpa o estado após sucesso e erro', async
 	await e2e.authenticate(page, 'tesouraria');
 	await openLancamentosPage(page);
 
-	let release: (() => void) | undefined;
-	const pending = new Promise<void>((resolve) => {
-		release = resolve;
-	});
-	await page.route('**/tesouraria/lancamentos*', async (route) => {
-		await pending;
-		await route.continue();
-	});
+	let searchGate = Promise.withResolvers<void>();
+	await page.route(
+		(url) => url.pathname === '/tesouraria/lancamentos',
+		async (route) => {
+			await searchGate.promise;
+			await route.continue();
+		},
+	);
 	const successResponse = submitLancamentosSearch(page);
 	await page.waitForRequest(
 		(request) => request.method() === 'POST' && request.url().includes('/tesouraria/lancamentos'),
@@ -99,7 +99,7 @@ test('E2E-10 comunica carregamento e limpa o estado após sucesso e erro', async
 	const button = page.getByRole('button', { name: 'Pesquisar' });
 	await expect(button).toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'true');
-	release?.();
+	searchGate.resolve();
 	await expect((await successResponse).ok()).toBe(true);
 	await expect(button).not.toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'false');
@@ -111,12 +111,14 @@ test('E2E-10 comunica carregamento e limpa o estado após sucesso e erro', async
 		tipo.value = 'invalido';
 		form.append(tipo);
 	});
+	searchGate = Promise.withResolvers<void>();
 	const failedResponse = submitLancamentosSearch(page);
 	await page.waitForRequest(
 		(request) => request.method() === 'POST' && request.url().includes('/tesouraria/lancamentos'),
 	);
 	await expect(button).toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'true');
+	searchGate.resolve();
 	await failedResponse;
 	await expect(button).not.toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'false');
@@ -239,16 +241,21 @@ test('E2E-06 invalida recibo compartilhado depois do estorno', async ({ page, e2
 
 test('E2E-07 baixa no Caixa altera depósito e exclui estornados das visões', async ({ page, e2e }) => {
 	const counterpart = await e2e.createParticipant('caixa');
+	const dataLancamento = createCurrentMonthDate();
 	const pending = await e2e.createLancamento(
-		createEntrySeed(e2e.token, 'caixa-pendente', counterpart.id, { valor: '30.00' }),
+		createEntrySeed(e2e.token, 'caixa-pendente', counterpart.id, { valor: '30.00', dataLancamento }),
 	);
 	const deposited = await e2e.createLancamento(
-		createEntrySeed(e2e.token, 'caixa-depositada', counterpart.id, { valor: '20.00', depositado: true }),
+		createEntrySeed(e2e.token, 'caixa-depositada', counterpart.id, {
+			valor: '20.00',
+			dataLancamento,
+			depositado: true,
+		}),
 	);
 	const reversed = await e2e.createLancamento(
-		createEntrySeed(e2e.token, 'caixa-estornada', counterpart.id, { valor: '40.00' }),
+		createEntrySeed(e2e.token, 'caixa-estornada', counterpart.id, { valor: '40.00', dataLancamento }),
 	);
-	await e2e.createLancamento(createExitSeed(e2e.token, 'caixa-saida', { valor: '10.00' }));
+	await e2e.createLancamento(createExitSeed(e2e.token, 'caixa-saida', { valor: '10.00', dataLancamento }));
 	await e2e.authenticate(page, 'admin');
 	await openLancamentosPage(page);
 	await searchLancamentosByDescription(page, reversed.descricao);
@@ -260,6 +267,8 @@ test('E2E-07 baixa no Caixa altera depósito e exclui estornados das visões', a
 	await expect(page.locator('tbody tr').filter({ hasText: deposited.descricao.toUpperCase() })).toHaveCount(0);
 	await expect(page.locator('body')).not.toContainText(reversed.descricao.toUpperCase());
 
+	const foreignRows = page.locator('tbody tr').filter({ hasNotText: e2e.token.toUpperCase() });
+	for (const checkbox of await foreignRows.locator('input[type="checkbox"]').all()) await checkbox.uncheck();
 	await pendingRow.locator('input[type="checkbox"]').check();
 	await page.getByRole('button', { name: 'Confirmar depósito' }).click();
 	await expect(pendingRow).toHaveCount(0);

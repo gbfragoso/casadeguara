@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Autocomplete from '$lib/components/forms/Autocomplete.svelte';
-	import BrlAmountInput from '$lib/components/forms/BrlAmountInput.svelte';
-	import { createFormEnhancer } from '$lib/forms/enhancer.svelte';
+	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
+	import BrlAmountInput from '#lib/components/forms/BrlAmountInput.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -34,9 +34,9 @@
 <div class="mb-2">
 	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/tesouraria')}>Tesouraria</a></li>
-			<li><a href={resolve('/tesouraria/lancamentos')}>Lançamentos</a></li>
-			<li class="is-active"><a href={resolve('/tesouraria/lancamentos/novo')} aria-current="page">Novo</a></li>
+			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
+			<li><a href={resolve('tesouraria/lancamentos')}>Lançamentos</a></li>
+			<li class="is-active"><a href={resolve('tesouraria/lancamentos/novo')} aria-current="page">Novo</a></li>
 		</ul>
 	</nav>
 	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Novo lançamento</h1>

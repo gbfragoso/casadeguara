@@ -12,9 +12,9 @@
 <div class="mb-2">
 	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
 		<ul>
-			<li><a href={resolve('/secretaria')}>Secretaria</a></li>
+			<li><a href={resolve('secretaria')}>Secretaria</a></li>
 			<li class="is-active">
-				<a href={resolve('/secretaria/amigofraterno')} aria-current="page">Amigo Fraterno</a>
+				<a href={resolve('secretaria/amigofraterno')} aria-current="page">Amigo Fraterno</a>
 			</li>
 		</ul>
 	</nav>
@@ -25,7 +25,7 @@
 	<div class="card-content">
 		<p class="mb-4">
 			Revise os participantes antes de gerar os cartões. Altere participantes e fotos em <a
-				href={resolve('/secretaria/cadastros')}>Cadastros</a
+				href={resolve('secretaria/cadastros')}>Cadastros</a
 			>.
 		</p>
 		<div class="tags are-medium mb-4" aria-live="polite">
@@ -35,7 +35,7 @@
 		{#if data.total === 0}
 			<p role="status">Não há participantes elegíveis no momento. Revise os Cadastros para atualizar a lista.</p>
 		{:else}
-			<form class="mb-4" method="GET" action={resolve('/secretaria/amigofraterno/pdf')}>
+			<form class="mb-4" method="GET" action={resolve('secretaria/amigofraterno/pdf')}>
 				<div class="field">
 					<label class="label" for="nextDrawDate">Data do próximo sorteio</label>
 					<div class="control">

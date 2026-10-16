@@ -10,7 +10,7 @@ import {
 	createOptionalTextSchema,
 	createRequiredNameSchema,
 	createSearchNameSchema,
-} from '$lib/validation/cadastros/common';
+} from '#lib/validation/cadastros/common.js';
 
 const REQUIRED = 'Nome do leitor é obrigatório.';
 const INVALID = 'Nome do leitor inválido.';

@@ -8,8 +8,8 @@ import {
 	notFoundError,
 	persistenceError,
 	validationError,
-} from '$lib/server/tesouraria/lancamentos/errors';
-import { formatDate, toDate } from '$lib/server/tesouraria/lancamentos/format';
+} from '#lib/server/tesouraria/lancamentos/errors.js';
+import { formatDate, toDate } from '#lib/server/tesouraria/lancamentos/format.js';
 import { getTableConfig } from 'drizzle-orm/pg-core';
 import {
 	autor,
@@ -20,7 +20,7 @@ import {
 	livro,
 	livroHasKeyword,
 	serie,
-} from '$lib/server/database/schema';
+} from '#lib/server/database/schema.js';
 import {
 	activeLancamentoPredicate,
 	aviso,
@@ -29,7 +29,7 @@ import {
 	estornos,
 	lancamentos,
 	user,
-} from '$lib/server/database/schema';
+} from '#lib/server/database/schema.js';
 
 describe('lancamento domain utilities', () => {
 	it('normalizes dates for persistence', () => {

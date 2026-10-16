@@ -1,45 +1,27 @@
-import type { RequestEvent } from '@sveltejs/kit';
+import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
+import { type EmprestimoModel } from '#lib/server/models/emprestimo.js';
+import { error } from '@sveltejs/kit';
 
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
-import { error, redirect } from '@sveltejs/kit';
-import { desc, eq } from 'drizzle-orm';
+type ReceiptModel = Pick<EmprestimoModel, 'findReceipt'>;
+type User = { roles: string } | null;
+type HandlerContext = { locals: { user: User }; params: { id: string } };
 
-const load = async ({ locals, params }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+const LOAD_FAILURE_MESSAGE = 'Falha ao carregar os dados do empréstimo';
 
-	const id = Number(params.id);
+export const createBibliotecaEmprestimosIdIntegerReciboHandlers = ({ model }: { model: ReceiptModel }) => ({
+	load: async ({ locals, params }: HandlerContext) => {
+		requireLibraryAccess(locals.user);
+		let recibo;
 
-	try {
-		const emprestimos = await db
-			.select({
-				idemp: emprestimo.idemp,
-				idleitor: cadastros.idleitor,
-				leitor: cadastros.nome,
-				tombo: livro.tombo,
-				titulo: livro.titulo,
-				numero: exemplar.numero,
-				renovacoes: emprestimo.renovacoes,
-				data_devolucao: emprestimo.dataDevolucao,
-				data_emprestimo: emprestimo.dataEmprestimo,
-				data_devolvido: emprestimo.dataDevolvido,
-			})
-			.from(emprestimo)
-			.innerJoin(cadastros, eq(emprestimo.leitor, cadastros.idleitor))
-			.innerJoin(exemplar, eq(emprestimo.exemplar, exemplar.idexemplar))
-			.innerJoin(livro, eq(exemplar.livro, livro.idlivro))
-			.where(eq(emprestimo.idemp, id))
-			.orderBy(desc(emprestimo.dataEmprestimo));
+		try {
+			recibo = await model.findReceipt(Number(params.id));
+		} catch (cause) {
+			console.error(LOAD_FAILURE_MESSAGE, { cause });
+			error(500, LOAD_FAILURE_MESSAGE);
+		}
 
-		return { emprestimos };
-	} catch (err) {
-		console.error(err);
-		return error(500, {
-			message: 'Falha ao carregar os dados do empréstimo',
-		});
-	}
-};
+		if (!recibo) error(404, 'Empréstimo não encontrado');
 
-export const createBibliotecaEmprestimosIdIntegerReciboHandlers = () => ({
-	load,
+		return { recibo };
+	},
 });

@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
 import { test } from 'vitest';
-import { db } from '$lib/server/database/connection';
-import { cadastros, emprestimo, exemplar, livro } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros, emprestimo, exemplar, livro } from '#lib/server/database/schema.js';
 import { bibliotecaUser } from '../../../../support/auth';
 import { createRequestEvent } from '../../../../support/request-event';
 import { createTestName } from '../../../../lib/server/models/cadastro/test-support';
@@ -60,3 +60,13 @@ export const createExistingLoan = (loan: LoanFixture, returned = false) =>
 		exemplar: loan.copy.idexemplar,
 		dataDevolvido: returned ? new Date('2026-08-01T12:00:00Z') : null,
 	});
+
+type LoanDates = { dataEmprestimo: Date | null; dataDevolucao: Date | null };
+
+export const createDatedLoan = async (loan: LoanFixture, dates: LoanDates) => {
+	const [created] = await db
+		.insert(emprestimo)
+		.values({ leitor: loan.reader.idleitor, exemplar: loan.copy.idexemplar, ...dates })
+		.returning({ idemp: emprestimo.idemp });
+	return created;
+};

@@ -1,8 +1,8 @@
-import { requireTesourariaAdminAccess } from '$lib/server/authorization/tesouraria';
+import { requireTesourariaAdminAccess } from '#lib/server/authorization/tesouraria.js';
 import type { LancamentoModel } from './model';
 import { LancamentoError } from './errors';
 import { getDomainErrors, getEstornoSearchValues, getLancamentoErrors } from './form';
-import { estornoSearchSchema } from '$lib/validation/tesouraria/lancamentos';
+import { estornoSearchSchema } from '#lib/validation/tesouraria/lancamentos.js';
 import { error, fail } from '@sveltejs/kit';
 
 type User = { id: string; roles: string } | null | undefined;
@@ -18,20 +18,20 @@ const mapActionFailure = (cause: unknown, values: ReturnType<typeof getEstornoSe
 	if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR')
 		return fail(400, { values, errors: getDomainErrors(cause.message) });
 	console.error('treasury.lancamentos.audit_failed');
-	error(500, { message: 'Falha ao carregar a auditoria de estornos.' });
+	error(500, 'Falha ao carregar a auditoria de estornos.');
 };
 
 const mapLoadFailure = (cause: unknown) => {
-	if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR') error(400, { message: cause.message });
+	if (cause instanceof LancamentoError && cause.code === 'VALIDATION_ERROR') error(400, cause.message);
 	console.error('treasury.lancamentos.audit_failed');
-	error(500, { message: 'Falha ao carregar a auditoria de estornos.' });
+	error(500, 'Falha ao carregar a auditoria de estornos.');
 };
 
 const createLoadHandler = (model: AuditModel, requireAdminAccess: AccessChecker) => async (event: HandlerEvent) => {
 	const user = requireAdminAccess(event.locals.user);
 	const input = Object.fromEntries(event.url.searchParams);
 	const result = parseSearch(input);
-	if (!result.success) error(400, { message: 'Parâmetros de auditoria inválidos.' });
+	if (!result.success) error(400, 'Parâmetros de auditoria inválidos.');
 	try {
 		const page = await model.searchReversals(result.data);
 		return { page, values: getEstornoSearchValues(result.data), isAdmin: Boolean(user) };

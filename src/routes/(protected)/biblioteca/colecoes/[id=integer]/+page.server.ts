@@ -1,5 +1,5 @@
-import { colecaoModel } from '$lib/server/models/colecao';
-import { createCollectionEditHandlers } from '$lib/server/biblioteca/colecoes/edit-handlers';
+import { colecaoModel } from '#lib/server/models/colecao.js';
+import { createCollectionEditHandlers } from '#lib/server/biblioteca/colecoes/edit-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

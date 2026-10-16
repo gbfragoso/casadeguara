@@ -1,5 +1,5 @@
-import { keywordModel } from '$lib/server/models/keyword';
-import { createKeywordEditHandlers } from '$lib/server/biblioteca/keywords/edit-handlers';
+import { keywordModel } from '#lib/server/models/keyword.js';
+import { createKeywordEditHandlers } from '#lib/server/biblioteca/keywords/edit-handlers.js';
 
 import type { Actions, PageServerLoad } from './$types';
 

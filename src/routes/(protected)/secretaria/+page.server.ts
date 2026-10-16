@@ -1,4 +1,4 @@
-import { createSecretariaHandlers } from '$lib/server/secretaria/root/page-handlers';
+import { createSecretariaHandlers } from '#lib/server/secretaria/root/page-handlers.js';
 
 import type { PageServerLoad } from './$types';
 

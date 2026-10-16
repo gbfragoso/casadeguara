@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getLivroActionErrors } from '$lib/server/biblioteca/books/form';
+import { getLivroActionErrors } from '#lib/server/biblioteca/books/form.js';
 
 describe('getLivroActionErrors', () => {
 	it('maps canonical schema paths to submitted field names', () => {

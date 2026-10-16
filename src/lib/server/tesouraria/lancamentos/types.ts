@@ -3,8 +3,8 @@ import type {
 	EstornoSearch,
 	LancamentoSearch,
 	TipoLancamento,
-} from '$lib/validation/tesouraria/lancamentos';
-import type { db } from '$lib/server/database/connection';
+} from '#lib/validation/tesouraria/lancamentos.js';
+import type { db } from '#lib/server/database/connection.js';
 
 export type { CreateLancamento, EstornoSearch, LancamentoSearch, TipoLancamento };
 export type LancamentoDatabase = typeof db;

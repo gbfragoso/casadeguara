@@ -1,10 +1,10 @@
-import { type CadastroModel } from '$lib/server/models/cadastro';
-import { tesourariaSearchSchema } from '$lib/validation/cadastros/tesouraria';
+import { type CadastroModel } from '#lib/server/models/cadastro.js';
+import { tesourariaSearchSchema } from '#lib/validation/cadastros/tesouraria.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError } from 'zod';
 
-import { requireTesourariaAccess } from '$lib/server/tesouraria/contributors/access';
-import { getTesourariaErrors, getTesourariaSearchValues } from '$lib/server/tesouraria/contributors/form';
+import { requireTesourariaAccess } from '#lib/server/tesouraria/contributors/access.js';
+import { getTesourariaErrors, getTesourariaSearchValues } from '#lib/server/tesouraria/contributors/form.js';
 type ListModel = Pick<CadastroModel, 'fetchTesouraria'>;
 type User = { id: string; roles: string } | null;
 type ActionContext = { locals: { user: User }; request: Request };
@@ -33,7 +33,7 @@ export const createContributorListHandlers = ({ model }: { model: ListModel }) =
 				return { contribuintes, values };
 			} catch {
 				console.error('Falha ao carregar a lista de contribuintes.');
-				error(500, { message: 'Falha ao carregar a lista de contribuintes.' });
+				error(500, 'Falha ao carregar a lista de contribuintes.');
 			}
 		},
 	},

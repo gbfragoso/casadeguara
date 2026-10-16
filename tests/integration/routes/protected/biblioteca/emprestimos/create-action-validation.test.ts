@@ -1,8 +1,8 @@
 import { expect } from 'vitest';
 import { isActionFailure } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/database/connection';
-import { cadastros } from '$lib/server/database/schema';
+import { db } from '#lib/server/database/connection.js';
+import { cadastros } from '#lib/server/database/schema.js';
 import { actions } from '../../../../../../src/routes/(protected)/biblioteca/emprestimos/novo/+page.server';
 import { createRequestEvent, invoke } from '../../../../support/request-event';
 import { it, createLoanEvent, loanValues, readLoans, createExistingLoan } from './create-support';

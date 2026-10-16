@@ -1,5 +1,5 @@
-import { assertTestDatabaseContext } from '$lib/scripts/testing/database-url.js';
-import * as schema from '$lib/server/database/schema';
+import { assertTestDatabaseContext } from '#lib/scripts/testing/database-url.js';
+import * as schema from '#lib/server/database/schema.js';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
