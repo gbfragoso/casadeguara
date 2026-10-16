@@ -79,7 +79,7 @@ describe('createBibliotecaEmprestimosNovoHandlers default action', () => {
 		expect(loans.recordLoan).not.toHaveBeenCalled();
 	});
 
-	it('records the loan for the librarian and opens its receipt', async () => {
+	it('records the loan for the librarian and opens its receipt with a print request', async () => {
 		const { redirect } = await expectRedirect(actions.default, {
 			roles: 'biblioteca',
 			userId: 'user-3',
@@ -87,6 +87,6 @@ describe('createBibliotecaEmprestimosNovoHandlers default action', () => {
 		});
 
 		expect(loans.recordLoan).toHaveBeenCalledWith(1, 11, 'user-3');
-		expect(redirect).toMatchObject({ status: 302, location: '/biblioteca/emprestimos/7/recibo' });
+		expect(redirect).toMatchObject({ status: 302, location: '/biblioteca/emprestimos/7/recibo?imprimir=1' });
 	});
 });

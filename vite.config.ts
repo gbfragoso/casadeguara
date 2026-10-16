@@ -72,6 +72,8 @@ export default defineConfig({
 				'src/**/*.{test,spec,e2e}.{js,ts}',
 				// Scripts de suporte ao desenvolvimento não são comportamento da aplicação em produção.
 				'src/lib/scripts/**/*.js',
+				// O contrato do recibo de empréstimo contém só tipos, apagados em tempo de execução.
+				'src/lib/receipts/loan-receipt.ts',
 			],
 			thresholds: {
 				perFile: true,

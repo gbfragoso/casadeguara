@@ -7,12 +7,15 @@ import { bibliotecaUser } from '../../../../support/auth';
 import { invoke } from '../../../../support/request-event';
 import { it, createLoanEvent, loanValues, readLoans, createExistingLoan } from './create-support';
 
-it('creates the loan, marks the copy borrowed and redirects to its receipt', async ({ loan }) => {
+const receiptWithPrintRequest = /^\/biblioteca\/emprestimos\/\d+\/recibo\?imprimir=1$/;
+
+it('creates the loan, marks the copy borrowed and redirects to its receipt with a print request', async ({ loan }) => {
 	vi.useFakeTimers({ toFake: ['Date'] });
 	vi.setSystemTime(new Date('2026-09-05T12:00:00Z'));
 	try {
 		await expect(invoke(actions.default, createLoanEvent(loanValues(loan)))).rejects.toMatchObject({
 			status: 302,
+			location: expect.stringMatching(receiptWithPrintRequest),
 		});
 		const [created] = await readLoans(loan);
 		const [copy] = await db.select().from(exemplar).where(eq(exemplar.idexemplar, loan.copy.idexemplar));
@@ -45,7 +48,7 @@ it('preserves the administrator exception for inactive readers with an active lo
 
 	await expect(invoke(actions.default, event)).rejects.toMatchObject({
 		status: 302,
-		location: expect.stringMatching(/^\/biblioteca\/emprestimos\/\d+\/recibo$/),
+		location: expect.stringMatching(receiptWithPrintRequest),
 	});
 
 	expect(await readLoans(loan)).toHaveLength(2);

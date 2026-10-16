@@ -1,5 +1,6 @@
 import type { Actions, RequestEvent } from '@sveltejs/kit';
 
+import { appendPrintRequest } from '#lib/printing/print-request.js';
 import { requireLibraryAccess } from '#lib/server/authorization/biblioteca.js';
 import { error, redirect } from '@sveltejs/kit';
 import {
@@ -36,7 +37,7 @@ const actions: Actions = {
 		if (rejection) return rejection;
 
 		const id = await recordLoan(readerId, copyId, user.id);
-		redirect(302, `/biblioteca/emprestimos/${id}/recibo`);
+		redirect(302, appendPrintRequest(`/biblioteca/emprestimos/${id}/recibo`));
 	},
 };
 
