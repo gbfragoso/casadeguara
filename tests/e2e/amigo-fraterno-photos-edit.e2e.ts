@@ -1,7 +1,12 @@
 import { test, expect, waitForHydration } from './fixtures';
 
 import { createPhoto } from './amigo-fraterno-support';
-import { photoPath, submitPhotoAction, waitForPhoto } from './amigo-fraterno-photo-support';
+import {
+	expectDisplayedCurrentPhoto,
+	photoPath,
+	submitPhotoAction,
+	waitForPhoto,
+} from './amigo-fraterno-photo-support';
 
 test('E2E-06 cancels reframing without changing the current photo', async ({ page, e2e }) => {
 	const participant = await e2e.createParticipant('cancelamento', true);
@@ -26,16 +31,21 @@ test('E2E-06 cancels reframing without changing the current photo', async ({ pag
 test('E2E-08 reframes the current photo without replacing its source', async ({ page, e2e }) => {
 	const participant = await e2e.createParticipant('reenquadramento', true);
 	await e2e.authenticate(page);
+	const loaded = waitForPhoto(page, participant.id);
 	await page.goto(`/secretaria/cadastros/${participant.id}`);
 	await waitForHydration(page);
+	expect((await loaded).ok()).toBe(true);
 	const before = await (await page.request.get(photoPath(participant.id, true))).body();
 	const original = waitForPhoto(page, participant.id, true);
 	await page.getByRole('button', { name: 'Reenquadrar foto' }).click();
 	expect((await original).ok()).toBe(true);
-	await submitPhotoAction(page, participant.id, () =>
-		page.getByRole('button', { name: 'Confirmar enquadramento' }).click(),
-	);
-	await expect(page.getByText('Foto reenquadrada com sucesso!')).toBeVisible();
+	const photo = page.getByRole('img', { name: `Foto de ${participant.name}`, exact: true });
+	await expectDisplayedCurrentPhoto(page, photo, participant.id, async () => {
+		await submitPhotoAction(page, participant.id, () =>
+			page.getByRole('button', { name: 'Confirmar enquadramento' }).click(),
+		);
+		await expect(page.getByText('Foto reenquadrada com sucesso!')).toBeVisible();
+	});
 	const after = await (await page.request.get(photoPath(participant.id, true))).body();
 	expect(Buffer.compare(before, after)).toBe(0);
 });
@@ -49,6 +59,27 @@ test('E2E-10 removes the current photo and persists the placeholder state', asyn
 	await expect(page.getByText('Foto removida com sucesso!')).toBeVisible();
 	await expect(page.getByText('Pendente', { exact: true })).toBeVisible();
 	expect((await e2e.readCadastro(participant.name)).foto).toBeNull();
+});
+
+test('E2E-13 removes the photo and displays a new upload on the same page', async ({ page, e2e }) => {
+	const participant = await e2e.createParticipant('remocao-reenvio', true);
+	await e2e.authenticate(page);
+	const loaded = waitForPhoto(page, participant.id);
+	await page.goto(`/secretaria/cadastros/${participant.id}`);
+	await waitForHydration(page);
+	expect((await loaded).ok()).toBe(true);
+	await submitPhotoAction(page, participant.id, () => page.getByRole('button', { name: 'Remover foto' }).click());
+	await expect(page.getByText('Pendente', { exact: true })).toBeVisible();
+	await page.getByLabel('Incluir ou substituir foto').setInputFiles({
+		name: 'reenvio.jpeg',
+		mimeType: 'image/jpeg',
+		buffer: await createPhoto({ width: 640, height: 640 }),
+	});
+	const photo = page.getByRole('img', { name: `Foto de ${participant.name}`, exact: true });
+	await expectDisplayedCurrentPhoto(page, photo, participant.id, async () => {
+		await submitPhotoAction(page, participant.id, () => page.getByRole('button', { name: 'Salvar foto' }).click());
+		await expect(page.getByText('Foto salva com sucesso!')).toBeVisible();
+	});
 });
 
 test('E2E-11 operates crop controls with the keyboard on mobile', async ({ page, e2e }) => {

@@ -1,7 +1,13 @@
 import { test, expect, waitForHydration } from './fixtures';
 
 import { createPhoto } from './amigo-fraterno-support';
-import { expectLoadedPhoto, photoPath, submitPhotoAction, waitForPhoto } from './amigo-fraterno-photo-support';
+import {
+	expectDisplayedCurrentPhoto,
+	expectLoadedPhoto,
+	photoPath,
+	submitPhotoAction,
+	waitForPhoto,
+} from './amigo-fraterno-photo-support';
 
 test('E2E-05 selects, moves, zooms, and saves a landscape photo', async ({ page, e2e }) => {
 	const participant = await e2e.createParticipant('paisagem');
@@ -42,19 +48,24 @@ test('E2E-07 cancels an initial upload and restores focus', async ({ page, e2e }
 	await expect(page.getByText('Pendente', { exact: true })).toBeVisible();
 });
 
-test('E2E-09 replaces the current photo', async ({ page, e2e }) => {
+test('E2E-09 replaces the current photo and displays it without reloading', async ({ page, e2e }) => {
 	const participant = await e2e.createParticipant('substituicao', true);
 	await e2e.authenticate(page);
+	const loaded = waitForPhoto(page, participant.id);
 	await page.goto(`/secretaria/cadastros/${participant.id}`);
 	await waitForHydration(page);
+	expect((await loaded).ok()).toBe(true);
 	const before = await (await page.request.get(photoPath(participant.id, true))).body();
 	await page.getByLabel('Incluir ou substituir foto').setInputFiles({
 		name: 'nova-foto.jpeg',
 		mimeType: 'image/jpeg',
 		buffer: await createPhoto({ width: 640, height: 640 }),
 	});
-	await submitPhotoAction(page, participant.id, () => page.getByRole('button', { name: 'Salvar foto' }).click());
-	await expect(page.getByText('Foto salva com sucesso!')).toBeVisible();
+	const photo = page.getByRole('img', { name: `Foto de ${participant.name}`, exact: true });
+	await expectDisplayedCurrentPhoto(page, photo, participant.id, async () => {
+		await submitPhotoAction(page, participant.id, () => page.getByRole('button', { name: 'Salvar foto' }).click());
+		await expect(page.getByText('Foto salva com sucesso!')).toBeVisible();
+	});
 	const after = await (await page.request.get(photoPath(participant.id, true))).body();
 	expect(Buffer.compare(before, after)).not.toBe(0);
 });

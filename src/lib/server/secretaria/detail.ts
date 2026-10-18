@@ -20,4 +20,5 @@ export const toSecretariaDetail = (cadastro: SecretariaCadastro) => ({
 	aniversario: formatBirthday(cadastro.aniversario),
 	trab: cadastro.trab,
 	hasPhoto: cadastro.hasPhoto,
+	photoVersion: cadastro.photoVersion,
 });

@@ -19,6 +19,7 @@ const trabalhador = {
 	aniversario: null,
 	trab: true,
 	hasPhoto: false,
+	photoVersion: null,
 };
 
 describe('secretaria registration field states', () => {

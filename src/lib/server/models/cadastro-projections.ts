@@ -50,6 +50,7 @@ export const secretariaDetailFields = {
 	aniversario: cadastros.aniversario,
 	trab: cadastros.trab,
 	hasPhoto: sql<boolean>`${cadastroFotos.cadastroId} is not null`,
+	photoVersion: sql<string | null>`md5(${cadastroFotos.original} || ${cadastroFotos.cartao})`,
 };
 
 export const tesourariaListFields = {

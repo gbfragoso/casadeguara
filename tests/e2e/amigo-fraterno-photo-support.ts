@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 export const photoPath = (id: number, original = false) =>
 	`/secretaria/cadastros/${id}/foto${original ? '/original' : ''}`;
@@ -9,7 +9,7 @@ export const waitForPhoto = (page: Page, id: number, original = false) =>
 			response.request().method() === 'GET' && new URL(response.url()).pathname === photoPath(id, original),
 	);
 
-export const expectLoadedPhoto = async (photo: import('@playwright/test').Locator, path: string) => {
+export const expectLoadedPhoto = async (photo: Locator, path: string) => {
 	await expect(photo).toBeVisible();
 	await expect
 		.poll(async () =>
@@ -40,4 +40,20 @@ export const submitFlag = async (page: Page, action: () => Promise<void>) => {
 	);
 	await action();
 	expect((await responsePromise).ok()).toBe(true);
+};
+
+export const expectDisplayedCurrentPhoto = async (
+	page: Page,
+	photo: Locator,
+	id: number,
+	action: () => Promise<void>,
+) => {
+	const displayed = waitForPhoto(page, id);
+	await action();
+	const response = await displayed;
+	const current = await (await page.request.get(photoPath(id))).body();
+	expect(Buffer.compare(await response.body(), current)).toBe(0);
+	await expect
+		.poll(async () => photo.evaluate((image) => (image instanceof HTMLImageElement ? image.currentSrc : '')))
+		.toBe(response.url());
 };
