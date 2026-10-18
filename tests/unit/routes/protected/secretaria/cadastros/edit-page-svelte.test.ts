@@ -19,13 +19,14 @@ const trabalhador = {
 	aniversario: null,
 	trab: true,
 	hasPhoto: false,
+	photoVersion: null,
 };
 
 describe('edit secretaria registration page', () => {
 	it('renders masks, blank replacement inputs, null birthday, and removal controls', () => {
 		const { body } = render(Page, {
 			props: {
-				data: { id: 4, trabalhador: { ...trabalhador, hasPhoto: true } },
+				data: { id: 4, trabalhador: { ...trabalhador, hasPhoto: true, photoVersion: 'v1' } },
 				form: { values: { rg: '', cpf: '' }, errors: { cpf: ['CPF inválido.'], removeCpf: ['CPF inválido.'] } },
 			},
 		});
@@ -42,7 +43,7 @@ describe('edit secretaria registration page', () => {
 		expect(document.querySelector('label[for="removeCpf"]')).not.toBeNull();
 		expect(document.querySelector('label[for="removeRg"]')).not.toBeNull();
 		expect(cpf.getAttribute('aria-describedby')).toBe('cpf-errors');
-		expect(document.querySelector('img[src="/secretaria/cadastros/4/foto"]')).not.toBeNull();
+		expect(document.querySelector('img[src="/secretaria/cadastros/4/foto?versao=v1"]')).not.toBeNull();
 		expect(document.body.textContent).not.toContain('12345678909');
 	});
 

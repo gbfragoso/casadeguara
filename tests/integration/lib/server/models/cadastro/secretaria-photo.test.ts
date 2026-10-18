@@ -41,7 +41,7 @@ describe('CadastroModel secretaria photo updates', () => {
 			expect(await photoModel.remove(created.idleitor, 'secretaria-actor')).toBe(true);
 			expect(await photoModel.remove(created.idleitor, 'secretaria-actor')).toBe(true);
 			expect(await photoModel.getCard(created.idleitor)).toBeNull();
-			expect(await model.getSecretaria(created.idleitor)).toMatchObject({ hasPhoto: false });
+			expect(await model.getSecretaria(created.idleitor)).toMatchObject({ hasPhoto: false, photoVersion: null });
 		} finally {
 			await deleteCadastro(created.idleitor);
 		}

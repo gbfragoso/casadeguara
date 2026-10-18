@@ -13,8 +13,9 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let trabalhador = $derived(data.trabalhador);
-	let photoUrl = $derived(resolve(`secretaria/cadastros/${data.id}/foto`));
-	let originalPhotoUrl = $derived(resolve(`secretaria/cadastros/${data.id}/foto/original`));
+	let photoVersionQuery = $derived(trabalhador.photoVersion ? `?versao=${trabalhador.photoVersion}` : '');
+	let photoUrl = $derived(`${resolve(`secretaria/cadastros/${data.id}/foto`)}${photoVersionQuery}`);
+	let originalPhotoUrl = $derived(`${resolve(`secretaria/cadastros/${data.id}/foto/original`)}${photoVersionQuery}`);
 	let workerChecked = $derived(
 		form?.values?.trab === 'true' || (form?.values?.trab === undefined && trabalhador.trab),
 	);

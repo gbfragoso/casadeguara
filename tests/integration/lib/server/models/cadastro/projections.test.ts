@@ -70,6 +70,7 @@ describe('CadastroModel projections', () => {
 				aniversario: null,
 				trab: true,
 				hasPhoto: false,
+				photoVersion: null,
 			});
 			expect(await model.getTesouraria(created.idleitor)).toEqual({
 				nome: name,
