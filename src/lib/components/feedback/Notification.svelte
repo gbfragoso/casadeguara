@@ -9,7 +9,8 @@
 </script>
 
 <div
-	class="notification {clazz}"
+	data-testid="regiao-notificacao"
+	class={['notification', clazz]}
 	style="position:fixed; bottom: 10px; right: 10px; max-width: 500px; z-index: 50; {open === true
 		? 'display:none'
 		: ''}">

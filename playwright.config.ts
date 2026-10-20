@@ -4,6 +4,8 @@ import { assertTestDatabase } from './tests/support/database';
 assertTestDatabase();
 
 const PERFORMANCE_TAG = /@performance/;
+const BASELINE_DIRECTORY = 'tests/e2e/baseline';
+const BASELINE_SCREEN_TIMEOUT = 120_000;
 
 const webServerEnv = Object.fromEntries(
 	Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined),
@@ -25,6 +27,14 @@ export default defineConfig({
 	projects: [
 		{ name: 'e2e', grepInvert: PERFORMANCE_TAG },
 		{ name: 'performance', grep: PERFORMANCE_TAG, dependencies: ['e2e'] },
+		{ name: 'baseline-seed', testDir: BASELINE_DIRECTORY, testMatch: 'seed/seed.setup.ts' },
+		{
+			name: 'baseline',
+			testDir: BASELINE_DIRECTORY,
+			testMatch: '**/*.baseline.ts',
+			dependencies: ['baseline-seed'],
+			timeout: BASELINE_SCREEN_TIMEOUT,
+		},
 	],
 	use: { baseURL: 'http://127.0.0.1:5173', trace: 'retain-on-failure' },
 });

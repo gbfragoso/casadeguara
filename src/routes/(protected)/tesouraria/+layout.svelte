@@ -13,11 +13,14 @@
 	let { isAdmin, username, userid } = $derived(data);
 	let sidebarExpanded = $state(false);
 	const toggleSidebar = () => (sidebarExpanded = !sidebarExpanded);
+	const isSectionActive = (path: string) => page.url.pathname.includes(path);
+	const toAriaCurrent = (active: boolean) => (active ? 'page' : undefined);
 </script>
 
 <main class="is-flex">
 	<nav
 		id="sidebar"
+		data-testid="regiao-menu-lateral"
 		class={[
 			'is-flex is-flex-direction-column is-justify-content-space-between',
 			!sidebarExpanded && 'is-hidden-touch',
@@ -28,31 +31,51 @@
 			</div>
 			<ul id="sidebar-list" class="is-flex is-flex-direction-column is-align-items-start">
 				<li class={['sidebar-item', page.url.pathname === '/tesouraria' && 'active']}>
-					<a aria-label="home" title="Página Inicial" href={resolve('tesouraria')}>
+					<a
+						aria-current={toAriaCurrent(page.url.pathname === '/tesouraria')}
+						aria-label="home"
+						title="Página Inicial"
+						href={resolve('tesouraria')}>
 						<i class="fa-solid fa-house fa-fw"></i>&nbsp;<strong>Início</strong>
 					</a>
 				</li>
-				<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/lancamentos') && 'active']}>
-					<a aria-label="lançamentos" title="Lançamentos" href={resolve('tesouraria/lancamentos')}>
+				<li class={['sidebar-item', isSectionActive('/tesouraria/lancamentos') && 'active']}>
+					<a
+						aria-current={toAriaCurrent(isSectionActive('/tesouraria/lancamentos'))}
+						aria-label="lançamentos"
+						title="Lançamentos"
+						href={resolve('tesouraria/lancamentos')}>
 						<i class="fa-solid fa-wallet fa-fw"></i>&nbsp;<strong>Lançamentos</strong>
 					</a>
 				</li>
 				{#if isAdmin}
-					<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/estornos') && 'active']}>
-						<a aria-label="estornos" title="Estornos" href={resolve('tesouraria/estornos')}>
+					<li class={['sidebar-item', isSectionActive('/tesouraria/estornos') && 'active']}>
+						<a
+							aria-current={toAriaCurrent(isSectionActive('/tesouraria/estornos'))}
+							aria-label="estornos"
+							title="Estornos"
+							href={resolve('tesouraria/estornos')}>
 							<i class="fa-solid fa-clock-rotate-left fa-fw"></i>&nbsp;<strong>Estornos</strong>
 						</a>
 					</li>
 				{/if}
 				{#if isAdmin}
-					<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/caixa') && 'active']}>
-						<a aria-label="caixa" title="Caixa" href={resolve('tesouraria/caixa')}>
+					<li class={['sidebar-item', isSectionActive('/tesouraria/caixa') && 'active']}>
+						<a
+							aria-current={toAriaCurrent(isSectionActive('/tesouraria/caixa'))}
+							aria-label="caixa"
+							title="Caixa"
+							href={resolve('tesouraria/caixa')}>
 							<i class="fa-solid fa-cash-register fa-fw"></i>&nbsp;<strong>Caixa</strong>
 						</a>
 					</li>
 				{/if}
-				<li class={['sidebar-item', page.url.pathname.includes('/tesouraria/contribuintes') && 'active']}>
-					<a aria-label="contribuintes" title="Contribuintes" href={resolve('tesouraria/contribuintes')}>
+				<li class={['sidebar-item', isSectionActive('/tesouraria/contribuintes') && 'active']}>
+					<a
+						aria-current={toAriaCurrent(isSectionActive('/tesouraria/contribuintes'))}
+						aria-label="contribuintes"
+						title="Contribuintes"
+						href={resolve('tesouraria/contribuintes')}>
 						<i class="fa-solid fa-user fa-fw"></i>&nbsp;<strong>Contribuintes</strong>
 					</a>
 				</li>

@@ -22,7 +22,7 @@
 	}
 </script>
 
-<div class="is-flex is-justify-content-space-between is-hidden-print pb-1 pt-2">
+<div data-testid="regiao-barra-superior" class="is-flex is-justify-content-space-between is-hidden-print pb-1 pt-2">
 	<div>
 		<button
 			type="button"
