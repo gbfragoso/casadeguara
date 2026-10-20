@@ -1,0 +1,86 @@
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	min-height: 100dvh;
+	background-color: var(--color-page);
+	color: var(--color-ink);
+	font-family: var(--font-sans);
+	font-size: var(--text-base);
+	line-height: var(--text-base--line-height);
+	-webkit-font-smoothing: antialiased;
+}
+
+a {
+	color: var(--color-primary-ink);
+	text-underline-offset: 0.2em;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+legend {
+	color: var(--color-ink-strong);
+	font-weight: var(--font-weight-medium);
+	text-wrap: balance;
+}
+
+strong,
+b,
+th {
+	font-weight: var(--font-weight-bold);
+}
+
+th {
+	color: var(--color-ink-strong);
+	text-align: left;
+}
+
+table {
+	width: 100%;
+	font-variant-numeric: tabular-nums;
+}
+
+ul,
+ol {
+	list-style-position: inside;
+}
+
+input::placeholder,
+textarea::placeholder {
+	color: var(--color-ink-muted);
+	opacity: 1;
+}
+
+input,
+select,
+textarea,
+progress {
+	accent-color: var(--color-primary-600);
+}
+
+hr {
+	border-color: var(--color-divider);
+}
+
+:focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms;
+		scroll-behavior: auto;
+	}
+}
