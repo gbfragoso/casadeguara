@@ -12,7 +12,9 @@ import { captureViewports } from './viewports';
 const expectedCaptureFiles = () =>
 	REPRESENTATIVE_SCREENS.flatMap((screen) =>
 		screen.states.flatMap((state) =>
-			captureViewports(screen, state).map((viewport) => captureFileName(screen, state, viewport)),
+			captureViewports(screen, state).map((viewport) =>
+				captureFileName({ screenId: screen.id, stateId: state.id }, viewport),
+			),
 		),
 	).sort();
 
@@ -28,7 +30,7 @@ test.describe('capturas da matriz representativa', () => {
 				const viewports = captureViewports(screen, state);
 				await runInState(browser, { screen, state, seed }, viewports[0], async (page) => {
 					for (const viewport of viewports) {
-						await captureScreen(page, { screen, state }, viewport, EVIDENCE_LABEL);
+						await captureScreen(page, { screenId: screen.id, stateId: state.id }, viewport, EVIDENCE_LABEL);
 					}
 				});
 			}

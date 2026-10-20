@@ -16,6 +16,7 @@ const INVENTORY_SIZES: readonly (Size & { viewport: InventoryViewport })[] = [
 	{ viewport: '390x844', width: 390, height: 844 },
 ];
 const DESKTOP_MIN_WIDTH = 1024;
+const SCHEMES: readonly CaptureViewport['scheme'][] = ['light', 'dark'];
 
 const existsAt = (state: ScreenState, size: Size) => state.widths?.includes(size.width) ?? true;
 const printsState = (screen: RepresentativeScreen, state: ScreenState) => state.print ?? screen.print ?? false;
@@ -36,6 +37,13 @@ export const captureViewports = (screen: RepresentativeScreen, state: ScreenStat
 };
 
 export const inventoryViewports = (state: ScreenState) => INVENTORY_SIZES.filter((size) => existsAt(state, size));
+
+export const prototypeViewports = (print: boolean): CaptureViewport[] => [
+	...INVENTORY_SIZES.flatMap(({ width, height }) =>
+		SCHEMES.map((scheme): CaptureViewport => ({ width, height, scheme, media: 'screen' })),
+	),
+	...(print ? [{ ...PRINT_SIZE, scheme: 'light', media: 'print' } satisfies CaptureViewport] : []),
+];
 
 export const expectedRegions = (screen: RepresentativeScreen, state: ScreenState, width: number): Region[] => {
 	const shellRegions: Region[] = width >= DESKTOP_MIN_WIDTH ? ['menu-lateral', 'barra-superior'] : ['barra-superior'];

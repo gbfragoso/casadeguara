@@ -3,13 +3,15 @@ import { join } from 'node:path';
 import type { Page } from '@playwright/test';
 
 import { capturesDirectory, type EvidenceLabel } from './evidence';
-import type { CaptureViewport, RepresentativeScreen, ScreenState } from './types';
+import type { CaptureViewport } from './types';
 
 const PRINT_SUFFIX = 'impressao';
 
-export const captureFileName = (screen: RepresentativeScreen, state: ScreenState, viewport: CaptureViewport) => {
+export type CaptureTarget = { screenId: string; stateId: string };
+
+export const captureFileName = ({ screenId, stateId }: CaptureTarget, viewport: CaptureViewport) => {
 	const variant = viewport.media === 'print' ? PRINT_SUFFIX : viewport.scheme;
-	return `${screen.id}-${state.id}-${viewport.width}x${viewport.height}-${variant}.png`;
+	return `${screenId}-${stateId}-${viewport.width}x${viewport.height}-${variant}.png`;
 };
 
 export const applyViewport = async (page: Page, viewport: CaptureViewport) => {
@@ -22,13 +24,13 @@ export const applyViewport = async (page: Page, viewport: CaptureViewport) => {
 
 export const captureScreen = async (
 	page: Page,
-	target: { screen: RepresentativeScreen; state: ScreenState },
+	target: CaptureTarget,
 	viewport: CaptureViewport,
 	label: EvidenceLabel,
 ) => {
 	await applyViewport(page, viewport);
 	await page.screenshot({
-		path: join(capturesDirectory(label), captureFileName(target.screen, target.state, viewport)),
+		path: join(capturesDirectory(label), captureFileName(target, viewport)),
 		fullPage: true,
 		animations: 'disabled',
 		caret: 'hide',
