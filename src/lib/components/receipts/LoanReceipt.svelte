@@ -9,7 +9,7 @@
 	let { recibo }: Props = $props();
 </script>
 
-<div class="recibo-termico notranslate" translate="no">
+<div class="recibo-termico notranslate" translate="no" data-testid="recibo-termico">
 	<LoanReceiptCopy {recibo} via="biblioteca" />
 	<p class="corte" role="separator">corte aqui</p>
 	<LoanReceiptCopy {recibo} via="leitor" />

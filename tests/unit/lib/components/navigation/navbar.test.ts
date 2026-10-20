@@ -13,50 +13,7 @@ const getButton = (target: HTMLElement, selector: string) => {
 describe('Navbar', () => {
 	let mounted: ReturnType<typeof mount> | undefined;
 
-	afterEach(() => {
-		if (mounted) unmount(mounted);
-		mounted = undefined;
-		document.body.replaceChildren();
-		document.documentElement.removeAttribute('data-theme');
-	});
-
-	it('toggles the sidebar, menu, and color theme', async () => {
-		const target = document.createElement('div');
-		document.body.append(target);
-		const onToggleSidebar = vi.fn();
-		mounted = mount(Navbar, {
-			target,
-			props: { username: 'Ana Silva', userid: 'ana-1', sidebarExpanded: false, onToggleSidebar },
-		});
-		await tick();
-
-		const menuButton = getButton(target, '[aria-label="menu"]');
-		const themeButton = getButton(target, '[data-theme-toggle]');
-		const dropdownButton = getButton(target, '[aria-haspopup="true"]');
-		const dropdown = target.querySelector('#dropdown');
-		if (!(dropdown instanceof HTMLDivElement)) throw new Error('Dropdown was not rendered.');
-
-		menuButton.click();
-		themeButton.click();
-		dropdownButton.click();
-		await tick();
-
-		expect(onToggleSidebar).toHaveBeenCalledOnce();
-		expect(menuButton.getAttribute('aria-expanded')).toBe('false');
-		expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-		expect(dropdown.classList.contains('is-active')).toBe(true);
-
-		menuButton.click();
-		themeButton.click();
-		dropdownButton.click();
-		await tick();
-
-		expect(onToggleSidebar).toHaveBeenCalledTimes(2);
-		expect(document.documentElement.getAttribute('data-theme')).toBe('light');
-		expect(dropdown.classList.contains('is-active')).toBe(false);
-	});
-
-	it('reflects the controlled expanded sidebar state', async () => {
+	const mountNavbar = async (props: { sidebarExpanded?: boolean; onToggleSidebar?: () => void } = {}) => {
 		const target = document.createElement('div');
 		document.body.append(target);
 		mounted = mount(Navbar, {
@@ -64,14 +21,78 @@ describe('Navbar', () => {
 			props: {
 				username: 'Ana Silva',
 				userid: 'ana-1',
-				sidebarExpanded: true,
-				onToggleSidebar: vi.fn(),
+				sidebarExpanded: props.sidebarExpanded ?? false,
+				onToggleSidebar: props.onToggleSidebar ?? vi.fn(),
 			},
 		});
 		await tick();
+		return target;
+	};
+
+	afterEach(() => {
+		if (mounted) unmount(mounted);
+		mounted = undefined;
+		document.body.replaceChildren();
+		document.documentElement.removeAttribute('data-theme');
+	});
+
+	it('toggles the expanded state of the user menu trigger', async () => {
+		const target = await mountNavbar();
+		const trigger = getButton(target, '[aria-haspopup="true"]');
+		const initialState = trigger.getAttribute('aria-expanded');
+
+		trigger.click();
+		await tick();
+		const openedState = trigger.getAttribute('aria-expanded');
+		trigger.click();
+		await tick();
+
+		expect([initialState, openedState, trigger.getAttribute('aria-expanded')]).toEqual(['false', 'true', 'false']);
+		expect(trigger.getAttribute('aria-controls')).toBe('dropdown-menu');
+	});
+
+	it('offers the greeting, the settings link and the logout form in the user menu', async () => {
+		const target = await mountNavbar();
+
+		const menu = target.querySelector('#dropdown-menu');
+
+		expect(menu?.textContent).toContain('Bem vindo(a), Ana');
+		expect(menu?.querySelector('a[href="/usuario/ana-1"]')?.textContent?.trim()).toBe('Configurações');
+		const logout = menu?.querySelector('form[action="/logout"]');
+		expect(logout?.getAttribute('method')).toBe('POST');
+		expect(logout?.querySelector('button[type="submit"]')?.textContent).toContain('Sair');
+	});
+
+	it('toggles the color theme between dark and light', async () => {
+		const target = await mountNavbar();
+		const themeButton = getButton(target, '[data-theme-toggle]');
+
+		themeButton.click();
+		await tick();
+		const firstTheme = document.documentElement.getAttribute('data-theme');
+		themeButton.click();
+		await tick();
+
+		expect([firstTheme, document.documentElement.getAttribute('data-theme')]).toEqual(['dark', 'light']);
+	});
+
+	it('requests the sidebar toggle without changing the controlled state', async () => {
+		const onToggleSidebar = vi.fn();
+		const target = await mountNavbar({ onToggleSidebar });
+		const menuButton = getButton(target, '[aria-label="menu"]');
+
+		menuButton.click();
+		await tick();
+
+		expect(onToggleSidebar).toHaveBeenCalledOnce();
+		expect(menuButton.getAttribute('aria-expanded')).toBe('false');
+	});
+
+	it('reflects the controlled expanded sidebar state', async () => {
+		const target = await mountNavbar({ sidebarExpanded: true });
+
 		const menuButton = getButton(target, '[aria-label="menu"]');
 
 		expect(menuButton.getAttribute('aria-expanded')).toBe('true');
-		expect(menuButton.classList.contains('is-active')).toBe(true);
 	});
 });

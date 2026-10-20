@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 import Page from '../../../../../../src/routes/(protected)/biblioteca/livros/novo/+page.svelte';
 import { getRenderedButton, getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
+const NOTIFICATION = '[data-testid="regiao-notificacao"]';
+
 const data = {
 	editoras: [{ ideditora: 3, nome: 'Editora A' }],
 	colecoes: [{ idserie: 5, nome: 'Coleção A' }],
@@ -69,13 +71,34 @@ describe('new book page', () => {
 		expect(document.querySelector('select[name="autores"] option[selected]')?.getAttribute('value')).toBe('7');
 	});
 
+	it('shows every step and hides the step navigation before hydration', () => {
+		const { body } = render(Page, { props: { data, form: null } });
+
+		const document = parseRenderedBody(body);
+
+		const hiddenSteps = [...document.querySelectorAll('fieldset')].map((fieldset) =>
+			fieldset.hasAttribute('hidden'),
+		);
+		const hiddenNavigation = [...document.querySelectorAll('button[type="button"]')].map((button) => [
+			button.textContent?.trim(),
+			button.closest('[hidden]') !== null,
+		]);
+		expect(hiddenSteps).toEqual([false, false, false]);
+		expect(hiddenNavigation).toEqual([
+			['Próximo: autores', true],
+			['Voltar', true],
+			['Próximo: revisão', true],
+			['Voltar aos autores', true],
+		]);
+	});
+
 	it('announces a successful creation through Notification', () => {
 		const { body } = render(Page, {
 			props: { data, form: { outcome: 'created', message: 'Livro cadastrado com sucesso.' } },
 		});
 		const document = parseRenderedBody(body);
 
-		expect(document.querySelector('.notification')?.textContent).toContain('Livro cadastrado com sucesso.');
+		expect(document.querySelector(NOTIFICATION)?.textContent).toContain('Livro cadastrado com sucesso.');
 		const submit = getRenderedButton(document, 'button[type="submit"]');
 		expect(submit.getAttribute('aria-busy')).toBe('false');
 		expect(submit.disabled).toBe(false);
@@ -87,9 +110,7 @@ describe('new book page', () => {
 		});
 		const document = parseRenderedBody(body);
 
-		expect(document.querySelector('.notification.is-danger')?.textContent).toContain(
-			'Falha ao cadastrar um novo livro.',
-		);
+		expect(document.querySelector(NOTIFICATION)?.textContent).toContain('Falha ao cadastrar um novo livro.');
 		expect(getRenderedInput(document, 'input[name="tombo"]').value).toBe('000123');
 	});
 });

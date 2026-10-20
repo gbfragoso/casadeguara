@@ -24,7 +24,7 @@
 			<h2 id={titleId}>Entradas e saídas — últimos 12 meses</h2>
 			<p id={descriptionId}>Totais mensais de lançamentos ativos, em reais.</p>
 
-			<div class="legend" aria-label="Legenda">
+			<div class="legend" aria-label="Legenda" data-testid="legenda-grafico">
 				<span class="legend-entry"><i aria-hidden="true"></i>Entradas</span>
 				<span class="legend-exit"><i aria-hidden="true"></i>Saídas</span>
 			</div>

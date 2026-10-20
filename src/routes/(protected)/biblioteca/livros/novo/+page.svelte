@@ -100,7 +100,7 @@
 			</ul>
 		</nav>
 
-		<fieldset class={['book-step', { 'is-hidden': isEnhanced && currentStep !== 1 }]}>
+		<fieldset class="book-step" hidden={isEnhanced && currentStep !== 1}>
 			<legend class="is-size-5 has-text-weight-semibold mb-4">Dados do livro</legend>
 			<div class="field">
 				<label class="label" for="tombo">Tombo</label>
@@ -210,12 +210,12 @@
 				</div>
 			</div>
 
-			<div class={['buttons is-right', { 'is-hidden': !isEnhanced }]}>
+			<div class="buttons is-right" hidden={!isEnhanced}>
 				<button class="button is-primary" type="button" onclick={openAuthorsStep}>Próximo: autores</button>
 			</div>
 		</fieldset>
 
-		<fieldset class={['book-step', { 'is-hidden': isEnhanced && currentStep !== 2 }]}>
+		<fieldset class="book-step" hidden={isEnhanced && currentStep !== 2}>
 			<legend class="is-size-5 has-text-weight-semibold mb-4">Autores</legend>
 			<div class="field">
 				<label class="label" for="autores">Autores cadastrados</label>
@@ -263,13 +263,13 @@
 					</div>{/if}
 			</div>
 
-			<div class={['buttons is-justify-content-space-between', { 'is-hidden': !isEnhanced }]}>
+			<div class="buttons is-justify-content-space-between" hidden={!isEnhanced}>
 				<button class="button" type="button" onclick={() => (currentStep = 1)}>Voltar</button>
 				<button class="button is-primary" type="button" onclick={openReviewStep}>Próximo: revisão</button>
 			</div>
 		</fieldset>
 
-		<fieldset class={['book-step', { 'is-hidden': isEnhanced && currentStep !== 3 }]}>
+		<fieldset class="book-step" hidden={isEnhanced && currentStep !== 3}>
 			<legend class="is-size-5 has-text-weight-semibold mb-4">Revisão</legend>
 			{#if isEnhanced}
 				<div class="content">
@@ -299,7 +299,7 @@
 			{/if}
 
 			<div class="buttons is-justify-content-space-between">
-				<button class={['button', { 'is-hidden': !isEnhanced }]} type="button" onclick={() => (currentStep = 2)}
+				<button class="button" type="button" hidden={!isEnhanced} onclick={() => (currentStep = 2)}
 					>Voltar aos autores</button>
 				<button
 					aria-busy={formEnhancer.loading}

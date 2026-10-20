@@ -29,7 +29,7 @@
 		Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
 	</h1>
 </div>
-<div class="mt-2 columns">
+<div class="mt-2 columns" data-testid="indicadores">
 	{#await entradaMesAtual}
 		<div class="column">
 			<div class="box has-text-weight-semibold">

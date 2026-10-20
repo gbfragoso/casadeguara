@@ -35,6 +35,6 @@ test('E2E-02 keeps the Amigo Fraterno list keyboard-operable on mobile', async (
 	await expect(page).toHaveURL(/\/secretaria\/amigofraterno$/);
 	await expect(page.locator('[aria-live="polite"]')).toContainText('Sem foto:');
 	await page.setViewportSize({ width: 375, height: 667 });
-	await expect(page.locator('.table-container')).toBeVisible();
+	await expect(page.getByRole('table')).toBeVisible();
 	await expect(page.getByText(participant.name, { exact: true })).toBeVisible();
 });

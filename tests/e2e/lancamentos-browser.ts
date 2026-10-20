@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { expect, waitForHydration } from './fixtures';
+import { formWithField } from './form-locators';
 
 const getCounterpartLabel = (tipo: 'entrada' | 'saida') =>
 	tipo === 'entrada' ? 'Doador (obrigatório)' : 'Favorecido (opcional)';
@@ -58,7 +59,7 @@ export const fillLancamentoForm = async (
 		dataLancamento: string;
 	},
 ) => {
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'Tipo');
 	await form.getByLabel('Tipo').selectOption(input.tipo);
 	if (input.contraparteId !== undefined) {
 		await form.getByLabel(getCounterpartLabel(input.tipo)).click();

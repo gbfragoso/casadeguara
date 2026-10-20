@@ -92,12 +92,12 @@ test.describe('protected dashboard chart integration', () => {
 
 		const region = dashboardRegion(page);
 		await expect(region).toBeVisible();
-		await expect(region.locator('.legend')).toContainText('Entradas');
-		await expect(region.locator('.legend')).toContainText('Saídas');
+		await expect(region.getByTestId('legenda-grafico')).toContainText('Entradas');
+		await expect(region.getByTestId('legenda-grafico')).toContainText('Saídas');
 		const canvas = region.locator('canvas');
 		await expect(canvas).toBeVisible();
 		await expect(canvas).toHaveAttribute('role', 'presentation');
-		await expect(region.locator('.selection')).toHaveCount(0);
+		await expect(region.locator('[aria-live]')).toHaveCount(0);
 		await expect(region.locator('details')).toHaveCount(0);
 	});
 
@@ -111,10 +111,10 @@ test.describe('protected dashboard chart integration', () => {
 			await openDashboard(page);
 
 			const region = dashboardRegion(page);
-			const indicators = page.locator('.mt-2.columns');
-			const legend = region.locator('.legend');
+			const indicators = page.getByTestId('indicadores');
+			const legend = region.getByTestId('legenda-grafico');
 			const canvas = region.locator('canvas');
-			const indicatorColumns = indicators.locator(':scope > .column');
+			const indicatorColumns = indicators.locator(':scope > *');
 			await expect(indicatorColumns).toHaveCount(5);
 			await expect(canvas).toBeVisible();
 
@@ -193,7 +193,7 @@ test.describe('protected dashboard chart integration', () => {
 				await canvas.tap({ position: { x: bounds.width * fraction, y: bounds.height / 2 } });
 				await expect(canvas).toBeVisible();
 			}
-			await expect(region.locator('.selection')).toHaveCount(0);
+			await expect(region.locator('[aria-live]')).toHaveCount(0);
 			await expect(region.locator('details')).toHaveCount(0);
 		});
 	});
@@ -230,7 +230,7 @@ test.describe('protected dashboard chart integration', () => {
 
 		const region = dashboardRegion(page);
 		await expect(region.locator('canvas')).toBeVisible();
-		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
+		await expect(page.getByTestId('indicadores').locator(':scope > *')).toHaveCount(5);
 
 		const secondSeed = createEntrySeed(e2e.token, 'dashboard-reload-second', counterpart.id, { valor: '200.00' });
 		await e2e.createLancamento(secondSeed);
@@ -243,7 +243,7 @@ test.describe('protected dashboard chart integration', () => {
 		await reverseFromRow(page, findLancamentoRow(page, secondSeed.descricao), 'Dashboard reload');
 		await openDashboard(page);
 		await expect(region.locator('canvas')).toBeVisible();
-		await expect(page.locator('.mt-2.columns > .column')).toHaveCount(5);
+		await expect(page.getByTestId('indicadores').locator(':scope > *')).toHaveCount(5);
 	});
 
 	test('E2E-06 cumpre os orcamentos do cliente', { tag: '@performance' }, async ({ browser, e2e }) => {

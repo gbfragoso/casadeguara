@@ -21,11 +21,11 @@ describe('MonthlyLancamentos', () => {
 		expect(document.querySelector('[role="region"]')).not.toBeNull();
 		expect(document.querySelector('h2')?.textContent).toContain('Entradas e saídas');
 		expect(document.querySelector('h2')?.textContent).toContain('últimos 12 meses');
-		expect(document.querySelector('[aria-label="Legenda"]')?.textContent).toContain('Entradas');
-		expect(document.querySelector('[aria-label="Legenda"]')?.textContent).toContain('Saídas');
+		expect(document.querySelector('[data-testid="legenda-grafico"]')?.textContent).toContain('Entradas');
+		expect(document.querySelector('[data-testid="legenda-grafico"]')?.textContent).toContain('Saídas');
 		expect(document.querySelector('canvas')?.getAttribute('aria-hidden')).toBe('true');
 		expect(document.querySelector('details')).toBeNull();
-		expect(document.querySelector('.selection')).toBeNull();
+		expect(document.querySelector('[aria-live]')).toBeNull();
 		expect(document.querySelector('table')).toBeNull();
 	});
 
@@ -40,7 +40,7 @@ describe('MonthlyLancamentos', () => {
 		);
 		expect(document.querySelector('canvas')).toBeNull();
 		expect(document.querySelector('details')).toBeNull();
-		expect(document.querySelector('.selection')).toBeNull();
+		expect(document.querySelector('[aria-live]')).toBeNull();
 		expect(document.querySelector('table')).toBeNull();
 	});
 });

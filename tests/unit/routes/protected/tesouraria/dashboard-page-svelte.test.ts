@@ -23,12 +23,14 @@ describe('tesouraria dashboard page', () => {
 		});
 		const document = parseRenderedBody(body);
 
-		expect(document.querySelectorAll('.mt-2.columns > .column')).toHaveLength(5);
-		expect(document.querySelector('.mt-2.columns')?.textContent).toContain('Total');
-		expect(document.querySelector('.mt-2.columns')?.textContent).toContain('Saldo');
-		expect(document.querySelector('.mt-2.columns + .card [role="region"]')).not.toBeNull();
-		expect(document.querySelector('[role="region"] h2')?.textContent).toContain('12 meses');
-		expect(document.querySelector('[role="region"] details')).toBeNull();
-		expect(document.querySelector('[role="region"] .selection')).toBeNull();
+		const indicators = document.querySelector('[data-testid="indicadores"]');
+		const chart = document.querySelector('[role="region"]');
+		expect(indicators?.children).toHaveLength(5);
+		expect(indicators?.textContent).toContain('Total');
+		expect(indicators?.textContent).toContain('Saldo');
+		expect(chart && indicators?.nextElementSibling?.contains(chart)).toBe(true);
+		expect(chart?.querySelector('h2')?.textContent).toContain('12 meses');
+		expect(chart?.querySelector('details')).toBeNull();
+		expect(chart?.querySelector('[aria-live]')).toBeNull();
 	});
 });

@@ -53,6 +53,7 @@
 					type="button"
 					aria-haspopup="true"
 					aria-controls="dropdown-menu"
+					aria-expanded={dropdownOpen}
 					style="width:40px; height:40px; border-radius: 50%"
 					onclick={() => (dropdownOpen = !dropdownOpen)}>
 					<span><strong>{username.substring(0, 1).toUpperCase()}</strong></span>

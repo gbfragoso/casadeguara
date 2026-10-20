@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 
 import { test, expect, waitForHydration } from './fixtures';
+import { formWithField } from './form-locators';
 import { readBookAggregateByTitle, type LivroCatalog } from './livros-database';
 
 const createTombo = (catalog: LivroCatalog, offset: number) =>
@@ -9,7 +10,7 @@ const createTombo = (catalog: LivroCatalog, offset: number) =>
 const openCreateForm = async (page: Page) => {
 	await page.goto('/biblioteca/livros/novo');
 	await waitForHydration(page);
-	return page.locator('form.card');
+	return formWithField(page, 'Tombo');
 };
 
 const openAuthorsStep = async (form: Locator, catalog: LivroCatalog, title: string, tombo: string) => {

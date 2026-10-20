@@ -22,7 +22,7 @@ describe('Notification', () => {
 		});
 		await tick();
 
-		const notification = target.querySelector('.notification');
+		const notification = target.querySelector('[data-testid="regiao-notificacao"]');
 		const closeButton = target.querySelector('button[aria-label="open"]');
 		if (!(notification instanceof HTMLDivElement) || !(closeButton instanceof HTMLButtonElement))
 			throw new Error('Notification controls were not rendered.');

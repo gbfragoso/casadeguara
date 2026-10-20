@@ -86,7 +86,7 @@ describe('PhotoSection interactions', () => {
 		if (!(trigger instanceof HTMLButtonElement)) throw new Error('Reframing trigger was not rendered.');
 		trigger.click();
 		await tick();
-		expect(target.querySelector('.photo-cropper img')?.getAttribute('src')).toBe('/foto/original');
+		expect(target.querySelector('[data-testid="photo-cropper"] img')?.getAttribute('src')).toBe('/foto/original');
 		clickCancel(target);
 		await tick();
 		await tick();

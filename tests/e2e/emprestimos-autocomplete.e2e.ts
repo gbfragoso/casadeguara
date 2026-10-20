@@ -1,4 +1,5 @@
 import { test, expect } from './fixtures';
+import { formWithField } from './form-locators';
 import { openLoanForm, prepareRejectedLoan, submitRejectedLoan } from './emprestimos-browser';
 
 test('renderiza os campos no servidor e encontra o nome acentuado pela busca sem acentos', async ({ page, e2e }) => {
@@ -20,9 +21,9 @@ test('renderiza os campos no servidor e encontra o nome acentuado pela busca sem
 
 test('mantém os campos e suas seleções após rejeição sem recarregar as listas', async ({ page, e2e }) => {
 	const reader = await prepareRejectedLoan(page, e2e);
-	const fields = await page
-		.locator('form.card')
-		.evaluateHandle((form) => [...form.querySelectorAll('[role="combobox"]')]);
+	const fields = await formWithField(page, 'Leitor').evaluateHandle((form) => [
+		...form.querySelectorAll('[role="combobox"]'),
+	]);
 	const copyId = await page.locator('input[name="exemplarid"]').inputValue();
 	const dataRequests: string[] = [];
 	page.on('request', (request) => {

@@ -66,7 +66,7 @@ describe('edit secretaria registration page interactions', () => {
 		trigger.click();
 		await tick();
 
-		expect(target.querySelector('.photo-cropper img')?.getAttribute('src')).toBe(
+		expect(target.querySelector('[data-testid="photo-cropper"] img')?.getAttribute('src')).toBe(
 			'/secretaria/cadastros/4/foto/original?versao=v1',
 		);
 	});
