@@ -80,5 +80,5 @@
 	</div>
 </form>
 {#if form?.status === 400}
-	<div id="emprestimo-errors"><Notification class="is-danger">{form.message}</Notification></div>
+	<div id="emprestimo-errors"><Notification kind="danger">{form.message}</Notification></div>
 {/if}

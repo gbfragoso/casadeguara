@@ -1,71 +1,66 @@
 // @vitest-environment happy-dom
-import { mount, tick, unmount } from 'svelte';
+import type { Snippet } from 'svelte';
+import { tick } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import Navbar from '#lib/components/navigation/Navbar.svelte';
+import { getElement, htmlSnippet, renderComponent } from '../support/render-component.js';
 
-const getButton = (target: HTMLElement, selector: string) => {
-	const button = target.querySelector(selector);
-	if (!(button instanceof HTMLButtonElement)) throw new Error(`Button ${selector} was not rendered.`);
-	return button;
-};
+type NavbarOptions = { sidebarExpanded?: boolean; onToggleSidebar?: () => void; search?: Snippet };
 
-describe('Navbar', () => {
-	let mounted: ReturnType<typeof mount> | undefined;
-
-	const mountNavbar = async (props: { sidebarExpanded?: boolean; onToggleSidebar?: () => void } = {}) => {
-		const target = document.createElement('div');
-		document.body.append(target);
-		mounted = mount(Navbar, {
-			target,
-			props: {
-				username: 'Ana Silva',
-				userid: 'ana-1',
-				sidebarExpanded: props.sidebarExpanded ?? false,
-				onToggleSidebar: props.onToggleSidebar ?? vi.fn(),
-			},
-		});
-		await tick();
-		return target;
-	};
-
-	afterEach(() => {
-		if (mounted) unmount(mounted);
-		mounted = undefined;
-		document.body.replaceChildren();
-		document.documentElement.removeAttribute('data-theme');
+const renderNavbar = (options: NavbarOptions = {}) =>
+	renderComponent(Navbar, {
+		username: 'Ana Silva',
+		userid: 'ana-1',
+		sidebarExpanded: options.sidebarExpanded ?? false,
+		onToggleSidebar: options.onToggleSidebar ?? vi.fn(),
+		search: options.search,
 	});
 
-	it('toggles the expanded state of the user menu trigger', async () => {
-		const target = await mountNavbar();
-		const trigger = getButton(target, '[aria-haspopup="true"]');
-		const initialState = trigger.getAttribute('aria-expanded');
+const getUserMenu = (target: HTMLElement) => getElement(target, '#dropdown-menu', HTMLElement);
+const getUserMenuTrigger = (target: HTMLElement) => getElement(target, '[aria-haspopup="true"]', HTMLButtonElement);
 
-		trigger.click();
+const readUserMenuState = (target: HTMLElement) => ({
+	expanded: getUserMenuTrigger(target).getAttribute('aria-expanded'),
+	hidden: getUserMenu(target).hidden,
+});
+
+describe('Navbar', () => {
+	afterEach(() => document.documentElement.removeAttribute('data-theme'));
+
+	it('toggles the user menu from its trigger', async () => {
+		const target = await renderNavbar();
+		const initialState = readUserMenuState(target);
+
+		getUserMenuTrigger(target).click();
 		await tick();
-		const openedState = trigger.getAttribute('aria-expanded');
-		trigger.click();
+		const openedState = readUserMenuState(target);
+		getUserMenuTrigger(target).click();
 		await tick();
 
-		expect([initialState, openedState, trigger.getAttribute('aria-expanded')]).toEqual(['false', 'true', 'false']);
-		expect(trigger.getAttribute('aria-controls')).toBe('dropdown-menu');
+		expect([initialState, openedState, readUserMenuState(target)]).toEqual([
+			{ expanded: 'false', hidden: true },
+			{ expanded: 'true', hidden: false },
+			{ expanded: 'false', hidden: true },
+		]);
+		expect(getUserMenuTrigger(target).getAttribute('aria-controls')).toBe('dropdown-menu');
 	});
 
 	it('offers the greeting, the settings link and the logout form in the user menu', async () => {
-		const target = await mountNavbar();
+		const target = await renderNavbar();
 
-		const menu = target.querySelector('#dropdown-menu');
+		const menu = getUserMenu(target);
 
-		expect(menu?.textContent).toContain('Bem vindo(a), Ana');
-		expect(menu?.querySelector('a[href="/usuario/ana-1"]')?.textContent?.trim()).toBe('Configurações');
-		const logout = menu?.querySelector('form[action="/logout"]');
+		expect(menu.textContent).toContain('Bem vindo(a), Ana');
+		expect(menu.querySelector('a[href="/usuario/ana-1"]')?.textContent?.trim()).toBe('Configurações');
+		const logout = menu.querySelector('form[action="/logout"]');
 		expect(logout?.getAttribute('method')).toBe('POST');
 		expect(logout?.querySelector('button[type="submit"]')?.textContent).toContain('Sair');
 	});
 
 	it('toggles the color theme between dark and light', async () => {
-		const target = await mountNavbar();
-		const themeButton = getButton(target, '[data-theme-toggle]');
+		const target = await renderNavbar();
+		const themeButton = getElement(target, '[data-theme-toggle]', HTMLButtonElement);
 
 		themeButton.click();
 		await tick();
@@ -78,8 +73,8 @@ describe('Navbar', () => {
 
 	it('requests the sidebar toggle without changing the controlled state', async () => {
 		const onToggleSidebar = vi.fn();
-		const target = await mountNavbar({ onToggleSidebar });
-		const menuButton = getButton(target, '[aria-label="menu"]');
+		const target = await renderNavbar({ onToggleSidebar });
+		const menuButton = getElement(target, '[aria-label="menu"]', HTMLButtonElement);
 
 		menuButton.click();
 		await tick();
@@ -89,10 +84,29 @@ describe('Navbar', () => {
 	});
 
 	it('reflects the controlled expanded sidebar state', async () => {
-		const target = await mountNavbar({ sidebarExpanded: true });
+		const target = await renderNavbar({ sidebarExpanded: true });
 
-		const menuButton = getButton(target, '[aria-label="menu"]');
+		const menuButton = getElement(target, '[aria-label="menu"]', HTMLButtonElement);
 
 		expect(menuButton.getAttribute('aria-expanded')).toBe('true');
+	});
+
+	it('reserves the search position without rendering a search field', async () => {
+		const target = await renderNavbar();
+
+		const topbar = getElement(target, '[data-testid="regiao-barra-superior"]', HTMLElement);
+
+		expect(topbar.querySelector('input, [role="searchbox"], [role="textbox"]')).toBeNull();
+	});
+
+	it('renders the search snippet between the menu button and the theme toggle', async () => {
+		const target = await renderNavbar({ search: htmlSnippet('<input type="search" aria-label="Buscar" />') });
+
+		const search = getElement(target, 'input[type="search"]', HTMLInputElement);
+		const menuButton = getElement(target, '[aria-label="menu"]', HTMLButtonElement);
+		const themeButton = getElement(target, '[data-theme-toggle]', HTMLButtonElement);
+
+		expect(menuButton.compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+		expect(search.compareDocumentPosition(themeButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	});
 });

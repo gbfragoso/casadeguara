@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
+import type { ResolvedPathname } from '$app/types';
 import { isMenuItemActive, visibleMenuItems, type ModuleMenuItem } from '#lib/components/navigation/module-menu.js';
 
-const menuItem = (href: string, adminOnly?: boolean): ModuleMenuItem => ({
+type MenuMatch = Pick<ModuleMenuItem, 'href' | 'match'>;
+
+const menuItem = (href: ResolvedPathname, adminOnly?: boolean): ModuleMenuItem => ({
 	href,
 	label: href,
 	title: href,
@@ -14,7 +17,7 @@ const menuItem = (href: string, adminOnly?: boolean): ModuleMenuItem => ({
 
 describe('isMenuItemActive', () => {
 	it('matches an exact item only on the same path', () => {
-		const home = { href: '/biblioteca', match: 'exact' as const };
+		const home: MenuMatch = { href: '/biblioteca', match: 'exact' };
 
 		const matches = ['/biblioteca', '/biblioteca/livros'].map((pathname) => isMenuItemActive(pathname, home));
 
@@ -22,7 +25,7 @@ describe('isMenuItemActive', () => {
 	});
 
 	it('matches a prefix item on its own path and on its subpaths', () => {
-		const books = { href: '/biblioteca/livros', match: 'prefix' as const };
+		const books: MenuMatch = { href: '/biblioteca/livros', match: 'prefix' };
 
 		const matches = [
 			'/biblioteca/livros',

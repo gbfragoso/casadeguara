@@ -1,5 +1,7 @@
+import type { ResolvedPathname } from '$app/types';
+
 export type ModuleMenuItem = {
-	href: string;
+	href: ResolvedPathname;
 	label: string;
 	title: string;
 	ariaLabel: string;

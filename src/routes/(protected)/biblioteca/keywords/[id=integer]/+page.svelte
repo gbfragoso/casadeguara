@@ -61,5 +61,5 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Palavra-chave atualizada com sucesso!</Notification>
+	<Notification kind="success">Palavra-chave atualizada com sucesso!</Notification>
 {/if}

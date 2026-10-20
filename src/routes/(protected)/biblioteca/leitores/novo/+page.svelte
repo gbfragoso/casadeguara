@@ -266,5 +266,5 @@
 </form>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Leitor cadastrado com sucesso!</Notification>
+	<Notification kind="success">Leitor cadastrado com sucesso!</Notification>
 {/if}

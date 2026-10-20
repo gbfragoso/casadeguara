@@ -13,8 +13,8 @@ import {
 import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
 import { formatBrlDecimal, formatMonthLabel } from '#lib/utils/currency.js';
 
-const ENTRY_COLOR = '#007a3d';
-const EXIT_COLOR = '#b42318';
+export const ENTRY_COLOR = '#007a3d';
+export const EXIT_COLOR = '#b42318';
 const compactCurrencyFormatter = new Intl.NumberFormat('pt-BR', {
 	style: 'currency',
 	currency: 'BRL',

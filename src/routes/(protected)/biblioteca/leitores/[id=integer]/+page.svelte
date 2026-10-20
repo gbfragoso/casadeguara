@@ -280,5 +280,5 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Leitor atualizado com sucesso!</Notification>
+	<Notification kind="success">Leitor atualizado com sucesso!</Notification>
 {/if}

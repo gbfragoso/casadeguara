@@ -28,6 +28,7 @@ import {
 	readLancamentoByDescription,
 	readReversal,
 } from './lancamentos-database';
+import { insertLoan } from './emprestimos-database';
 import type { E2EData, FixtureResources } from './fixtures-types';
 
 const destinations = {
@@ -35,6 +36,7 @@ const destinations = {
 	wrongRole: '**/biblioteca',
 	tesouraria: '**/tesouraria',
 	admin: '**/sistemas',
+	fullAdmin: '**/sistemas',
 } as const;
 const createToken = () => randomUUID().replaceAll('-', '').slice(0, 12);
 
@@ -113,6 +115,7 @@ export const createFixtureResources = async (): Promise<FixtureResources> => {
 		readLancamento: (id) => readLancamento(database, id),
 		readLancamentoByDescription: (description) => readLancamentoByDescription(database, description),
 		readReversal: (id) => readReversal(database, id),
+		createLoan: (livroId, leitorId) => insertLoan(database, livroId, leitorId, users.fullAdmin.id),
 	};
 	return { data, cleanup: () => cleanupResources(database, token, users, names) };
 };

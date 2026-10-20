@@ -1,24 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import AccessCard from '#lib/components/layout/AccessCard.svelte';
 </script>
 
-<main>
-	<section class="section">
-		<div class="container card mt-6" style="max-width:400px">
-			<div class="card-content">
-				<div class="is-primary">
-					<p class="pb-3 is-size-3 has-text-weight-semibold has-text-primary has-text-centered">
-						{page.status}
-					</p>
-				</div>
-				<div class="has-text-centered">
-					{#if page.status === 404}
-						<p>{page.error?.message ?? 'Página não encontrada'}</p>
-					{:else}
-						<p>{page.error?.message}</p>
-					{/if}
-				</div>
-			</div>
-		</div>
-	</section>
-</main>
+<AccessCard>
+	<p class="text-center text-4xl font-bold text-primary-ink">{page.status}</p>
+	<div class="mt-2 text-center text-ink">
+		{#if page.status === 404}
+			<p>{page.error?.message ?? 'Página não encontrada'}</p>
+		{:else}
+			<p>{page.error?.message}</p>
+		{/if}
+	</div>
+</AccessCard>

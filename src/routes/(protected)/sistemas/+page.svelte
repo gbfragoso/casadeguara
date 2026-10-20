@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import AccessCard from '#lib/components/layout/AccessCard.svelte';
 	import type { PageServerData } from './$types';
-	interface Props {
-		data: PageServerData;
-	}
+
+	type Props = { data: PageServerData };
 	type ModulePath = 'biblioteca' | 'secretaria' | 'tesouraria';
 
 	let { data }: Props = $props();
@@ -18,20 +19,11 @@
 	);
 </script>
 
-<main>
-	<section class="section">
-		<div class="container card mt-6" style="max-width:400px">
-			<div class="card-content">
-				<div class="has-text-centered">
-					<p class="is-size-4 mb-6">Selecione o módulo</p>
-					<div class="is-flex is-flex-direction-column">
-						{#each availableModules as module (module.role)}
-							<a class="button has-text-weight-semibold mb-2" href={resolve(module.path)}
-								>{module.role}</a>
-						{/each}
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-</main>
+<AccessCard>
+	<p class="mb-6 text-center text-2xl text-ink-strong">Selecione o módulo</p>
+	<div class="flex flex-col gap-3">
+		{#each availableModules as module (module.role)}
+			<Button href={resolve(module.path)} fullwidth class="min-h-12 font-bold">{module.role}</Button>
+		{/each}
+	</div>
+</AccessCard>

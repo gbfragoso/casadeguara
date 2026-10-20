@@ -252,5 +252,5 @@
 </form>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Trabalhador cadastrado com sucesso!</Notification>
+	<Notification kind="success">Trabalhador cadastrado com sucesso!</Notification>
 {/if}

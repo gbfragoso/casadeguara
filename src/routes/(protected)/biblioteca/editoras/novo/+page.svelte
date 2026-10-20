@@ -59,5 +59,5 @@
 </form>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Editora cadastrada com sucesso!</Notification>
+	<Notification kind="success">Editora cadastrada com sucesso!</Notification>
 {/if}

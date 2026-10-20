@@ -9,7 +9,9 @@ import Layout from '../../../../../src/routes/(protected)/secretaria/+layout.sve
 import {
 	getMenuButton,
 	mountModuleLayout,
+	PAGE_CONTENT,
 	readCurrentSidebarLinks,
+	readPageContent,
 	readSidebarLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
@@ -71,5 +73,13 @@ describe('secretaria layout', () => {
 		await tick();
 
 		expect(getMenuButton(target).getAttribute('aria-expanded')).toBe('true');
+	});
+
+	it('renders the page content beside the sidebar and the top bar', async () => {
+		pageState.url = new URL('http://localhost/secretaria');
+
+		const target = await mountModuleLayout(Layout, READER);
+
+		expect(readPageContent(target)).toBe(PAGE_CONTENT);
 	});
 });

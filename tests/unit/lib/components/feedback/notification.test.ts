@@ -1,36 +1,33 @@
 // @vitest-environment happy-dom
-import { mount, tick, unmount } from 'svelte';
-import { afterEach, describe, expect, it } from 'vitest';
+import { tick } from 'svelte';
+import { describe, expect, it } from 'vitest';
 
 import Notification from '#lib/components/feedback/Notification.svelte';
+import { getElement, htmlSnippet, renderComponent } from '../support/render-component.js';
 
 describe('Notification', () => {
-	let mounted: ReturnType<typeof mount> | undefined;
+	it('shows the message inside the notification region', async () => {
+		const target = await renderComponent(Notification, {
+			kind: 'success',
+			children: htmlSnippet('<span>Livro excluído com sucesso.</span>'),
+		});
 
-	afterEach(() => {
-		if (mounted) unmount(mounted);
-		mounted = undefined;
-		document.body.replaceChildren();
+		const notification = getElement(target, '[data-testid="regiao-notificacao"]', HTMLDivElement);
+
+		expect(notification.hidden).toBe(false);
+		expect(notification.textContent).toContain('Livro excluído com sucesso.');
 	});
 
-	it('stays above application layers and can be dismissed', async () => {
-		const target = document.createElement('div');
-		document.body.append(target);
-		mounted = mount(Notification, {
-			target,
-			props: { class: 'is-success' },
+	it('hides the notification region from the close button', async () => {
+		const target = await renderComponent(Notification, {
+			kind: 'danger',
+			children: htmlSnippet('<span>Falha ao excluir.</span>'),
 		});
+		const notification = getElement(target, '[data-testid="regiao-notificacao"]', HTMLDivElement);
+
+		getElement(notification, 'button[aria-label="open"]', HTMLButtonElement).click();
 		await tick();
 
-		const notification = target.querySelector('[data-testid="regiao-notificacao"]');
-		const closeButton = target.querySelector('button[aria-label="open"]');
-		if (!(notification instanceof HTMLDivElement) || !(closeButton instanceof HTMLButtonElement))
-			throw new Error('Notification controls were not rendered.');
-
-		expect(notification.style.zIndex).toBe('50');
-		closeButton.click();
-		await tick();
-
-		expect(notification.style.display).toBe('none');
+		expect(notification.hidden).toBe(true);
 	});
 });

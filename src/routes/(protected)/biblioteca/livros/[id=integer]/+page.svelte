@@ -109,5 +109,5 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Livro atualizado com sucesso!</Notification>
+	<Notification kind="success">Livro atualizado com sucesso!</Notification>
 {/if}

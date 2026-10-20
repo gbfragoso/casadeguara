@@ -192,9 +192,9 @@
 </form>
 
 {#if form?.outcome === 'deleted'}
-	<Notification class="is-success">{form.message ?? 'Livro excluído com sucesso.'}</Notification>
+	<Notification kind="success">{form.message ?? 'Livro excluído com sucesso.'}</Notification>
 {:else if hasDeleteFailure}
-	<Notification class="is-danger">{form?.message}</Notification>
+	<Notification kind="danger">{form?.message}</Notification>
 {/if}
 
 {#if form?.livros !== undefined}
@@ -204,7 +204,7 @@
 				<p role="status">Nenhum livro encontrado.</p>
 			{:else}
 				<div class="table-container">
-					<table class="table is-striped is-hoverable is-fullwidth">
+					<table class="is-striped is-hoverable is-fullwidth table">
 						<caption class="is-sr-only">Resultados da consulta de livros</caption>
 						<thead>
 							<tr>

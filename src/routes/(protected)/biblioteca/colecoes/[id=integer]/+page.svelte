@@ -61,5 +61,5 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Coleção atualizada com sucesso!</Notification>
+	<Notification kind="success">Coleção atualizada com sucesso!</Notification>
 {/if}

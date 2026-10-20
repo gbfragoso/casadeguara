@@ -62,7 +62,7 @@
 				</select>
 			</div>
 		</div>
-		<p class="mb-2 has-text-centered">
+		<p class="has-text-centered mb-2">
 			Emprestado por <strong>{emprestimo.usuarioEmprestimo}</strong> no dia {dayjs
 				.utc(emprestimo.dataEmprestimo)
 				.format('DD/MM/YYYY')}
@@ -77,5 +77,5 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Empréstimo atualizado com sucesso</Notification>
+	<Notification kind="success">Empréstimo atualizado com sucesso</Notification>
 {/if}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { CONTROL_CLASSES } from '#lib/components/forms/control-classes.js';
 	import { createBrlAmountState, updateBrlAmountState } from '#lib/forms/brl-amount.js';
 
 	interface Props {
@@ -30,7 +31,7 @@
 <input
 	{@attach validateInput}
 	{id}
-	class="input"
+	class={CONTROL_CLASSES}
 	type="text"
 	inputmode="numeric"
 	{required}

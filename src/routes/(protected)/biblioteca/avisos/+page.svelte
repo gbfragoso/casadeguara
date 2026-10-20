@@ -68,13 +68,13 @@
 </form>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Aviso criado com sucesso!</Notification>
+	<Notification kind="success">Aviso criado com sucesso!</Notification>
 {/if}
 
 <div class="card">
 	<div class="card-content">
 		<div class="table-container">
-			<table class="table is-striped is-hoverable is-fullwidth">
+			<table class="is-striped is-hoverable is-fullwidth table">
 				<thead>
 					<tr>
 						<th>Texto</th>

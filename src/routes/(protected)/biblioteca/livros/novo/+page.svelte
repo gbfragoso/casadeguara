@@ -315,7 +315,7 @@
 </form>
 
 {#if form?.outcome === 'created'}
-	<Notification class="is-success">{form.message ?? 'Livro cadastrado com sucesso.'}</Notification>
+	<Notification kind="success">{form.message ?? 'Livro cadastrado com sucesso.'}</Notification>
 {:else if hasFailureMessage}
-	<Notification class="is-danger">{form?.message}</Notification>
+	<Notification kind="danger">{form?.message}</Notification>
 {/if}

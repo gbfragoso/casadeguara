@@ -284,7 +284,7 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Trabalhador atualizado com sucesso!</Notification>
+	<Notification kind="success">Trabalhador atualizado com sucesso!</Notification>
 {/if}
 
 <PhotoSection

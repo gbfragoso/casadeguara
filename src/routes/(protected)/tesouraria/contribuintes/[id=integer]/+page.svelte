@@ -98,5 +98,5 @@
 </form>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Contribuinte atualizado com sucesso!</Notification>
+	<Notification kind="success">Contribuinte atualizado com sucesso!</Notification>
 {/if}

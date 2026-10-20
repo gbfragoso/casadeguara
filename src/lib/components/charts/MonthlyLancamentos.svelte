@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { Line } from 'svelte-chartjs';
 
-	import { buildMonthlyChart } from '#lib/charts/monthly-lancamentos.js';
+	import { buildMonthlyChart, ENTRY_COLOR, EXIT_COLOR } from '#lib/charts/monthly-lancamentos.js';
+	import Card from '#lib/components/layout/Card.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
 	import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
 
 	interface Props {
@@ -18,81 +20,38 @@
 	const descriptionId = 'monthly-lancamentos-description';
 </script>
 
-<div class="card">
-	<div class="card-content">
-		<div class="monthly-lancamentos" role="region" aria-labelledby={titleId} aria-describedby={descriptionId}>
-			<h2 id={titleId}>Entradas e saídas — últimos 12 meses</h2>
-			<p id={descriptionId}>Totais mensais de lançamentos ativos, em reais.</p>
+<Card>
+	<div class="w-full" role="region" aria-labelledby={titleId} aria-describedby={descriptionId}>
+		<div class="flex flex-col gap-1">
+			<SectionHeading id={titleId} icon="fa-solid fa-chart-line"
+				>Entradas e saídas — últimos 12 meses</SectionHeading>
+			<p id={descriptionId} class="text-ink-muted tablet:pl-12">
+				Totais mensais de lançamentos ativos, em reais.
+			</p>
+		</div>
 
-			<div class="legend" aria-label="Legenda" data-testid="legenda-grafico">
-				<span class="legend-entry"><i aria-hidden="true"></i>Entradas</span>
-				<span class="legend-exit"><i aria-hidden="true"></i>Saídas</span>
+		<div class="mt-5 rounded-lg bg-chart-surface p-3 text-chart-ink tablet:p-4">
+			<div class="mb-3 flex flex-wrap gap-x-5 gap-y-1 text-sm" aria-label="Legenda" data-testid="legenda-grafico">
+				<span class="inline-flex items-center gap-2 font-medium" style:color={ENTRY_COLOR}>
+					<i aria-hidden="true" class="inline-block w-6 border-t-3 border-current"></i>Entradas
+				</span>
+				<span class="inline-flex items-center gap-2 font-medium" style:color={EXIT_COLOR}>
+					<i aria-hidden="true" class="inline-block w-6 border-t-3 border-dashed border-current"></i>Saídas
+				</span>
 			</div>
 
 			{#if hasMovement && chartConfig}
-				<div class="chart-container">
+				<div class="relative h-72 w-full tablet:h-80">
 					<Line
 						data={chartConfig.data}
 						options={chartConfig.options}
 						aria-hidden="true"
-						role="presentation" />
+						role="presentation"
+						class="max-w-full" />
 				</div>
 			{:else}
-				<p class="empty-state" role="status">Não há lançamentos ativos no período.</p>
+				<p class="my-4 font-medium" role="status">Não há lançamentos ativos no período.</p>
 			{/if}
 		</div>
 	</div>
-</div>
-
-<style>
-	.monthly-lancamentos {
-		box-sizing: border-box;
-		width: 100%;
-		padding: 1rem;
-		background: #fff;
-		color: #1f2937;
-	}
-
-	.legend {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		margin-block: 1rem;
-	}
-
-	.legend span {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-weight: 600;
-	}
-
-	.legend i {
-		display: inline-block;
-		width: 1.5rem;
-		border-top: 3px solid currentColor;
-	}
-
-	.legend-entry {
-		color: #007a3d;
-	}
-
-	.legend-exit {
-		color: #b42318;
-	}
-
-	.legend-exit i {
-		border-top-style: dashed;
-	}
-
-	.chart-container {
-		position: relative;
-		width: 100%;
-		height: clamp(220px, 55vw, 360px);
-	}
-
-	.empty-state {
-		margin-block: 1rem;
-		font-weight: 600;
-	}
-</style>
+</Card>

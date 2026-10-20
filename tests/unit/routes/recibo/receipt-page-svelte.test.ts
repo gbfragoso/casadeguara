@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('$app/state', () => ({ page: { url: new URL('http://localhost/recibo/active') } }));
 
 import Page from '../../../../src/routes/recibo/[uuid=uuid]/+page.svelte';
+import { hasModuleShell } from '../../support/module-shell-regions';
 import { parseRenderedBody } from '../../support/rendered-document';
 
 const renderActiveReceipt = (valor: string) =>
@@ -59,5 +60,11 @@ describe('public receipt page', () => {
 		expect(document.querySelector('#recibo')).toBeNull();
 		expect(document.body.textContent).not.toContain('Conteúdo privado');
 		expect(document.body.textContent).not.toContain('150.00');
+	});
+
+	it('renders the public receipt without the module shell', () => {
+		const document = parseRenderedBody(renderActiveReceipt('1700').body);
+
+		expect(hasModuleShell(document)).toBe(false);
 	});
 });

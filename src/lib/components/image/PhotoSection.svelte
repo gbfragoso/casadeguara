@@ -2,6 +2,14 @@
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { onDestroy, tick } from 'svelte';
 
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
+	import Tag from '#lib/components/feedback/Tag.svelte';
+	import { CONTROL_CLASSES, FILE_CONTROL_CLASSES } from '#lib/components/forms/control-classes.js';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
 	import PhotoCropper from './PhotoCropper.svelte';
 
 	type PhotoForm = {
@@ -27,7 +35,7 @@
 	let objectUrl = $state<string | null>(null);
 	let localError = $state<string | null>(null);
 	let fileInput: HTMLInputElement | undefined;
-	let reframeButton = $state<HTMLButtonElement | undefined>(undefined);
+	let reframeButton: HTMLElement | undefined;
 	let returnFocusElement: HTMLElement | null = null;
 	const removeEnhancer = createFormEnhancer();
 
@@ -98,117 +106,110 @@
 		editorMode = 'reframe';
 	}
 
+	function captureReframeButton(element: HTMLElement) {
+		reframeButton = element;
+		return () => {
+			reframeButton = undefined;
+		};
+	}
+
 	function cancelEditor() {
 		closeEditor();
 	}
 </script>
 
-<section class="card mt-4 photo-section" aria-labelledby="foto-title">
-	<div class="card-content">
-		<h2 id="foto-title" class="has-text-weight-bold is-5">
-			Foto <span class="tag {hasPhoto ? 'is-success' : ''}" aria-live="polite"
-				>{hasPhoto ? 'Cadastrada' : 'Pendente'}</span>
-		</h2>
+<Card element="section" class="mt-4" aria-labelledby="foto-title">
+	<SectionHeading id="foto-title" class="mb-4">
+		Foto <Tag kind={hasPhoto ? 'success' : undefined} aria-live="polite"
+			>{hasPhoto ? 'Cadastrada' : 'Pendente'}</Tag>
+	</SectionHeading>
 
-		{#if hasPhoto}
-			<img class="photo-section__current" src={photoUrl} {alt} />
+	{#if hasPhoto}
+		<img class="mb-4 block aspect-239/300 w-full max-w-72 rounded-md object-cover" src={photoUrl} {alt} />
+	{/if}
+
+	<form
+		class="mb-3 flex flex-col gap-2"
+		method="POST"
+		action="?/salvarFoto"
+		enctype="multipart/form-data"
+		{@attach uploadEnhancer.submitWithLoading}>
+		<Field id="foto" label="Incluir ou substituir foto">
+			{#snippet control()}
+				<input
+					class={[CONTROL_CLASSES, FILE_CONTROL_CLASSES]}
+					id="foto"
+					name="foto"
+					type="file"
+					accept="image/jpeg,image/png"
+					required
+					disabled={uploadEnhancer.loading}
+					bind:this={fileInput}
+					onchange={(event) => handleFileChange(event)} />
+			{/snippet}
+		</Field>
+		{#if editorMode !== 'upload' || !selectedFile || !objectUrl}
+			<input type="hidden" name="focalX" value="0.5" />
+			<input type="hidden" name="focalY" value="0.5" />
+			<input type="hidden" name="zoom" value="1" />
 		{/if}
+		{#if editorMode === 'upload' && selectedFile && objectUrl}
+			<PhotoCropper
+				src={objectUrl}
+				alt={`Prévia de ${alt}`}
+				onCancel={cancelEditor}
+				disabled={uploadEnhancer.loading} />
+		{/if}
+		<div>
+			<Button tone="primary" type="submit" loading={uploadEnhancer.loading}>Salvar foto</Button>
+		</div>
+	</form>
 
-		<form
-			method="POST"
-			action="?/salvarFoto"
-			enctype="multipart/form-data"
-			{@attach uploadEnhancer.submitWithLoading}>
-			<label class="label" for="foto">Incluir ou substituir foto</label>
-			<input
-				class="input"
-				id="foto"
-				name="foto"
-				type="file"
-				accept="image/jpeg,image/png"
-				required
-				disabled={uploadEnhancer.loading}
-				bind:this={fileInput}
-				onchange={(event) => handleFileChange(event)} />
-			{#if editorMode !== 'upload' || !selectedFile || !objectUrl}
-				<input type="hidden" name="focalX" value="0.5" />
-				<input type="hidden" name="focalY" value="0.5" />
-				<input type="hidden" name="zoom" value="1" />
-			{/if}
-			{#if editorMode === 'upload' && selectedFile && objectUrl}
-				<PhotoCropper
-					src={objectUrl}
-					alt={`Prévia de ${alt}`}
-					onCancel={cancelEditor}
-					disabled={uploadEnhancer.loading} />
-			{/if}
-			<button
-				class={['button is-primary mt-2', { 'is-loading': uploadEnhancer.loading }]}
-				type="submit"
-				aria-busy={uploadEnhancer.loading}
-				disabled={uploadEnhancer.loading}>Salvar foto</button>
+	{#if editorMode === 'reframe'}
+		<form class="mb-3" method="POST" action="?/reenquadrarFoto" {@attach reframeEnhancer.submitWithLoading}>
+			<PhotoCropper
+				src={previewUrl}
+				alt={`Prévia de ${alt}`}
+				onCancel={cancelEditor}
+				disabled={reframeEnhancer.loading} />
 		</form>
+	{/if}
 
-		{#if editorMode === 'reframe'}
-			<form method="POST" action="?/reenquadrarFoto" {@attach reframeEnhancer.submitWithLoading}>
-				<PhotoCropper
-					src={previewUrl}
-					alt={`Prévia de ${alt}`}
-					onCancel={cancelEditor}
-					disabled={reframeEnhancer.loading} />
+	<ButtonGroup class="mt-2">
+		{#if hasPhoto && editorMode !== 'reframe'}
+			<Button
+				tone="light"
+				id="reenquadrar-foto"
+				type="button"
+				{@attach captureReframeButton}
+				onclick={openReframe}>
+				Reenquadrar foto
+			</Button>
+		{/if}
+		{#if hasPhoto}
+			<form method="POST" action="?/removerFoto" {@attach removeEnhancer.submitWithLoading}>
+				<Button tone="danger" type="submit" loading={removeEnhancer.loading}>Remover foto</Button>
 			</form>
 		{/if}
+	</ButtonGroup>
 
-		<div class="buttons mt-2">
-			{#if hasPhoto && editorMode !== 'reframe'}
-				<button
-					class="button is-link is-light"
-					id="reenquadrar-foto"
-					type="button"
-					bind:this={reframeButton}
-					onclick={openReframe}>
-					Reenquadrar foto
-				</button>
-			{/if}
-			{#if hasPhoto}
-				<form method="POST" action="?/removerFoto" {@attach removeEnhancer.submitWithLoading}>
-					<button
-						class={['button is-danger', { 'is-loading': removeEnhancer.loading }]}
-						type="submit"
-						aria-busy={removeEnhancer.loading}
-						disabled={removeEnhancer.loading}>Remover foto</button>
-				</form>
-			{/if}
-		</div>
-
-		{#if photoError}
-			<div class="notification is-danger" role="alert" aria-live="assertive">{photoError}</div>
-		{:else if form?.operation === 'photoSaved' && form.status === 200}
-			<div class="notification is-success" role="status" aria-live="polite">Foto salva com sucesso!</div>
-		{:else if form?.operation === 'photoReframed' && form.status === 200}
-			<div class="notification is-success" role="status" aria-live="polite">Foto reenquadrada com sucesso!</div>
-		{:else if form?.operation === 'photoRemoved' && form.status === 200}
-			<div class="notification is-success" role="status" aria-live="polite">Foto removida com sucesso!</div>
-		{:else if localError}
-			<div class="notification is-danger" role="alert" aria-live="assertive">{localError}</div>
-		{/if}
-	</div>
-</section>
-
-<style>
-	.photo-section__current {
-		display: block;
-		width: min(100%, 18rem);
-		aspect-ratio: 239 / 300;
-		object-fit: cover;
-		margin-bottom: 1rem;
-	}
-
-	.photo-section form {
-		margin-bottom: 0.75rem;
-	}
-
-	.photo-section .buttons form {
-		margin: 0;
-	}
-</style>
+	{#if photoError}
+		<InlineNotification kind="danger" class="mt-4" role="alert" aria-live="assertive"
+			>{photoError}</InlineNotification>
+	{:else if form?.operation === 'photoSaved' && form.status === 200}
+		<InlineNotification kind="success" class="mt-4" role="status" aria-live="polite">
+			Foto salva com sucesso!
+		</InlineNotification>
+	{:else if form?.operation === 'photoReframed' && form.status === 200}
+		<InlineNotification kind="success" class="mt-4" role="status" aria-live="polite">
+			Foto reenquadrada com sucesso!
+		</InlineNotification>
+	{:else if form?.operation === 'photoRemoved' && form.status === 200}
+		<InlineNotification kind="success" class="mt-4" role="status" aria-live="polite">
+			Foto removida com sucesso!
+		</InlineNotification>
+	{:else if localError}
+		<InlineNotification kind="danger" class="mt-4" role="alert" aria-live="assertive"
+			>{localError}</InlineNotification>
+	{/if}
+</Card>

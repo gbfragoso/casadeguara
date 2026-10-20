@@ -94,5 +94,5 @@
 </form>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Contribuinte cadastrado com sucesso!</Notification>
+	<Notification kind="success">Contribuinte cadastrado com sucesso!</Notification>
 {/if}

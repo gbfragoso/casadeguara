@@ -163,7 +163,7 @@
 	<div class="card">
 		<div class="card-content">
 			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
+				<table class="is-striped is-hoverable is-fullwidth table">
 					<thead>
 						<tr>
 							<th>Leitor</th>
@@ -248,8 +248,8 @@
 	</div>
 {/if}
 {#if form?.status === 201}
-	<Notification class="is-success">{form.message}</Notification>
+	<Notification kind="success">{form.message}</Notification>
 {/if}
 {#if form?.status === 400 && form?.message}
-	<Notification class="is-danger">{form.message}</Notification>
+	<Notification kind="danger">{form.message}</Notification>
 {/if}

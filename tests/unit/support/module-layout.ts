@@ -1,14 +1,20 @@
-import { mount, tick, unmount, type Component } from 'svelte';
+import { createRawSnippet, mount, tick, unmount, type Component, type Snippet } from 'svelte';
 
 export type SidebarLink = { label: string; title: string; ariaLabel: string | null };
 export type ModuleLayoutData = { username: string; userid: string; isAdmin: boolean };
+type ModuleLayoutProps = { data: ModuleLayoutData; children: Snippet };
+
+export const PAGE_CONTENT = 'Conteúdo da página';
+const pageContent = createRawSnippet(() => ({ render: () => `<p data-testid="conteudo">${PAGE_CONTENT}</p>` }));
 
 const MOUNTED_LAYOUTS: ReturnType<typeof mount>[] = [];
 
 export const mountModuleLayout = async (layout: Component<never>, data: ModuleLayoutData) => {
 	const target = document.createElement('div');
 	document.body.append(target);
-	MOUNTED_LAYOUTS.push(mount(layout as Component<{ data: ModuleLayoutData }>, { target, props: { data } }));
+	MOUNTED_LAYOUTS.push(
+		mount(layout as Component<ModuleLayoutProps>, { target, props: { data, children: pageContent } }),
+	);
 	await tick();
 	return target;
 };
@@ -38,6 +44,9 @@ export const readCurrentSidebarLinks = (target: HTMLElement) =>
 	getSidebarAnchors(target)
 		.filter((anchor) => anchor.getAttribute('aria-current') === 'page')
 		.map((anchor) => anchor.textContent.trim());
+
+export const readPageContent = (target: HTMLElement) =>
+	target.querySelector('main section [data-testid="conteudo"]')?.textContent ?? null;
 
 export const getMenuButton = (target: HTMLElement) => {
 	const button = target.querySelector('[data-testid="regiao-barra-superior"] button[aria-label="menu"]');

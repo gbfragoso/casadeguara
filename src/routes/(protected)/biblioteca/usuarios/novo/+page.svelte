@@ -71,8 +71,8 @@
 </form>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Usuário cadastrado com sucesso!</Notification>
+	<Notification kind="success">Usuário cadastrado com sucesso!</Notification>
 {/if}
 {#if form?.status === 400 && form?.message}
-	<Notification class="is-danger">{form.message}</Notification>
+	<Notification kind="danger">{form.message}</Notification>
 {/if}

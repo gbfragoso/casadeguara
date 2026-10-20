@@ -34,5 +34,6 @@ export type E2EData = {
 	readLancamento: (id: number) => Promise<LancamentoSnapshot>;
 	readLancamentoByDescription: (description: string) => Promise<LancamentoSnapshot>;
 	readReversal: (id: number) => Promise<ReversalSnapshot | null>;
+	createLoan: (livroId: number, leitorId: number) => Promise<number>;
 };
 export type FixtureResources = { data: E2EData; cleanup: () => Promise<void> };
