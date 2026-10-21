@@ -33,4 +33,23 @@ describe('library dashboard page', () => {
 		expect(document.body.textContent).toContain('Renovações');
 		expect(counters).toEqual(expect.arrayContaining(['4', '3', '2']));
 	});
+
+	it('shows zero renewals when no loan was renewed this month', () => {
+		const { body } = render(Page, {
+			props: {
+				data: {
+					avisos: [],
+					emprestimos: [{ counter: 4, renovacoes: null }],
+					devolucoes: [{ counter: 3 }],
+					username: 'Bibliotecária',
+					userid: 'user-1',
+				},
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const renewals = document.querySelectorAll('[data-testid="indicadores"] h2')[2];
+
+		expect(renewals?.textContent?.trim()).toBe('0');
+	});
 });

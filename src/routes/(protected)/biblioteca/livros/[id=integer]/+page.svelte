@@ -1,7 +1,15 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -11,102 +19,86 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let { livro, editoras, colecoes } = $derived(data);
+	const fieldErrors = (field: string) => (form?.field === field && form.message ? [form.message] : []);
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Livros', href: resolve('biblioteca/livros') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/livros')} aria-current="page">Livros</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar livro</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-book">Atualizar livro</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="nome">Tombo</label>
-			<div class="control">
-				<input
-					class="input"
-					type="number"
-					name="tombo"
-					id="tombo"
-					value={livro.tombo}
-					placeholder="Digite o tombo do livro"
-					required />
-			</div>
-		</div>
-		<div class="field">
-			<label class="label" for="nome">Título</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="titulo"
-					id="titulo"
-					value={livro.titulo}
-					placeholder="Digite o título do livro"
-					required />
-			</div>
-			{#if form?.field === 'titulo'}
-				<p class="help is-danger">{form?.message}</p>
-			{/if}
-		</div>
-		<div class="field">
-			<label class="label" for="nome">Editora</label>
-			<div class="select is-fullwidth">
-				<select name="editora" id="editora" value={livro.editora} required>
-					<option></option>
-					{#each editoras as editora (editora.ideditora)}
-						<option value={editora.ideditora}>{editora.nome}</option>
-					{/each}
-				</select>
-				{#if form?.field === 'editora'}
-					<p class="help is-danger">{form?.message}</p>
-				{/if}
-			</div>
-		</div>
-		<div class="columns">
-			<div class="column is-half">
-				<div class="field">
-					<label class="label" for="colecao">Coleção</label>
-					<div class="select is-fullwidth">
-						<select name="colecao" id="colecao" value={livro.serie}>
-							<option></option>
-							{#each colecoes as colecao (colecao.idserie)}
-								<option value={colecao.idserie}>{colecao.nome}</option>
-							{/each}
-						</select>
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label" for="nome">Ordem na coleção</label>
-					<div class="control">
-						<input
-							class="input"
-							type="number"
-							name="ordem"
-							id="ordem"
-							value={livro.ordem}
-							placeholder="Ordem na coleção" />
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="control">
-			<button
-				aria-busy={formEnhancer.loading}
-				class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
-				type="submit">Atualizar</button>
-		</div>
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Field id="tombo" label="Tombo">
+		{#snippet control()}
+			<TextInput
+				type="number"
+				name="tombo"
+				id="tombo"
+				value={livro.tombo}
+				placeholder="Digite o tombo do livro"
+				required />
+		{/snippet}
+	</Field>
+	<Field id="titulo" label="Título" errors={fieldErrors('titulo')}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name="titulo"
+				id="titulo"
+				value={livro.titulo}
+				placeholder="Digite o título do livro"
+				required
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+	<Field id="editora" label="Editora" errors={fieldErrors('editora')}>
+		{#snippet control({ describedBy, invalid })}
+			<Select
+				name="editora"
+				id="editora"
+				value={livro.editora}
+				required
+				aria-describedby={describedBy}
+				aria-invalid={invalid}>
+				<option></option>
+				{#each editoras as editora (editora.ideditora)}
+					<option value={editora.ideditora}>{editora.nome}</option>
+				{/each}
+			</Select>
+		{/snippet}
+	</Field>
+	<Columns>
+		<Column size="half">
+			<Field id="colecao" label="Coleção">
+				{#snippet control()}
+					<Select name="colecao" id="colecao" value={livro.serie}>
+						<option></option>
+						{#each colecoes as colecao (colecao.idserie)}
+							<option value={colecao.idserie}>{colecao.nome}</option>
+						{/each}
+					</Select>
+				{/snippet}
+			</Field>
+		</Column>
+		<Column>
+			<Field id="ordem" label="Ordem na coleção">
+				{#snippet control()}
+					<TextInput
+						type="number"
+						name="ordem"
+						id="ordem"
+						value={livro.ordem}
+						placeholder="Ordem na coleção" />
+				{/snippet}
+			</Field>
+		</Column>
+	</Columns>
+	<div>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-1 font-bold">Atualizar</Button>
 	</div>
-</form>
+</Card>
 
 {#if form?.status === 200}
 	<Notification kind="success">Livro atualizado com sucesso!</Notification>

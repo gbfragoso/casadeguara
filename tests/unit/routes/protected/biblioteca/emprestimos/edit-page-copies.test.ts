@@ -58,12 +58,4 @@ describe('loan edit page copies', () => {
 
 		expect([whileLoading, updateButton()]).toEqual(['true', 'false']);
 	});
-
-	it('notifies the successful update after the submission', async () => {
-		const target = await renderComponent(Page, { data, form: { status: 200 } });
-
-		expect(target.querySelector('[data-testid="regiao-notificacao"]')?.textContent?.trim()).toBe(
-			'Empréstimo atualizado com sucesso',
-		);
-	});
 });

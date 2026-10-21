@@ -1,8 +1,10 @@
-import { render } from 'svelte/server';
-import { describe, expect, it } from 'vitest';
+// @vitest-environment happy-dom
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('$app/forms', () => ({ enhance: () => undefined }));
 
 import Page from '../../../../../../src/routes/(protected)/biblioteca/emprestimos/[id=integer]/+page.svelte';
-import { getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
+import { renderComponent } from '../../../../lib/components/support/render-component.js';
 
 const data = {
 	emprestimo: {
@@ -18,31 +20,31 @@ const data = {
 	exemplares: Promise.resolve([]),
 };
 
-const renderEditPage = (form: { status: number } | null) =>
-	parseRenderedBody(render(Page, { props: { data, form } }).body);
+const renderEditPage = (form: { status: number } | null) => renderComponent(Page, { data, form });
 
 describe('loan edit page', () => {
-	it('shows the current loan as read-only context for the copy change', () => {
-		const document = renderEditPage(null);
+	it('shows the current loan as read-only context for the copy change', async () => {
+		const target = await renderEditPage(null);
 
-		expect(getRenderedInput(document, '#leitor').value).toBe('Rui Leitor');
-		expect(getRenderedInput(document, '#leitor').disabled).toBe(true);
-		expect(getRenderedInput(document, '#exemplaratual').value).toBe('Caminhos da Luz - EX:2');
-		expect(getRenderedInput(document, '#idexemplar').value).toBe('41');
-		expect(document.querySelector('form')?.textContent).toContain('Emprestado por Helena no dia 05/10/2026');
-		expect(document.querySelector('[data-testid="regiao-notificacao"]')).toBeNull();
+		const reader = target.querySelector<HTMLInputElement>('#leitor');
+
+		expect([reader?.value, reader?.disabled]).toEqual(['Rui Leitor', true]);
+		expect(target.querySelector<HTMLInputElement>('#exemplaratual')?.value).toBe('Caminhos da Luz - EX:2');
+		expect(target.querySelector<HTMLInputElement>('#idexemplar')?.value).toBe('41');
+		expect(target.querySelector('form')?.textContent).toContain('Emprestado por Helena no dia 05/10/2026');
+		expect(target.querySelector('[data-testid="regiao-notificacao"]')).toBeNull();
 	});
 
-	it('requires the new copy', () => {
-		const document = renderEditPage(null);
+	it('requires the new copy', async () => {
+		const target = await renderEditPage(null);
 
-		expect(document.querySelector('select#novoexemplar')?.hasAttribute('required')).toBe(true);
+		expect(target.querySelector<HTMLSelectElement>('select#novoexemplar')?.required).toBe(true);
 	});
 
-	it('notifies the successful update', () => {
-		const document = renderEditPage({ status: 200 });
+	it('notifies the successful update', async () => {
+		const target = await renderEditPage({ status: 200 });
 
-		expect(document.querySelector('[data-testid="regiao-notificacao"]')?.textContent?.trim()).toBe(
+		expect(target.querySelector('[data-testid="regiao-notificacao"]')?.textContent?.trim()).toBe(
 			'Empréstimo atualizado com sucesso',
 		);
 	});

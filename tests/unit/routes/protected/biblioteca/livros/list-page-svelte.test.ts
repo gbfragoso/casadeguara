@@ -24,7 +24,7 @@ describe('book list page', () => {
 		const document = parseRenderedBody(body);
 		const tombo = getRenderedInput(document, 'input[name="tombo"]');
 
-		expect(document.querySelector('h1')?.textContent).toBe('Consulta de livros');
+		expect(document.querySelector('h1')?.textContent?.trim()).toBe('Consulta de livros');
 		expect(tombo.type).toBe('text');
 		expect(tombo.maxLength).toBe(8);
 		expect(document.querySelector('label[for="keyword"]')?.textContent).toBe('Palavra-chave');

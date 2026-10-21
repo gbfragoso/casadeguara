@@ -3,7 +3,7 @@
 	import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 
 	type Props = Omit<HTMLAttributes<HTMLDivElement>, 'class' | 'children'> & {
-		caption: string;
+		caption?: string;
 		tableId?: string;
 		class?: ClassValue;
 		head: Snippet;
@@ -17,7 +17,7 @@
 	<table
 		id={tableId}
 		class="min-w-full text-base [&_tbody_tr]:border-t [&_tbody_tr]:border-divider [&_tbody_tr]:transition-colors [&_tbody_tr]:motion-reduce:transition-none [&_tbody_tr:hover]:bg-surface-hover [&_tbody_tr:nth-child(even)]:bg-surface-muted [&_td]:px-4 [&_td]:py-3 [&_td]:align-top [&_th]:px-4 [&_th]:py-3 [&_th]:text-left [&_th]:text-sm [&_th]:font-bold [&_th]:whitespace-nowrap">
-		<caption class="sr-only">{caption}</caption>
+		{#if caption}<caption class="sr-only">{caption}</caption>{/if}
 		<thead>{@render head()}</thead>
 		<tbody>{@render children()}</tbody>
 	</table>

@@ -1,6 +1,17 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 
@@ -11,6 +22,7 @@
 
 	const AUTHOR_NAME_MAX_LENGTH = 60;
 	const AUTHOR_REQUIRED_MESSAGE = 'Selecione ou cadastre ao menos um autor.';
+	const STEPS = ['1. Dados do livro', '2. Autores', '3. Revisão'];
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let { editoras, colecoes, autores } = $derived(data);
@@ -18,6 +30,10 @@
 	let errors = $derived(form?.errors ?? {});
 	let hasFailureMessage = $derived(Boolean(form?.message && form.outcome !== 'created'));
 	let hasErrors = $derived(Object.values(errors).some((messages) => Boolean(messages?.length)));
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Livros', href: resolve('biblioteca/livros') },
+	];
 
 	const getTextValue = (field: string) => {
 		const value = Reflect.get(values, field);
@@ -27,7 +43,6 @@
 		const value = Reflect.get(values, field);
 		return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 	};
-	const errorId = (field: string) => `${field}-errors`;
 
 	let currentStep = $state(1);
 	let isEnhanced = $state(false);
@@ -40,6 +55,7 @@
 	let authorValues = $state(getListValue('autores'));
 	let newAuthorValue = $state(getTextValue('novoAutor'));
 
+	let authorErrors = $derived([...(errors.autores ?? []), ...(authorClientError ? [authorClientError] : [])]);
 	let selectedAuthors = $derived(autores.filter((author) => authorValues.includes(`${author.idautor}`)));
 	let selectedPublisher = $derived(editoras.find((publisher) => `${publisher.ideditora}` === publisherValue));
 	let selectedCollection = $derived(colecoes.find((collection) => `${collection.idserie}` === collectionValue));
@@ -66,253 +82,204 @@
 	};
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/livros')} aria-current="page">Livros</a>
-			</li>
-		</ul>
+<PageHeader {breadcrumb} icon="fa-solid fa-book">Cadastro de livros</PageHeader>
+
+<Card element="form" method="POST" {@attach initializeStepper} {@attach formEnhancer.submitWithLoading}>
+	<nav aria-label="Etapas do cadastro" class="mb-8">
+		<ol class="grid grid-cols-3 gap-2 tablet:gap-4">
+			{#each STEPS as step, index (step)}
+				<li
+					aria-current={currentStep === index + 1 ? 'step' : undefined}
+					class="border-t-4 border-divider pt-2 text-sm text-ink-muted aria-[current=step]:border-primary-600 aria-[current=step]:font-bold aria-[current=step]:text-primary-ink">
+					<span>{step}</span>
+				</li>
+			{/each}
+		</ol>
 	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de livros</h1>
-</div>
 
-<form class="card" method="POST" {@attach initializeStepper} {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<nav class="tabs is-boxed" aria-label="Etapas do cadastro">
-			<ul>
-				<li
-					class={[{ 'has-text-weight-bold': currentStep === 1 }]}
-					aria-current={currentStep === 1 ? 'step' : undefined}>
-					<span>1. Dados do livro&nbsp;&nbsp;</span>
-				</li>
-				<li
-					class={[{ 'has-text-weight-bold': currentStep === 2 }]}
-					aria-current={currentStep === 2 ? 'step' : undefined}>
-					<span>2. Autores&nbsp;&nbsp;</span>
-				</li>
-				<li
-					class={[{ 'has-text-weight-bold': currentStep === 3 }]}
-					aria-current={currentStep === 3 ? 'step' : undefined}>
-					<span>3. Revisão</span>
-				</li>
-			</ul>
-		</nav>
+	<fieldset class="flex flex-col gap-5" hidden={isEnhanced && currentStep !== 1}>
+		<SectionHeading element="legend" icon="fa-solid fa-book" class="mb-5">Dados do livro</SectionHeading>
+		<Field id="tombo" label="Tombo" errors={errors.tombo}>
+			{#snippet control({ describedBy, invalid })}
+				<TextInput
+					type="text"
+					name="tombo"
+					id="tombo"
+					inputmode="numeric"
+					maxlength={8}
+					bind:value={tomboValue}
+					placeholder="Digite o tombo do livro"
+					required
+					aria-describedby={describedBy}
+					aria-invalid={invalid} />
+			{/snippet}
+		</Field>
+		<Field id="titulo" label="Título" errors={errors.titulo}>
+			{#snippet control({ describedBy, invalid })}
+				<TextInput
+					type="text"
+					name="titulo"
+					id="titulo"
+					maxlength={80}
+					bind:value={titleValue}
+					placeholder="Digite o título do livro"
+					required
+					aria-describedby={describedBy}
+					aria-invalid={invalid} />
+			{/snippet}
+		</Field>
+		<Field id="editora" label="Editora" errors={errors.editora}>
+			{#snippet control({ describedBy, invalid })}
+				<Select
+					name="editora"
+					id="editora"
+					bind:value={publisherValue}
+					required
+					aria-describedby={describedBy}
+					aria-invalid={invalid}>
+					<option value="">Selecione uma editora</option>
+					{#each editoras as editora (editora.ideditora)}
+						<option value={`${editora.ideditora}`}>{editora.nome}</option>
+					{/each}
+				</Select>
+			{/snippet}
+		</Field>
+		<Columns>
+			<Column size="half">
+				<Field id="colecao" label="Coleção" errors={errors.colecao}>
+					{#snippet control({ describedBy, invalid })}
+						<Select
+							name="colecao"
+							id="colecao"
+							bind:value={collectionValue}
+							aria-describedby={describedBy}
+							aria-invalid={invalid}>
+							<option value="">Sem coleção</option>
+							{#each colecoes as colecao (colecao.idserie)}
+								<option value={`${colecao.idserie}`}>{colecao.nome}</option>
+							{/each}
+						</Select>
+					{/snippet}
+				</Field>
+			</Column>
+			<Column>
+				<Field
+					id="ordem"
+					label="Ordem na coleção"
+					help="Informe a ordem somente quando houver coleção."
+					helpId="ordem-help"
+					errors={errors.ordem}>
+					{#snippet control({ describedBy, invalid })}
+						<TextInput
+							type="number"
+							name="ordem"
+							id="ordem"
+							min="1"
+							step="1"
+							bind:value={orderValue}
+							placeholder="Ordem na coleção"
+							aria-describedby={describedBy}
+							aria-invalid={invalid} />
+					{/snippet}
+				</Field>
+			</Column>
+		</Columns>
 
-		<fieldset class="book-step" hidden={isEnhanced && currentStep !== 1}>
-			<legend class="is-size-5 has-text-weight-semibold mb-4">Dados do livro</legend>
-			<div class="field">
-				<label class="label" for="tombo">Tombo</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="tombo"
-						id="tombo"
-						inputmode="numeric"
-						maxlength="8"
-						bind:value={tomboValue}
-						placeholder="Digite o tombo do livro"
-						required
-						aria-describedby={errors.tombo?.length ? errorId('tombo') : undefined}
-						aria-invalid={errors.tombo?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.tombo?.length}<div id={errorId('tombo')} class="help is-danger">
-						{#each errors.tombo as message, index (`tombo-${index}`)}<p>{message}</p>{/each}
-					</div>{/if}
+		<ButtonGroup align="end" class="border-t border-divider pt-5" hidden={!isEnhanced}>
+			<Button tone="primary" type="button" onclick={openAuthorsStep}>Próximo: autores</Button>
+		</ButtonGroup>
+	</fieldset>
+
+	<fieldset class="flex flex-col gap-5" hidden={isEnhanced && currentStep !== 2}>
+		<SectionHeading element="legend" icon="fa-solid fa-user-pen" class="mb-5">Autores</SectionHeading>
+		<Field
+			id="autores"
+			label="Autores cadastrados"
+			help="Use Ctrl ou Cmd para selecionar mais de um autor."
+			helpId="autores-help"
+			errors={authorErrors}>
+			{#snippet control({ describedBy, invalid })}
+				<Select
+					name="autores"
+					id="autores"
+					multiple
+					size={6}
+					bind:value={authorValues}
+					aria-describedby={describedBy}
+					aria-invalid={invalid}>
+					{#each autores as autor (autor.idautor)}
+						<option value={`${autor.idautor}`}>{autor.nome}</option>
+					{/each}
+				</Select>
+			{/snippet}
+		</Field>
+		<Field
+			id="novoAutor"
+			label="Novo autor (opcional)"
+			help="Preencha somente se o autor ainda não estiver cadastrado."
+			helpId="novo-autor-help"
+			errors={errors.novoAutor}>
+			{#snippet control({ describedBy, invalid })}
+				<TextInput
+					type="text"
+					name="novoAutor"
+					id="novoAutor"
+					maxlength={AUTHOR_NAME_MAX_LENGTH}
+					bind:value={newAuthorValue}
+					placeholder="Digite o nome completo do novo autor"
+					aria-describedby={describedBy}
+					aria-invalid={invalid} />
+			{/snippet}
+		</Field>
+
+		<ButtonGroup align="between" class="border-t border-divider pt-5" hidden={!isEnhanced}>
+			<Button type="button" onclick={() => (currentStep = 1)}>Voltar</Button>
+			<Button tone="primary" type="button" onclick={openReviewStep}>Próximo: revisão</Button>
+		</ButtonGroup>
+	</fieldset>
+
+	<fieldset class="flex flex-col gap-5" hidden={isEnhanced && currentStep !== 3}>
+		<SectionHeading element="legend" icon="fa-solid fa-list-check" class="mb-5">Revisão</SectionHeading>
+		{#if isEnhanced}
+			<div class="flex flex-col gap-2">
+				<p><strong>Tombo:</strong> {tomboValue || 'Não informado'}</p>
+				<p><strong>Título:</strong> {titleValue || 'Não informado'}</p>
+				<p><strong>Editora:</strong> {selectedPublisher?.nome ?? 'Não informada'}</p>
+				<p><strong>Coleção:</strong> {selectedCollection?.nome ?? 'Sem coleção'}</p>
+				<p><strong>Ordem:</strong> {orderValue || 'Não informada'}</p>
+				<strong>Autores:</strong>
+				<ul class="list-disc pl-6">
+					{#each selectedAuthors as author (author.idautor)}<li>{author.nome}</li>{/each}
+					{#if newAuthorValue.trim()}<li>{newAuthorValue.trim()} (novo)</li>{/if}
+				</ul>
+				<p><strong>Exemplar inicial:</strong> nº 1 — Disponível</p>
 			</div>
+		{:else}
+			<p>
+				Revise os dados preenchidos nas seções anteriores. O cadastro criará o exemplar inicial nº 1 —
+				Disponível.
+			</p>
+		{/if}
 
-			<div class="field">
-				<label class="label" for="titulo">Título</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="titulo"
-						id="titulo"
-						maxlength="80"
-						bind:value={titleValue}
-						placeholder="Digite o título do livro"
-						required
-						aria-describedby={errors.titulo?.length ? errorId('titulo') : undefined}
-						aria-invalid={errors.titulo?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.titulo?.length}<div id={errorId('titulo')} class="help is-danger">
-						{#each errors.titulo as message, index (`titulo-${index}`)}<p>{message}</p>{/each}
-					</div>{/if}
-			</div>
+		{#if hasErrors && currentStep === 3}
+			<InlineNotification kind="danger" role="alert">
+				<p>O cadastro não foi concluído. Volte às etapas anteriores e corrija os campos indicados.</p>
+			</InlineNotification>
+		{/if}
 
-			<div class="field">
-				<label class="label" for="editora">Editora</label>
-				<div class="select is-fullwidth">
-					<select
-						name="editora"
-						id="editora"
-						bind:value={publisherValue}
-						required
-						aria-describedby={errors.editora?.length ? errorId('editora') : undefined}
-						aria-invalid={errors.editora?.length ? 'true' : undefined}>
-						<option value="">Selecione uma editora</option>
-						{#each editoras as editora (editora.ideditora)}<option value={`${editora.ideditora}`}
-								>{editora.nome}</option
-							>{/each}
-					</select>
-				</div>
-				{#if errors.editora?.length}<div id={errorId('editora')} class="help is-danger">
-						{#each errors.editora as message, index (`editora-${index}`)}<p>{message}</p>{/each}
-					</div>{/if}
-			</div>
-
-			<div class="columns">
-				<div class="column is-half">
-					<div class="field">
-						<label class="label" for="colecao">Coleção</label>
-						<div class="select is-fullwidth">
-							<select
-								name="colecao"
-								id="colecao"
-								bind:value={collectionValue}
-								aria-describedby={errors.colecao?.length ? errorId('colecao') : undefined}
-								aria-invalid={errors.colecao?.length ? 'true' : undefined}>
-								<option value="">Sem coleção</option>
-								{#each colecoes as colecao (colecao.idserie)}<option value={`${colecao.idserie}`}
-										>{colecao.nome}</option
-									>{/each}
-							</select>
-						</div>
-						{#if errors.colecao?.length}<div id={errorId('colecao')} class="help is-danger">
-								{#each errors.colecao as message, index (`colecao-${index}`)}<p>{message}</p>{/each}
-							</div>{/if}
-					</div>
-				</div>
-				<div class="column">
-					<div class="field">
-						<label class="label" for="ordem">Ordem na coleção</label>
-						<div class="control">
-							<input
-								class="input"
-								type="number"
-								name="ordem"
-								id="ordem"
-								min="1"
-								step="1"
-								bind:value={orderValue}
-								placeholder="Ordem na coleção"
-								aria-describedby={errors.ordem?.length ? 'ordem-help ordem-errors' : 'ordem-help'}
-								aria-invalid={errors.ordem?.length ? 'true' : undefined} />
-						</div>
-						<p id="ordem-help" class="help">Informe a ordem somente quando houver coleção.</p>
-						{#if errors.ordem?.length}<div id={errorId('ordem')} class="help is-danger">
-								{#each errors.ordem as message, index (`ordem-${index}`)}<p>{message}</p>{/each}
-							</div>{/if}
-					</div>
-				</div>
-			</div>
-
-			<div class="buttons is-right" hidden={!isEnhanced}>
-				<button class="button is-primary" type="button" onclick={openAuthorsStep}>Próximo: autores</button>
-			</div>
-		</fieldset>
-
-		<fieldset class="book-step" hidden={isEnhanced && currentStep !== 2}>
-			<legend class="is-size-5 has-text-weight-semibold mb-4">Autores</legend>
-			<div class="field">
-				<label class="label" for="autores">Autores cadastrados</label>
-				<div class="select is-multiple is-fullwidth">
-					<select
-						name="autores"
-						id="autores"
-						multiple
-						size="6"
-						bind:value={authorValues}
-						aria-describedby="autores-help autores-errors"
-						aria-invalid={errors.autores?.length || authorClientError ? 'true' : undefined}>
-						{#each autores as autor (autor.idautor)}<option value={`${autor.idautor}`}>{autor.nome}</option
-							>{/each}
-					</select>
-				</div>
-				<p id="autores-help" class="help">Use Ctrl ou Cmd para selecionar mais de um autor.</p>
-				{#if errors.autores?.length || authorClientError}
-					<div id="autores-errors" class="help is-danger">
-						{#each errors.autores ?? [] as message, index (`autores-${index}`)}<p>{message}</p>{/each}
-						{#if authorClientError}<p>{authorClientError}</p>{/if}
-					</div>
-				{/if}
-			</div>
-
-			<div class="field">
-				<label class="label" for="novoAutor">Novo autor (opcional)</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="novoAutor"
-						id="novoAutor"
-						maxlength={AUTHOR_NAME_MAX_LENGTH}
-						bind:value={newAuthorValue}
-						placeholder="Digite o nome completo do novo autor"
-						aria-describedby={errors.novoAutor?.length
-							? 'novo-autor-help novoAutor-errors'
-							: 'novo-autor-help'}
-						aria-invalid={errors.novoAutor?.length ? 'true' : undefined} />
-				</div>
-				<p id="novo-autor-help" class="help">Preencha somente se o autor ainda não estiver cadastrado.</p>
-				{#if errors.novoAutor?.length}<div id={errorId('novoAutor')} class="help is-danger">
-						{#each errors.novoAutor as message, index (`novoAutor-${index}`)}<p>{message}</p>{/each}
-					</div>{/if}
-			</div>
-
-			<div class="buttons is-justify-content-space-between" hidden={!isEnhanced}>
-				<button class="button" type="button" onclick={() => (currentStep = 1)}>Voltar</button>
-				<button class="button is-primary" type="button" onclick={openReviewStep}>Próximo: revisão</button>
-			</div>
-		</fieldset>
-
-		<fieldset class="book-step" hidden={isEnhanced && currentStep !== 3}>
-			<legend class="is-size-5 has-text-weight-semibold mb-4">Revisão</legend>
-			{#if isEnhanced}
-				<div class="content">
-					<p><strong>Tombo:</strong> {tomboValue || 'Não informado'}</p>
-					<p><strong>Título:</strong> {titleValue || 'Não informado'}</p>
-					<p><strong>Editora:</strong> {selectedPublisher?.nome ?? 'Não informada'}</p>
-					<p><strong>Coleção:</strong> {selectedCollection?.nome ?? 'Sem coleção'}</p>
-					<p><strong>Ordem:</strong> {orderValue || 'Não informada'}</p>
-					<strong>Autores:</strong>
-					<ul>
-						{#each selectedAuthors as author (author.idautor)}<li>{author.nome}</li>{/each}
-						{#if newAuthorValue.trim()}<li>{newAuthorValue.trim()} (novo)</li>{/if}
-					</ul>
-					<p><strong>Exemplar inicial:</strong> nº 1 — Disponível</p>
-				</div>
-			{:else}
-				<p class="mb-4">
-					Revise os dados preenchidos nas seções anteriores. O cadastro criará o exemplar inicial nº 1 —
-					Disponível.
-				</p>
-			{/if}
-
-			{#if hasErrors && currentStep === 3}
-				<div class="notification is-danger" role="alert">
-					<p>O cadastro não foi concluído. Volte às etapas anteriores e corrija os campos indicados.</p>
-				</div>
-			{/if}
-
-			<div class="buttons is-justify-content-space-between">
-				<button class="button" type="button" hidden={!isEnhanced} onclick={() => (currentStep = 2)}
-					>Voltar aos autores</button>
-				<button
-					aria-busy={formEnhancer.loading}
-					disabled={formEnhancer.loading}
-					formnovalidate={isEnhanced}
-					class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
-					type="submit">
-					<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Cadastrar livro
-				</button>
-			</div>
-		</fieldset>
-	</div>
-</form>
+		<ButtonGroup align="between" class="border-t border-divider pt-5">
+			<Button type="button" hidden={!isEnhanced} onclick={() => (currentStep = 2)}>Voltar aos autores</Button>
+			<Button
+				tone="primary"
+				type="submit"
+				loading={formEnhancer.loading}
+				formnovalidate={isEnhanced}
+				class="font-bold">
+				<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Cadastrar livro
+			</Button>
+		</ButtonGroup>
+	</fieldset>
+</Card>
 
 {#if form?.outcome === 'created'}
 	<Notification kind="success">{form.message ?? 'Livro cadastrado com sucesso.'}</Notification>

@@ -6,12 +6,13 @@ import { getRenderedAnchor, getRenderedInput, parseRenderedBody } from '../../..
 
 describe('reader list page', () => {
 	it('renders the initial searchable form', () => {
-		const { body } = render(Page, { props: { form: { values: { nome: '' }, errors: {} } } });
+		const { body } = render(Page, { props: { form: null } });
 		const document = parseRenderedBody(body);
 		const input = getRenderedInput(document, 'input[name="nome"]');
 
-		expect(document.querySelector('h1')?.textContent).toBe('Consulta de leitores');
+		expect(document.querySelector('h1')?.textContent?.trim()).toBe('Consulta de leitores');
 		expect(input.autocomplete).toBe('name');
+		expect(input.value).toBe('');
 		expect(input.maxLength).toBe(60);
 		expect(input.required).toBe(false);
 		expect(document.body.textContent).not.toContain('Nenhum leitor encontrado.');
@@ -42,6 +43,19 @@ describe('reader list page', () => {
 		expect(getRenderedAnchor(document, 'tbody a').getAttribute('aria-label')).toBe('Editar leitor ANA');
 		expect(document.querySelector('tbody tr td:nth-child(2)')?.textContent).toBe('Sim');
 		expect(document.querySelector('tbody tr td:nth-child(3)')?.textContent).toBe('Inativo');
+	});
+
+	it('labels an active reader who is not a worker', () => {
+		const { body } = render(Page, {
+			props: {
+				form: { leitores: [{ idleitor: 8, nome: 'RUI', trab: false, status: true }], values: { nome: 'Rui' } },
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const cells = [...document.querySelectorAll('tbody tr td')].map((cell) => cell.textContent);
+
+		expect(cells.slice(1, 3)).toEqual(['Não', 'Ativo']);
 	});
 
 	it('shows an empty state after a completed search', () => {

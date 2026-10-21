@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextArea from '#lib/components/forms/TextArea.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { NOTICE_TEXT_MAX_LENGTH } from '#lib/validation/aviso.js';
 	import type { ActionData, PageData } from './$types';
@@ -14,94 +21,62 @@
 	const formEnhancer = createFormEnhancer();
 	let errorMessages = $derived(form?.errors?.texto ?? []);
 	let submittedText = $derived(form?.values?.texto ?? '');
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Avisos', href: resolve('biblioteca/avisos') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active"><a href={resolve('biblioteca/avisos')} aria-current="page">Avisos</a></li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Avisos</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-inbox">Avisos</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="texto">Texto do aviso</label>
-			<div class="control">
-				<textarea
-					class="textarea has-fixed-size"
-					name="texto"
-					id="texto"
-					placeholder="Digite a mensagem"
-					required
-					maxlength={NOTICE_TEXT_MAX_LENGTH}
-					aria-invalid={errorMessages.length > 0 ? 'true' : undefined}
-					aria-describedby={errorMessages.length > 0 ? 'texto-errors' : undefined}
-					bind:value={submittedText}></textarea>
-			</div>
-			{#if errorMessages.length > 0}
-				<div id="texto-errors" class="help is-danger">
-					{#each errorMessages as message (message)}
-						<p>{message}</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						{ 'is-loading': formEnhancer.loading },
-					]}
-					disabled={formEnhancer.loading}
-					type="submit">
-					<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
-				</button>
-			</div>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<Field id="texto" label="Texto do aviso" errors={errorMessages}>
+		{#snippet control({ describedBy, invalid })}
+			<TextArea
+				name="texto"
+				id="texto"
+				placeholder="Digite a mensagem"
+				required
+				maxlength={NOTICE_TEXT_MAX_LENGTH}
+				class="min-h-32 resize-none"
+				aria-invalid={invalid}
+				aria-describedby={describedBy}
+				bind:value={submittedText} />
+		{/snippet}
+	</Field>
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-6 font-bold tablet:min-w-40">
+		<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
+	</Button>
+</Card>
 
 {#if form?.status === 201}
 	<Notification kind="success">Aviso criado com sucesso!</Notification>
 {/if}
 
-<div class="card">
-	<div class="card-content">
-		<div class="table-container">
-			<table class="is-striped is-hoverable is-fullwidth table">
-				<thead>
-					<tr>
-						<th>Texto</th>
-						<th class="table-actions">Ações</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#if data.avisos.length === 0}
-						<tr><td colspan="2">Nenhum aviso cadastrado.</td></tr>
-					{:else}
-						{#each data.avisos as aviso (aviso.idaviso)}
-							<tr>
-								<td>{aviso.texto}</td>
-								<td class="table-actions">
-									<a
-										aria-label={`Editar aviso ${aviso.idaviso}`}
-										href={resolve('/(protected)/biblioteca/avisos/[id=integer]', {
-											id: `${aviso.idaviso}`,
-										})}>
-										<i class="fa-solid fa-pen-to-square fa-fw" aria-hidden="true"></i>
-									</a>
-								</td>
-							</tr>
-						{/each}
-					{/if}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
+<Card class="mt-6 overflow-hidden" padded={false}>
+	<DataTable>
+		{#snippet head()}
+			<tr>
+				<th>Texto</th>
+				<th class="print:hidden">Ações</th>
+			</tr>
+		{/snippet}
+		{#if data.avisos.length === 0}
+			<tr><td colspan="2">Nenhum aviso cadastrado.</td></tr>
+		{:else}
+			{#each data.avisos as aviso (aviso.idaviso)}
+				<tr>
+					<td>{aviso.texto}</td>
+					<td class="print:hidden">
+						<IconAction
+							icon="fa-regular fa-pen-to-square"
+							aria-label={`Editar aviso ${aviso.idaviso}`}
+							href={resolve('/(protected)/biblioteca/avisos/[id=integer]', {
+								id: `${aviso.idaviso}`,
+							})} />
+					</td>
+				</tr>
+			{/each}
+		{/if}
+	</DataTable>
+</Card>

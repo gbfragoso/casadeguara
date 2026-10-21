@@ -17,7 +17,7 @@ it('renders the breadcrumb, a single heading and both receipt copies', () => {
 	const { body } = render(Page, { props: { data: { recibo } } });
 
 	const rendered = parseRenderedBody(body);
-	expect(rendered.querySelector('#breadcrumb nav[aria-label="breadcrumbs"]')).not.toBeNull();
+	expect(rendered.querySelector('header[data-print="hidden"] nav[aria-label="breadcrumbs"]')).not.toBeNull();
 	expect(Array.from(rendered.querySelectorAll('h1')).map((heading) => heading.textContent?.trim())).toEqual([
 		'Recibo',
 	]);

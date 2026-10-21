@@ -6,11 +6,12 @@ import { getRenderedAnchor, getRenderedInput, parseRenderedBody } from '../../..
 
 describe('keyword list page', () => {
 	it('renders the initial search form', () => {
-		const { body } = render(Page, { props: { form: { values: { chave: '' }, errors: {} } } });
+		const { body } = render(Page, { props: { form: null } });
 		const document = parseRenderedBody(body);
 		const input = getRenderedInput(document, 'input[name="chave"]');
 
-		expect(document.querySelector('h1')?.textContent).toBe('Consulta de palavras-chave');
+		expect(document.querySelector('h1')?.textContent?.trim()).toBe('Consulta de palavras-chave');
+		expect(input.value).toBe('');
 		expect(input.maxLength).toBe(30);
 		expect(input.required).toBe(false);
 		expect(document.body.textContent).not.toContain('Nenhuma palavra-chave encontrada.');

@@ -1,5 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData } from './$types';
 
@@ -11,103 +19,69 @@
 	const formEnhancer = createFormEnhancer();
 	let leitores = $derived(form?.leitores);
 	let searchName = $derived(form?.values?.nome ?? '');
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Leitores', href: resolve('biblioteca/leitores') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/leitores')} aria-current="page">Leitores</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de leitores</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-book-open-reader">Consulta de leitores</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="nome">Nome do leitor</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="nome"
-					id="nome"
-					bind:value={searchName}
-					placeholder="Digite o nome do leitor"
-					autocomplete="name"
-					maxlength="60"
-					aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
-					aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
-			</div>
-			{#if form?.errors?.nome?.length}
-				<div id="nome-errors" class="help is-danger">
-					{#each form.errors.nome as message (message)}
-						<p>{message}</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						{ 'is-loading': formEnhancer.loading },
-					]}
-					type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
-				</button>
-			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('biblioteca/leitores/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
-			</div>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<Field id="nome" label="Nome do leitor" errors={form?.errors?.nome}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name="nome"
+				id="nome"
+				bind:value={searchName}
+				placeholder="Digite o nome do leitor"
+				autocomplete="name"
+				maxlength={60}
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+	<ButtonGroup class="mt-6">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-40">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
+		<Button href={resolve('biblioteca/leitores/novo')} tone="warning" class="font-bold tablet:min-w-40">
+			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
+		</Button>
+	</ButtonGroup>
+</Card>
 
 {#if leitores !== undefined}
-	<div class="card">
-		<div class="card-content">
-			{#if leitores.length === 0}
-				<p>Nenhum leitor encontrado.</p>
-			{:else}
-				<div class="table-container">
-					<table class="table is-striped is-hoverable is-fullwidth">
-						<thead>
-							<tr>
-								<th>Nome</th>
-								<th>Trabalhador</th>
-								<th>Status</th>
-								<th class="table-actions">Ações</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each leitores as leitor (leitor.idleitor)}
-								<tr>
-									<td>{leitor.nome}</td>
-									<td>{leitor.trab ? 'Sim' : 'Não'}</td>
-									<td>{leitor.status ? 'Ativo' : 'Inativo'}</td>
-									<td class="table-actions">
-										<a
-											aria-label={`Editar leitor ${leitor.nome}`}
-											href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
-												id: `${leitor.idleitor}`,
-											})}>
-											<i class="fa-solid fa-pen-to-square fa-fw"></i>
-										</a>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
-		</div>
-	</div>
+	{#if leitores.length === 0}
+		<Card class="mt-6"><p>Nenhum leitor encontrado.</p></Card>
+	{:else}
+		<Card class="mt-6 overflow-hidden" padded={false}>
+			<DataTable>
+				{#snippet head()}
+					<tr>
+						<th>Nome</th>
+						<th>Trabalhador</th>
+						<th>Status</th>
+						<th class="print:hidden">Ações</th>
+					</tr>
+				{/snippet}
+				{#each leitores as leitor (leitor.idleitor)}
+					<tr>
+						<td>{leitor.nome}</td>
+						<td>{leitor.trab ? 'Sim' : 'Não'}</td>
+						<td>{leitor.status ? 'Ativo' : 'Inativo'}</td>
+						<td class="print:hidden">
+							<IconAction
+								icon="fa-regular fa-pen-to-square"
+								aria-label={`Editar leitor ${leitor.nome}`}
+								href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
+									id: `${leitor.idleitor}`,
+								})} />
+						</td>
+					</tr>
+				{/each}
+			</DataTable>
+		</Card>
+	{/if}
 {/if}

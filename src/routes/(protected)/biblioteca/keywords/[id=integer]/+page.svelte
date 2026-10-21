@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 
@@ -12,53 +17,31 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let keyword = $derived(data.keyword);
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Palavras-chave', href: resolve('biblioteca/keywords') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/keywords')} aria-current="page">Palavras-chave</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar palavra-chave</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-key">Atualizar palavra-chave</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="chave">Palavra-chave</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="chave"
-					id="chave"
-					value={form?.values?.chave ?? keyword.chave}
-					placeholder="Digite a palavra-chave"
-					maxlength="30"
-					required
-					aria-describedby={form?.errors?.chave?.length ? 'chave-errors' : undefined}
-					aria-invalid={form?.errors?.chave?.length ? 'true' : undefined} />
-			</div>
-			{#if form?.errors?.chave?.length}
-				<div id="chave-errors" class="help is-danger">
-					{#each form.errors.chave as message (message)}
-						<p>{message}</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<div class="control">
-			<button
-				aria-busy={formEnhancer.loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
-				type="submit">Atualizar</button>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<Field id="chave" label="Palavra-chave" errors={form?.errors?.chave}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name="chave"
+				id="chave"
+				value={form?.values?.chave ?? keyword.chave}
+				placeholder="Digite a palavra-chave"
+				maxlength={30}
+				required
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-6 font-bold">Atualizar</Button>
+</Card>
 
 {#if form?.status === 200}
 	<Notification kind="success">Palavra-chave atualizada com sucesso!</Notification>

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { afterNavigate, goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import LoanReceipt from '#lib/components/receipts/LoanReceipt.svelte';
 	import { fulfillPrintRequest } from '#lib/printing/print-request.js';
 	import type { PageServerData } from './$types';
@@ -13,6 +15,11 @@
 	let receiptPath = $derived(
 		resolve('/(protected)/biblioteca/emprestimos/[id=integer]/recibo', { id: String(recibo.idemp) }),
 	);
+	let breadcrumb = $derived([
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Empréstimos', href: resolve('biblioteca/emprestimos') },
+		{ label: 'Recibo', href: receiptPath },
+	]);
 
 	const printReceipt = () => window.print();
 
@@ -25,21 +32,10 @@
 	});
 </script>
 
-<div id="breadcrumb" class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li><a href={resolve('biblioteca/emprestimos')}>Empréstimos</a></li>
-			<li class="is-active">
-				<a href={receiptPath} aria-current="page">Recibo</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Recibo</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-receipt" printTitle={false}>Recibo</PageHeader>
 
 <LoanReceipt {recibo} />
 
-<div class="mt-4 has-text-centered is-hidden-print">
-	<button type="button" class="button is-primary" onclick={printReceipt}>Imprimir recibo</button>
+<div class="mt-4 flex justify-center print:hidden">
+	<Button type="button" tone="primary" onclick={printReceipt}>Imprimir recibo</Button>
 </div>
