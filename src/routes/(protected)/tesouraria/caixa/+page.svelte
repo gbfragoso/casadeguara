@@ -74,7 +74,7 @@
 </Card>
 
 <form id={DEPOSIT_FORM_ID} class="mt-6" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<Button type="submit" tone="success" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">
+	<Button type="submit" tone="success" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 		<i class="fa-solid fa-check fa-fw" aria-hidden="true"></i>Confirmar depósito
 	</Button>
 </form>

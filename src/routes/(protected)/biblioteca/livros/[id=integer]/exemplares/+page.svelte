@@ -69,7 +69,7 @@
 		{#snippet control()}
 			<FieldAddons>
 				<TextInput type="number" name="numero" id="numero" step="1" class="grow" />
-				<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold">Adicionar</Button>
+				<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Adicionar</Button>
 			</FieldAddons>
 		{/snippet}
 	</Field>

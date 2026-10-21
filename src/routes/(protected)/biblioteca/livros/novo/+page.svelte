@@ -269,12 +269,7 @@
 
 		<ButtonGroup align="between" class="border-t border-divider pt-5">
 			<Button type="button" hidden={!isEnhanced} onclick={() => (currentStep = 2)}>Voltar aos autores</Button>
-			<Button
-				tone="primary"
-				type="submit"
-				loading={formEnhancer.loading}
-				formnovalidate={isEnhanced}
-				class="font-bold">
+			<Button tone="primary" type="submit" loading={formEnhancer.loading} formnovalidate={isEnhanced} bold>
 				<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Cadastrar livro
 			</Button>
 		</ButtonGroup>

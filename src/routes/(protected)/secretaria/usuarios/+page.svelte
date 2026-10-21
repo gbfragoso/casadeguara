@@ -31,10 +31,10 @@
 		{/snippet}
 	</Field>
 	<ButtonGroup class="mt-6">
-		<Button type="submit" tone="primary" class="font-bold tablet:min-w-40">
+		<Button type="submit" tone="primary" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('secretaria/usuarios/novo')} tone="warning" class="font-bold tablet:min-w-40">
+		<Button href={resolve('secretaria/usuarios/novo')} tone="warning" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>

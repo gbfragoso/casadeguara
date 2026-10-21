@@ -37,6 +37,20 @@ describe('Field', () => {
 		expect(getElement(target, 'label', HTMLLabelElement).htmlFor).toBe('tombo');
 	});
 
+	it('shows a repeated error message once', async () => {
+		const message = 'Selecione ou cadastre ao menos um autor.';
+
+		const target = await renderComponent(Field, {
+			id: 'autores',
+			label: 'Autores',
+			errors: [message, message],
+			control: createControl([]),
+		});
+
+		const errors = getElement(target, '#autores-errors', HTMLDivElement);
+		expect([...errors.querySelectorAll('p')].map((paragraph) => paragraph.textContent)).toEqual([message]);
+	});
+
 	it('uses the error and help ids given by the screen', async () => {
 		const received: ControlState[] = [];
 

@@ -1,6 +1,6 @@
 {
 	"environment": {
-		"capturedAt": "2026-09-01T17:44:38.828Z",
+		"capturedAt": "2026-10-21T15:24:06.394Z",
 		"schemaRevision": "e33fe9014fa72ce492b95cb4b5fe47aa2160b414",
 		"docker": {
 			"image": "postgres:16.14-alpine",
@@ -37,10 +37,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" order by unaccent(\"livro\".\"titulo\") limit $1",
 				"params": [50]
 			},
-			"p50Ms": 3.2256999999999607,
-			"p95Ms": 4.758399999999938,
-			"minMs": 2.4088000000001557,
-			"maxMs": 6.764900000000125
+			"p50Ms": 5.863900000000285,
+			"p95Ms": 14.630299999999806,
+			"minMs": 4.569500000000062,
+			"maxMs": 20.813900000000103
 		},
 		{
 			"name": "tombo-existente",
@@ -51,10 +51,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" where \"livro\".\"tombo\" = $1 order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["1", 50]
 			},
-			"p50Ms": 0.9017999999998665,
-			"p95Ms": 1.3251000000000204,
-			"minMs": 0.781099999999924,
-			"maxMs": 5.11019999999985
+			"p50Ms": 1.2143000000000939,
+			"p95Ms": 2.4624000000003434,
+			"minMs": 1.0954000000001543,
+			"maxMs": 7.038199999999961
 		},
 		{
 			"name": "tombo-ausente",
@@ -65,10 +65,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" where \"livro\".\"tombo\" = $1 order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["99999999", 50]
 			},
-			"p50Ms": 0.8461999999999534,
-			"p95Ms": 1.1014000000000124,
-			"minMs": 0.7349999999999,
-			"maxMs": 1.2775000000001455
+			"p50Ms": 1.1615999999999076,
+			"p95Ms": 1.2683999999999287,
+			"minMs": 1.0976000000000568,
+			"maxMs": 2.0448999999998705
 		},
 		{
 			"name": "titulo-prefixo-amplo",
@@ -79,10 +79,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" where unaccent(\"livro\".\"titulo\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["titulo%", 50]
 			},
-			"p50Ms": 4.660900000000311,
-			"p95Ms": 6.824399999999969,
-			"minMs": 4.256900000000314,
-			"maxMs": 10.130299999999806
+			"p50Ms": 10.278900000000249,
+			"p95Ms": 16.32219999999961,
+			"minMs": 7.930400000000191,
+			"maxMs": 23.74249999999938
 		},
 		{
 			"name": "titulo-exato",
@@ -93,10 +93,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" where unaccent(\"livro\".\"titulo\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["Título Grupo 0001 Livro 000001%", 50]
 			},
-			"p50Ms": 4.008299999999963,
-			"p95Ms": 5.059099999999944,
-			"minMs": 3.6851000000001477,
-			"maxMs": 5.788300000000163
+			"p50Ms": 9.3733000000002,
+			"p95Ms": 16.865700000000288,
+			"minMs": 6.468499999999949,
+			"maxMs": 28.33050000000003
 		},
 		{
 			"name": "autor-prefixo-amplo",
@@ -107,10 +107,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", '' as keyword, '' as referencia from \"livro\" inner join \"autor_has_livro\" on \"autor_has_livro\".\"livro\" = \"livro\".\"idlivro\" inner join \"autor\" on \"autor_has_livro\".\"autor\" = \"autor\".\"idautor\" where unaccent(\"autor\".\"nome\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["autor%", 50]
 			},
-			"p50Ms": 7.79509999999982,
-			"p95Ms": 11.645599999999831,
-			"minMs": 7.097299999999905,
-			"maxMs": 13.284300000000258
+			"p50Ms": 18.593800000000556,
+			"p95Ms": 23.857599999999366,
+			"minMs": 14.136399999999412,
+			"maxMs": 27.17150000000038
 		},
 		{
 			"name": "autor-exato",
@@ -121,10 +121,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", '' as keyword, '' as referencia from \"livro\" inner join \"autor_has_livro\" on \"autor_has_livro\".\"livro\" = \"livro\".\"idlivro\" inner join \"autor\" on \"autor_has_livro\".\"autor\" = \"autor\".\"idautor\" where unaccent(\"autor\".\"nome\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["Autor Grupo 0001 Nome 000341%", 50]
 			},
-			"p50Ms": 2.809400000000096,
-			"p95Ms": 3.5935000000008586,
-			"minMs": 2.0304000000005544,
-			"maxMs": 4.5002000000004045
+			"p50Ms": 3.960000000000946,
+			"p95Ms": 10.25460000000021,
+			"minMs": 3.355599999998958,
+			"maxMs": 12.078700000000026
 		},
 		{
 			"name": "editora-prefixo-amplo",
@@ -135,10 +135,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", '' as keyword, '' as referencia from \"livro\" left join \"editora\" on \"livro\".\"editora\" = \"editora\".\"ideditora\" where unaccent(\"editora\".\"nome\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["editora%", 50]
 			},
-			"p50Ms": 2.108100000000377,
-			"p95Ms": 2.796299999999974,
-			"minMs": 1.970499999999447,
-			"maxMs": 3.5291000000006534
+			"p50Ms": 4.584600000000137,
+			"p95Ms": 11.41400000000067,
+			"minMs": 3.5925999999999476,
+			"maxMs": 15.779900000001362
 		},
 		{
 			"name": "editora-exata",
@@ -149,10 +149,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", '' as keyword, '' as referencia from \"livro\" left join \"editora\" on \"livro\".\"editora\" = \"editora\".\"ideditora\" where unaccent(\"editora\".\"nome\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["Editora Grupo 0009 Nome 000079%", 50]
 			},
-			"p50Ms": 1.1468000000004395,
-			"p95Ms": 1.6017000000001644,
-			"minMs": 0.9949999999998909,
-			"maxMs": 2.1468999999997322
+			"p50Ms": 1.9605999999985215,
+			"p95Ms": 7.304500000000189,
+			"minMs": 1.6648999999997613,
+			"maxMs": 17.674200000001292
 		},
 		{
 			"name": "colecao-ampla",
@@ -163,10 +163,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" where \"livro\".\"serie\" = $1 order by \"livro\".\"ordem\" limit $2",
 				"params": [1, 50]
 			},
-			"p50Ms": 1.0084999999999127,
-			"p95Ms": 1.4099999999998545,
-			"minMs": 0.9574000000002343,
-			"maxMs": 3.7727999999997337
+			"p50Ms": 1.4331999999994878,
+			"p95Ms": 6.015299999999115,
+			"minMs": 1.2749000000003434,
+			"maxMs": 13.441100000000006
 		},
 		{
 			"name": "colecao-restrita",
@@ -177,10 +177,10 @@
 				"sql": "select \"idlivro\", \"tombo\", \"titulo\", '' as keyword, '' as referencia from \"livro\" where \"livro\".\"serie\" = $1 order by \"livro\".\"ordem\" limit $2",
 				"params": [8, 50]
 			},
-			"p50Ms": 0.7704000000003361,
-			"p95Ms": 0.991399999999885,
-			"minMs": 0.7044999999998254,
-			"maxMs": 1.2011999999995169
+			"p50Ms": 1.347700000000259,
+			"p95Ms": 4.5908999999992375,
+			"minMs": 1.2122999999992317,
+			"maxMs": 10.749700000000303
 		},
 		{
 			"name": "keyword-prefixo-amplo",
@@ -191,10 +191,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", \"keyword\".\"chave\", \"livro_has_keyword\".\"referencia\" from \"livro\" left join \"livro_has_keyword\" on \"livro_has_keyword\".\"livro\" = \"livro\".\"idlivro\" inner join \"keyword\" on \"livro_has_keyword\".\"keyword\" = \"keyword\".\"idkeyword\" where unaccent(\"keyword\".\"chave\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["chave%", 50]
 			},
-			"p50Ms": 1.7325000000000728,
-			"p95Ms": 1.9965000000001965,
-			"minMs": 1.6409999999996217,
-			"maxMs": 2.3289999999997235
+			"p50Ms": 3.833199999999124,
+			"p95Ms": 12.441600000000108,
+			"minMs": 2.6981999999989057,
+			"maxMs": 15.982500000000073
 		},
 		{
 			"name": "keyword-exata",
@@ -205,10 +205,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", \"keyword\".\"chave\", \"livro_has_keyword\".\"referencia\" from \"livro\" left join \"livro_has_keyword\" on \"livro_has_keyword\".\"livro\" = \"livro\".\"idlivro\" inner join \"keyword\" on \"livro_has_keyword\".\"keyword\" = \"keyword\".\"idkeyword\" where unaccent(\"keyword\".\"chave\") ilike unaccent($1) order by unaccent(\"livro\".\"titulo\") limit $2",
 				"params": ["Chave Grupo 0002 Item 000032%", 50]
 			},
-			"p50Ms": 1.3119000000006054,
-			"p95Ms": 1.6297999999997046,
-			"minMs": 1.266099999999824,
-			"maxMs": 1.8103000000000975
+			"p50Ms": 2.4117999999998574,
+			"p95Ms": 9.678900000000795,
+			"minMs": 1.847700000000259,
+			"maxMs": 17.373199999999997
 		},
 		{
 			"name": "todos-os-filtros",
@@ -227,10 +227,10 @@
 					50
 				]
 			},
-			"p50Ms": 3.0678999999990992,
-			"p95Ms": 3.7267000000001644,
-			"minMs": 2.7986000000000786,
-			"maxMs": 4.808799999999792
+			"p50Ms": 5.9320000000006985,
+			"p95Ms": 13.693600000000515,
+			"minMs": 4.625900000000911,
+			"maxMs": 24.5083999999988
 		},
 		{
 			"name": "joins-maior-cardinalidade",
@@ -241,10 +241,10 @@
 				"sql": "select \"livro\".\"idlivro\", \"livro\".\"tombo\", \"livro\".\"titulo\", \"keyword\".\"chave\", \"livro_has_keyword\".\"referencia\" from \"livro\" left join \"editora\" on \"livro\".\"editora\" = \"editora\".\"ideditora\" inner join \"autor_has_livro\" on \"autor_has_livro\".\"livro\" = \"livro\".\"idlivro\" inner join \"autor\" on \"autor_has_livro\".\"autor\" = \"autor\".\"idautor\" left join \"livro_has_keyword\" on \"livro_has_keyword\".\"livro\" = \"livro\".\"idlivro\" inner join \"keyword\" on \"livro_has_keyword\".\"keyword\" = \"keyword\".\"idkeyword\" where (unaccent(\"editora\".\"nome\") ilike unaccent($1) and unaccent(\"autor\".\"nome\") ilike unaccent($2) and unaccent(\"keyword\".\"chave\") ilike unaccent($3)) order by unaccent(\"livro\".\"titulo\") limit $4",
 				"params": ["editora%", "autor%", "chave%", 50]
 			},
-			"p50Ms": 10.128600000000006,
-			"p95Ms": 11.184799999999996,
-			"minMs": 9.467500000000655,
-			"maxMs": 14.32510000000002
+			"p50Ms": 22.99250000000029,
+			"p95Ms": 32.96439999999893,
+			"minMs": 17.79280000000108,
+			"maxMs": 46.29830000000038
 		}
 	]
 }

@@ -42,7 +42,7 @@
 				bind:value={submittedText} />
 		{/snippet}
 	</Field>
-	<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-6 font-bold tablet:min-w-40"
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="mt-6 tablet:min-w-40"
 		>Atualizar</Button>
 </Card>
 

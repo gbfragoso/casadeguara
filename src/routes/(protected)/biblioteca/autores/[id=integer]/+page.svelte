@@ -40,7 +40,7 @@
 				aria-invalid={invalid} />
 		{/snippet}
 	</Field>
-	<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-6 font-bold">Atualizar</Button>
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="mt-6">Atualizar</Button>
 </Card>
 
 {#if form?.status === 200}

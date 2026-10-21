@@ -96,7 +96,7 @@
 		</Column>
 	</Columns>
 	<div>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-1 font-bold">Atualizar</Button>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="mt-1">Atualizar</Button>
 	</div>
 </Card>
 

@@ -73,12 +73,8 @@
 		</Column>
 	</Columns>
 	<div>
-		<Button
-			type="submit"
-			tone="primary"
-			loading={formEnhancer.loading}
-			disabled={!readerId || !copyId}
-			class="font-bold">Cadastrar</Button>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} disabled={!readerId || !copyId} bold
+			>Cadastrar</Button>
 	</div>
 </Card>
 {#if form?.status === 400}

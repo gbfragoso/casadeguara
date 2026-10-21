@@ -45,7 +45,7 @@
 			<option value={month.value}>{month.label}</option>
 		{/each}
 	</Select>
-	<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 		<i class="fa-regular fa-rectangle-list fa-fw" aria-hidden="true"></i>Gerar lista
 	</Button>
 </Card>

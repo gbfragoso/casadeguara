@@ -24,7 +24,7 @@
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<AttendanceFilters />
 	<div class="flex flex-col gap-3 tablet:flex-row tablet:items-center tablet:gap-6">
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-regular fa-rectangle-list fa-fw" aria-hidden="true"></i>Gerar Lista
 		</Button>
 		<a class="inline-flex min-h-10 items-center underline" href={resolve('secretaria/frequencia/registro')}

@@ -135,5 +135,5 @@
 	{#if errors.form?.length}
 		<ErrorMessage role="alert">{errors.form.join(' ')}</ErrorMessage>
 	{/if}
-	<Button type="submit" tone="primary" fullwidth loading={formEnhancer.loading} class="font-bold">Cadastrar</Button>
+	<Button type="submit" tone="primary" fullwidth loading={formEnhancer.loading} bold>Cadastrar</Button>
 </Card>

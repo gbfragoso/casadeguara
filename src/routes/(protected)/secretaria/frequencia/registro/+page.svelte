@@ -30,7 +30,7 @@
 	{@attach formEnhancer.submitWithLoading}>
 	<AttendanceFilters />
 	<div>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-regular fa-rectangle-list fa-fw" aria-hidden="true"></i>Gerar Lista
 		</Button>
 	</div>
@@ -73,7 +73,7 @@
 			{/each}
 		</DataTable>
 		<div class="print:hidden">
-			<Button type="submit" tone="success" loading={formEnhancer.loading} fullwidth class="font-bold">
+			<Button type="submit" tone="success" loading={formEnhancer.loading} fullwidth bold>
 				<i class="fa-solid fa-check fa-fw" aria-hidden="true"></i>Concluir registro
 			</Button>
 		</div>

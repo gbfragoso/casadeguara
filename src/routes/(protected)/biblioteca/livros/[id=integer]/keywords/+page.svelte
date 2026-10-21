@@ -80,7 +80,7 @@
 		{/snippet}
 	</Field>
 	<div>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold">Adicionar</Button>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Adicionar</Button>
 	</div>
 </Card>
 

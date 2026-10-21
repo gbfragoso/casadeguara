@@ -64,8 +64,7 @@
 				</p>
 			{/if}
 			<div>
-				<Button type="submit" tone="danger" loading={formEnhancer.loading} class="font-bold"
-					>Confirmar estorno</Button>
+				<Button type="submit" tone="danger" loading={formEnhancer.loading} bold>Confirmar estorno</Button>
 			</div>
 		</form>
 	</Card>

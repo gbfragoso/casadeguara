@@ -64,7 +64,7 @@
 		</Field>
 	</div>
 	<div class="mt-6">
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-40">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
 	</div>

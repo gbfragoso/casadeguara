@@ -98,7 +98,7 @@
 		<ErrorMessage role="alert">{periodErrors.join(' ')}</ErrorMessage>
 	{/if}
 	<div>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
 	</div>

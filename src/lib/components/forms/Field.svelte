@@ -19,7 +19,8 @@
 
 	let resolvedErrorsId = $derived(errorsId ?? `${id}-errors`);
 	let resolvedHelpId = $derived(helpId ?? `${id}-help`);
-	let invalid: 'true' | undefined = $derived(errors.length > 0 ? 'true' : undefined);
+	let messages = $derived([...new Set(errors)]);
+	let invalid: 'true' | undefined = $derived(messages.length > 0 ? 'true' : undefined);
 	let describedBy = $derived(
 		[help && resolvedHelpId, invalid && resolvedErrorsId].filter(Boolean).join(' ') || undefined,
 	);
@@ -34,7 +35,7 @@
 	{#if invalid}
 		<ErrorMessage element="div" id={resolvedErrorsId}>
 			<div>
-				{#each errors as message (message)}
+				{#each messages as message (message)}
 					<p>{message}</p>
 				{/each}
 			</div>

@@ -38,7 +38,7 @@
 				aria-invalid={invalid} />
 		{/snippet}
 	</Field>
-	<Button type="submit" tone="primary" loading={formEnhancer.loading} class="mt-6 font-bold">Cadastrar</Button>
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="mt-6">Cadastrar</Button>
 </Card>
 
 {#if form?.status === 201}

@@ -132,10 +132,10 @@
 		{/if}
 	</Columns>
 	<ButtonGroup>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('tesouraria/lancamentos/novo')} tone="warning" class="font-bold tablet:min-w-50">
+		<Button href={resolve('tesouraria/lancamentos/novo')} tone="warning" bold class="tablet:min-w-50">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo lançamento
 		</Button>
 	</ButtonGroup>

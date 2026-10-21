@@ -8,6 +8,7 @@
 		tone?: ButtonTone;
 		size?: ButtonSize;
 		fullwidth?: boolean;
+		bold?: boolean;
 		rounded?: boolean;
 		loading?: boolean;
 		class?: ClassValue;
@@ -20,7 +21,7 @@
 		);
 
 	const BASE =
-		'relative inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:not-aria-busy:opacity-55 aria-busy:text-transparent';
+		'relative inline-flex items-center justify-center gap-2 rounded-md transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:not-aria-busy:opacity-55 aria-busy:text-transparent';
 
 	const TONES: Record<ButtonTone, string> = {
 		default: 'border border-line bg-surface text-ink-strong hover:bg-surface-muted',
@@ -53,6 +54,7 @@
 		tone = 'default',
 		size = 'normal',
 		fullwidth = false,
+		bold = false,
 		rounded = false,
 		loading,
 		class: className,
@@ -65,6 +67,7 @@
 		TONES[tone],
 		SIZES[size],
 		fullwidth ? 'w-full' : 'w-full tablet:w-auto',
+		bold ? 'font-bold' : 'font-medium',
 		rounded && 'rounded-full',
 		className,
 	]);

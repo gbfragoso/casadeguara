@@ -23,7 +23,7 @@
 	<p class="mb-6 text-center text-2xl text-ink-strong">Selecione o módulo</p>
 	<div class="flex flex-col gap-3">
 		{#each availableModules as module (module.role)}
-			<Button href={resolve(module.path)} fullwidth class="min-h-12 font-bold">{module.role}</Button>
+			<Button href={resolve(module.path)} fullwidth bold class="min-h-12">{module.role}</Button>
 		{/each}
 	</div>
 </AccessCard>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 	import Section from '#lib/components/layout/Section.svelte';
 	import ModuleSidebar from '#lib/components/navigation/ModuleSidebar.svelte';
 	import Navbar from '#lib/components/navigation/Navbar.svelte';
@@ -15,6 +16,10 @@
 
 	let { items, isAdmin, username, userid, children }: Props = $props();
 	let sidebarExpanded = $state(false);
+
+	afterNavigate(() => {
+		sidebarExpanded = false;
+	});
 </script>
 
 <main class="flex min-h-dvh">

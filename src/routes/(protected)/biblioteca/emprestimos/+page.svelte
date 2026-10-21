@@ -42,8 +42,12 @@
 
 	let { data, form }: Props = $props();
 	let { isAdmin } = $derived(data);
-	const formEnhancer = createFormEnhancer();
 	let loanUpdates: Record<number, LoanUpdate> = $state({});
+	const formEnhancer = createFormEnhancer({
+		afterUpdate: () => {
+			loanUpdates = {};
+		},
+	});
 	const breadcrumb = [
 		{ label: 'Biblioteca', href: resolve('biblioteca') },
 		{ label: 'Empréstimos', href: resolve('biblioteca/emprestimos') },
@@ -108,10 +112,10 @@
 		<Checkbox name="atrasados" id="atrasados">Somente atrasados</Checkbox>
 	</ChoiceGroup>
 	<ButtonGroup>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-40">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('biblioteca/emprestimos/novo')} tone="warning" class="font-bold tablet:min-w-40">
+		<Button href={resolve('biblioteca/emprestimos/novo')} tone="warning" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>

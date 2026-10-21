@@ -46,7 +46,7 @@
 					<TextInput id="nextDrawDate" type="date" name="nextDrawDate" required />
 				{/snippet}
 			</Field>
-			<Button type="submit" tone="primary" class="font-bold">Baixar cartões em PDF</Button>
+			<Button type="submit" tone="primary" bold>Baixar cartões em PDF</Button>
 		</form>
 		<DataTable class="-mx-5 tablet:-mx-6">
 			{#snippet head()}

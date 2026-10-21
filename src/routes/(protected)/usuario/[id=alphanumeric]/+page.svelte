@@ -33,7 +33,7 @@
 				{/snippet}
 			</Field>
 			<div>
-				<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold">Atualizar</Button>
+				<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Atualizar</Button>
 			</div>
 		</Card>
 

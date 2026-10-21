@@ -41,7 +41,7 @@
 			{/snippet}
 		</Field>
 		<div class="pt-2">
-			<Button tone="primary" fullwidth loading={formEnhancer.loading} class="font-bold">Entrar</Button>
+			<Button tone="primary" fullwidth loading={formEnhancer.loading} bold>Entrar</Button>
 		</div>
 		{#each generalErrors as message (message)}
 			<ErrorMessage>{message}</ErrorMessage>

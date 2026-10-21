@@ -1,9 +1,11 @@
 // @vitest-environment happy-dom
-import { tick } from 'svelte';
+import { flushSync, tick } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterNavigate, type AfterNavigate } from '$app/navigation';
 
 const pageState = vi.hoisted(() => ({ url: new URL('http://localhost/tesouraria') }));
 vi.mock('$app/state', () => ({ page: pageState }));
+vi.mock('$app/navigation', () => ({ afterNavigate: vi.fn() }));
 
 import ModuleShell from '#lib/components/layout/ModuleShell.svelte';
 import { getElement, htmlSnippet, renderComponent } from '../support/render-component.js';
@@ -27,7 +29,10 @@ const renderShell = () =>
 	});
 
 describe('ModuleShell', () => {
-	afterEach(() => document.documentElement.removeAttribute('data-theme'));
+	afterEach(() => {
+		document.documentElement.removeAttribute('data-theme');
+		vi.mocked(afterNavigate).mockReset();
+	});
 
 	it('expands and collapses the sidebar from the top bar menu button', async () => {
 		const target = await renderShell();
@@ -44,6 +49,19 @@ describe('ModuleShell', () => {
 		await tick();
 
 		expect([expanded, menuButton.getAttribute('aria-expanded')]).toEqual(['true', 'false']);
+	});
+
+	it('collapses the expanded sidebar after a navigation', async () => {
+		const target = await renderShell();
+		const menuButton = getElement(target, '[aria-label="menu"]', HTMLButtonElement);
+		const [onNavigate] = vi.mocked(afterNavigate).mock.calls[0];
+		menuButton.click();
+		await tick();
+
+		onNavigate({} as AfterNavigate);
+		flushSync();
+
+		expect(menuButton.getAttribute('aria-expanded')).toBe('false');
 	});
 
 	it('switches the theme from the top bar', async () => {

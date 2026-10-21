@@ -117,6 +117,20 @@ describe('loans page actions', () => {
 		expect([whileLoading, search()]).toEqual(['true', 'false']);
 	});
 
+	it('discards the row updates when a new search returns', async () => {
+		const { target } = await mountLoans(true, new Response('2099-01-24', { status: 200 }));
+		clickAction(target, 'Renovar');
+		await vi.waitFor(() => expect(readStatus(target)).toBe('Renovado'));
+
+		await enhancerState.submits[0]()({ update: async () => undefined });
+		flushSync();
+
+		expect([readStatus(target), target.querySelector<HTMLButtonElement>('#renovar-51')?.disabled]).toEqual([
+			'Ativo',
+			false,
+		]);
+	});
+
 	it('notifies the operation result returned to the page', async () => {
 		vi.stubGlobal('fetch', vi.fn());
 		const target = document.createElement('div');

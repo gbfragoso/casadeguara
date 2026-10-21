@@ -55,7 +55,7 @@
 		{/snippet}
 	</Field>
 	<div>
-		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold">Cadastrar</Button>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Cadastrar</Button>
 	</div>
 </Card>
 

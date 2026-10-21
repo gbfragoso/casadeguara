@@ -39,6 +39,19 @@ test.describe('menu lateral dos módulos', () => {
 		});
 	}
 
+	test('E2E-01 recolhe o menu aberto depois de navegar por um item', async ({ page, e2e }) => {
+		await page.setViewportSize({ width: TOUCH_WIDTHS[0], height: VIEWPORT_HEIGHT });
+		await openModulePage(page, e2e);
+		const { sidebar, menuButton } = shellRegions(page);
+		await menuButton.click();
+
+		await sidebar.getByRole('link', { name: 'livros' }).click();
+
+		await expect(page).toHaveURL(/\/biblioteca\/livros$/);
+		await expect(sidebar).toBeHidden();
+		await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+	});
+
 	test('E2E-02 mantém o menu na janela após rolar o documento até o fim', async ({ page, e2e }) => {
 		await page.setViewportSize({ width: 1366, height: VIEWPORT_HEIGHT });
 		await openModulePage(page, e2e);
