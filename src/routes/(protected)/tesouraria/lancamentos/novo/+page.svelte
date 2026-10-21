@@ -1,7 +1,16 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
 	import BrlAmountInput from '#lib/components/forms/BrlAmountInput.svelte';
+	import Checkbox from '#lib/components/forms/Checkbox.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageData } from './$types';
 
@@ -19,11 +28,16 @@
 	let counterpartId = $derived(values.contraparteId ?? '');
 	let depositado = $derived(values.depositado === 'true');
 	let amountValue = $derived(values.valor ?? '');
+	let isEntry = $derived(type === 'entrada');
 
 	const formEnhancer = createFormEnhancer();
+	const breadcrumb = [
+		{ label: 'Tesouraria', href: resolve('tesouraria') },
+		{ label: 'Lançamentos', href: resolve('tesouraria/lancamentos') },
+		{ label: 'Novo', href: resolve('tesouraria/lancamentos/novo') },
+	];
 	const value = (field: string) => values[field] ?? '';
 	const fieldErrors = (field: string) => errors[field] ?? [];
-	const ariaInvalid = (field: string) => (fieldErrors(field).length ? 'true' : undefined);
 	const changeType = (event: Event) => {
 		type = (event.currentTarget as HTMLSelectElement).value as 'entrada' | 'saida';
 		counterpartId = '';
@@ -31,35 +45,22 @@
 	};
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
-			<li><a href={resolve('tesouraria/lancamentos')}>Lançamentos</a></li>
-			<li class="is-active"><a href={resolve('tesouraria/lancamentos/novo')} aria-current="page">Novo</a></li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Novo lançamento</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-wallet">Novo lançamento</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="tipo">Tipo</label>
-			<div class="select is-fullwidth">
-				<select class="select" id="tipo" name="tipo" value={type} onchange={changeType}>
-					<option value="entrada">Entrada</option><option value="saida">Saída</option>
-				</select>
-			</div>
-		</div>
-		<div class="field">
-			<label class="label" for="contraparteId">
-				{#if type === 'entrada'}
-					Doador (obrigatório)
-				{:else}
-					Favorecido (opcional)
-				{/if}
-			</label>
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Field id="tipo" label="Tipo">
+		{#snippet control()}
+			<Select id="tipo" name="tipo" value={type} onchange={changeType}>
+				<option value="entrada">Entrada</option>
+				<option value="saida">Saída</option>
+			</Select>
+		{/snippet}
+	</Field>
+	<Field
+		id="contraparteId"
+		label={isEntry ? 'Doador (obrigatório)' : 'Favorecido (opcional)'}
+		errors={fieldErrors('contraparteId')}>
+		{#snippet control({ describedBy, invalid })}
 			{#key form}
 				{#key type}
 					<Autocomplete
@@ -67,85 +68,73 @@
 						name="contraparteId"
 						options={counterpartOptions}
 						bind:value={counterpartId}
-						required={type === 'entrada'}
-						placeholder={type === 'entrada'
+						required={isEntry}
+						placeholder={isEntry
 							? 'Pesquise e selecione um contribuinte'
 							: 'Pesquise um favorecido (opcional)'}
-						invalid={ariaInvalid('contraparteId')}
-						describedBy={fieldErrors('contraparteId').length ? 'contraparteId-errors' : undefined} />
+						{invalid}
+						{describedBy} />
 				{/key}
 			{/key}
-			{#if fieldErrors('contraparteId').length}<p id="contraparteId-errors" class="help is-danger">
-					{fieldErrors('contraparteId').join(' ')}
-				</p>{/if}
-		</div>
-		<div class="field">
-			<label class="label" for="descricao">Descrição</label>
-			<input
-				class="input"
+		{/snippet}
+	</Field>
+	<Field id="descricao" label="Descrição" errors={fieldErrors('descricao')}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
 				id="descricao"
 				name="descricao"
-				maxlength="200"
+				maxlength={200}
 				required
 				placeholder="Discriminação do valor"
 				value={value('descricao')}
-				aria-invalid={ariaInvalid('descricao')}
-				aria-describedby={fieldErrors('descricao').length ? 'descricao-errors' : undefined} />
-			{#if fieldErrors('descricao').length}<p id="descricao-errors" class="help is-danger">
-					{fieldErrors('descricao').join(' ')}
-				</p>{/if}
-		</div>
-		<div class="columns">
-			<div class="field column">
-				<label class="label" for="valor">Valor</label>
-				{#key form}
-					<BrlAmountInput
-						id="valor"
-						name="valor"
-						bind:value={amountValue}
+				aria-invalid={invalid}
+				aria-describedby={describedBy} />
+		{/snippet}
+	</Field>
+	<Columns>
+		<Column>
+			<Field id="valor" label="Valor" errors={fieldErrors('valor')}>
+				{#snippet control({ describedBy, invalid })}
+					{#key form}
+						<BrlAmountInput
+							id="valor"
+							name="valor"
+							bind:value={amountValue}
+							required
+							{invalid}
+							{describedBy} />
+					{/key}
+				{/snippet}
+			</Field>
+		</Column>
+		<Column>
+			<Field
+				id="dataLancamento"
+				label={isEntry ? 'Data do recebimento' : 'Data do pagamento'}
+				errors={fieldErrors('dataLancamento')}>
+				{#snippet control({ describedBy, invalid })}
+					<TextInput
+						type="date"
+						id="dataLancamento"
+						name="dataLancamento"
 						required
-						invalid={ariaInvalid('valor')}
-						describedBy={fieldErrors('valor').length ? 'valor-errors' : undefined} />
-				{/key}
-				{#if fieldErrors('valor').length}<p id="valor-errors" class="help is-danger">
-						{fieldErrors('valor').join(' ')}
-					</p>{/if}
-			</div>
-			<div class="field column">
-				<label class="label" for="dataLancamento"
-					>Data do {#if type === 'entrada'}
-						recebimento
-					{:else}
-						pagamento
-					{/if}</label
-				><input
-					class="input"
-					type="date"
-					id="dataLancamento"
-					name="dataLancamento"
-					required
-					value={value('dataLancamento')}
-					aria-invalid={ariaInvalid('dataLancamento')}
-					aria-describedby={fieldErrors('dataLancamento').length
-						? 'dataLancamento-errors'
-						: undefined} />{#if fieldErrors('dataLancamento').length}<p
-						id="dataLancamento-errors"
-						class="help is-danger">
-						{fieldErrors('dataLancamento').join(' ')}
-					</p>{/if}
-			</div>
+						value={value('dataLancamento')}
+						aria-invalid={invalid}
+						aria-describedby={describedBy} />
+				{/snippet}
+			</Field>
+		</Column>
+	</Columns>
+	{#if isEntry}
+		<div>
+			<Checkbox id="depositado" name="depositado" value="true" bind:checked={depositado}
+				>Depósito confirmado</Checkbox>
 		</div>
-		{#if type === 'entrada'}
-			<div class="field">
-				<label class="checkbox" for="depositado"
-					><input id="depositado" type="checkbox" name="depositado" value="true" bind:checked={depositado} /> Depósito
-					confirmado</label>
-			</div>
-		{/if}
-		{#if errors.form?.length}<p class="help is-danger" role="alert">{errors.form.join(' ')}</p>{/if}
-		<button
-			class={['button is-primary has-text-weight-semibold is-fullwidth', { 'is-loading': formEnhancer.loading }]}
-			type="submit"
-			aria-busy={formEnhancer.loading}>Cadastrar</button>
-	</div>
-</form>
+	{/if}
+	{#if errors.form?.length}
+		<p class="flex gap-1.5 text-sm text-danger-ink" role="alert">
+			<i class="fa-solid fa-circle-exclamation fa-fw mt-0.5" aria-hidden="true"></i>{errors.form.join(' ')}
+		</p>
+	{/if}
+	<Button type="submit" tone="primary" fullwidth loading={formEnhancer.loading} class="font-bold">Cadastrar</Button>
+</Card>

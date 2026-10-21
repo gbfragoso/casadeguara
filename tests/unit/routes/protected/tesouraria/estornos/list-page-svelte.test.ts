@@ -83,4 +83,18 @@ describe('estornos list page', () => {
 		expect(document.querySelector('tbody')).toBeNull();
 		expect(document.querySelector('[role="status"]')).toBeNull();
 	});
+
+	it('identifies a reversed exit without a counterpart', () => {
+		const exit = { ...page.items[0], id: 13, tipo: 'saida' as const, contraparte: null };
+		const { body } = render(Page, {
+			props: {
+				data: { username: 'Admin', userid: 'admin', page: { items: [exit] }, values: {}, isAdmin: true },
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const cells = [...document.querySelectorAll('tbody tr td')].map((cell) => cell.textContent);
+
+		expect(cells.slice(0, 2)).toEqual(['Saída', '—']);
+	});
 });

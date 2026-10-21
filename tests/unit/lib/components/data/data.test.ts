@@ -23,6 +23,29 @@ describe('DataTable', () => {
 			'1001Caminhos da Luz',
 		]);
 	});
+
+	it('renders the summary row in the table footer', async () => {
+		const target = await renderComponent(DataTable, {
+			head: htmlSnippet('<tr><th>Contribuinte</th><th>Valor</th></tr>'),
+			foot: htmlSnippet('<tr><th>Total</th><th>R$ 150,00</th></tr>'),
+			children: htmlSnippet('<tr><td>Ana</td><td>R$ 150,00</td></tr>'),
+		});
+
+		const table = getElement(target, 'table', HTMLTableElement);
+
+		expect(table.tFoot?.textContent).toBe('TotalR$ 150,00');
+	});
+
+	it('omits the table footer without a summary row', async () => {
+		const target = await renderComponent(DataTable, {
+			head: htmlSnippet('<tr><th>Contribuinte</th></tr>'),
+			children: htmlSnippet('<tr><td>Ana</td></tr>'),
+		});
+
+		const table = getElement(target, 'table', HTMLTableElement);
+
+		expect(table.tFoot).toBeNull();
+	});
 });
 
 describe('Indicator', () => {

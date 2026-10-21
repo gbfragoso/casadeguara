@@ -7,10 +7,11 @@
 		tableId?: string;
 		class?: ClassValue;
 		head: Snippet;
+		foot?: Snippet;
 		children: Snippet;
 	};
 
-	let { caption, tableId, class: className, head, children, ...rest }: Props = $props();
+	let { caption, tableId, class: className, head, foot, children, ...rest }: Props = $props();
 </script>
 
 <div {...rest} class={['overflow-x-auto', className]}>
@@ -20,5 +21,6 @@
 		{#if caption}<caption class="sr-only">{caption}</caption>{/if}
 		<thead>{@render head()}</thead>
 		<tbody>{@render children()}</tbody>
+		{#if foot}<tfoot>{@render foot()}</tfoot>{/if}
 	</table>
 </div>

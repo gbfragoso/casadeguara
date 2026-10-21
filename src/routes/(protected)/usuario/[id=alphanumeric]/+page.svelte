@@ -1,6 +1,11 @@
 <script lang="ts">
-	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Section from '#lib/components/layout/Section.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -12,40 +17,31 @@
 	let { usuario } = $derived(data);
 </script>
 
-<section class="p-6">
-	<div class="mb-2">
-		<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Meu cadastro</h1>
-	</div>
+<main>
+	<Section>
+		<h1 class="mb-6 text-2xl font-bold text-primary-ink tablet:text-3xl">Meu cadastro</h1>
 
-	<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-		<div class="card-content">
-			<div class="field">
-				<label class="label" for="name">Nome</label>
-				<div class="control">
-					<input class="input" name="name" id="name" value={usuario.name} />
-				</div>
+		<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+			<Field id="name" label="Nome">
+				{#snippet control()}
+					<TextInput name="name" id="name" value={usuario.name} />
+				{/snippet}
+			</Field>
+			<Field id="password" label="Nova senha">
+				{#snippet control()}
+					<TextInput type="password" name="password" id="password" />
+				{/snippet}
+			</Field>
+			<div>
+				<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold">Atualizar</Button>
 			</div>
-			<div class="field">
-				<label class="label" for="password">Nova senha</label>
-				<div class="control">
-					<input class="input" type="password" name="password" id="password" />
-				</div>
-			</div>
-			<div class="field">
-				<div class="control">
-					<button
-						aria-busy={formEnhancer.loading}
-						class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
-						type="submit">Atualizar</button>
-				</div>
-			</div>
-		</div>
-	</form>
+		</Card>
 
-	{#if form?.status === 200}
-		<Notification kind="success">Usuário atualizado com sucesso!</Notification>
-	{/if}
-	{#if form?.status === 400 && form?.message}
-		<Notification kind="danger">{form.message}</Notification>
-	{/if}
-</section>
+		{#if form?.status === 200}
+			<Notification kind="success">Usuário atualizado com sucesso!</Notification>
+		{/if}
+		{#if form?.status === 400 && form?.message}
+			<Notification kind="danger">{form.message}</Notification>
+		{/if}
+	</Section>
+</main>

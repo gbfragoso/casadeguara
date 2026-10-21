@@ -1,5 +1,14 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
+	import Tag from '#lib/components/feedback/Tag.svelte';
+	import Tags from '#lib/components/feedback/Tags.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -10,114 +19,79 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let { colecoes } = $derived(data);
+	const breadcrumb = [
+		{ label: 'Acervo', href: resolve('acervo') },
+		{ label: 'Livros', href: resolve('acervo') },
+	];
+	const titleFields = [
+		{ id: 'titulo', label: 'Título', placeholder: 'Digite o título do livro' },
+		{ id: 'autor', label: 'Autor', placeholder: 'Digite o nome do autor' },
+	];
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('acervo')}>Acervo</a></li>
-			<li class="is-active">
-				<a href={resolve('acervo')} aria-current="page">Livros</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de livros</h1>
-</div>
+<PageHeader {breadcrumb} icon="fa-solid fa-book-open">Consulta de livros</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field columns">
-			<div class="column">
-				<label class="label" for="titulo">Título</label>
-				<div class="control">
-					<input class="input" type="text" name="titulo" id="titulo" placeholder="Digite o título do livro" />
-				</div>
-			</div>
-			<div class="column">
-				<label class="label" for="autor">Autor</label>
-				<div class="control">
-					<input class="input" type="text" name="autor" id="autor" placeholder="Digite o nome do autor" />
-				</div>
-			</div>
-		</div>
-		<div class="field columns">
-			<div class="column">
-				<label class="label" for="editora">Editora</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="editora"
-						id="editora"
-						placeholder="Digite o nome da editora" />
-				</div>
-			</div>
-			<div class="column">
-				<label class="label" for="serie">Coleção</label>
-				<div class="select is-fullwidth">
-					<select name="serie" id="serie">
-						<option></option>
-						{#await colecoes then item}
-							{#each item as serie (serie.idserie)}
-								<option value={serie.idserie}>{serie.nome}</option>
-							{/each}
-						{/await}
-					</select>
-				</div>
-			</div>
-			<div class="column">
-				<label class="label" for="autor">Palavra-chave</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="keyword"
-						id="keyword"
-						placeholder="Digite uma palavra-chave" />
-				</div>
-			</div>
-		</div>
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						formEnhancer.loading && 'is-loading',
-					]}
-					type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
-				</button>
-			</div>
-		</div>
+<Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<div class="grid gap-4 tablet:grid-cols-6">
+		{#each titleFields as field (field.id)}
+			<Field id={field.id} label={field.label} class="tablet:col-span-3">
+				{#snippet control()}
+					<TextInput type="text" name={field.id} id={field.id} placeholder={field.placeholder} />
+				{/snippet}
+			</Field>
+		{/each}
+		<Field id="editora" label="Editora" class="tablet:col-span-2">
+			{#snippet control()}
+				<TextInput type="text" name="editora" id="editora" placeholder="Digite o nome da editora" />
+			{/snippet}
+		</Field>
+		<Field id="serie" label="Coleção" class="tablet:col-span-2">
+			{#snippet control()}
+				<Select name="serie" id="serie">
+					<option></option>
+					{#await colecoes then item}
+						{#each item as serie (serie.idserie)}
+							<option value={serie.idserie}>{serie.nome}</option>
+						{/each}
+					{/await}
+				</Select>
+			{/snippet}
+		</Field>
+		<Field id="keyword" label="Palavra-chave" class="tablet:col-span-2">
+			{#snippet control()}
+				<TextInput type="text" name="keyword" id="keyword" placeholder="Digite uma palavra-chave" />
+			{/snippet}
+		</Field>
 	</div>
-</form>
+	<div class="mt-6">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-40">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
+	</div>
+</Card>
 
 {#if form?.livros}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<tr>
-							<th>Título</th>
-							<th>Disponíveis</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each form.livros as livro (livro.idlivro)}
-							<tr>
-								<td
-									>{livro.titulo}<br />
-									{#each livro.autores as autor (autor)}
-										<span class="tag is-light is-success">{autor}</span>&nbsp;&nbsp;
-									{/each}</td>
-								<td>{livro.disponiveis}</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+	<Card class="mt-6 overflow-hidden" padded={false}>
+		<DataTable>
+			{#snippet head()}
+				<tr>
+					<th>Título</th>
+					<th>Disponíveis</th>
+				</tr>
+			{/snippet}
+			{#each form.livros as livro (livro.idlivro)}
+				<tr>
+					<td>
+						<p class="font-medium text-ink-strong">{livro.titulo}</p>
+						<Tags class="mt-1">
+							{#each livro.autores as autor (autor)}
+								<Tag kind="primary">{autor}</Tag>
+							{/each}
+						</Tags>
+					</td>
+					<td>{livro.disponiveis}</td>
+				</tr>
+			{/each}
+		</DataTable>
+	</Card>
 {/if}

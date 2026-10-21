@@ -33,4 +33,23 @@ describe('tesouraria dashboard page', () => {
 		expect(chart?.querySelector('details')).toBeNull();
 		expect(chart?.querySelector('[aria-live]')).toBeNull();
 	});
+
+	it('shows a negative balance when expenses exceed donations', () => {
+		const { body } = render(Page, {
+			props: {
+				data: {
+					entradaMesAtual: [{ count: 2, median: 115.25, value: '230.50' }],
+					saidaMesAtual: [{ value: '275.25' }],
+					lancamentosMensais: monthlyTotals,
+				},
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const balance = [...document.querySelectorAll('[data-testid="indicadores"] > *')].find((indicator) =>
+			indicator.textContent?.includes('Saldo'),
+		);
+
+		expect(balance?.querySelector('h2')?.textContent).toMatch(/-R\$\s44,75/);
+	});
 });
