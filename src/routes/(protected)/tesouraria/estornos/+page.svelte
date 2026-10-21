@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import DataTable from '#lib/components/data/DataTable.svelte';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import Select from '#lib/components/forms/Select.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
@@ -94,10 +95,7 @@
 		{/each}
 	</Columns>
 	{#if periodErrors.length}
-		<p class="flex gap-1.5 text-sm text-danger-ink" role="alert">
-			<i class="fa-solid fa-circle-exclamation fa-fw mt-0.5" aria-hidden="true"></i>
-			{periodErrors.join(' ')}
-		</p>
+		<ErrorMessage role="alert">{periodErrors.join(' ')}</ErrorMessage>
 	{/if}
 	<div>
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} class="font-bold tablet:min-w-50">

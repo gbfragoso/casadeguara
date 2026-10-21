@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from '#lib/components/actions/Button.svelte';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
 	import AccessCard from '#lib/components/layout/AccessCard.svelte';
@@ -43,9 +44,7 @@
 			<Button tone="primary" fullwidth loading={formEnhancer.loading} class="font-bold">Entrar</Button>
 		</div>
 		{#each generalErrors as message (message)}
-			<p class="flex items-center gap-1.5 text-sm text-danger-ink">
-				<i class="fa-solid fa-circle-exclamation fa-fw" aria-hidden="true"></i>{message}
-			</p>
+			<ErrorMessage>{message}</ErrorMessage>
 		{/each}
 	</form>
 </AccessCard>

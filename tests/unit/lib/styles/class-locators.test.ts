@@ -6,6 +6,8 @@ import { findClassLocators, listTestSources } from './support/class-locators';
 const GUARD_FILES = [
 	join('tests', 'unit', 'lib', 'styles', 'class-locators.test.ts'),
 	join('tests', 'unit', 'lib', 'styles', 'support', 'class-locators.ts'),
+	join('tests', 'unit', 'lib', 'styles', 'bulma-residue.test.ts'),
+	join('tests', 'unit', 'lib', 'styles', 'support', 'bulma-residue.ts'),
 ];
 
 describe('class locators in tests', () => {

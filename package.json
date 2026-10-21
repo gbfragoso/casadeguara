@@ -21,7 +21,6 @@
 		"test:integration": "npm run db:start && node src/lib/scripts/testing/run-suite.js integration",
 		"test:coverage": "npm run db:start && node src/lib/scripts/testing/run-suite.js coverage",
 		"test:e2e": "npm run db:start && node src/lib/scripts/testing/run-suite.js e2e --project=e2e --project=performance --project=isolated",
-		"test:baseline": "npm run db:start && node src/lib/scripts/testing/run-suite.js e2e --project=baseline --workers=1",
 		"performance:books": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/books/post.performance.test.ts",
 		"performance:books:baseline": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/books/baseline.performance.test.ts",
 		"performance:tesouraria:baseline": "npm run db:start && node src/lib/scripts/testing/run-suite.js performance src/lib/scripts/performance/tesouraria/baseline.performance.test.ts",

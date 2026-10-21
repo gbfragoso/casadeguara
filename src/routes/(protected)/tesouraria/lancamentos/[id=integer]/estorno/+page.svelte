@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import TextArea from '#lib/components/forms/TextArea.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
@@ -52,15 +53,8 @@
 						aria-describedby={reasonErrors.length ? 'motivo-errors' : undefined}
 						aria-errormessage={reasonErrors.length ? 'motivo-errors' : undefined} />
 					{#if reasonErrors.length}
-						<p
-							id="motivo-errors"
-							class="flex gap-1.5 text-sm text-danger-ink"
-							role="alert"
-							tabindex="-1"
-							{@attach focusError}>
-							<i class="fa-solid fa-circle-exclamation fa-fw mt-0.5" aria-hidden="true"></i
-							>{reasonErrors.join(' ')}
-						</p>
+						<ErrorMessage id="motivo-errors" role="alert" tabindex={-1} {@attach focusError}
+							>{reasonErrors.join(' ')}</ErrorMessage>
 					{/if}
 				{/snippet}
 			</Field>

@@ -4,6 +4,7 @@
 	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
 	import BrlAmountInput from '#lib/components/forms/BrlAmountInput.svelte';
 	import Checkbox from '#lib/components/forms/Checkbox.svelte';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import Select from '#lib/components/forms/Select.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
@@ -132,9 +133,7 @@
 		</div>
 	{/if}
 	{#if errors.form?.length}
-		<p class="flex gap-1.5 text-sm text-danger-ink" role="alert">
-			<i class="fa-solid fa-circle-exclamation fa-fw mt-0.5" aria-hidden="true"></i>{errors.form.join(' ')}
-		</p>
+		<ErrorMessage role="alert">{errors.form.join(' ')}</ErrorMessage>
 	{/if}
 	<Button type="submit" tone="primary" fullwidth loading={formEnhancer.loading} class="font-bold">Cadastrar</Button>
 </Card>

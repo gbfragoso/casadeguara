@@ -10,9 +10,13 @@ export type ModuleMenuItem = {
 	adminOnly?: boolean;
 };
 
-export function isMenuItemActive(pathname: string, item: Pick<ModuleMenuItem, 'href' | 'match'>) {
-	if (pathname === item.href) return true;
-	return item.match === 'prefix' && pathname.startsWith(`${item.href}/`);
+export function isMenuItemActive(
+	url: Pick<URL, 'href' | 'pathname'>,
+	item: { href: string; match: ModuleMenuItem['match'] },
+) {
+	const itemPathname = new URL(item.href, url.href).pathname;
+	if (url.pathname === itemPathname) return true;
+	return item.match === 'prefix' && url.pathname.startsWith(`${itemPathname}/`);
 }
 
 export function visibleMenuItems(items: readonly ModuleMenuItem[], isAdmin: boolean) {

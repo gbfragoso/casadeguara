@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { ClassValue } from 'svelte/elements';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 
 	type ControlState = { describedBy: string | undefined; invalid: 'true' | undefined };
 	type Props = {
@@ -31,13 +32,12 @@
 		<p id={resolvedHelpId} class="text-sm text-ink-muted">{help}</p>
 	{/if}
 	{#if invalid}
-		<div id={resolvedErrorsId} class="flex gap-1.5 text-sm text-danger-ink">
-			<i class="fa-solid fa-circle-exclamation fa-fw mt-0.5" aria-hidden="true"></i>
+		<ErrorMessage element="div" id={resolvedErrorsId}>
 			<div>
 				{#each errors as message (message)}
 					<p>{message}</p>
 				{/each}
 			</div>
-		</div>
+		</ErrorMessage>
 	{/if}
 </div>

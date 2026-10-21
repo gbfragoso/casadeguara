@@ -27,7 +27,7 @@
 						href={item.href}
 						aria-label={item.ariaLabel}
 						title={item.title}
-						aria-current={isMenuItemActive(page.url.pathname, item) ? 'page' : undefined}
+						aria-current={isMenuItemActive(page.url, item) ? 'page' : undefined}
 						class="group relative flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-sidebar-ink transition-colors hover:bg-sidebar-hover hover:text-sidebar-hover-ink hover:no-underline aria-[current=page]:bg-sidebar-active aria-[current=page]:font-bold aria-[current=page]:text-sidebar-active-ink motion-reduce:transition-none">
 						<i
 							class={[

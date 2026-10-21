@@ -9,6 +9,7 @@
 	import Select from '#lib/components/forms/Select.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
@@ -174,16 +175,11 @@
 										role="dialog"
 										aria-labelledby={`${confirmationId}-title`}
 										class="m-auto w-[calc(100%-2rem)] max-w-lg flex-col gap-4 rounded-xl bg-surface p-6 text-left text-ink shadow-raised backdrop:bg-overlay/60 open:flex">
-										<p
+										<SectionHeading
+											element="p"
 											id={`${confirmationId}-title`}
-											class="flex items-center gap-3 text-xl font-medium text-ink-strong">
-											<span
-												aria-hidden="true"
-												class="grid size-9 shrink-0 place-items-center rounded-md bg-danger-soft text-danger-ink">
-												<i class="fa-solid fa-trash-can fa-fw"></i>
-											</span>
-											Excluir livro
-										</p>
+											icon="fa-solid fa-trash-can"
+											iconTone="danger">Excluir livro</SectionHeading>
 										<p>
 											Para finalizar a exclusão dos livros é necessário antes excluir os
 											exemplares. Confirma a exclusão de “{livro.titulo}”?

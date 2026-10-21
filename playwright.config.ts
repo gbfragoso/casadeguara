@@ -5,8 +5,6 @@ assertTestDatabase();
 
 const PERFORMANCE_TAG = /@performance/;
 const ISOLATED_TAG = /@isolated/;
-const BASELINE_DIRECTORY = 'tests/e2e/baseline';
-const BASELINE_SCREEN_TIMEOUT = 120_000;
 
 const webServerEnv = Object.fromEntries(
 	Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined),
@@ -29,14 +27,6 @@ export default defineConfig({
 		{ name: 'e2e', grepInvert: [PERFORMANCE_TAG, ISOLATED_TAG] },
 		{ name: 'performance', grep: PERFORMANCE_TAG, dependencies: ['e2e'] },
 		{ name: 'isolated', grep: ISOLATED_TAG, dependencies: ['e2e'] },
-		{ name: 'baseline-seed', testDir: BASELINE_DIRECTORY, testMatch: 'seed/seed.setup.ts' },
-		{
-			name: 'baseline',
-			testDir: BASELINE_DIRECTORY,
-			testMatch: '**/*.baseline.ts',
-			dependencies: ['baseline-seed'],
-			timeout: BASELINE_SCREEN_TIMEOUT,
-		},
 	],
 	use: { baseURL: 'http://127.0.0.1:5173', trace: 'retain-on-failure' },
 });

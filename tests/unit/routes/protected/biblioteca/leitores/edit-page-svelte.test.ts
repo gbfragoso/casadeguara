@@ -83,7 +83,9 @@ describe('edit reader page', () => {
 			'status',
 		];
 		const errors = Object.fromEntries(fields.map((field) => [field, [`Campo ${field} inválido.`]]));
-		const document = parseRenderedBody(render(Page, { props: { data, form: { values: { rg: '', cpf: '' }, errors } } }).body);
+		const document = parseRenderedBody(
+			render(Page, { props: { data, form: { values: { rg: '', cpf: '' }, errors } } }).body,
+		);
 
 		const associations = fields.map((field) => {
 			const control = getRenderedInput(document, `input#${field}`);

@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
+	findBulmaClasses,
 	findBulmaImports,
+	findBulmaVariables,
 	findForbiddenPackages,
 	findSassStyleBlocks,
 	isSassStylesheet,
@@ -82,6 +84,67 @@ describe('Bulma and preprocessor residue', () => {
 		const violations = sources.flatMap(({ file, source }) => findBulmaImports(file, source));
 
 		expect(sources.length).toBeGreaterThan(0);
+		expect(violations).toEqual([]);
+	});
+
+	it('reports Bulma variables', () => {
+		const source = ['color: var(--bulma-text);', 'color: var(--text);', "setProperty('--bulma-link', x);"].join(
+			'\n',
+		);
+
+		const violations = findBulmaVariables('sample.svelte', source);
+
+		expect(violations.map(({ line }) => line)).toEqual([1, 3]);
+	});
+
+	it('keeps Bulma variables out of the source tree', () => {
+		const sources = readScannedSources(listFiles(SOURCE_ROOT));
+
+		const violations = sources.flatMap(({ file, source }) => findBulmaVariables(file, source));
+
+		expect(violations).toEqual([]);
+	});
+
+	it('reports Bulma classes in class attributes, expressions, directives and classList calls', () => {
+		const source = [
+			'<div class="columns is-mobile">',
+			'<p class=\'has-text-centered {active ? "is-active" : ""}\'>',
+			"<button class={['button', { 'are-small': small }]}>",
+			'<li class:is-active={current}>',
+			"element.classList.add('is-hidden');",
+		].join('\n');
+
+		const violations = findBulmaClasses('Sample.svelte', source);
+
+		expect(violations.map(({ line, excerpt }) => `${line}:${excerpt}`)).toEqual([
+			'1:columns',
+			'1:is-mobile',
+			'2:has-text-centered',
+			'2:is-active',
+			'3:button',
+			'3:are-small',
+			'4:is-active',
+			'5:is-hidden',
+		]);
+	});
+
+	it('accepts Tailwind variants and utilities, identifiers and compared literals in class expressions', () => {
+		const source = [
+			'<input class="block has-checked:bg-primary group-has-[:focus]:ring-2 select-none">',
+			"<i class={[icon, label, type === 'file' && 'fa-fw']}></i>",
+			"<table class='table container'>",
+		].join('\n');
+
+		const violations = findBulmaClasses('Sample.svelte', source);
+
+		expect(violations).toEqual([]);
+	});
+
+	it('keeps Bulma classes out of class and classList usages in the source tree', () => {
+		const sources = readScannedSources(listFiles(SOURCE_ROOT));
+
+		const violations = sources.flatMap(({ file, source }) => findBulmaClasses(file, source));
+
 		expect(violations).toEqual([]);
 	});
 });

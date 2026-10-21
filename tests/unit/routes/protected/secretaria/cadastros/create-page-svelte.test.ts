@@ -50,7 +50,9 @@ describe('new secretaria registration page', () => {
 	it('associates the contact, address and worker errors with their controls', () => {
 		const fields = ['email', 'celular', 'telefone', 'logradouro', 'bairro', 'complemento', 'cidade', 'cep', 'trab'];
 		const errors = Object.fromEntries(fields.map((field) => [field, [`Campo ${field} inválido.`]]));
-		const document = parseRenderedBody(render(Page, { props: { form: { values: { rg: '', cpf: '' }, errors } } }).body);
+		const document = parseRenderedBody(
+			render(Page, { props: { form: { values: { rg: '', cpf: '' }, errors } } }).body,
+		);
 
 		const associations = fields.map((field) => {
 			const control = getRenderedInput(document, `input#${field}`);

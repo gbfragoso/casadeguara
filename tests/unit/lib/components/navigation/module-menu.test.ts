@@ -5,6 +5,9 @@ import { isMenuItemActive, visibleMenuItems, type ModuleMenuItem } from '#lib/co
 
 type MenuMatch = Pick<ModuleMenuItem, 'href' | 'match'>;
 
+const ORIGIN = 'http://localhost';
+const urlAt = (path: string) => new URL(path, ORIGIN);
+
 const menuItem = (href: ResolvedPathname, adminOnly?: boolean): ModuleMenuItem => ({
 	href,
 	label: href,
@@ -19,7 +22,7 @@ describe('isMenuItemActive', () => {
 	it('matches an exact item only on the same path', () => {
 		const home: MenuMatch = { href: '/biblioteca', match: 'exact' };
 
-		const matches = ['/biblioteca', '/biblioteca/livros'].map((pathname) => isMenuItemActive(pathname, home));
+		const matches = ['/biblioteca', '/biblioteca/livros'].map((path) => isMenuItemActive(urlAt(path), home));
 
 		expect(matches).toEqual([true, false]);
 	});
@@ -32,9 +35,18 @@ describe('isMenuItemActive', () => {
 			'/biblioteca/livros/12/autores',
 			'/biblioteca/livrosx',
 			'/biblioteca',
-		].map((pathname) => isMenuItemActive(pathname, books));
+		].map((path) => isMenuItemActive(urlAt(path), books));
 
 		expect(matches).toEqual([true, true, false, false]);
+	});
+
+	it('matches a relative href rendered by the server after a form action', () => {
+		const books = { href: '../biblioteca/livros', match: 'prefix' } as const;
+		const url = urlAt('/biblioteca/livros?/excluir');
+
+		const active = isMenuItemActive(url, books);
+
+		expect(active).toBe(true);
 	});
 });
 
