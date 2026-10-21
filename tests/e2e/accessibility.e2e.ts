@@ -24,6 +24,9 @@ const REPRESENTATIVE_ROUTES = selectRoutes([
 	'biblioteca-emprestimos-novo',
 	'biblioteca-usuarios-novo',
 	'biblioteca-emprestimos-recibo',
+	'secretaria-inicio',
+	'secretaria-cadastros-edicao',
+	'secretaria-aniversariantes',
 ]);
 const [LIBRARY_HOME] = selectRoutes(['biblioteca-inicio']);
 

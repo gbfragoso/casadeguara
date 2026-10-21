@@ -4,12 +4,13 @@ import { expect, test, type E2EData } from './fixtures';
 import { findSmallTargets, readDocumentWidth } from './support/geometry';
 import { openCatalogRoute, shellRegions } from './support/module-shell';
 import { BIBLIOTECA_ROUTES } from './support/route-catalog/biblioteca';
+import { SECRETARIA_ROUTES } from './support/route-catalog/secretaria';
 import { NOT_FOUND_PATH, selectRoutes, type CatalogRoute } from './support/route-catalog';
 
 const NARROW_VIEWPORT = { width: 320, height: 800 };
 const TOUCH_WIDTHS = [390, 820];
 const TOUCH_HEIGHT = 844;
-const MIGRATED_ROUTES = [...selectRoutes(['login', 'sistemas']), ...BIBLIOTECA_ROUTES];
+const MIGRATED_ROUTES = [...selectRoutes(['login', 'sistemas']), ...BIBLIOTECA_ROUTES, ...SECRETARIA_ROUTES];
 
 const openScreen = async (page: Page, e2e: E2EData, route: CatalogRoute | null) => {
 	if (route) await openCatalogRoute(page, e2e, route);

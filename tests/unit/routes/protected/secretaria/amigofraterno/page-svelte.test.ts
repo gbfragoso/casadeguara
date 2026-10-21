@@ -49,4 +49,24 @@ describe('amigo fraterno page', () => {
 		expect(document.body.textContent).toContain('Não há participantes elegíveis no momento.');
 		expect(document.querySelector('input[name="nextDrawDate"]')).toBeNull();
 	});
+
+	it('marks a participant with a registered photo', () => {
+		const { body } = render(Page, {
+			props: {
+				data: {
+					username: 'Secretaria',
+					userid: 'secretaria',
+					isAdmin: false,
+					total: 1,
+					withoutPhoto: 0,
+					participants: [{ id: 5, name: 'JOANA', hasPhoto: true }],
+				},
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const row = document.querySelector('tbody tr');
+
+		expect(row?.textContent).toContain('Cadastrada');
+	});
 });

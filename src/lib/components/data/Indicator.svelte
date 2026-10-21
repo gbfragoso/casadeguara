@@ -60,7 +60,7 @@
 		{label}
 	</p>
 	{#if loading}
-		<SkeletonLines size="large" tone={highlight ? 'highlight' : 'muted'} class="mt-4" />
+		<SkeletonLines size="large" tone={highlight ? 'highlight' : 'muted'} class="mt-4 h-9 justify-center" />
 	{:else}
 		<h2
 			class={[

@@ -43,6 +43,37 @@ describe('secretaria registration list page', () => {
 		expect(getRenderedAnchor(results, 'tbody a').getAttribute('aria-label')).toBe('Editar cadastro de MARIA');
 	});
 
+	it('shows the search form without results before the first search', () => {
+		const document = parseRenderedBody(render(Page, { props: { form: null } }).body);
+
+		expect(getRenderedInput(document, 'input[name="nome"]').value).toBe('');
+		expect(document.querySelector('table')).toBeNull();
+	});
+
+	it('associates a workers filter error with its checkbox', () => {
+		const { body } = render(Page, {
+			props: {
+				form: { values: { nome: '', trabalhadores: 'x' }, errors: { trabalhadores: ['Filtro inválido.'] } },
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const checkbox = getRenderedInput(document, 'input[type="checkbox"][name="trabalhadores"]');
+
+		expect(checkbox.getAttribute('aria-invalid')).toBe('true');
+		const description = document.getElementById(checkbox.getAttribute('aria-describedby') ?? '');
+		expect(description?.textContent).toContain('Filtro inválido.');
+	});
+
+	it('keeps a single element for the name error description', () => {
+		const { body } = render(Page, {
+			props: { form: { values: { nome: '', trabalhadores: 'false' }, errors: { nome: ['Nome inválido.'] } } },
+		});
+		const document = parseRenderedBody(body);
+
+		expect(document.querySelectorAll('#nome-errors')).toHaveLength(1);
+	});
+
 	it('rolls back a failed flag update with a visible error', async () => {
 		const checkbox = { checked: true };
 		const pending: boolean[] = [];
