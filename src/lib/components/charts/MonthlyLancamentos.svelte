@@ -1,98 +1,63 @@
 <script lang="ts">
 	import { Line } from 'svelte-chartjs';
 
+	import { readChartPalette } from '#lib/charts/chart-palette.js';
 	import { buildMonthlyChart } from '#lib/charts/monthly-lancamentos.js';
+	import Card from '#lib/components/layout/Card.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
 	import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
+	import { trackThemeChange } from '#lib/theme/theme-change.js';
 
 	interface Props {
 		totals: readonly MonthlyLancamentoTotal[];
 	}
 
 	let { totals }: Props = $props();
+	let chartArea = $state<HTMLElement>();
 
 	const isZero = (value: string) => /^[-+]?0(?:\.0+)?$/.test(value);
 	const hasMovement = $derived(totals.some(({ entradas, saidas }) => !isZero(entradas) || !isZero(saidas)));
-	const chartConfig = $derived.by(() => (hasMovement ? buildMonthlyChart(totals) : null));
+	const palette = $derived.by(() => {
+		trackThemeChange();
+		return chartArea && readChartPalette(chartArea);
+	});
+	const chartConfig = $derived(hasMovement && palette ? buildMonthlyChart(totals, palette) : null);
 
 	const titleId = 'monthly-lancamentos-title';
 	const descriptionId = 'monthly-lancamentos-description';
 </script>
 
-<div class="card">
-	<div class="card-content">
-		<div class="monthly-lancamentos" role="region" aria-labelledby={titleId} aria-describedby={descriptionId}>
-			<h2 id={titleId}>Entradas e saídas — últimos 12 meses</h2>
-			<p id={descriptionId}>Totais mensais de lançamentos ativos, em reais.</p>
+<Card>
+	<div class="w-full" role="region" aria-labelledby={titleId} aria-describedby={descriptionId}>
+		<div class="flex flex-col gap-1">
+			<SectionHeading id={titleId}>Entradas e saídas — últimos 12 meses</SectionHeading>
+			<p id={descriptionId} class="text-ink-muted">Totais mensais de lançamentos ativos, em reais.</p>
+		</div>
 
-			<div class="legend" aria-label="Legenda">
-				<span class="legend-entry"><i aria-hidden="true"></i>Entradas</span>
-				<span class="legend-exit"><i aria-hidden="true"></i>Saídas</span>
+		<div class="mt-5">
+			<div class="mb-3 flex flex-wrap gap-x-5 gap-y-1 text-sm" aria-label="Legenda" data-testid="legenda-grafico">
+				<span class="inline-flex items-center gap-2 font-medium text-ink">
+					<i aria-hidden="true" class="inline-block w-6 border-t-2 border-chart-entry"></i>Entradas
+				</span>
+				<span class="inline-flex items-center gap-2 font-medium text-ink">
+					<i aria-hidden="true" class="inline-block w-6 border-t-2 border-dashed border-chart-exit"></i>Saídas
+				</span>
 			</div>
 
-			{#if hasMovement && chartConfig}
-				<div class="chart-container">
-					<Line
-						data={chartConfig.data}
-						options={chartConfig.options}
-						aria-hidden="true"
-						role="presentation" />
+			{#if hasMovement}
+				<div bind:this={chartArea} class="relative h-72 w-full tablet:h-80">
+					{#if chartConfig}
+						<Line
+							data={chartConfig.data}
+							options={chartConfig.options}
+							aria-hidden="true"
+							role="presentation"
+							class="max-w-full" />
+					{/if}
 				</div>
 			{:else}
-				<p class="empty-state" role="status">Não há lançamentos ativos no período.</p>
+				<p class="my-4 font-medium" role="status">Não há lançamentos ativos no período.</p>
 			{/if}
 		</div>
 	</div>
-</div>
-
-<style>
-	.monthly-lancamentos {
-		box-sizing: border-box;
-		width: 100%;
-		padding: 1rem;
-		background: #fff;
-		color: #1f2937;
-	}
-
-	.legend {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		margin-block: 1rem;
-	}
-
-	.legend span {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-weight: 600;
-	}
-
-	.legend i {
-		display: inline-block;
-		width: 1.5rem;
-		border-top: 3px solid currentColor;
-	}
-
-	.legend-entry {
-		color: #007a3d;
-	}
-
-	.legend-exit {
-		color: #b42318;
-	}
-
-	.legend-exit i {
-		border-top-style: dashed;
-	}
-
-	.chart-container {
-		position: relative;
-		width: 100%;
-		height: clamp(220px, 55vw, 360px);
-	}
-
-	.empty-state {
-		margin-block: 1rem;
-		font-weight: 600;
-	}
-</style>
+</Card>

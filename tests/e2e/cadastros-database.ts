@@ -8,12 +8,19 @@ const databaseUrl = process.env.POSTGRES_URL;
 if (!databaseUrl) throw new Error('POSTGRES_URL is required for cadastro E2E tests.');
 
 const TEST_USER_TOKEN_LENGTH = 9;
+const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin';
 export type TestDatabase = postgres.Sql;
 
 export const createDatabase = (): TestDatabase => postgres(databaseUrl, { max: 4 });
 
 export type TestUser = { id: string; email: string; password: string };
-export type TestUsers = { owner: TestUser; wrongRole: TestUser; tesouraria: TestUser; admin: TestUser };
+export type TestUsers = {
+	owner: TestUser;
+	wrongRole: TestUser;
+	tesouraria: TestUser;
+	admin: TestUser;
+	fullAdmin: TestUser;
+};
 export type CadastroSnapshot = {
 	idleitor: number;
 	nome: string;
@@ -37,7 +44,7 @@ export type CadastroSnapshot = {
 };
 
 const createUser = (token: string, suffix: string, password: string): TestUser => ({
-	id: `e2e-${suffix}-${token.slice(0, TEST_USER_TOKEN_LENGTH)}`,
+	id: `e2e${suffix}${token.slice(0, TEST_USER_TOKEN_LENGTH)}`,
 	email: `e2e-${suffix}-${token.slice(0, TEST_USER_TOKEN_LENGTH)}@t.dev`,
 	password,
 });
@@ -55,14 +62,16 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	const wrongRole = createUser(token, 'wrong', password);
 	const tesouraria = createUser(token, 'tesouraria', password);
 	const admin = createUser(token, 'admin', password);
+	const fullAdmin = createUser(token, 'full', password);
 	const passwordHash = await hash(password);
 
 	await insertUser(database, owner, 'biblioteca,secretaria,tesouraria', passwordHash);
 	await insertUser(database, wrongRole, 'biblioteca', passwordHash);
 	await insertUser(database, tesouraria, 'tesouraria', passwordHash);
 	await insertUser(database, admin, 'biblioteca,biblioteca:admin,tesouraria:admin', passwordHash);
+	await insertUser(database, fullAdmin, FULL_ADMIN_ROLES, passwordHash);
 
-	return { owner, wrongRole, tesouraria, admin };
+	return { owner, wrongRole, tesouraria, admin, fullAdmin };
 };
 export const readCadastro = async (database: TestDatabase, name: string): Promise<CadastroSnapshot> => {
 	const [cadastro] = await database<CadastroSnapshot[]>`
@@ -82,8 +91,8 @@ export const readCadastro = async (database: TestDatabase, name: string): Promis
 export const deleteCadastro = (database: TestDatabase, name: string) =>
 	database`delete from cadastros where nome = ${name}`;
 
-export const deleteTestUsers = async (database: TestDatabase, { owner, wrongRole, tesouraria, admin }: TestUsers) => {
-	const ids = [owner.id, wrongRole.id, tesouraria.id, admin.id];
+export const deleteTestUsers = async (database: TestDatabase, users: TestUsers) => {
+	const ids = Object.values(users).map((user) => user.id);
 	await database`delete from "Session" where "userId" = any(${ids})`;
 	await database`delete from "User" where id = any(${ids})`;
 };

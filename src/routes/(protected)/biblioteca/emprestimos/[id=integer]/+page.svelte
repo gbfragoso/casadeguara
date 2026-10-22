@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import dayjs from 'dayjs';
-	import Notification from '#lib/components/feedback/Notification.svelte';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -13,69 +19,56 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let { emprestimo, exemplares } = $derived(data);
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Empréstimos', href: resolve('biblioteca/emprestimos') },
+	];
 	dayjs.extend(utc);
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar empréstimo</h1>
-</div>
+<PageHeader {breadcrumb}>Atualizar empréstimo</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="nome">Leitor</label>
-			<div class="control">
-				<input class="input" type="text" name="leitor" id="leitor" value={emprestimo.leitor} disabled />
-			</div>
-		</div>
-		<div class="field">
-			<label class="label" for="nome">Exemplar atual</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="exemplaratual"
-					id="exemplaratual"
-					value={emprestimo.livro + ' - EX:' + emprestimo.numero}
-					disabled />
-				<input type="hidden" name="idexemplar" id="idexemplar" value={emprestimo.idexemplar} />
-			</div>
-		</div>
-		<div class="field">
-			<label class="label" for="nome">Exemplar</label>
-			<div class="select is-fullwidth">
-				<select name="novoexemplar" id="novoexemplar" required>
-					<option value=""></option>
-					{#await exemplares then item}
-						{#each item as exemplar (exemplar.idexemplar)}
-							<option value={exemplar.idexemplar}>{exemplar.livro + ' - EX:' + exemplar.numero}</option>
-						{/each}
-					{/await}
-				</select>
-			</div>
-		</div>
-		<p class="mb-2 has-text-centered">
-			Emprestado por <strong>{emprestimo.usuarioEmprestimo}</strong> no dia {dayjs
-				.utc(emprestimo.dataEmprestimo)
-				.format('DD/MM/YYYY')}
-		</p>
-		<div class="control">
-			<button
-				aria-busy={formEnhancer.loading}
-				class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
-				type="submit">Atualizar</button>
-		</div>
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Field id="leitor" label="Leitor">
+		{#snippet control()}
+			<TextInput type="text" name="leitor" id="leitor" value={emprestimo.leitor} disabled />
+		{/snippet}
+	</Field>
+	<Field id="exemplaratual" label="Exemplar atual">
+		{#snippet control()}
+			<TextInput
+				type="text"
+				name="exemplaratual"
+				id="exemplaratual"
+				value={emprestimo.livro + ' - EX:' + emprestimo.numero}
+				disabled />
+			<input type="hidden" name="idexemplar" id="idexemplar" value={emprestimo.idexemplar} />
+		{/snippet}
+	</Field>
+	<Field id="novoexemplar" label="Exemplar">
+		{#snippet control()}
+			<Select name="novoexemplar" id="novoexemplar" required>
+				<option value=""></option>
+				{#await exemplares then item}
+					{#each item as exemplar (exemplar.idexemplar)}
+						<option value={exemplar.idexemplar}>{exemplar.livro + ' - EX:' + exemplar.numero}</option>
+					{/each}
+				{:catch}
+					<option value="" disabled>Não foi possível carregar os exemplares</option>
+				{/await}
+			</Select>
+		{/snippet}
+	</Field>
+	<p class="text-center">
+		Emprestado por <strong>{emprestimo.usuarioEmprestimo}</strong> no dia {dayjs
+			.utc(emprestimo.dataEmprestimo)
+			.format('DD/MM/YYYY')}
+	</p>
+	<div>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Atualizar</Button>
 	</div>
-</form>
+</Card>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Empréstimo atualizado com sucesso</Notification>
+	<Notification kind="success">Empréstimo atualizado com sucesso</Notification>
 {/if}

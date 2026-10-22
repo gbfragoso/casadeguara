@@ -6,11 +6,12 @@ import { getRenderedAnchor, getRenderedInput, parseRenderedBody } from '../../..
 
 describe('publisher list page', () => {
 	it('renders the initial search form', () => {
-		const { body } = render(Page, { props: { form: { values: { nome: '' }, errors: {} } } });
+		const { body } = render(Page, { props: { form: null } });
 		const document = parseRenderedBody(body);
 		const input = getRenderedInput(document, 'input[name="nome"]');
 
-		expect(document.querySelector('h1')?.textContent).toBe('Consulta de editoras');
+		expect(document.querySelector('h1')?.textContent?.trim()).toBe('Consulta de editoras');
+		expect(input.value).toBe('');
 		expect(input.maxLength).toBe(60);
 		expect(input.required).toBe(false);
 	});

@@ -89,3 +89,79 @@ describe('PhotoCropper interactions', () => {
 		unmount(component);
 	});
 });
+
+describe('PhotoCropper interrupted drags', () => {
+	let target: HTMLDivElement;
+	let component: ReturnType<typeof mount> | undefined;
+
+	beforeEach(() => {
+		target = document.createElement('div');
+		document.body.append(target);
+	});
+
+	afterEach(() => {
+		if (component) unmount(component);
+		component = undefined;
+		target.remove();
+	});
+
+	const mountCropper = async () => {
+		const onPositionChange = vi.fn();
+		component = mount(PhotoCropper, { target, props: { src: 'blob:photo', onPositionChange } });
+		await tick();
+		const frame = target.querySelector('[role="button"]');
+		if (!(frame instanceof HTMLDivElement)) throw new Error('Cropper frame was not rendered.');
+		vi.spyOn(frame, 'getBoundingClientRect').mockReturnValue(new DOMRect(0, 0, 200, 300));
+		frame.setPointerCapture = () => undefined;
+		frame.releasePointerCapture = () => undefined;
+		return { frame, onPositionChange };
+	};
+
+	const press = (frame: HTMLElement, pointerId: number, pointerType = 'touch') =>
+		frame.dispatchEvent(
+			pointerEvent('pointerdown', { pointerId, pointerType, button: 0, clientX: 100, clientY: 100 }),
+		);
+
+	const move = (frame: HTMLElement, pointerId: number, extra: Record<string, number | string> = {}) =>
+		frame.dispatchEvent(pointerEvent('pointermove', { pointerId, clientX: 140, clientY: 160, ...extra }));
+
+	it('keeps following the first finger when a second one lands mid-drag', async () => {
+		const { frame, onPositionChange } = await mountCropper();
+		press(frame, 1);
+
+		press(frame, 2);
+		move(frame, 2);
+
+		expect(onPositionChange).not.toHaveBeenCalled();
+		move(frame, 1);
+		expect(onPositionChange).toHaveBeenCalledOnce();
+	});
+
+	it('ends a mouse drag released outside the frame', async () => {
+		const { frame, onPositionChange } = await mountCropper();
+		press(frame, 1, 'mouse');
+
+		move(frame, 1, { pointerType: 'mouse', buttons: 0 });
+		move(frame, 1, { pointerType: 'mouse', buttons: 1 });
+
+		expect(onPositionChange).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		['the window loses focus', () => window.dispatchEvent(new Event('blur'))],
+		[
+			'the pointer capture is lost',
+			(frame: HTMLElement) => frame.dispatchEvent(pointerEvent('lostpointercapture', { pointerId: 1 })),
+		],
+	])('ends the drag when %s and accepts a new one', async (_scenario, interrupt) => {
+		const { frame, onPositionChange } = await mountCropper();
+		press(frame, 1);
+
+		interrupt(frame);
+		move(frame, 1);
+		press(frame, 3);
+		move(frame, 3);
+
+		expect(onPositionChange).toHaveBeenCalledOnce();
+	});
+});

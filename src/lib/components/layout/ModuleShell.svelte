@@ -1,0 +1,39 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
+	import Section from '#lib/components/layout/Section.svelte';
+	import ModuleSidebar from '#lib/components/navigation/ModuleSidebar.svelte';
+	import Navbar from '#lib/components/navigation/Navbar.svelte';
+	import type { ModuleMenuItem } from '#lib/components/navigation/module-menu.js';
+
+	type Props = {
+		items: readonly ModuleMenuItem[];
+		moduleName: string;
+		isAdmin: boolean;
+		username: string;
+		userid: string;
+		children: Snippet;
+	};
+
+	let { items, moduleName, isAdmin, username, userid, children }: Props = $props();
+	let sidebarExpanded = $state(false);
+
+	afterNavigate(() => {
+		sidebarExpanded = false;
+	});
+</script>
+
+<main class="flex min-h-dvh">
+	<ModuleSidebar
+		{items}
+		{moduleName}
+		{isAdmin}
+		expanded={sidebarExpanded}
+		onClose={() => (sidebarExpanded = false)} />
+	<section class="min-w-0 flex-1">
+		<Navbar {username} {userid} {sidebarExpanded} onToggleSidebar={() => (sidebarExpanded = !sidebarExpanded)} />
+		<Section>
+			{@render children()}
+		</Section>
+	</section>
+</main>

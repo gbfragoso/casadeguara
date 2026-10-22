@@ -1,6 +1,16 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 
@@ -9,8 +19,10 @@
 		form: ActionData;
 	}
 
+	type TextFilter = { name: string; label: string; placeholder: string; maxlength: number; inputmode?: 'numeric' };
+
 	let { data, form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	let { colecoes, isAdmin } = $derived(data);
 	let errors = $derived(form?.errors ?? {});
 	const getValue = (field: string) => {
@@ -21,332 +33,179 @@
 	};
 	let collectionValue = $derived(getValue('colecao') || getValue('serie'));
 	let hasDeleteFailure = $derived(Boolean(form?.message && form.outcome !== 'deleted'));
-
-	const errorId = (field: string) => `${field}-errors`;
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Livros', href: resolve('biblioteca/livros') },
+	];
+	const leadingFilters: TextFilter[] = [
+		{ name: 'tombo', label: 'Tombo', placeholder: 'Digite o tombo do livro', maxlength: 8, inputmode: 'numeric' },
+		{ name: 'titulo', label: 'Título', placeholder: 'Digite o título do livro', maxlength: 80 },
+		{ name: 'autor', label: 'Autor', placeholder: 'Digite o nome do autor', maxlength: 60 },
+		{ name: 'editora', label: 'Editora', placeholder: 'Digite o nome da editora', maxlength: 60 },
+	];
+	const keywordFilter: TextFilter = {
+		name: 'keyword',
+		label: 'Palavra-chave',
+		placeholder: 'Digite uma palavra-chave',
+		maxlength: 30,
+	};
+	const bookPath = (id: number, section: 'autores' | 'exemplares' | 'keywords') =>
+		resolve(`/(protected)/biblioteca/livros/[id=integer]/${section}`, { id: `${id}` });
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/livros')} aria-current="page">Livros</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de livros</h1>
-</div>
+{#snippet textFilter(filter: TextFilter)}
+	<Field id={filter.name} label={filter.label} errors={errors[filter.name]}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name={filter.name}
+				id={filter.name}
+				inputmode={filter.inputmode}
+				maxlength={filter.maxlength}
+				value={getValue(filter.name)}
+				placeholder={filter.placeholder}
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+{/snippet}
 
-<form class="card" action="?/pesquisar" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field columns">
-			<div class="column">
-				<label class="label" for="tombo">Tombo</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="tombo"
-						id="tombo"
-						inputmode="numeric"
-						maxlength="8"
-						value={getValue('tombo')}
-						placeholder="Digite o tombo do livro"
-						aria-describedby={errors.tombo?.length ? errorId('tombo') : undefined}
-						aria-invalid={errors.tombo?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.tombo?.length}
-					<div id={errorId('tombo')} class="help is-danger">
-						{#each errors.tombo as message, index (`tombo-${index}`)}<p>{message}</p>{/each}
-					</div>
-				{/if}
-			</div>
-			<div class="column">
-				<label class="label" for="titulo">Título</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="titulo"
-						id="titulo"
-						maxlength="80"
-						value={getValue('titulo')}
-						placeholder="Digite o título do livro"
-						aria-describedby={errors.titulo?.length ? errorId('titulo') : undefined}
-						aria-invalid={errors.titulo?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.titulo?.length}
-					<div id={errorId('titulo')} class="help is-danger">
-						{#each errors.titulo as message, index (`titulo-${index}`)}<p>{message}</p>{/each}
-					</div>
-				{/if}
-			</div>
-			<div class="column">
-				<label class="label" for="autor">Autor</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="autor"
-						id="autor"
-						maxlength="60"
-						value={getValue('autor')}
-						placeholder="Digite o nome do autor"
-						aria-describedby={errors.autor?.length ? errorId('autor') : undefined}
-						aria-invalid={errors.autor?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.autor?.length}
-					<div id={errorId('autor')} class="help is-danger">
-						{#each errors.autor as message, index (`autor-${index}`)}<p>{message}</p>{/each}
-					</div>
-				{/if}
-			</div>
-		</div>
+<PageHeader {breadcrumb}>Consulta de livros</PageHeader>
 
-		<div class="field columns">
-			<div class="column">
-				<label class="label" for="editora">Editora</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="editora"
-						id="editora"
-						maxlength="60"
-						value={getValue('editora')}
-						placeholder="Digite o nome da editora"
-						aria-describedby={errors.editora?.length ? errorId('editora') : undefined}
-						aria-invalid={errors.editora?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.editora?.length}
-					<div id={errorId('editora')} class="help is-danger">
-						{#each errors.editora as message, index (`editora-${index}`)}<p>{message}</p>{/each}
-					</div>
-				{/if}
-			</div>
-			<div class="column">
-				<label class="label" for="colecao">Coleção</label>
-				<div class="select is-fullwidth">
-					<select
-						name="colecao"
-						id="colecao"
-						value={collectionValue}
-						aria-describedby={errors.colecao?.length ? errorId('colecao') : undefined}
-						aria-invalid={errors.colecao?.length ? 'true' : undefined}>
-						<option value="" selected={collectionValue === ''}>Todas as coleções</option>
-						{#each colecoes as colecao (colecao.idserie)}
-							<option value={colecao.idserie} selected={collectionValue === `${colecao.idserie}`}
-								>{colecao.nome}</option>
-						{/each}
-					</select>
-				</div>
-				{#if errors.colecao?.length}
-					<div id={errorId('colecao')} class="help is-danger">
-						{#each errors.colecao as message, index (`colecao-${index}`)}<p>{message}</p>{/each}
-					</div>
-				{/if}
-			</div>
-			<div class="column">
-				<label class="label" for="keyword">Palavra-chave</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="keyword"
-						id="keyword"
-						maxlength="30"
-						value={getValue('keyword')}
-						placeholder="Digite uma palavra-chave"
-						aria-describedby={errors.keyword?.length ? errorId('keyword') : undefined}
-						aria-invalid={errors.keyword?.length ? 'true' : undefined} />
-				</div>
-				{#if errors.keyword?.length}
-					<div id={errorId('keyword')} class="help is-danger">
-						{#each errors.keyword as message, index (`keyword-${index}`)}<p>{message}</p>{/each}
-					</div>
-				{/if}
-			</div>
-		</div>
-
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					disabled={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						{ 'is-loading': formEnhancer.loading },
-					]}
-					type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
-				</button>
-			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('biblioteca/livros/novo')}
-					><i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo</a>
-			</div>
-		</div>
+<Card element="form" action="?/pesquisar" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<div class="grid gap-4 tablet:grid-cols-3">
+		{#each leadingFilters as filter (filter.name)}
+			{@render textFilter(filter)}
+		{/each}
+		<Field id="colecao" label="Coleção" errors={errors.colecao}>
+			{#snippet control({ describedBy, invalid })}
+				<Select
+					name="colecao"
+					id="colecao"
+					value={collectionValue}
+					aria-describedby={describedBy}
+					aria-invalid={invalid}>
+					<option value="" selected={collectionValue === ''}>Todas as coleções</option>
+					{#each colecoes as colecao (colecao.idserie)}
+						<option value={colecao.idserie} selected={collectionValue === `${colecao.idserie}`}
+							>{colecao.nome}</option>
+					{/each}
+				</Select>
+			{/snippet}
+		</Field>
+		{@render textFilter(keywordFilter)}
 	</div>
-</form>
+
+	<ButtonGroup class="mt-6">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
+		<Button href={resolve('biblioteca/livros/novo')} tone="default" bold class="tablet:min-w-40">
+			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
+		</Button>
+	</ButtonGroup>
+</Card>
 
 {#if form?.outcome === 'deleted'}
-	<Notification class="is-success">{form.message ?? 'Livro excluído com sucesso.'}</Notification>
+	<Notification kind="success">{form.message ?? 'Livro excluído com sucesso.'}</Notification>
 {:else if hasDeleteFailure}
-	<Notification class="is-danger">{form?.message}</Notification>
+	<Notification kind="danger">{form?.message}</Notification>
 {/if}
 
 {#if form?.livros !== undefined}
-	<div class="card">
-		<div class="card-content">
-			{#if form.livros.length === 0}
-				<p role="status">Nenhum livro encontrado.</p>
-			{:else}
-				<div class="table-container">
-					<table class="table is-striped is-hoverable is-fullwidth">
-						<caption class="is-sr-only">Resultados da consulta de livros</caption>
-						<thead>
-							<tr>
-								<th>Tombo</th>
-								<th>Título</th>
-								<th>Palavra-chave</th>
-								<th>Referência</th>
-								<th class="table-actions">Ações</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each form.livros as livro, index (`${livro.idlivro}-${livro.keyword ?? ''}-${livro.referencia ?? ''}`)}
-								{@const confirmationId = `delete-book-${livro.idlivro}-${index}`}
-								<tr>
-									<td>{livro.tombo}</td>
-									<td>{livro.titulo}</td>
-									<td>{livro.keyword ?? '—'}</td>
-									<td>{livro.referencia ?? '—'}</td>
-									<td class="table-actions">
-										<div class="field is-grouped is-align-items-center">
-											<a
-												aria-label={`Editar livro ${livro.titulo}`}
-												title="Editar"
-												class="control"
-												target="_blank"
-												href={resolve('/(protected)/biblioteca/livros/[id=integer]', {
-													id: `${livro.idlivro}`,
-												})}>
-												<i class="fa-solid fa-pen-to-square fa-fw" aria-hidden="true"></i>
-											</a>
-											<a
-												aria-label={`Autores do livro ${livro.titulo}`}
-												title="Autores"
-												class="control"
-												target="_blank"
-												href={resolve('/(protected)/biblioteca/livros/[id=integer]/autores', {
-													id: `${livro.idlivro}`,
-												})}>
-												<i class="fa-solid fa-user-pen fa-fw" aria-hidden="true"></i>
-											</a>
-											<a
-												aria-label={`Exemplares do livro ${livro.titulo}`}
-												title="Exemplares"
-												class="control"
-												target="_blank"
-												href={resolve(
-													'/(protected)/biblioteca/livros/[id=integer]/exemplares',
-													{
-														id: `${livro.idlivro}`,
-													},
-												)}>
-												<i class="fa-solid fa-book fa-fw" aria-hidden="true"></i>
-											</a>
-											<a
-												aria-label={`Palavras-chave do livro ${livro.titulo}`}
-												title="Palavras-chave"
-												class="control"
-												target="_blank"
-												href={resolve('/(protected)/biblioteca/livros/[id=integer]/keywords', {
-													id: `${livro.idlivro}`,
-												})}>
-												<i class="fa-solid fa-key fa-fw" aria-hidden="true"></i>
-											</a>
-											{#if isAdmin}
-												<button
-													class="button is-ghost is-small control p-0"
-													type="button"
-													popovertarget={confirmationId}
-													aria-label={`Excluir livro ${livro.titulo}`}
-													title="Excluir">
-													<i
-														class="fa-regular fa-trash-can fa-fw delete-trigger"
-														aria-hidden="true"></i>
-												</button>
-												<div
-													id={confirmationId}
-													class="modal delete-confirmation"
-													popover="auto"
-													role="dialog"
-													aria-labelledby={`${confirmationId}-title`}>
-													<div class="modal-background"></div>
-													<div class="modal-card">
-														<header class="modal-card-head">
-															<p id={`${confirmationId}-title`} class="modal-card-title">
-																Excluir livro
-															</p>
-														</header>
-														<section class="modal-card-body">
-															<p>
-																Para finalizar a exclusão dos livros é necessário antes
-																excluir os exemplares. Confirma a exclusão de “{livro.titulo}”?
-															</p>
-														</section>
-														<footer class="modal-card-foot">
-															<div class="buttons">
-																<button
-																	class="button"
-																	type="button"
-																	popovertarget={confirmationId}
-																	popovertargetaction="hide">Cancelar</button>
-																<form action="?/excluir" method="POST">
-																	<input
-																		type="hidden"
-																		name="idlivro"
-																		value={livro.idlivro} />
-																	<button
-																		class="button is-danger"
-																		type="submit"
-																		aria-label={`Confirmar exclusão do livro ${livro.titulo}`}>
-																		Excluir
-																	</button>
-																</form>
-															</div>
-														</footer>
-													</div>
-												</div>
-											{/if}
+	{#if form.livros.length === 0}
+		<Card class="mt-6"><p role="status">Nenhum livro encontrado.</p></Card>
+	{:else}
+		<Card class="mt-6 overflow-hidden" padded={false}>
+			<DataTable caption="Resultados da consulta de livros" tableId="printable-content">
+				{#snippet head()}
+					<tr>
+						<th>Tombo</th>
+						<th>Título</th>
+						<th>Palavra-chave</th>
+						<th>Referência</th>
+						<th class="print:hidden">Ações</th>
+					</tr>
+				{/snippet}
+				{#each form.livros as livro, index (`${livro.idlivro}-${livro.keyword ?? ''}-${livro.referencia ?? ''}`)}
+					{@const confirmationId = `delete-book-${livro.idlivro}-${index}`}
+					<tr>
+						<td class="tabular-nums">{livro.tombo}</td>
+						<td class="font-medium text-ink-strong">{livro.titulo}</td>
+						<td>{livro.keyword ?? '—'}</td>
+						<td>{livro.referencia ?? '—'}</td>
+						<td class="print:hidden">
+							<div class="flex gap-1">
+								<IconAction
+									icon="fa-regular fa-pen-to-square"
+									aria-label={`Editar livro ${livro.titulo}`}
+									title="Editar"
+									target="_blank"
+									href={resolve('/(protected)/biblioteca/livros/[id=integer]', {
+										id: `${livro.idlivro}`,
+									})} />
+								<IconAction
+									icon="fa-solid fa-user-pen"
+									aria-label={`Autores do livro ${livro.titulo}`}
+									title="Autores"
+									target="_blank"
+									href={bookPath(livro.idlivro, 'autores')} />
+								<IconAction
+									icon="fa-solid fa-book"
+									aria-label={`Exemplares do livro ${livro.titulo}`}
+									title="Exemplares"
+									target="_blank"
+									href={bookPath(livro.idlivro, 'exemplares')} />
+								<IconAction
+									icon="fa-solid fa-key"
+									aria-label={`Palavras-chave do livro ${livro.titulo}`}
+									title="Palavras-chave"
+									target="_blank"
+									href={bookPath(livro.idlivro, 'keywords')} />
+								{#if isAdmin}
+									<IconAction
+										icon="fa-regular fa-trash-can"
+										tone="danger"
+										popovertarget={confirmationId}
+										aria-label={`Excluir livro ${livro.titulo}`}
+										title="Excluir" />
+									<div
+										id={confirmationId}
+										popover="auto"
+										role="dialog"
+										aria-labelledby={`${confirmationId}-title`}
+										class="m-auto w-[calc(100%-2rem)] max-w-lg flex-col gap-4 rounded-xl bg-surface p-6 text-left text-ink shadow-raised backdrop:bg-overlay/60 open:flex">
+										<SectionHeading
+											element="p"
+											id={`${confirmationId}-title`}
+											icon="fa-solid fa-trash-can"
+											iconTone="danger">Excluir livro</SectionHeading>
+										<p>
+											Para finalizar a exclusão dos livros é necessário antes excluir os
+											exemplares. Confirma a exclusão de “{livro.titulo}”?
+										</p>
+										<div
+											class="mt-2 flex flex-col-reverse gap-3 tablet:flex-row tablet:justify-end">
+											<Button
+												type="button"
+												popovertarget={confirmationId}
+												popovertargetaction="hide">Cancelar</Button>
+											<form action="?/excluir" method="POST">
+												<input type="hidden" name="idlivro" value={livro.idlivro} />
+												<Button
+													tone="danger"
+													type="submit"
+													aria-label={`Confirmar exclusão do livro ${livro.titulo}`}
+													>Excluir</Button>
+											</form>
 										</div>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
-		</div>
-	</div>
+									</div>
+								{/if}
+							</div>
+						</td>
+					</tr>
+				{/each}
+			</DataTable>
+		</Card>
+	{/if}
 {/if}
-
-<style>
-	.delete-trigger {
-		color: var(--bulma-danger);
-	}
-
-	.delete-confirmation:popover-open {
-		display: flex;
-		width: 100vw;
-		height: 100vh;
-		max-width: none;
-		max-height: none;
-		padding: 0;
-		border: 0;
-		background: transparent;
-	}
-</style>

@@ -7,6 +7,7 @@ import { parseRenderedBody } from '../../../support/rendered-document';
 
 const LIBRARY_COPY = 'section[aria-label="Via da biblioteca"]';
 const READER_COPY = 'section[aria-label="Via do leitor"]';
+const RECEIPT = '[data-testid="recibo-termico"]';
 const RULES = 'Prazo de 14 dias. Pode ser renovado uma vez, por mais 14 dias.';
 
 const buildRecibo = (overrides: Partial<ReciboEmprestimo> = {}): ReciboEmprestimo => ({
@@ -44,7 +45,7 @@ describe('LoanReceipt', () => {
 		expect(text).toContain('Exemplar: 2 Devolver até: 15/10/2026');
 		expect(text).toContain('Renovado para: ____/____/______');
 		expect(text).toContain('Recebido por:');
-		expect(normalizedText(document.querySelector(`${LIBRARY_COPY} .assinatura`))).toBe(
+		expect(normalizedText(document.querySelector(`${LIBRARY_COPY} footer`))).toBe(
 			'Maria da Conceição Souza Fora da caridade não há salvação',
 		);
 	});
@@ -58,11 +59,10 @@ describe('LoanReceipt', () => {
 		expect(text).toContain('Via do leitor');
 		expect(text).toContain('Empréstimo nº 1234 Data: 01/10/2026');
 		expect(text).toContain('Exemplar: 2');
-		expect(normalizedText(readerCopy?.querySelector('.destaque-devolucao') ?? null)).toBe(
-			'Devolver até 15/10/2026',
-		);
+		const paragraphs = [...(readerCopy?.querySelectorAll('p') ?? [])].map(normalizedText);
+		expect(paragraphs).toContain('Devolver até 15/10/2026');
 		expect(text).toContain(RULES);
-		expect(readerCopy?.querySelector('.assinatura')).toBeNull();
+		expect(readerCopy?.querySelector('footer')).toBeNull();
 		expect(text).not.toContain('Renovado para');
 		expect(text).not.toContain('Recebido por');
 	});
@@ -70,7 +70,7 @@ describe('LoanReceipt', () => {
 	it('orders the library copy, the cut line and the reader copy', () => {
 		const document = renderReceipt(buildRecibo());
 
-		const text = normalizedText(document.querySelector('.recibo-termico'));
+		const text = normalizedText(document.querySelector(RECEIPT));
 
 		const libraryIndex = text.indexOf('Via da biblioteca');
 		const cutIndex = text.indexOf('corte aqui');
@@ -94,23 +94,23 @@ describe('LoanReceipt', () => {
 		expect(libraryText).toContain(leitor);
 		expect(readerText).toContain(titulo);
 		expect(readerText).toContain(leitor);
-		expect(normalizedText(document.querySelector('.recibo-termico'))).not.toMatch(/…|\.\.\./);
+		expect(normalizedText(document.querySelector(RECEIPT))).not.toMatch(/…|\.\.\./);
 	});
 
 	it('contains no images or icons', () => {
 		const document = renderReceipt(buildRecibo());
 
-		const receipt = document.querySelector('.recibo-termico');
+		const receipt = document.querySelector(RECEIPT);
 
 		expect(receipt).not.toBeNull();
-		expect(receipt?.querySelectorAll('img, svg, picture, canvas, i, [class*="fa-"]')).toHaveLength(0);
+		expect(receipt?.querySelectorAll('img, svg, picture, canvas, i')).toHaveLength(0);
 	});
 
 	it('uses the contract dates instead of the current date', () => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date(2026, 9, 10, 12));
 
-		const text = normalizedText(renderReceipt(buildRecibo()).querySelector('.recibo-termico'));
+		const text = normalizedText(renderReceipt(buildRecibo()).querySelector(RECEIPT));
 
 		expect(occurrences(text, '01/10/2026')).toBe(2);
 		expect(occurrences(text, '15/10/2026')).toBe(2);

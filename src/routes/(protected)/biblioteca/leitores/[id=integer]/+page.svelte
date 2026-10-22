@@ -1,6 +1,18 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import type { HTMLInputAttributes } from 'svelte/elements';
+	import Button from '#lib/components/actions/Button.svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Checkbox from '#lib/components/forms/Checkbox.svelte';
+	import ChoiceGroup from '#lib/components/forms/ChoiceGroup.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import { FIELD_WIDTHS, type FieldWidth } from '#lib/components/layout/field-widths.js';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 
@@ -9,6 +21,18 @@
 		form: ActionData;
 	}
 
+	type ContactFieldName =
+		'email' | 'celular' | 'telefone' | 'logradouro' | 'bairro' | 'complemento' | 'cidade' | 'cep';
+	type ContactField = Pick<HTMLInputAttributes, 'autocomplete' | 'inputmode'> & {
+		name: ContactFieldName;
+		label: string;
+		maxlength: number;
+		type?: 'email';
+		width?: FieldWidth;
+	};
+	type IdentifierField = { name: 'rg' | 'cpf'; label: string; maxlength: number; registered: string };
+	type RemovalField = { name: 'removeRg' | 'removeCpf'; label: string };
+
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let leitor = $derived(data.leitor);
@@ -16,251 +40,123 @@
 		form?.values?.status === 'true' || (form?.values?.status === undefined && leitor.status),
 	);
 	let workerChecked = $derived(form?.values?.trab === 'true' || (form?.values?.trab === undefined && leitor.trab));
+	let identifierFields: [IdentifierField, RemovalField][] = $derived([
+		[
+			{
+				name: 'rg',
+				label: 'Novo RG',
+				maxlength: 12,
+				registered: `RG cadastrado: ${leitor.rgMask ?? 'Não informado.'}`,
+			},
+			{ name: 'removeRg', label: 'Remover RG cadastrado' },
+		],
+		[
+			{
+				name: 'cpf',
+				label: 'Novo CPF',
+				maxlength: 14,
+				registered: `CPF cadastrado: ${leitor.cpfMask ?? 'Não informado.'}`,
+			},
+			{ name: 'removeCpf', label: 'Remover CPF cadastrado' },
+		],
+	]);
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Leitores', href: resolve('biblioteca/leitores') },
+	];
+	const contactRows: ContactField[][] = [
+		[
+			{ name: 'email', label: 'E-mail', maxlength: 60, type: 'email', autocomplete: 'email' },
+			{ name: 'celular', label: 'Celular', maxlength: 15, inputmode: 'tel', autocomplete: 'tel-national' },
+			{ name: 'telefone', label: 'WhatsApp', maxlength: 15, inputmode: 'tel', autocomplete: 'tel-national' },
+		],
+		[
+			{ name: 'logradouro', label: 'Logradouro', maxlength: 80, autocomplete: 'street-address', width: 'medium' },
+			{ name: 'bairro', label: 'Bairro', maxlength: 30, autocomplete: 'address-level3' },
+			{ name: 'complemento', label: 'Complemento', maxlength: 100, autocomplete: 'address-line2' },
+			{ name: 'cidade', label: 'Cidade', maxlength: 100, autocomplete: 'address-level2' },
+			{ name: 'cep', label: 'CEP', maxlength: 9, inputmode: 'numeric', autocomplete: 'postal-code' },
+		],
+	];
+	const errorAttributes = (field: string) =>
+		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/leitores')} aria-current="page">Leitores</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Atualizar dados do leitor</h1>
-</div>
+<PageHeader {breadcrumb}>Atualizar dados do leitor</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="columns">
-			<div class="field column is-three-fifths">
-				<label class="label" for="nome">Nome</label>
-				<div class="control">
-					<input
-						class="input"
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Columns class="flex-wrap">
+		<Column class={FIELD_WIDTHS.wide}>
+			<Field id="nome" label="Nome">
+				{#snippet control()}
+					<TextInput
 						type="text"
 						name="nome"
 						id="nome"
 						value={form?.values?.nome ?? leitor.nome}
 						autocomplete="name"
-						maxlength="60"
+						maxlength={60}
 						required
-						aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
-						aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="rg">Novo RG</label>
-				<p class="help">RG cadastrado: {leitor.rgMask ?? 'Não informado.'}</p>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="rg"
-						id="rg"
-						value=""
-						maxlength="12"
-						inputmode="numeric"
-						autocomplete="off"
-						aria-describedby={form?.errors?.rg?.length ? 'rg-errors' : undefined}
-						aria-invalid={form?.errors?.rg?.length ? 'true' : undefined} />
-				</div>
-				<label for="removeRg" class="checkbox mt-2">
-					<input
-						type="checkbox"
-						name="removeRg"
-						id="removeRg"
-						value="true"
-						checked={form?.values?.removeRg === 'true'}
-						aria-describedby={form?.errors?.removeRg?.length ? 'removeRg-errors' : undefined}
-						aria-invalid={form?.errors?.removeRg?.length ? 'true' : undefined} />
-					Remover RG cadastrado
-				</label>
-			</div>
-			<div class="field column">
-				<label class="label" for="cpf">Novo CPF</label>
-				<p class="help">CPF cadastrado: {leitor.cpfMask ?? 'Não informado.'}</p>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="cpf"
-						id="cpf"
-						value=""
-						maxlength="14"
-						inputmode="numeric"
-						autocomplete="off"
-						aria-describedby={form?.errors?.cpf?.length ? 'cpf-errors' : undefined}
-						aria-invalid={form?.errors?.cpf?.length ? 'true' : undefined} />
-				</div>
-				<label for="removeCpf" class="checkbox mt-2">
-					<input
-						type="checkbox"
-						name="removeCpf"
-						id="removeCpf"
-						value="true"
-						checked={form?.values?.removeCpf === 'true'}
-						aria-describedby={form?.errors?.removeCpf?.length ? 'removeCpf-errors' : undefined}
-						aria-invalid={form?.errors?.removeCpf?.length ? 'true' : undefined} />
-					Remover CPF cadastrado
-				</label>
-			</div>
-		</div>
-		<div class="columns">
-			<div class="field column">
-				<label class="label" for="email">E-mail</label>
-				<div class="control">
-					<input
-						class="input"
-						type="email"
-						name="email"
-						id="email"
-						value={form?.values?.email ?? leitor.email ?? ''}
-						maxlength="60"
-						autocomplete="email"
-						aria-describedby={form?.errors?.email?.length ? 'email-errors' : undefined}
-						aria-invalid={form?.errors?.email?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="celular">Celular</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="celular"
-						id="celular"
-						value={form?.values?.celular ?? leitor.celular ?? ''}
-						maxlength="15"
-						inputmode="tel"
-						autocomplete="tel-national"
-						aria-describedby={form?.errors?.celular?.length ? 'celular-errors' : undefined}
-						aria-invalid={form?.errors?.celular?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="telefone">WhatsApp</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="telefone"
-						id="telefone"
-						value={form?.values?.telefone ?? leitor.telefone ?? ''}
-						maxlength="15"
-						inputmode="tel"
-						autocomplete="tel-national"
-						aria-describedby={form?.errors?.telefone?.length ? 'telefone-errors' : undefined}
-						aria-invalid={form?.errors?.telefone?.length ? 'true' : undefined} />
-				</div>
-			</div>
-		</div>
-		<div class="columns">
-			<div class="field column is-half">
-				<label class="label" for="logradouro">Logradouro</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="logradouro"
-						id="logradouro"
-						value={form?.values?.logradouro ?? leitor.logradouro ?? ''}
-						maxlength="80"
-						autocomplete="street-address"
-						aria-describedby={form?.errors?.logradouro?.length ? 'logradouro-errors' : undefined}
-						aria-invalid={form?.errors?.logradouro?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="bairro">Bairro</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="bairro"
-						id="bairro"
-						value={form?.values?.bairro ?? leitor.bairro ?? ''}
-						maxlength="30"
-						autocomplete="address-level3"
-						aria-describedby={form?.errors?.bairro?.length ? 'bairro-errors' : undefined}
-						aria-invalid={form?.errors?.bairro?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="complemento">Complemento</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="complemento"
-						id="complemento"
-						value={form?.values?.complemento ?? leitor.complemento ?? ''}
-						maxlength="100"
-						autocomplete="address-line2"
-						aria-describedby={form?.errors?.complemento?.length ? 'complemento-errors' : undefined}
-						aria-invalid={form?.errors?.complemento?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="cidade">Cidade</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="cidade"
-						id="cidade"
-						value={form?.values?.cidade ?? leitor.cidade ?? ''}
-						maxlength="100"
-						autocomplete="address-level2"
-						aria-describedby={form?.errors?.cidade?.length ? 'cidade-errors' : undefined}
-						aria-invalid={form?.errors?.cidade?.length ? 'true' : undefined} />
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="cep">CEP</label>
-				<div class="control">
-					<input
-						class="input"
-						type="text"
-						name="cep"
-						id="cep"
-						value={form?.values?.cep ?? leitor.cep ?? ''}
-						maxlength="9"
-						inputmode="numeric"
-						autocomplete="postal-code"
-						aria-describedby={form?.errors?.cep?.length ? 'cep-errors' : undefined}
-						aria-invalid={form?.errors?.cep?.length ? 'true' : undefined} />
-				</div>
-			</div>
-		</div>
-		<div class="field is-grouped">
-			<input type="hidden" name="trab" value="false" />
-			<label for="trab" class="checkbox">
-				<input
-					type="checkbox"
-					name="trab"
-					id="trab"
+						{...errorAttributes('nome')} />
+				{/snippet}
+			</Field>
+		</Column>
+		{#each identifierFields as [identifier, removal] (identifier.name)}
+			<Column class={[FIELD_WIDTHS.regular, 'flex flex-col gap-2']}>
+				<Field id={identifier.name} label={identifier.label} help={identifier.registered}>
+					{#snippet control()}
+						<TextInput
+							type="text"
+							name={identifier.name}
+							id={identifier.name}
+							value=""
+							maxlength={identifier.maxlength}
+							inputmode="numeric"
+							autocomplete="off"
+							{...errorAttributes(identifier.name)} />
+					{/snippet}
+				</Field>
+				<Checkbox
+					name={removal.name}
+					id={removal.name}
 					value="true"
-					checked={workerChecked}
-					aria-describedby={form?.errors?.trab?.length ? 'trab-errors' : undefined}
-					aria-invalid={form?.errors?.trab?.length ? 'true' : undefined} />
-				Trabalhador
-			</label>
-			<input type="hidden" name="status" value="false" />
-			<label for="status" class="checkbox">
-				<input
-					type="checkbox"
-					name="status"
-					id="status"
-					value="true"
-					checked={statusChecked}
-					aria-describedby={form?.errors?.status?.length ? 'status-errors' : undefined}
-					aria-invalid={form?.errors?.status?.length ? 'true' : undefined} />
-				Ativo
-			</label>
-		</div>
-		{#if form?.errors}
-			<div class="notification is-danger" aria-live="polite">
+					checked={form?.values?.[removal.name] === 'true'}
+					{...errorAttributes(removal.name)}>{removal.label}</Checkbox>
+			</Column>
+		{/each}
+	</Columns>
+	{#each contactRows as row, index (index)}
+		<Columns class="flex-wrap">
+			{#each row as field (field.name)}
+				<Column class={FIELD_WIDTHS[field.width ?? 'narrow']}>
+					<Field id={field.name} label={field.label}>
+						{#snippet control()}
+							<TextInput
+								type={field.type ?? 'text'}
+								name={field.name}
+								id={field.name}
+								value={form?.values?.[field.name] ?? leitor[field.name] ?? ''}
+								maxlength={field.maxlength}
+								inputmode={field.inputmode}
+								autocomplete={field.autocomplete}
+								{...errorAttributes(field.name)} />
+						{/snippet}
+					</Field>
+				</Column>
+			{/each}
+		</Columns>
+	{/each}
+	<ChoiceGroup>
+		<input type="hidden" name="trab" value="false" />
+		<Checkbox name="trab" id="trab" value="true" checked={workerChecked} {...errorAttributes('trab')}
+			>Trabalhador</Checkbox>
+		<input type="hidden" name="status" value="false" />
+		<Checkbox name="status" id="status" value="true" checked={statusChecked} {...errorAttributes('status')}
+			>Ativo</Checkbox>
+	</ChoiceGroup>
+	{#if form?.errors}
+		<InlineNotification kind="danger" aria-live="polite">
+			<div>
 				{#each Object.entries(form.errors) as [field, messages] (field)}
 					<div id={`${field}-errors`}>
 						{#each messages as message (`${field}-${message}`)}
@@ -269,16 +165,13 @@
 					</div>
 				{/each}
 			</div>
-		{/if}
-		<div class="control">
-			<button
-				aria-busy={formEnhancer.loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
-				type="submit">Atualizar</button>
-		</div>
+		</InlineNotification>
+	{/if}
+	<div>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Atualizar</Button>
 	</div>
-</form>
+</Card>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Leitor atualizado com sucesso!</Notification>
+	<Notification kind="success">Leitor atualizado com sucesso!</Notification>
 {/if}

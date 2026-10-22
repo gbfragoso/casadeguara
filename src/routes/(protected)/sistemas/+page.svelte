@@ -1,37 +1,35 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import AccessCard from '#lib/components/layout/AccessCard.svelte';
 	import type { PageServerData } from './$types';
-	interface Props {
-		data: PageServerData;
-	}
+
+	type Props = { data: PageServerData };
 	type ModulePath = 'biblioteca' | 'secretaria' | 'tesouraria';
 
 	let { data }: Props = $props();
 	let { roles } = $derived(data);
-	const modules: Array<{ role: string; path: ModulePath }> = [
-		{ role: 'biblioteca', path: 'biblioteca' },
-		{ role: 'secretaria', path: 'secretaria' },
-		{ role: 'tesouraria', path: 'tesouraria' },
+	const modules: Array<{ role: string; path: ModulePath; label: string; icon: string }> = [
+		{ role: 'biblioteca', path: 'biblioteca', label: 'Biblioteca', icon: 'fa-solid fa-book' },
+		{ role: 'secretaria', path: 'secretaria', label: 'Secretaria', icon: 'fa-solid fa-address-book' },
+		{ role: 'tesouraria', path: 'tesouraria', label: 'Tesouraria', icon: 'fa-solid fa-sack-dollar' },
 	];
 	let availableModules = $derived(
 		modules.filter((module) => roles.some((role) => role.replace(':admin', '') === module.role)),
 	);
 </script>
 
-<main>
-	<section class="section">
-		<div class="container card mt-6" style="max-width:400px">
-			<div class="card-content">
-				<div class="has-text-centered">
-					<p class="is-size-4 mb-6">Selecione o módulo</p>
-					<div class="is-flex is-flex-direction-column">
-						{#each availableModules as module (module.role)}
-							<a class="button has-text-weight-semibold mb-2" href={resolve(module.path)}
-								>{module.role}</a>
-						{/each}
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-</main>
+<AccessCard>
+	<h1 class="mb-6 text-center text-2xl font-medium text-balance text-ink-strong">Selecione o módulo</h1>
+	<div class="flex flex-col gap-3">
+		{#each availableModules as module (module.role)}
+			<Button href={resolve(module.path)} fullwidth bold class="min-h-12">
+				<i class={[module.icon, 'fa-fw text-primary-ink']} aria-hidden="true"></i>{module.label}
+			</Button>
+		{:else}
+			<p role="status" class="text-center text-ink">
+				Seu usuário ainda não tem acesso a nenhum módulo. Peça à coordenação do seu setor para liberar o acesso.
+			</p>
+		{/each}
+	</div>
+</AccessCard>

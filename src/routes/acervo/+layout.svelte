@@ -1,13 +1,16 @@
 <script lang="ts">
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
+	import type { Snippet } from 'svelte';
+	import PublicHeader from '#lib/components/layout/PublicHeader.svelte';
+	import Section from '#lib/components/layout/Section.svelte';
+
+	type Props = { children: Snippet };
 
 	let { children }: Props = $props();
 </script>
 
+<PublicHeader />
 <main>
-	<section class="section">
-		{@render children?.()}
-	</section>
+	<Section>
+		{@render children()}
+	</Section>
 </main>

@@ -23,6 +23,17 @@ const searchKeywordSchema = z
 	.max(KEYWORD_MAX_LENGTH, MAX_LENGTH_MESSAGE)
 	.refine((key) => key === '' || LETTER_PATTERN.test(key), INVALID_MESSAGE);
 
+export const KEYWORD_REFERENCE_MAX_LENGTH = 100;
+
+const INVALID_REFERENCE_MESSAGE = 'Referência inválida.';
+const REFERENCE_MAX_LENGTH_MESSAGE = `A referência deve ter até ${KEYWORD_REFERENCE_MAX_LENGTH} caracteres.`;
+
+export const keywordReferenceSchema = z
+	.string({ error: INVALID_REFERENCE_MESSAGE })
+	.trim()
+	.max(KEYWORD_REFERENCE_MAX_LENGTH, REFERENCE_MAX_LENGTH_MESSAGE)
+	.transform((reference) => reference || null);
+
 export const keywordSchema = z.object({ chave: createKeywordSchema });
 export const keywordSearchSchema = z.object({ chave: searchKeywordSchema });
 

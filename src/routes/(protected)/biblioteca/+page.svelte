@@ -1,5 +1,10 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Indicator from '#lib/components/data/Indicator.svelte';
+	import Box from '#lib/components/layout/Box.svelte';
+	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import { formatMonthYear } from '#lib/utils/date.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -9,52 +14,43 @@
 
 	let { data }: Props = $props();
 	let { avisos, emprestimos, devolucoes } = $derived(data);
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Página Inicial', href: resolve('biblioteca') },
+	];
 	dayjs.extend(utc);
 </script>
 
-<div>
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca')} aria-current="page">Página Inicial</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">
-		Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
-	</h1>
+<PageHeader {breadcrumb}>Balanço de {formatMonthYear(new Date())}</PageHeader>
+
+<div data-testid="indicadores" class="grid gap-4 tablet:grid-cols-3">
+	<Indicator label="Empréstimos" highlight>
+		{#snippet value()}{emprestimos[0].counter}{/snippet}
+	</Indicator>
+	<Indicator label="Devoluções">
+		{#snippet value()}{devolucoes[0].counter}{/snippet}
+	</Indicator>
+	<Indicator label="Renovações">
+		{#snippet value()}{emprestimos[0].renovacoes || 0}{/snippet}
+	</Indicator>
 </div>
-<div class="mt-2 columns">
-	<div class="column">
-		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-arrow-right fa-fw">&nbsp;</i>Empréstimos
-			<h2 class="is-size-3 has-text-primary">{emprestimos[0].counter}</h2>
-		</div>
-	</div>
-	<div class="column">
-		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-arrow-left fa-fw">&nbsp;</i>Devoluções
-			<h2 class="is-size-3 has-text-primary">{devolucoes[0].counter}</h2>
-		</div>
-	</div>
-	<div class="column">
-		<div class="box has-text-weight-semibold">
-			<i class="fa-solid fa-repeat fa-fw">&nbsp;</i>Renovações
-			<h2 class="is-size-3 has-text-primary">{emprestimos[0].renovacoes || 0}</h2>
-		</div>
-	</div>
-</div>
-<p class="is-size-4 mb-4 has-text-weight-semibold">Mural de avisos</p>
-{#each avisos as aviso (aviso.idaviso)}
-	<div class="box">
-		<div class="content">
-			<p>
-				<strong class="has-text-primary">{aviso.username}</strong>
-				<small>{dayjs.utc(aviso.dataCadastro).format('DD/MM/YYYY')}</small>
-				<br />
-				{aviso.texto}
-			</p>
-		</div>
-	</div>
-{/each}
+
+<section class="mt-10 flex flex-col gap-4">
+	<SectionHeading element="p">Mural de avisos</SectionHeading>
+	{#if avisos.length === 0}
+		<p class="text-ink-muted">Nenhum aviso no mural.</p>
+	{:else}
+		<Box class="tablet:p-6">
+			{#each avisos as aviso (aviso.idaviso)}
+				<article class="flex flex-col gap-1 border-t border-divider py-4 first:border-t-0 first:pt-0 last:pb-0">
+					<p>
+						<strong class="font-medium text-primary-ink">{aviso.username}</strong>
+						<small class="text-sm text-ink-muted"
+							>{dayjs.utc(aviso.dataCadastro).format('DD/MM/YYYY')}</small>
+					</p>
+					<p>{aviso.texto}</p>
+				</article>
+			{/each}
+		</Box>
+	{/if}
+</section>

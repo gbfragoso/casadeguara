@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import dayjs from 'dayjs';
-	import 'dayjs/locale/pt.js';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData } from './$types';
 	interface Props {
@@ -10,104 +14,77 @@
 	}
 
 	let { form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
+	const breadcrumb = [
+		{ label: 'Secretaria', href: resolve('secretaria') },
+		{ label: 'Aniversariantes', href: resolve('secretaria/aniversariantes') },
+	];
+	const months = [
+		{ value: '01', label: 'Janeiro' },
+		{ value: '02', label: 'Fevereiro' },
+		{ value: '03', label: 'Março' },
+		{ value: '04', label: 'Abril' },
+		{ value: '05', label: 'Maio' },
+		{ value: '06', label: 'Junho' },
+		{ value: '07', label: 'Julho' },
+		{ value: '08', label: 'Agosto' },
+		{ value: '09', label: 'Setembro' },
+		{ value: '10', label: 'Outubro' },
+		{ value: '11', label: 'Novembro' },
+		{ value: '12', label: 'Dezembro' },
+	];
 	dayjs.extend(utc);
+	let selectedMonth = $derived(form?.mes ?? dayjs().format('MM'));
+	let monthName = $derived(months.find((month) => month.value === form?.mes)?.label.toLocaleLowerCase('pt-BR') ?? '');
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('secretaria')}>Secretaria</a></li>
-			<li class="is-active">
-				<a href={resolve('secretaria/aniversariantes')} aria-current="page">Aniversariantes</a>
-			</li>
-		</ul>
-	</nav>
-	<div class="is-hidden-print">
-		<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Lista de aniversariantes</h1>
-	</div>
-</div>
+<PageHeader {breadcrumb} printTitle={false}>Lista de aniversariantes</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="columns">
-			<div class="column is-full-mobile is-10-tablet">
-				<div class="select is-fullwidth">
-					<select name="mes">
-						<option value="01">Janeiro</option>
-						<option value="02">Fevereiro</option>
-						<option value="03">Março</option>
-						<option value="04">Abril</option>
-						<option value="05">Maio</option>
-						<option value="06">Junho</option>
-						<option value="07">Julho</option>
-						<option value="08">Agosto</option>
-						<option value="09">Setembro</option>
-						<option value="10">Outubro</option>
-						<option value="11">Novembro</option>
-						<option value="12">Dezembro</option>
-					</select>
-				</div>
-			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						formEnhancer.loading && 'is-loading',
-					]}
-					type="submit">
-					<i class="fa-regular fa-rectangle-list fa-fw"></i>&nbsp;Gerar lista
-				</button>
-			</div>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" class="flex flex-col gap-3 tablet:flex-row" {@attach formEnhancer.submitWithLoading}>
+	<Select name="mes" aria-label="Mês" class="grow">
+		{#each months as month (month.value)}
+			<option value={month.value} selected={month.value === selectedMonth}>{month.label}</option>
+		{/each}
+	</Select>
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
+		<i class="fa-regular fa-rectangle-list fa-fw" aria-hidden="true"></i>Gerar lista
+	</Button>
+</Card>
 
-{#if form?.leitores}
-	<div id="printable-content" class="card notranslate" translate="no">
-		<div class="card-content">
-			<h1 class="is-size-5 has-text-weight-semibold has-text-centered has-text-primary">
-				GRUPO ESPÍRITA CASA DE GUARÁ
-			</h1>
-			<h2 class="is-size-6 has-text-weight-semibold has-text-centered has-text-danger is-uppercase">
-				Aniversariantes do mês {dayjs.utc(form.leitores[0].aniversario).locale('pt').format('MMMM')} / {dayjs
-					.utc(new Date())
-					.format('YYYY')}
-			</h2>
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<tr>
-							<th>Nome</th>
-							<th>Data</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each form.leitores as leitor (leitor)}
-							<tr>
-								<td>
-									{leitor.nome.toUpperCase()}
-									{#if leitor.desencarnado}
-										<span class="has-text-weight-semibold has-text-danger">(IN MEMORIAM)</span>
-									{/if}
-								</td>
-								<td>
-									{#if leitor.aniversario}
-										{dayjs.utc(leitor.aniversario).format('DD/MM')}
-									{/if}
-								</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div
-			style="position: fixed; bottom: 0;width: 100%;"
-			class="is-size-6 has-text-weight-semibold has-text-centered has-text-danger">
+{#if form?.leitores?.length === 0}
+	<Card class="mt-6"><p role="status">Nenhum aniversariante encontrado em {monthName}.</p></Card>
+{:else if form?.leitores}
+	<Card id="printable-content" class="notranslate mt-6 flex flex-col gap-2" translate="no">
+		<h1 class="text-center text-lg font-bold text-primary-ink">GRUPO ESPÍRITA CASA DE GUARÁ</h1>
+		<h2 class="text-center font-bold text-danger-ink uppercase">
+			Aniversariantes do mês {monthName} / {dayjs.utc(new Date()).format('YYYY')}
+		</h2>
+		<DataTable class="-mx-5 mt-2 tablet:-mx-6 print:mx-0">
+			{#snippet head()}
+				<tr>
+					<th>Nome</th>
+					<th>Data</th>
+				</tr>
+			{/snippet}
+			{#each form.leitores as leitor (leitor)}
+				<tr>
+					<td>
+						{leitor.nome.toUpperCase()}
+						{#if leitor.desencarnado}
+							<span class="font-bold text-danger-ink">(IN MEMORIAM)</span>
+						{/if}
+					</td>
+					<td>
+						{#if leitor.aniversario}
+							{dayjs.utc(leitor.aniversario).format('DD/MM')}
+						{/if}
+					</td>
+				</tr>
+			{/each}
+		</DataTable>
+		<p class="mt-4 text-center font-bold text-danger-ink print:fixed print:bottom-0 print:w-full">
 			ATENÇÃO: Quaisquer omissões de nomes ou alterações de data favor avisar ao Ir. Carlson <br />
 			(Tel (73) 98808-2447/Whatsapp) para as correções devidas
-		</div>
-	</div>
+		</p>
+	</Card>
 {/if}

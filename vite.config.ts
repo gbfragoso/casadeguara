@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import adapter from '@sveltejs/adapter-vercel';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
@@ -26,6 +27,7 @@ function treasuryChartProofPlugin() {
 
 export default defineConfig({
 	plugins: [
+		tailwindcss(),
 		sveltekit({
 			preprocess: vitePreprocess(),
 			adapter: adapter({
@@ -47,13 +49,6 @@ export default defineConfig({
 	server: {
 		hmr: process.env.NODE_ENV !== 'test',
 		fs: { allow: [resolve('.')] },
-	},
-	css: {
-		preprocessorOptions: {
-			scss: {
-				quietDeps: true,
-			},
-		},
 	},
 	resolve: {
 		conditions: process.env.VITEST ? ['browser'] : undefined,

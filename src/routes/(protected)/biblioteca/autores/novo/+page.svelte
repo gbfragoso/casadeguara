@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData } from './$types';
 
@@ -10,54 +15,32 @@
 
 	let { form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Autores', href: resolve('biblioteca/autores') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/autores')} aria-current="page">Autores</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de autores</h1>
-</div>
+<PageHeader {breadcrumb}>Cadastro de autores</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="nome">Nome do autor</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="nome"
-					id="nome"
-					value={form?.values?.nome ?? ''}
-					placeholder="Digite o nome do autor"
-					maxlength="60"
-					required
-					aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
-					aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
-			</div>
-			{#if form?.errors?.nome?.length}
-				<div id="nome-errors" class="help is-danger">
-					{#each form.errors.nome as message (message)}
-						<p>{message}</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<div class="control">
-			<button
-				aria-busy={formEnhancer.loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
-				type="submit">Cadastrar</button>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<Field id="nome" label="Nome do autor" errors={form?.errors?.nome}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name="nome"
+				id="nome"
+				value={form?.values?.nome ?? ''}
+				placeholder="Digite o nome do autor"
+				maxlength={60}
+				required
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+	<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="mt-6">Cadastrar</Button>
+</Card>
 
 {#if form?.status === 201}
-	<Notification class="is-success">Autor cadastrado com sucesso!</Notification>
+	<Notification kind="success">Autor cadastrado com sucesso!</Notification>
 {/if}

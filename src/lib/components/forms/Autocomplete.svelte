@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { CONTROL_CLASSES } from '#lib/components/forms/control-classes.js';
 	import { filterOptions, indexOptions, type AutocompleteOption } from '#lib/forms/autocomplete.js';
 
 	interface Props {
@@ -36,7 +37,8 @@
 	const indexed = $derived(indexOptions(options));
 	const selected = $derived(options.find((option) => option.value === value));
 	const query = $derived(selected?.label ?? draft);
-	const suggestions = $derived(filterOptions(indexed, selected ? '' : query).slice(0, MAX_VISIBLE_SUGGESTIONS));
+	const matches = $derived(filterOptions(indexed, selected ? '' : query));
+	const suggestions = $derived(matches.slice(0, MAX_VISIBLE_SUGGESTIONS));
 	const activeOption = $derived(open ? suggestions[active] : undefined);
 	const listId = $derived(`${id}-options`);
 	const optionId = (option: AutocompleteOption) => `${id}-option-${option.value}`;
@@ -83,12 +85,12 @@
 	}
 </script>
 
-<div class="control autocomplete">
+<div class="relative">
 	<input
 		bind:this={input}
 		{@attach validateInput}
 		{id}
-		class="input"
+		class={CONTROL_CLASSES}
 		type="text"
 		role="combobox"
 		autocomplete="off"
@@ -113,56 +115,31 @@
 		onkeydown={handleKey} />
 	<input type="hidden" {name} value={selected?.value ?? ''} />
 	{#if open}
-		<div class="suggestions" id={listId} role="listbox" aria-label={listLabel}>
-			{#each suggestions as option, index (option.value)}
-				<button
-					{@attach active === index && revealActiveOption}
-					id={optionId(option)}
-					type="button"
-					role="option"
-					tabindex="-1"
-					aria-selected={active === index}
-					onpointerdown={(event) => event.preventDefault()}
-					onclick={() => select(option)}>
-					{option.label}
-				</button>
-			{/each}
+		<div
+			class="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-divider bg-surface shadow-raised"
+			hidden={suggestions.length === 0}>
+			<div class="max-h-64 overflow-y-auto" id={listId} role="listbox" aria-label={listLabel}>
+				{#each suggestions as option, index (option.value)}
+					<button
+						{@attach active === index && revealActiveOption}
+						id={optionId(option)}
+						type="button"
+						role="option"
+						tabindex="-1"
+						aria-selected={active === index}
+						class="block w-full cursor-pointer px-3 py-2 text-left text-ink hover:bg-surface-muted aria-selected:bg-surface-muted"
+						onpointerdown={(event) => event.preventDefault()}
+						onclick={() => select(option)}>
+						{option.label}
+					</button>
+				{/each}
+			</div>
+			{#if matches.length > suggestions.length}
+				<p class="border-t border-divider px-3 py-2 text-sm text-ink-muted">
+					{`Mostrando ${suggestions.length} de ${matches.length} resultados. Continue digitando para refinar.`}
+				</p>
+			{/if}
 		</div>
-		{#if suggestions.length === 0}<p class="help" role="status">{emptyMessage}</p>{/if}
+		{#if suggestions.length === 0}<p class="mt-1.5 text-sm text-ink-muted" role="status">{emptyMessage}</p>{/if}
 	{/if}
 </div>
-
-<style>
-	.autocomplete {
-		position: relative;
-	}
-	.suggestions {
-		position: absolute;
-		z-index: 10;
-		width: 100%;
-		max-height: 16rem;
-		overflow-y: auto;
-		background: var(--bulma-scheme-main);
-		border: 1px solid var(--bulma-border);
-		border-radius: var(--bulma-radius);
-		box-shadow: var(--bulma-shadow);
-	}
-	.suggestions:empty {
-		display: none;
-	}
-	button {
-		display: block;
-		width: 100%;
-		border: 0;
-		padding: 0.5rem 0.75rem;
-		background: transparent;
-		color: inherit;
-		font: inherit;
-		text-align: left;
-		cursor: pointer;
-	}
-	button:hover,
-	button[aria-selected='true'] {
-		background: var(--bulma-scheme-main-ter);
-	}
-</style>

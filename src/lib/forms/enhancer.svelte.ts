@@ -5,12 +5,13 @@ type SubmissionCallback = Exclude<Awaited<ReturnType<SubmitFunction>>, void>;
 type SubmissionUpdate = Parameters<SubmissionCallback>[0];
 
 interface FormEnhancerOptions {
+	reset?: boolean;
 	afterUpdate?: (submission: SubmissionUpdate) => void | Promise<void>;
 }
 
 export const enhanceForm = fromAction(enhance);
 
-export function createFormEnhancer({ afterUpdate }: FormEnhancerOptions = {}) {
+export function createFormEnhancer({ reset = true, afterUpdate }: FormEnhancerOptions = {}) {
 	let loading = $state(false);
 
 	const submit = () => {
@@ -18,7 +19,7 @@ export function createFormEnhancer({ afterUpdate }: FormEnhancerOptions = {}) {
 
 		return async (submission: SubmissionUpdate) => {
 			try {
-				await submission.update();
+				await submission.update({ reset });
 				await afterUpdate?.(submission);
 			} finally {
 				loading = false;

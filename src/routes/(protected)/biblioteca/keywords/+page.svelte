@@ -1,5 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData } from './$types';
 
@@ -8,99 +16,65 @@
 	}
 
 	let { form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Palavras-chave', href: resolve('biblioteca/keywords') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/keywords')} aria-current="page">Palavras-chave</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de palavras-chave</h1>
-</div>
+<PageHeader {breadcrumb}>Consulta de palavras-chave</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="chave">Palavra-chave</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="chave"
-					id="chave"
-					value={form?.values?.chave ?? ''}
-					placeholder="Digite a palavra-chave"
-					maxlength="30"
-					aria-describedby={form?.errors?.chave?.length ? 'chave-errors' : undefined}
-					aria-invalid={form?.errors?.chave?.length ? 'true' : undefined} />
-			</div>
-			{#if form?.errors?.chave?.length}
-				<div id="chave-errors" class="help is-danger">
-					{#each form.errors.chave as message (message)}
-						<p>{message}</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						{ 'is-loading': formEnhancer.loading },
-					]}
-					type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
-				</button>
-			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('biblioteca/keywords/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
-			</div>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
+	<Field id="chave" label="Palavra-chave" errors={form?.errors?.chave}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name="chave"
+				id="chave"
+				value={form?.values?.chave ?? ''}
+				placeholder="Digite a palavra-chave"
+				maxlength={30}
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+	<ButtonGroup class="mt-6">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
+		<Button href={resolve('biblioteca/keywords/novo')} tone="default" bold class="tablet:min-w-40">
+			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
+		</Button>
+	</ButtonGroup>
+</Card>
 
 {#if form?.keywords !== undefined}
-	<div class="card">
-		<div class="card-content">
-			{#if form.keywords.length === 0}
-				<p>Nenhuma palavra-chave encontrada.</p>
-			{:else}
-				<div class="table-container">
-					<table class="table is-striped is-hoverable is-fullwidth">
-						<thead>
-							<tr>
-								<th>Palavra-chave</th>
-								<th class="table-actions">Ações</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each form.keywords as keyword (keyword.idkeyword)}
-								<tr>
-									<td>{keyword.chave}</td>
-									<td class="table-actions">
-										<a
-											aria-label={`Editar palavra-chave ${keyword.chave}`}
-											href={resolve('/(protected)/biblioteca/keywords/[id=integer]', {
-												id: `${keyword.idkeyword}`,
-											})}>
-											<i class="fa-solid fa-pen-to-square fa-fw"></i>
-										</a>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
-		</div>
-	</div>
+	{#if form.keywords.length === 0}
+		<Card class="mt-6"><p>Nenhuma palavra-chave encontrada.</p></Card>
+	{:else}
+		<Card class="mt-6 overflow-hidden" padded={false}>
+			<DataTable>
+				{#snippet head()}
+					<tr>
+						<th>Palavra-chave</th>
+						<th class="print:hidden">Ações</th>
+					</tr>
+				{/snippet}
+				{#each form.keywords as keyword (keyword.idkeyword)}
+					<tr>
+						<td>{keyword.chave}</td>
+						<td class="print:hidden">
+							<IconAction
+								icon="fa-regular fa-pen-to-square"
+								aria-label={`Editar palavra-chave ${keyword.chave}`}
+								href={resolve('/(protected)/biblioteca/keywords/[id=integer]', {
+									id: `${keyword.idkeyword}`,
+								})} />
+						</td>
+					</tr>
+				{/each}
+			</DataTable>
+		</Card>
+	{/if}
 {/if}

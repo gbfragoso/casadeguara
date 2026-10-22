@@ -69,4 +69,29 @@ describe('edit reader page', () => {
 
 		expect(document.body.textContent).toContain('Leitor atualizado com sucesso!');
 	});
+
+	it('associates the contact, address and flag errors with their controls', () => {
+		const fields = [
+			'celular',
+			'telefone',
+			'logradouro',
+			'bairro',
+			'complemento',
+			'cidade',
+			'cep',
+			'trab',
+			'status',
+		];
+		const errors = Object.fromEntries(fields.map((field) => [field, [`Campo ${field} inválido.`]]));
+		const document = parseRenderedBody(
+			render(Page, { props: { data, form: { values: { rg: '', cpf: '' }, errors } } }).body,
+		);
+
+		const associations = fields.map((field) => {
+			const control = getRenderedInput(document, `input#${field}`);
+			return [control.getAttribute('aria-invalid'), control.getAttribute('aria-describedby')];
+		});
+
+		expect(associations).toEqual(fields.map((field) => ['true', `${field}-errors`]));
+	});
 });

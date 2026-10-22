@@ -61,4 +61,22 @@ describe('createFormEnhancer', () => {
 		expect(afterUpdate).toHaveBeenCalledOnce();
 		expect(afterUpdate).toHaveBeenCalledWith(submission);
 	});
+
+	it('resets the form after a successful submission by default', async () => {
+		const formEnhancer = createFormEnhancer();
+		const update = vi.fn(async () => undefined);
+
+		await formEnhancer.submit()(createSubmission(update));
+
+		expect(update).toHaveBeenCalledWith({ reset: true });
+	});
+
+	it('keeps the submitted values when a search form opts out of resetting', async () => {
+		const formEnhancer = createFormEnhancer({ reset: false });
+		const update = vi.fn(async () => undefined);
+
+		await formEnhancer.submit()(createSubmission(update));
+
+		expect(update).toHaveBeenCalledWith({ reset: false });
+	});
 });

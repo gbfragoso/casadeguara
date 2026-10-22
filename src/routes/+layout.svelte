@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '@fortawesome/fontawesome-free/css/all.min.css';
-	import '../app.scss';
+	import '../app.css';
 
 	interface Props {
 		children?: import('svelte').Snippet;

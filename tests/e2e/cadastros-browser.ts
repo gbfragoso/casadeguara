@@ -2,6 +2,7 @@ import { expect, type Page } from '@playwright/test';
 
 import type { CadastroFixture } from './cadastros-fixture';
 import { installHydrationProbe, waitForHydration } from './fixtures-hydration';
+import { formWithField } from './form-locators';
 
 export const signIn = async (page: Page, email: string, password: string, destination: string) => {
 	await installHydrationProbe(page);
@@ -21,7 +22,7 @@ export const createBibliotecaCadastro = async (
 ) => {
 	await page.goto('/biblioteca/leitores/novo');
 	await waitForHydration(page);
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'Nome');
 	await form.getByLabel('Nome').fill(fixture.name);
 	await expect(form.getByLabel('Nome')).toHaveValue(fixture.name);
 	await form.getByLabel('RG').fill(fixture.rg);
@@ -49,7 +50,7 @@ export const createBibliotecaCadastro = async (
 const searchCadastro = async (page: Page, path: string, label: string, name: string) => {
 	await page.goto(path);
 	await waitForHydration(page);
-	const form = page.locator('form.card');
+	const form = formWithField(page, label);
 	await form.getByLabel(label).fill(name);
 	await expect(form.getByLabel(label)).toHaveValue(name);
 	const responsePromise = page.waitForResponse(

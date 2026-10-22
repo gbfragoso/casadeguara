@@ -1,4 +1,5 @@
 import { test, expect, waitForHydration } from './fixtures';
+import { formWithField } from './form-locators';
 
 import {
 	fillLancamentoForm,
@@ -97,14 +98,12 @@ test('E2E-10 comunica carregamento e limpa o estado após sucesso e erro', async
 		(request) => request.method() === 'POST' && request.url().includes('/tesouraria/lancamentos'),
 	);
 	const button = page.getByRole('button', { name: 'Pesquisar' });
-	await expect(button).toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'true');
 	searchGate.resolve();
 	await expect((await successResponse).ok()).toBe(true);
-	await expect(button).not.toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'false');
 
-	await page.locator('form.card').evaluate((form) => {
+	await formWithField(page, 'Descrição').evaluate((form) => {
 		const tipo = document.createElement('input');
 		tipo.type = 'hidden';
 		tipo.name = 'tipo';
@@ -116,11 +115,9 @@ test('E2E-10 comunica carregamento e limpa o estado após sucesso e erro', async
 	await page.waitForRequest(
 		(request) => request.method() === 'POST' && request.url().includes('/tesouraria/lancamentos'),
 	);
-	await expect(button).toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'true');
 	searchGate.resolve();
 	await failedResponse;
-	await expect(button).not.toHaveClass(/is-loading/);
 	await expect(button).toHaveAttribute('aria-busy', 'false');
 });
 
@@ -199,7 +196,7 @@ test('E2E-04 administrador estorna entrada e saída e audita ambas', async ({ pa
 
 	await page.goto('/tesouraria/estornos');
 	await waitForHydration(page);
-	const auditForm = page.locator('form.card');
+	const auditForm = formWithField(page, 'Descrição');
 	await auditForm.getByLabel('Descrição').fill(entry.descricao);
 	await expect((await submitAuditSearch(page)).ok()).toBe(true);
 	await expect(findLancamentoRow(page, entry.descricao)).toContainText('Motivo entrada E2E');
@@ -277,11 +274,12 @@ test('E2E-07 baixa no Caixa altera depósito e exclui estornados das visões', a
 
 	await page.goto('/tesouraria');
 	await waitForHydration(page);
-	const donationsSummary = page.locator('.box').filter({ hasText: 'Total de doações' });
+	const indicators = page.getByTestId('indicadores').locator(':scope > *');
+	const donationsSummary = indicators.filter({ hasText: 'Total de doações' });
 	await expect(donationsSummary).toContainText(/Total de doações\s+\d+/);
 	expect(Number((await donationsSummary.innerText()).match(/(\d+)\s*$/)?.[1])).toBeGreaterThanOrEqual(2);
-	await expect(page.locator('.box').filter({ hasText: 'Valor recebido' })).toContainText(/R\$\s*[\d.]+,\d{2}/);
-	await expect(page.locator('.box').filter({ hasText: 'Despesas' })).toContainText(/R\$\s*[\d.]+,\d{2}/);
+	await expect(indicators.filter({ hasText: 'Valor recebido' })).toContainText(/R\$\s*[\d.]+,\d{2}/);
+	await expect(indicators.filter({ hasText: 'Despesas' })).toContainText(/R\$\s*[\d.]+,\d{2}/);
 	await expect(e2e.readReversal(reversed.id)).resolves.toMatchObject({ motivo: 'Caixa estornada E2E' });
 });
 

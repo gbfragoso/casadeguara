@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest';
 import Page from '../../../../../../src/routes/(protected)/biblioteca/livros/+page.svelte';
 import { getRenderedAnchor, getRenderedInput, parseRenderedBody } from '../../../../support/rendered-document';
 
+const NOTIFICATION = '[data-testid="regiao-notificacao"]';
+
 const data = {
 	colecoes: [
 		{ idserie: 2, nome: 'Aventura' },
@@ -22,7 +24,7 @@ describe('book list page', () => {
 		const document = parseRenderedBody(body);
 		const tombo = getRenderedInput(document, 'input[name="tombo"]');
 
-		expect(document.querySelector('h1')?.textContent).toBe('Consulta de livros');
+		expect(document.querySelector('h1')?.textContent?.trim()).toBe('Consulta de livros');
 		expect(tombo.type).toBe('text');
 		expect(tombo.maxLength).toBe(8);
 		expect(document.querySelector('label[for="keyword"]')?.textContent).toBe('Palavra-chave');
@@ -115,7 +117,7 @@ describe('book list page', () => {
 		const popup = adminDocument.querySelector('[popover="auto"]');
 
 		expect(trigger?.getAttribute('aria-label')).toBe('Excluir livro Livro');
-		expect(trigger?.querySelector('.fa-trash-can')).not.toBeNull();
+		expect(trigger?.querySelector('i[aria-hidden="true"]')).not.toBeNull();
 		expect(trigger?.getAttribute('popovertarget')).toBe(popup?.id);
 		expect(popup?.getAttribute('role')).toBe('dialog');
 		expect(popup?.querySelector('form')?.getAttribute('action')).toBe('?/excluir');
@@ -129,14 +131,14 @@ describe('book list page', () => {
 		const success = render(Page, {
 			props: { data, form: { outcome: 'deleted', message: 'Livro excluído com sucesso.' } },
 		});
-		expect(parseRenderedBody(success.body).querySelector('.notification.is-success')?.textContent).toContain(
+		expect(parseRenderedBody(success.body).querySelector(NOTIFICATION)?.textContent).toContain(
 			'Livro excluído com sucesso.',
 		);
 
 		const failure = render(Page, {
 			props: { data, form: { values: { idlivro: '8' }, message: 'Falha ao excluir o livro.' } },
 		});
-		expect(parseRenderedBody(failure.body).querySelector('.notification.is-danger')?.textContent).toContain(
+		expect(parseRenderedBody(failure.body).querySelector(NOTIFICATION)?.textContent).toContain(
 			'Falha ao excluir o livro.',
 		);
 	});

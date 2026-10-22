@@ -2,6 +2,7 @@ import { expect, type Page } from '@playwright/test';
 
 import type { CadastroFixture } from './cadastros-fixture';
 import { waitForHydration } from './fixtures-hydration';
+import { formWithField } from './form-locators';
 const visit = async (page: Page, path: string) => {
 	await page.goto(path);
 	await waitForHydration(page);
@@ -15,7 +16,7 @@ const submit = (page: Page, path: string, action: () => Promise<void>) => {
 };
 export const updateTesourariaCadastro = async (page: Page, id: number, fixture: CadastroFixture) => {
 	await visit(page, `/tesouraria/contribuintes/${id}`);
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'WhatsApp (com DDD)');
 	await form.getByLabel('WhatsApp (com DDD)').fill(fixture.updatedPhone);
 	const response = await submit(page, `/tesouraria/contribuintes/${id}`, () =>
 		form.getByRole('button', { name: 'Atualizar' }).click(),
@@ -25,7 +26,7 @@ export const updateTesourariaCadastro = async (page: Page, id: number, fixture: 
 };
 export const updateSecretariaCadastro = async (page: Page, id: number, fixture: CadastroFixture) => {
 	await visit(page, `/secretaria/cadastros/${id}`);
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'E-mail');
 	await form.getByLabel('E-mail').fill(fixture.updatedEmail);
 	await form.getByLabel('Aniversário').fill(fixture.birthday);
 	const response = await submit(page, `/secretaria/cadastros/${id}`, () =>
@@ -46,7 +47,7 @@ const updateFlag = async (page: Page, name: string, label: string) => {
 export const updateSecretariaFlags = async (page: Page, name: string) => {
 	await page.goto('/secretaria/cadastros');
 	await waitForHydration(page);
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'Nome do trabalhador');
 	await form.getByLabel('Nome do trabalhador').fill(name);
 	const responsePromise = page.waitForResponse(
 		(candidate) =>
@@ -60,7 +61,7 @@ export const updateSecretariaFlags = async (page: Page, name: string) => {
 };
 export const updateBibliotecaCadastro = async (page: Page, id: number, fixture: CadastroFixture) => {
 	await visit(page, `/biblioteca/leitores/${id}`);
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'Celular');
 	await form.getByLabel('Celular').fill(fixture.updatedCellphone);
 	await form.getByLabel('Ativo').uncheck();
 	const response = await submit(page, `/biblioteca/leitores/${id}`, () =>
@@ -71,7 +72,7 @@ export const updateBibliotecaCadastro = async (page: Page, id: number, fixture: 
 };
 export const submitInvalidBibliotecaUpdate = async (page: Page, id: number) => {
 	await visit(page, `/biblioteca/leitores/${id}`);
-	const form = page.locator('form.card');
+	const form = formWithField(page, 'Nome');
 	await form.evaluate((element: HTMLFormElement) => element.setAttribute('novalidate', ''));
 	await form.getByLabel('Nome').fill('123');
 	await form.getByLabel('Novo RG').fill('12');

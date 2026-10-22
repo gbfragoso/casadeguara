@@ -8,6 +8,10 @@ export const formatCivilDate = (value: string | null | undefined): string => {
 	return `${day}/${month}/${year}`;
 };
 
+const monthYearFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+export const formatMonthYear = (reference: Date): string => monthYearFormatter.format(reference);
+
 const BAHIA_TIME_ZONE = 'America/Bahia';
 const bahiaIsoDateFormatter = new Intl.DateTimeFormat('en-CA', {
 	timeZone: BAHIA_TIME_ZONE,

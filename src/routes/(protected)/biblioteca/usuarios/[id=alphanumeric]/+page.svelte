@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
@@ -11,61 +17,61 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let { usuario } = $derived(data);
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Usuários', href: resolve('biblioteca/usuarios') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/usuarios')} aria-current="page">Usuários</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Cadastro de usuários</h1>
-</div>
+<PageHeader {breadcrumb}>Cadastro de usuários</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="username">Usuário</label>
-			<div class="control">
-				<input class="input" name="username" id="username" value={usuario.username} />
-			</div>
-		</div>
-		<div class="field">
-			<label class="label" for="password">Senha</label>
-			<div class="control">
-				<input class="input" type="password" name="password" id="password" />
-			</div>
-		</div>
-		<div class="field">
-			<label class="label" for="name">Nome</label>
-			<div class="control">
-				<input class="input" name="name" id="name" value={usuario.name} />
-			</div>
-		</div>
-		<label class="label" for="roles">Setor</label>
-		<div class="select mb-4">
-			<select name="roles" id="roles" value={usuario.roles}>
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Field id="username" label="Usuário" help="Use o e-mail de acesso, com até 30 caracteres.">
+		{#snippet control({ describedBy })}
+			<TextInput
+				type="email"
+				name="username"
+				id="username"
+				value={usuario.username}
+				maxlength={30}
+				autocomplete="off"
+				required
+				aria-describedby={describedBy} />
+		{/snippet}
+	</Field>
+	<Field id="password" label="Senha" help="Mínimo de 6 caracteres.">
+		{#snippet control({ describedBy })}
+			<TextInput
+				type="password"
+				name="password"
+				id="password"
+				minlength={6}
+				autocomplete="new-password"
+				required
+				aria-describedby={describedBy} />
+		{/snippet}
+	</Field>
+	<Field id="name" label="Nome">
+		{#snippet control()}
+			<TextInput name="name" id="name" value={usuario.name} maxlength={255} autocomplete="off" required />
+		{/snippet}
+	</Field>
+	<Field id="roles" label="Setor">
+		{#snippet control()}
+			<Select name="roles" id="roles" value={usuario.roles}>
 				<option value="biblioteca">Biblioteca</option>
 				<option value="biblioteca:admin">Biblioteca - Coordenação</option>
-			</select>
-		</div>
-		<div class="field">
-			<div class="control">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={['button is-primary has-text-weight-semibold', formEnhancer.loading && 'is-loading']}
-					type="submit">Atualizar</button>
-			</div>
-		</div>
+			</Select>
+		{/snippet}
+	</Field>
+	<div>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Atualizar</Button>
 	</div>
-</form>
+</Card>
 
 {#if form?.status === 200}
-	<Notification class="is-success">Usuário atualizado com sucesso!</Notification>
+	<Notification kind="success">Usuário atualizado com sucesso!</Notification>
 {/if}
 {#if form?.status === 400 && form?.message}
-	<Notification class="is-danger">{form.message}</Notification>
+	<Notification kind="danger">{form.message}</Notification>
 {/if}

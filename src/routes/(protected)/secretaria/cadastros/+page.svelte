@@ -1,5 +1,15 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
+	import Checkbox from '#lib/components/forms/Checkbox.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { updateCadastroFlag, type CadastroFlagField } from '#lib/cadastros/flags.js';
@@ -12,12 +22,16 @@
 	}
 
 	let { form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	let pendingFlags = new SvelteSet<string>();
 	let flagError = $state('');
 	let cadastros = $derived(form?.cadastros);
 	let searchName = $derived(form?.values?.nome ?? '');
 	let workersOnly = $derived(form?.values?.trabalhadores === 'true');
+	const breadcrumb = [
+		{ label: 'Secretaria', href: resolve('secretaria') },
+		{ label: 'Cadastros', href: resolve('secretaria/cadastros') },
+	];
 
 	const getFlagKey = (field: CadastroFlagField, id: number) => `${field}-${id}`;
 	const isFlagPending = (field: CadastroFlagField, id: number) => pendingFlags.has(getFlagKey(field, id));
@@ -44,169 +58,130 @@
 	}
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('secretaria')}>Secretaria</a></li>
-			<li class="is-active">
-				<a href={resolve('secretaria/cadastros')} aria-current="page">Cadastros</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de cadastros</h1>
-</div>
+<PageHeader {breadcrumb}>Consulta de cadastros</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="nome">Nome do trabalhador</label>
-			<div class="control">
-				<input
-					class="input"
-					type="text"
-					name="nome"
-					id="nome"
-					bind:value={searchName}
-					placeholder="Digite o nome do trabalhador"
-					autocomplete="name"
-					maxlength="60"
-					aria-describedby={form?.errors?.nome?.length ? 'nome-errors' : undefined}
-					aria-invalid={form?.errors?.nome?.length ? 'true' : undefined} />
-			</div>
-			{#if form?.errors?.nome?.length}
-				<div id="nome-errors" class="help is-danger">
-					{#each form.errors.nome as message (message)}
-						<p>{message}</p>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<div class="field">
-			<input type="hidden" name="trabalhadores" value="false" />
-			<label for="trabalhadores" class="checkbox">
-				<input
-					type="checkbox"
-					name="trabalhadores"
-					id="trabalhadores"
-					value="true"
-					bind:checked={workersOnly}
-					aria-describedby={form?.errors?.trabalhadores?.length ? 'trabalhadores-errors' : undefined}
-					aria-invalid={form?.errors?.trabalhadores?.length ? 'true' : undefined} />
-				Somente trabalhadores
-			</label>
-		</div>
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={formEnhancer.loading}
-					class={[
-						'button is-primary is-fullwidth has-text-weight-semibold',
-						{ 'is-loading': formEnhancer.loading },
-					]}
-					type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
-				</button>
-			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('secretaria/cadastros/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
-			</div>
-		</div>
-		{#if form?.errors}
-			<div class="notification is-danger" aria-live="polite">
+<Card element="form" method="POST" class="flex flex-col gap-4" {@attach formEnhancer.submitWithLoading}>
+	<Field id="nome" label="Nome do trabalhador" errors={form?.errors?.nome}>
+		{#snippet control({ describedBy, invalid })}
+			<TextInput
+				type="text"
+				name="nome"
+				id="nome"
+				bind:value={searchName}
+				placeholder="Digite o nome do trabalhador"
+				autocomplete="name"
+				maxlength={60}
+				aria-describedby={describedBy}
+				aria-invalid={invalid} />
+		{/snippet}
+	</Field>
+	<div>
+		<input type="hidden" name="trabalhadores" value="false" />
+		<Checkbox
+			name="trabalhadores"
+			id="trabalhadores"
+			value="true"
+			bind:checked={workersOnly}
+			aria-describedby={form?.errors?.trabalhadores?.length ? 'trabalhadores-errors' : undefined}
+			aria-invalid={form?.errors?.trabalhadores?.length ? 'true' : undefined}>Somente trabalhadores</Checkbox>
+	</div>
+	<ButtonGroup class="mt-2">
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
+		<Button href={resolve('secretaria/cadastros/novo')} tone="default" bold class="tablet:min-w-50">
+			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
+		</Button>
+	</ButtonGroup>
+	{#if form?.errors}
+		<InlineNotification kind="danger" aria-live="polite">
+			<div>
 				{#each Object.entries(form.errors) as [field, messages] (field)}
-					<div id={`${field}-errors`}>
+					<div id={field === 'nome' ? undefined : `${field}-errors`}>
 						{#each messages as message (`${field}-${message}`)}
 							<p>{message}</p>
 						{/each}
 					</div>
 				{/each}
 			</div>
-		{/if}
-	</div>
-</form>
+		</InlineNotification>
+	{/if}
+</Card>
 
 {#if flagError}
-	<div class="notification is-danger mt-4" role="alert" aria-live="polite">{flagError}</div>
+	<InlineNotification kind="danger" role="alert" aria-live="polite" class="mt-6"
+		><p>{flagError}</p></InlineNotification>
 {/if}
 
 {#if cadastros !== undefined}
-	<div class="card mt-4">
-		<div class="card-content">
-			<span class="tag is-warning is-light is-size-5 mb-2"
-				>Obs.: Somente os nomes marcados nas colunas &quot;trabalhador&quot; e &quot;frequência&quot; aparecerão
-				na lista de presença.</span>
-			{#if cadastros.length === 0}
-				<p>Nenhum cadastro encontrado.</p>
-			{:else}
-				<div class="table-container">
-					<table class="table is-striped is-hoverable is-fullwidth">
-						<thead>
-							<tr>
-								<th style="width: 50px">Trabalhador</th>
-								<th>Nome</th>
-								<th title="Marque para aparecer na lista de frequência">Frequência</th>
-								<th>Desencarnado</th>
-								<th>Amigo Fraterno</th>
-								<th class="table-actions">Ações</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each cadastros as cadastro (cadastro.idleitor)}
-								<tr>
-									<td style="text-align: center; width: 50px">
-										<input
-											type="checkbox"
-											checked={cadastro.trab}
-											disabled={isFlagPending('trab', cadastro.idleitor)}
-											aria-label={`Marcar ${cadastro.nome} como trabalhador`}
-											onchange={(event) => handleFlagChange(event, 'trab', cadastro.idleitor)} />
-									</td>
-									<td>{cadastro.nome}</td>
-									<td style="text-align: center; width: 50px">
-										<input
-											type="checkbox"
-											checked={cadastro.frequencia}
-											disabled={cadastro.desencarnado ||
-												isFlagPending('frequencia', cadastro.idleitor)}
-											aria-label={`Marcar ${cadastro.nome} na frequência`}
-											onchange={(event) =>
-												handleFlagChange(event, 'frequencia', cadastro.idleitor)} />
-									</td>
-									<td style="text-align: center; width: 50px">
-										<input
-											type="checkbox"
-											checked={cadastro.desencarnado}
-											disabled={isFlagPending('desencarnado', cadastro.idleitor)}
-											aria-label={`Marcar ${cadastro.nome} como desencarnado`}
-											onchange={(event) =>
-												handleFlagChange(event, 'desencarnado', cadastro.idleitor)} />
-									</td>
-									<td style="text-align: center; width: 50px">
-										<input
-											type="checkbox"
-											checked={cadastro.amigoFraterno}
-											disabled={isFlagPending('amigoFraterno', cadastro.idleitor)}
-											aria-label={`Marcar ${cadastro.nome} para o Amigo Fraterno`}
-											onchange={(event) =>
-												handleFlagChange(event, 'amigoFraterno', cadastro.idleitor)} />
-									</td>
-									<td class="table-actions">
-										<a
-											aria-label={`Editar cadastro de ${cadastro.nome}`}
-											href={resolve('/(protected)/secretaria/cadastros/[id=integer]', {
-												id: `${cadastro.idleitor}`,
-											})}>
-											<i class="fa-solid fa-pen-to-square fa-fw"></i>
-										</a>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			{/if}
-		</div>
-	</div>
+	<Card class="mt-6 flex flex-col gap-4">
+		<InlineNotification kind="warning" element="p"
+			>Obs.: Somente os nomes marcados nas colunas &quot;trabalhador&quot; e &quot;frequência&quot; aparecerão na
+			lista de presença.</InlineNotification>
+		{#if cadastros.length === 0}
+			<p>Nenhum cadastro encontrado.</p>
+		{:else}
+			<DataTable class="-mx-5 tablet:-mx-6">
+				{#snippet head()}
+					<tr>
+						<th class="w-12">Trabalhador</th>
+						<th>Nome</th>
+						<th title="Marque para aparecer na lista de frequência">Frequência</th>
+						<th>Desencarnado</th>
+						<th>Amigo Fraterno</th>
+						<th class="print:hidden">Ações</th>
+					</tr>
+				{/snippet}
+				{#each cadastros as cadastro (cadastro.idleitor)}
+					<tr>
+						<td class="w-12 text-center">
+							<input
+								type="checkbox"
+								class="size-5 rounded-sm"
+								checked={cadastro.trab}
+								disabled={isFlagPending('trab', cadastro.idleitor)}
+								aria-label={`Marcar ${cadastro.nome} como trabalhador`}
+								onchange={(event) => handleFlagChange(event, 'trab', cadastro.idleitor)} />
+						</td>
+						<td>{cadastro.nome}</td>
+						<td class="w-12 text-center">
+							<input
+								type="checkbox"
+								class="size-5 rounded-sm"
+								checked={cadastro.frequencia}
+								disabled={cadastro.desencarnado || isFlagPending('frequencia', cadastro.idleitor)}
+								aria-label={`Marcar ${cadastro.nome} na frequência`}
+								onchange={(event) => handleFlagChange(event, 'frequencia', cadastro.idleitor)} />
+						</td>
+						<td class="w-12 text-center">
+							<input
+								type="checkbox"
+								class="size-5 rounded-sm"
+								checked={cadastro.desencarnado}
+								disabled={isFlagPending('desencarnado', cadastro.idleitor)}
+								aria-label={`Marcar ${cadastro.nome} como desencarnado`}
+								onchange={(event) => handleFlagChange(event, 'desencarnado', cadastro.idleitor)} />
+						</td>
+						<td class="w-12 text-center">
+							<input
+								type="checkbox"
+								class="size-5 rounded-sm"
+								checked={cadastro.amigoFraterno}
+								disabled={isFlagPending('amigoFraterno', cadastro.idleitor)}
+								aria-label={`Marcar ${cadastro.nome} para o Amigo Fraterno`}
+								onchange={(event) => handleFlagChange(event, 'amigoFraterno', cadastro.idleitor)} />
+						</td>
+						<td class="print:hidden">
+							<IconAction
+								icon="fa-regular fa-pen-to-square"
+								aria-label={`Editar cadastro de ${cadastro.nome}`}
+								href={resolve('/(protected)/secretaria/cadastros/[id=integer]', {
+									id: `${cadastro.idleitor}`,
+								})} />
+						</td>
+					</tr>
+				{/each}
+			</DataTable>
+		{/if}
+	</Card>
 {/if}

@@ -47,4 +47,37 @@ describe('tesouraria contributor list page', () => {
 		expect(result.querySelector('tbody tr td:nth-child(3)')?.textContent).toBe('Trabalhador');
 		expect(empty.body.textContent).toContain('Nenhum contribuinte encontrado.');
 	});
+
+	it('starts with an empty search before any submission', () => {
+		const { body } = render(Page, { props: { form: null } });
+		const document = parseRenderedBody(body);
+
+		expect(getRenderedInput(document, 'input[name="nome"]').value).toBe('');
+		expect(document.querySelector('table')).toBeNull();
+	});
+
+	it('identifies an occasional contributor without a phone number', () => {
+		const { body } = render(Page, {
+			props: {
+				form: {
+					contribuintes: [{ idleitor: 8, nome: 'BRUNO', telefone: null, trab: false }],
+					values: { nome: 'Bruno' },
+				},
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const cells = [...document.querySelectorAll('tbody tr td')].map((cell) => cell.textContent);
+
+		expect(cells).toEqual(['BRUNO', 'Não informado.', 'Eventual']);
+	});
+
+	it('reports a general search failure in the error notification', () => {
+		const { body } = render(Page, {
+			props: { form: { values: { nome: 'Ana' }, errors: { form: ['Pesquisa inválida.'] } } },
+		});
+		const document = parseRenderedBody(body);
+
+		expect(document.querySelector('[aria-live="polite"] #form-errors')?.textContent).toBe('Pesquisa inválida.');
+	});
 });

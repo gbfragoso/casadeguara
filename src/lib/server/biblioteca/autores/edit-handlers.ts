@@ -22,7 +22,7 @@ export const createAuthorEditHandlers = ({ model }: { model: EditModel }) => ({
 			console.error(cause);
 			error(500, 'Falha ao baixar os dados do autor');
 		}
-		if (!author) error(404, 'Autor nÃ£o encontrado.');
+		if (!author) error(404, 'Autor não encontrado.');
 		return { autor: author };
 	},
 	actions: {
@@ -40,7 +40,7 @@ export const createAuthorEditHandlers = ({ model }: { model: EditModel }) => ({
 				console.error(cause);
 				error(500, 'Falha ao atualizar os dados do autor');
 			}
-			if (!updated) error(404, 'Autor nÃ£o encontrado.');
+			if (!updated) error(404, 'Autor não encontrado.');
 			return { status: 200 };
 		},
 	},

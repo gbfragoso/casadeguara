@@ -23,19 +23,19 @@
 
 	<div class="bloco">
 		<p class="linha">
-			<span>Empréstimo nº {recibo.idemp}</span>
-			<span>Data: {dataEmprestimo}</span>
+			<span>{`Empréstimo nº ${recibo.idemp}`}</span>
+			<span>{`Data: ${dataEmprestimo}`}</span>
 		</p>
 		<p>Leitor: <span class="maiusculas">{recibo.leitor}</span></p>
-		<p>Livro: {recibo.tombo} <span class="maiusculas">{recibo.titulo}</span></p>
+		<p>{`Livro: ${recibo.tombo}`} <span class="maiusculas">{recibo.titulo}</span></p>
 		{#if via === 'biblioteca'}
 			<p class="linha">
-				<span>Exemplar: {recibo.exemplar}</span>
-				<span>Devolver até: {dataDevolucao}</span>
+				<span>{`Exemplar: ${recibo.exemplar}`}</span>
+				<span>{`Devolver até: ${dataDevolucao}`}</span>
 			</p>
 		{:else}
-			<p>Exemplar: {recibo.exemplar}</p>
-			<p class="destaque-devolucao maiusculas">Devolver até {dataDevolucao}</p>
+			<p>{`Exemplar: ${recibo.exemplar}`}</p>
+			<p class="destaque-devolucao maiusculas">{`Devolver até ${dataDevolucao}`}</p>
 		{/if}
 	</div>
 
@@ -67,7 +67,7 @@
 	.bloco {
 		padding-bottom: 1mm;
 		margin-bottom: 1mm;
-		border-bottom: 1px solid #000;
+		border-bottom: 1px solid var(--color-black);
 	}
 
 	.linha {
@@ -96,13 +96,13 @@
 
 	.espaco-manuscrito {
 		flex: 1;
-		border-bottom: 1px solid #000;
+		border-bottom: 1px solid var(--color-black);
 	}
 
 	.assinatura {
 		margin-top: 12mm;
 		padding-top: 1mm;
-		border-top: 1px solid #000;
+		border-top: 1px solid var(--color-black);
 		text-align: center;
 	}
 </style>

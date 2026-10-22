@@ -9,7 +9,7 @@
 	let { recibo }: Props = $props();
 </script>
 
-<div class="recibo-termico notranslate" translate="no">
+<div class="recibo-termico notranslate" translate="no" data-testid="recibo-termico">
 	<LoanReceiptCopy {recibo} via="biblioteca" />
 	<p class="corte" role="separator">corte aqui</p>
 	<LoanReceiptCopy {recibo} via="leitor" />
@@ -22,9 +22,9 @@
 
 	.recibo-termico {
 		box-sizing: border-box;
-		color: #000;
-		background-color: #fff;
-		font-family: Arial, Helvetica, sans-serif;
+		color: var(--color-black);
+		background-color: var(--color-white);
+		font-family: var(--font-sans);
 		font-size: 10pt;
 		line-height: 1.3;
 		overflow-wrap: anywhere;
@@ -41,7 +41,7 @@
 	.corte::after {
 		content: '';
 		flex: 1;
-		border-top: 1px dashed #000;
+		border-top: 1px dashed var(--color-black);
 	}
 
 	@media screen {
@@ -50,7 +50,9 @@
 			max-width: 100%;
 			margin-inline: auto;
 			padding: 4mm;
-			border: 1px solid #dbdbdb;
+			border: 1px solid var(--color-divider);
+			border-radius: var(--radius-sm);
+			box-shadow: var(--shadow-card);
 		}
 	}
 

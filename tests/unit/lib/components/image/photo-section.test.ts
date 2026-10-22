@@ -53,7 +53,7 @@ describe('PhotoSection', () => {
 		expect(document.body.textContent).toContain('Incluir ou substituir foto');
 		expect(document.body.textContent).toContain('Reenquadrar foto');
 		expect(document.body.textContent).toContain('Remover foto');
-		expect(document.querySelector('[role="status"]')?.textContent).toBe('Foto salva com sucesso!');
+		expect(document.querySelector('[role="status"]')?.textContent?.trim()).toBe('Foto salva com sucesso!');
 	});
 
 	it('announces a validation error without hiding the pending state', () => {
@@ -83,7 +83,7 @@ describe('PhotoSection', () => {
 			}).body,
 		);
 
-		expect(reframed.querySelector('[role="status"]')?.textContent).toBe('Foto reenquadrada com sucesso!');
-		expect(removed.querySelector('[role="status"]')?.textContent).toBe('Foto removida com sucesso!');
+		expect(reframed.querySelector('[role="status"]')?.textContent?.trim()).toBe('Foto reenquadrada com sucesso!');
+		expect(removed.querySelector('[role="status"]')?.textContent?.trim()).toBe('Foto removida com sucesso!');
 	});
 });

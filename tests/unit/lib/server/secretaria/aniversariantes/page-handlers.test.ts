@@ -21,14 +21,14 @@ describe('createSecretariaAniversariantesHandlers', () => {
 	describeSecretariaAccess(load, actions);
 
 	it.each([
-		['of the selected month', { mes: '10' }],
-		['of every month', {}],
-	])('lists the workers birthdays %s', async (_scenario, form) => {
+		['of the selected month', { mes: '10' }, '10'],
+		['of every month', {}, null],
+	])('lists the workers birthdays %s with the searched month', async (_scenario, form, mes) => {
 		fakeDatabase.resolveWith(workers);
 
 		const { result } = await runHandler(actions.default, { roles: 'secretaria', form });
 
-		expect(result).toEqual({ leitores: workers });
+		expect(result).toEqual({ leitores: workers, mes });
 	});
 
 	it('fails when the birthdays cannot be read', async () => {

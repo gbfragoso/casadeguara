@@ -1,11 +1,12 @@
 import type { Page } from '@playwright/test';
 
 import { test, expect } from './fixtures';
+import { formWithField } from './form-locators';
 import { openBookAuthors, openBooksPage, submitBookSearch } from './livros-browser';
 import type { LivroCatalog } from './livros-database';
 
 const filterPrimaryBook = async (page: Page, catalog: LivroCatalog) => {
-	const searchForm = page.locator('form.card');
+	const searchForm = formWithField(page, 'Título');
 	await searchForm.getByLabel('Título').fill('arvore');
 	await searchForm.getByLabel('Autor').fill('erico');
 	await searchForm.getByLabel('Editora').fill('editora exito');
@@ -21,7 +22,7 @@ const filterPrimaryBook = async (page: Page, catalog: LivroCatalog) => {
 };
 
 const assertCatalogOrder = async (page: Page, catalog: LivroCatalog) => {
-	const searchForm = page.locator('form.card');
+	const searchForm = formWithField(page, 'Título');
 	for (const label of ['Título', 'Autor', 'Editora', 'Palavra-chave']) await searchForm.getByLabel(label).fill('');
 	await searchForm.getByLabel('Coleção').selectOption(`${catalog.colecao[0].id}`);
 	expect((await submitBookSearch(page)).ok()).toBe(true);
@@ -31,7 +32,7 @@ const assertCatalogOrder = async (page: Page, catalog: LivroCatalog) => {
 };
 
 const assertEmptySearch = async (page: Page, token: string) => {
-	const searchForm = page.locator('form.card');
+	const searchForm = formWithField(page, 'Título');
 	await searchForm.getByLabel('Coleção').selectOption('');
 	await searchForm.getByLabel('Título').fill(`não existe ${token}`);
 	expect((await submitBookSearch(page)).ok()).toBe(true);

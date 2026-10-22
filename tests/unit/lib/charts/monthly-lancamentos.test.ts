@@ -9,6 +9,8 @@ const totals = Array.from({ length: 12 }, (_, index) => ({
 	saidas: index === 0 ? '987.654' : String(index * 50),
 }));
 
+const palette = { entry: '#006ca5', exit: '#c52633', axis: '#505d7c', surface: '#ffffff' };
+
 const getCallbacks = (options: ReturnType<typeof buildMonthlyChart>['options']) => {
 	const callbacks = options.plugins?.tooltip?.callbacks;
 	if (!callbacks) throw new Error('Tooltip callbacks were not configured.');
@@ -20,7 +22,7 @@ const tooltipItem = (datasetIndex: number): TooltipItem<'line'> =>
 
 describe('buildMonthlyChart', () => {
 	it('builds responsive, distinguishable, non-animated series', () => {
-		const { data, options } = buildMonthlyChart(totals);
+		const { data, options } = buildMonthlyChart(totals, palette);
 
 		const [entries, exits] = data.datasets;
 
@@ -34,8 +36,6 @@ describe('buildMonthlyChart', () => {
 		expect(entries.pointStyle).toBe('circle');
 		expect(exits.pointStyle).toBe('rectRot');
 		expect(exits.borderDash).toEqual([6, 4]);
-		expect(entries.borderColor).toBe('#007a3d');
-		expect(exits.borderColor).toBe('#b42318');
 		expect(options.responsive).toBe(true);
 		expect(options.maintainAspectRatio).toBe(false);
 		expect(options.animation).toBe(false);
@@ -46,7 +46,7 @@ describe('buildMonthlyChart', () => {
 	});
 
 	it('keeps exact decimal strings in tooltip callbacks', () => {
-		const { options } = buildMonthlyChart(totals);
+		const { options } = buildMonthlyChart(totals, palette);
 		const callbacks = getCallbacks(options);
 
 		expect(callbacks.title?.call({} as TooltipModel<'line'>, [tooltipItem(0)])).toBe('01/2025');
@@ -58,7 +58,7 @@ describe('buildMonthlyChart', () => {
 	});
 
 	it('rejects tooltip indexes that break the monthly contract', () => {
-		const { options } = buildMonthlyChart(totals);
+		const { options } = buildMonthlyChart(totals, palette);
 		const callbacks = getCallbacks(options);
 
 		expect(() =>
@@ -73,10 +73,40 @@ describe('buildMonthlyChart', () => {
 	});
 
 	it('formats compact real values on the y axis', () => {
-		const { options } = buildMonthlyChart(totals);
+		const { options } = buildMonthlyChart(totals, palette);
 		const callback = options.scales?.y?.ticks?.callback;
 		if (!callback) throw new Error('Y-axis formatter was not configured.');
 
 		expect(callback.call({} as Scale, 1000, 0, [])).toContain('mil');
+	});
+
+	it('paints the series and axis labels with the theme palette', () => {
+		const { data, options } = buildMonthlyChart(totals, palette);
+
+		const [entries, exits] = data.datasets;
+
+		expect([entries.borderColor, exits.borderColor]).toEqual([palette.entry, palette.exit]);
+		expect([entries.pointBorderColor, exits.pointBorderColor]).toEqual([palette.surface, palette.surface]);
+		expect([options.scales?.x?.ticks?.color, options.scales?.y?.ticks?.color]).toEqual([
+			palette.axis,
+			palette.axis,
+		]);
+	});
+
+	it('draws smooth lines that never overshoot the monthly totals', () => {
+		const { data } = buildMonthlyChart(totals, palette);
+
+		expect(data.datasets.map((dataset) => dataset.cubicInterpolationMode)).toEqual(['monotone', 'monotone']);
+	});
+
+	it('hides the grid and axis lines behind the series', () => {
+		const { options } = buildMonthlyChart(totals, palette);
+
+		const axes = [options.scales?.x, options.scales?.y];
+
+		expect(axes.map((axis) => [axis?.grid?.display, axis?.border?.display])).toEqual([
+			[false, false],
+			[false, false],
+		]);
 	});
 });

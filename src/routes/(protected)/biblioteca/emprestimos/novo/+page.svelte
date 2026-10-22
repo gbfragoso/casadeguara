@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
+	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -14,27 +20,21 @@
 	let readerId = $state('');
 	let copyId = $state('');
 	const formEnhancer = createFormEnhancer();
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Empréstimos', href: resolve('biblioteca/emprestimos') },
+		{ label: 'Novo', href: resolve('biblioteca/emprestimos/novo') },
+	];
+	const failedField = (field: string) => form?.field === field;
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li><a href={resolve('biblioteca/emprestimos')} aria-current="page">Empréstimos</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/emprestimos/novo')} aria-current="page">Novo</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Novo empréstimo</h1>
-</div>
+<PageHeader {breadcrumb}>Novo empréstimo</PageHeader>
 
-<form class="card" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="columns">
-			<div class="column">
-				<div class="field">
-					<label class="label" for="leitor">Leitor</label>
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Columns>
+		<Column>
+			<Field id="leitor" label="Leitor">
+				{#snippet control()}
 					<Autocomplete
 						id="leitor"
 						name="leitorid"
@@ -44,14 +44,15 @@
 						listLabel="Leitores sugeridos"
 						emptyMessage="Nenhum leitor encontrado."
 						selectionMessage="Selecione um leitor da lista."
-						invalid={form?.field === 'leitor' ? 'true' : undefined}
-						describedBy={form?.field === 'leitor' ? 'emprestimo-errors' : undefined}
+						invalid={failedField('leitor') ? 'true' : undefined}
+						describedBy={failedField('leitor') ? 'emprestimo-errors' : undefined}
 						required />
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label" for="exemplar">Exemplar</label>
+				{/snippet}
+			</Field>
+		</Column>
+		<Column>
+			<Field id="exemplar" label="Exemplar">
+				{#snippet control()}
 					<Autocomplete
 						id="exemplar"
 						name="exemplarid"
@@ -64,21 +65,18 @@
 						listLabel="Exemplares sugeridos"
 						emptyMessage="Nenhum exemplar encontrado."
 						selectionMessage="Selecione um exemplar da lista."
-						invalid={form?.field === 'exemplar' ? 'true' : undefined}
-						describedBy={form?.field === 'exemplar' ? 'emprestimo-errors' : undefined}
+						invalid={failedField('exemplar') ? 'true' : undefined}
+						describedBy={failedField('exemplar') ? 'emprestimo-errors' : undefined}
 						required />
-				</div>
-			</div>
-		</div>
-		<div class="control mt-3">
-			<button
-				aria-busy={formEnhancer.loading}
-				disabled={!readerId || !copyId || formEnhancer.loading}
-				class={['button is-primary has-text-weight-semibold', { 'is-loading': formEnhancer.loading }]}
-				type="submit">Cadastrar</button>
-		</div>
+				{/snippet}
+			</Field>
+		</Column>
+	</Columns>
+	<div>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} disabled={!readerId || !copyId} bold
+			>Cadastrar</Button>
 	</div>
-</form>
+</Card>
 {#if form?.status === 400}
-	<div id="emprestimo-errors"><Notification class="is-danger">{form.message}</Notification></div>
+	<div id="emprestimo-errors"><Notification kind="danger">{form.message}</Notification></div>
 {/if}

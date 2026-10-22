@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Button from '#lib/components/actions/Button.svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
+	import PublicHeader from '#lib/components/layout/PublicHeader.svelte';
 	import { formatBrlDecimal } from '#lib/utils/currency.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -15,112 +18,85 @@
 	dayjs.extend(utc);
 </script>
 
-{#if data.status === 'estornado'}
-	<section id="recibo-estornado" class="notification is-warning" role="status">
-		<h1 class="title is-4">Recibo estornado</h1>
-		<p>Este recibo não é válido.</p>
-		<p><strong>Motivo:</strong> {data.motivo}</p>
-	</section>
-{:else}
-	<div
-		id="recibo"
-		class="notranslate"
-		translate="no"
-		style="background-color:white !important; color:black !important; overflow:hidden !important">
-		<div class="p-2">
-			<div class="is-flex is-justify-content-space-between">
-				<div class="has-text-centered p-2 mt-4 fit-content" style="border: 1px solid;">
-					<h2 class="has-text-weight-bold is-underlined is-size-4">GRUPO ESPÍRITA CASA DE GUARÁ</h2>
-					<p>Rua Major Dórea, 86 - B. Castália - Itabuna - Ba</p>
-					<p>Fundado em 13/05/1966</p>
-					<p>Reconhecido de Utilidade Pública pela Lei Municipal n° 1.303 de 12/12/1983</p>
-					<p>CNPJ: 13.271.788/0001-12</p>
-				</div>
-				<div>
+{#snippet receiptField(label: string, content: string)}
+	<div class="grid gap-1 tablet:grid-cols-[11rem_1fr] tablet:items-center tablet:gap-3">
+		<span>{label}</span>
+		<span class="rounded-sm border border-black px-3 py-1">{content}</span>
+	</div>
+{/snippet}
+
+{#snippet receiptNumber(label: string, content: string | number)}
+	<p class="flex items-center gap-2 whitespace-nowrap">
+		<span class="font-bold">{label}</span>
+		<span class="rounded-sm border border-black px-3 py-1">{content}</span>
+	</p>
+{/snippet}
+
+<PublicHeader />
+<main class="px-4 py-6 tablet:py-10 print:p-0">
+	{#if data.status === 'estornado'}
+		<InlineNotification
+			id="recibo-estornado"
+			kind="warning"
+			element="section"
+			role="status"
+			class="mx-auto w-full desktop:max-w-receipt print:border-black">
+			<div class="flex flex-col gap-2">
+				<h1 class="text-2xl font-bold">Recibo estornado</h1>
+				<p>Este recibo não é válido.</p>
+				<p><strong>Motivo:</strong> {data.motivo}</p>
+			</div>
+		</InlineNotification>
+	{:else}
+		<div
+			id="recibo"
+			translate="no"
+			class="notranslate mx-auto w-full overflow-hidden rounded-lg border border-divider bg-white text-black shadow-card desktop:max-w-receipt print:max-w-none print:overflow-visible print:rounded-none print:border-0">
+			<div class="flex flex-col gap-4 p-4 tablet:p-6">
+				<div class="flex flex-col items-center gap-4 tablet:flex-row tablet:items-start tablet:justify-between">
+					<div class="w-full border border-black p-3 text-center tablet:w-auto tablet:flex-1">
+						<h2 class="text-lg font-bold text-black underline tablet:text-2xl">
+							GRUPO ESPÍRITA CASA DE GUARÁ
+						</h2>
+						<p>Rua Major Dórea, 86 - B. Castália - Itabuna - Ba</p>
+						<p>Fundado em 13/05/1966</p>
+						<p>Reconhecido de Utilidade Pública pela Lei Municipal n° 1.303 de 12/12/1983</p>
+						<p>CNPJ: 13.271.788/0001-12</p>
+					</div>
 					{#await QRCode.toDataURL(page.url.href) then dataUrl}
-						<img class="qrcode" alt="qrcode" src={dataUrl} />
+						<img class="size-32 shrink-0" alt="QR Code para conferir este recibo" src={dataUrl} />
 					{/await}
 				</div>
-			</div>
-			<div class="is-flex is-justify-content-end mt-3">
-				<div class="columns is-mobile" style="text-wrap: nowrap;">
-					<div class="column has-text-weight-bold py-1">N°</div>
-					<div class="column border fit-content py-1">{data.entrada.id}</div>
+				<div class="flex flex-wrap justify-end gap-x-6 gap-y-2">
+					{@render receiptNumber('N°', data.entrada.id)}
+					{@render receiptNumber('Valor', formatBrlDecimal(data.entrada.valor))}
 				</div>
-				<div class="columns is-mobile pl-5 pr-2" style="text-wrap: nowrap;">
-					<div class="column has-text-weight-bold py-1">Valor</div>
-					<div class="column border fit-content py-1">{formatBrlDecimal(data.entrada.valor)}</div>
+				<div class="flex flex-col gap-3">
+					{@render receiptField('Recebemos do Sr.(a)', data.entrada.contribuinte.toUpperCase())}
+					{@render receiptField(
+						'A quantia de',
+						extenso(data.entrada.valor, { mode: 'currency' }).toUpperCase(),
+					)}
+					{@render receiptField('Referente a', data.entrada.descricao.toUpperCase())}
 				</div>
-			</div>
-			<div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">Recebemos do Sr.(a)</div>
-					<div class="column border fit-content py-1">{data.entrada.contribuinte.toUpperCase()}</div>
-				</div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">A quantia de</div>
-					<div class="column border fit-content py-1">
-						{extenso(data.entrada.valor, {
-							mode: 'currency',
-						}).toUpperCase()}
+				<div class="flex flex-col items-center gap-4 pt-2 tablet:flex-row tablet:justify-around">
+					<div class="text-center">
+						<div class="font-bold">{dayjs.utc(data.entrada.dataRegistro).format('DD / MM / YYYY')}</div>
+						<div>Data</div>
+					</div>
+					<div class="max-w-full text-center">
+						<div class="overflow-hidden">_______________________________</div>
+						<div>Assinatura</div>
 					</div>
 				</div>
-				<div class="columns is-mobile py-1 pr-2">
-					<div class="column is-one-quarter py-1">Referente a</div>
-					<div class="column border fit-content py-1">
-						{data.entrada.descricao.toUpperCase()}
-					</div>
-				</div>
+				<p class="text-center">
+					Esta sua contribuição permite a manutenção dos nossos trabalhos. Jesus o abençoe.
+				</p>
 			</div>
-			<div class="is-flex is-justify-content-space-around pt-3">
-				<div class="has-text-centered">
-					<div class="has-text-weight-bold">
-						{dayjs.utc(data.entrada.dataRegistro).format('DD / MM / YYYY')}
-					</div>
-					<div>Data</div>
-				</div>
-				<div class="has-text-centered">
-					<div>_______________________________</div>
-					<div>Assinatura</div>
-				</div>
-			</div>
-			<p class="has-text-centered py-2">
-				Esta sua contribuição permite a manutenção dos nossos trabalhos. Jesus o abençoe.
-			</p>
 		</div>
-	</div>
 
-	<div class="has-text-centered mt-6">
-		<button
-			class="button is-primary is-hidden-print"
-			aria-label="print"
-			onclick={() => {
-				window.print();
-			}}>Clique aqui para imprimir</button>
-	</div>
-{/if}
-
-<style>
-	.border {
-		border: 1px solid;
-		border-radius: 5px;
-	}
-
-	.fit-content {
-		block-size: fit-content;
-	}
-
-	@media only screen {
-		#recibo {
-			width: 49rem;
-			margin: auto;
-		}
-	}
-
-	@media print {
-		#recibo {
-			width: 100%;
-			overflow: visible;
-		}
-	}
-</style>
+		<div class="mt-8 flex justify-center print:hidden">
+			<Button tone="primary" onclick={() => window.print()}>Clique aqui para imprimir</Button>
+		</div>
+	{/if}
+</main>

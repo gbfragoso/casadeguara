@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
 	import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
 	import { createCropRectangle, type ImageSize, type PhotoPositionInput } from '#lib/image/crop/rectangle.js';
 
@@ -75,7 +77,7 @@
 	}
 
 	function handlePointerdown(event: PointerEvent) {
-		if (disabled || (event.pointerType === 'mouse' && event.button !== 0)) return;
+		if (disabled || dragging || (event.pointerType === 'mouse' && event.button !== 0)) return;
 		dragging = true;
 		pointerId = event.pointerId;
 		lastPointerX = event.clientX;
@@ -89,6 +91,10 @@
 
 	function handlePointermove(event: PointerEvent) {
 		if (!dragging || event.pointerId !== pointerId || !frameElement) return;
+		if (event.pointerType === 'mouse' && event.buttons === 0) {
+			endDrag();
+			return;
+		}
 		const bounds = frameElement.getBoundingClientRect();
 		const deltaX = event.clientX - lastPointerX;
 		const deltaY = event.clientY - lastPointerY;
@@ -97,15 +103,20 @@
 		setPosition(focalX - deltaX / bounds.width / zoom, focalY - deltaY / bounds.height / zoom);
 	}
 
-	function handlePointerup(event: PointerEvent) {
-		if (event.pointerId !== pointerId) return;
+	function endDrag() {
+		if (pointerId === undefined) return;
+		const releasedPointerId = pointerId;
 		dragging = false;
 		pointerId = undefined;
 		try {
-			frameElement?.releasePointerCapture(event.pointerId);
+			frameElement?.releasePointerCapture(releasedPointerId);
 		} catch (error) {
 			if (!(error instanceof DOMException && error.name === 'NotFoundError')) throw error;
 		}
+	}
+
+	function handlePointerup(event: PointerEvent) {
+		if (event.pointerId === pointerId) endDrag();
 	}
 
 	function handleZoomInput(event: Event) {
@@ -128,12 +139,14 @@
 	let imageStyle = $derived(createImageStyle());
 </script>
 
-<div class="photo-cropper" data-testid="photo-cropper">
-	<p class="help" id="photo-cropper-instructions">
+<svelte:window onblur={endDrag} />
+
+<div data-testid="photo-cropper">
+	<p class="text-sm text-ink-muted" id="photo-cropper-instructions">
 		Use as setas do teclado ou arraste a imagem para escolher a área que aparecerá no cartão.
 	</p>
 	<div
-		class="photo-cropper__frame"
+		class="relative mt-2 aspect-239/300 w-full max-w-72 cursor-grab touch-none overflow-hidden rounded-md bg-surface-muted focus-visible:outline-offset-3 active:cursor-grabbing"
 		role="button"
 		tabindex="0"
 		aria-label="Área de enquadramento da foto"
@@ -144,15 +157,22 @@
 		onpointerdown={handlePointerdown}
 		onpointermove={handlePointermove}
 		onpointerup={handlePointerup}
-		onpointercancel={handlePointerup}>
-		<img class="photo-cropper__image" {src} {alt} draggable="false" onload={handleImageLoad} style={imageStyle} />
-		<div class="photo-cropper__mask" aria-hidden="true"></div>
+		onpointercancel={handlePointerup}
+		onlostpointercapture={handlePointerup}>
+		<img
+			class="absolute block max-h-none max-w-none object-cover select-none"
+			{src}
+			{alt}
+			draggable="false"
+			onload={handleImageLoad}
+			style={imageStyle} />
+		<div class="photo-cropper-mask pointer-events-none absolute inset-0" aria-hidden="true"></div>
 	</div>
-	<label class="label mt-3" for="photo-cropper-zoom">
+	<label class="mt-3 block text-sm font-medium text-ink-strong" for="photo-cropper-zoom">
 		Ampliação <output for="photo-cropper-zoom">{zoom.toFixed(2)}×</output>
 	</label>
 	<input
-		class="photo-cropper__zoom"
+		class="mt-1 w-full max-w-72"
 		id="photo-cropper-zoom"
 		type="range"
 		min={MINIMUM_ZOOM}
@@ -165,56 +185,18 @@
 	<input type="hidden" name="focalX" value={focalX} />
 	<input type="hidden" name="focalY" value={focalY} />
 	<input type="hidden" name="zoom" value={zoom} />
-	<div class="buttons mt-3">
-		<button class="button is-light" type="button" {disabled} onclick={resetPosition}>
-			Redefinir enquadramento
-		</button>
+	<ButtonGroup class="mt-3">
+		<Button tone="light" type="button" {disabled} onclick={resetPosition}>Redefinir enquadramento</Button>
 		{#if onCancel}
-			<button class="button is-light" type="button" {disabled} onclick={onCancel}>Cancelar</button>
+			<Button tone="light" type="button" {disabled} onclick={onCancel}>Cancelar</Button>
 		{/if}
-		<button class="button is-primary" type="submit" {disabled}>Confirmar enquadramento</button>
-	</div>
+		<Button tone="primary" type="submit" {disabled}>Confirmar enquadramento</Button>
+	</ButtonGroup>
 </div>
 
 <style>
-	.photo-cropper__frame {
-		position: relative;
-		width: min(100%, 18rem);
-		aspect-ratio: 239 / 300;
-		overflow: hidden;
-		background: hsl(0deg 0% 92%);
-		cursor: grab;
-		touch-action: none;
-		outline: 2px solid transparent;
-	}
-
-	.photo-cropper__frame:focus-visible {
-		outline-color: hsl(171deg 100% 41%);
-		outline-offset: 3px;
-	}
-
-	.photo-cropper__frame:active {
-		cursor: grabbing;
-	}
-
-	.photo-cropper__image {
-		position: absolute;
-		display: block;
-		max-width: none;
-		max-height: none;
-		object-fit: cover;
-		user-select: none;
-	}
-
-	.photo-cropper__mask {
-		position: absolute;
-		inset: 0;
-		border: 2px solid hsl(0deg 0% 100% / 85%);
-		box-shadow: 0 0 0 999px hsl(0deg 0% 0% / 12%);
-		pointer-events: none;
-	}
-
-	.photo-cropper__zoom {
-		width: min(100%, 18rem);
+	.photo-cropper-mask {
+		border: 2px solid color-mix(in srgb, var(--color-white) 85%, transparent);
+		box-shadow: 0 0 0 999px color-mix(in srgb, var(--color-black) 12%, transparent);
 	}
 </style>

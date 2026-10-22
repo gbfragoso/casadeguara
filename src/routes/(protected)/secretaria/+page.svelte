@@ -1,68 +1,61 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import dayjs from 'dayjs';
-	import utc from 'dayjs/plugin/utc';
+	import Indicator from '#lib/components/data/Indicator.svelte';
+	import LoadError from '#lib/components/feedback/LoadError.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import { formatMonthYear } from '#lib/utils/date.js';
 	import type { PageServerData } from './$types';
 	interface Props {
 		data: PageServerData;
 	}
 
+	const MEETINGS_PER_WEEK = 2;
+	const WEEKS_PER_MONTH = 4;
+
 	let { data }: Props = $props();
 	let { leitores, engajamento } = $derived(data);
-	dayjs.extend(utc);
+	const breadcrumb = [
+		{ label: 'Secretaria', href: resolve('secretaria') },
+		{ label: 'Página Inicial', href: resolve('secretaria') },
+	];
+	const attendanceLabel = `Frequência em ${formatMonthYear(new Date())}`;
+
+	const PERCENT_FORMAT = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+	const formatAttendanceRate = (attendances: number, workers: number) => {
+		const expectedAttendances = workers * MEETINGS_PER_WEEK * WEEKS_PER_MONTH;
+		const rate = expectedAttendances > 0 ? (attendances / expectedAttendances) * 100 : 0;
+		return `${PERCENT_FORMAT.format(rate)} %`;
+	};
 </script>
 
-<div>
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('secretaria')}>Secretaria</a></li>
-			<li class="is-active">
-				<a href={resolve('secretaria')} aria-current="page">Página Inicial</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Secretaria</h1>
-</div>
-<div class="mt-2 columns">
-	{#await leitores then leitores}
+<PageHeader {breadcrumb}>Secretaria</PageHeader>
+
+<div data-testid="indicadores" class="grid gap-4 tablet:grid-cols-2">
+	{#snippet loadingIndicators()}
+		<Indicator label="Trabalhadores" highlight loading />
+		<Indicator label={attendanceLabel} loading />
+	{/snippet}
+	{#snippet loadFailure()}
+		<LoadError class="col-span-full" message="Não foi possível carregar os indicadores da secretaria." />
+	{/snippet}
+
+	{#await leitores}
+		{@render loadingIndicators()}
+	{:then leitores}
 		{#await engajamento}
-			<div class="column">
-				<div class="box has-text-weight-semibold">
-					<i class="fa-solid fa-user fa-fw">&nbsp;</i>Trabalhadores
-					<div class="skeleton-lines">
-						<div></div>
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="box has-text-weight-semibold">
-					<i class="fa-solid fa-list-check fa-fw">&nbsp;</i>Frequência no mês {dayjs
-						.utc(new Date())
-						.format('MM/YYYY')}
-					<div class="skeleton-lines">
-						<div></div>
-					</div>
-				</div>
-			</div>
+			{@render loadingIndicators()}
 		{:then engajamento}
-			<div class="column">
-				<div class="box has-text-weight-semibold">
-					<i class="fa-solid fa-user fa-fw">&nbsp;</i>Trabalhadores
-					<h2 class="is-size-3 has-text-primary">
-						{leitores[0].counter}
-					</h2>
-				</div>
-			</div>
-			<div class="column">
-				<div class="box has-text-weight-semibold">
-					<i class="fa-solid fa-list-check fa-fw">&nbsp;</i>Frequência no mês {dayjs
-						.utc(new Date())
-						.format('MM/YYYY')}
-					<h2 class="is-size-3 has-text-primary">
-						{((engajamento[0].counter / (leitores[0].counter * 2 * 4)) * 100).toFixed(2)} %
-					</h2>
-				</div>
-			</div>
+			<Indicator label="Trabalhadores" highlight>
+				{#snippet value()}{leitores[0].counter}{/snippet}
+			</Indicator>
+			<Indicator label={attendanceLabel} valueTone="primary">
+				{#snippet value()}{formatAttendanceRate(engajamento[0].counter, leitores[0].counter)}{/snippet}
+			</Indicator>
+		{:catch}
+			{@render loadFailure()}
 		{/await}
+	{:catch}
+		{@render loadFailure()}
 	{/await}
 </div>

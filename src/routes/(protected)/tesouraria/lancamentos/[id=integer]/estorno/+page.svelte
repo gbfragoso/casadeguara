@@ -1,5 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextArea from '#lib/components/forms/TextArea.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { moeda } from '#lib/utils/currency.js';
 	import { formatCivilDate } from '#lib/utils/date.js';
@@ -17,62 +24,50 @@
 	let lancamento = $derived(data?.lancamento);
 	const reasonErrors = $derived(errors.motivo ?? []);
 	const focusError = (node: HTMLElement) => node.focus();
+	const breadcrumb = [
+		{ label: 'Tesouraria', href: resolve('tesouraria') },
+		{ label: 'Lançamentos', href: resolve('tesouraria/lancamentos') },
+		{ label: 'Estorno', href: resolve('tesouraria/lancamentos') },
+	];
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
-			<li><a href={resolve('tesouraria/lancamentos')}>Lançamentos</a></li>
-			<li class="is-active"><a href={resolve('tesouraria/lancamentos')} aria-current="page">Estorno</a></li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Confirmar estorno</h1>
-</div>
+<PageHeader {breadcrumb}>Confirmar estorno</PageHeader>
 
 {#if lancamento}
-	<div class="card">
-		<div class="card-content">
-			<p class="mb-3"><strong>Tipo:</strong> {lancamento.tipo === 'entrada' ? 'Entrada' : 'Saída'}</p>
-			<p class="mb-3"><strong>Contraparte:</strong> {lancamento.contraparte?.nome ?? '—'}</p>
-			<p class="mb-3"><strong>Descrição:</strong> {lancamento.descricao}</p>
-			<p class="mb-3"><strong>Valor:</strong> {moeda(Number(lancamento.valor))}</p>
-			<p class="mb-3"><strong>Data:</strong> {formatCivilDate(lancamento.dataLancamento)}</p>
-			<form method="POST" {@attach formEnhancer.submitWithLoading}>
-				<label class="label" for="motivo">Motivo do estorno</label>
-				<textarea
-					class="textarea"
-					id="motivo"
-					name="motivo"
-					maxlength="200"
-					required
-					bind:value={reason}
-					aria-invalid={reasonErrors.length > 0}
-					aria-describedby={reasonErrors.length ? 'motivo-errors' : undefined}
-					aria-errormessage={reasonErrors.length ? 'motivo-errors' : undefined}>
-				</textarea>
-				{#if reasonErrors.length}
-					<p id="motivo-errors" class="help is-danger" role="alert" tabindex="-1" {@attach focusError}>
-						{reasonErrors.join(' ')}
-					</p>
-				{/if}
-				{#if form?.message}
-					{#if form?.status === 200}
-						<p class="help is-success" role="alert">
-							{form.message}
-						</p>
-					{:else}
-						<p class="help is-danger" role="alert">
-							{form.message}
-						</p>
+	<Card class="flex flex-col gap-3">
+		<p><strong>Tipo:</strong> {lancamento.tipo === 'entrada' ? 'Entrada' : 'Saída'}</p>
+		<p><strong>Contraparte:</strong> {lancamento.contraparte?.nome ?? '—'}</p>
+		<p><strong>Descrição:</strong> {lancamento.descricao}</p>
+		<p><strong>Valor:</strong> {moeda(Number(lancamento.valor))}</p>
+		<p><strong>Data:</strong> {formatCivilDate(lancamento.dataLancamento)}</p>
+		<form method="POST" class="mt-3 flex flex-col gap-4" {@attach formEnhancer.submitWithLoading}>
+			<Field id="motivo" label="Motivo do estorno">
+				{#snippet control()}
+					<TextArea
+						id="motivo"
+						name="motivo"
+						maxlength={200}
+						required
+						bind:value={reason}
+						aria-invalid={reasonErrors.length > 0}
+						aria-describedby={reasonErrors.length ? 'motivo-errors' : undefined}
+						aria-errormessage={reasonErrors.length ? 'motivo-errors' : undefined} />
+					{#if reasonErrors.length}
+						<ErrorMessage id="motivo-errors" role="alert" tabindex={-1} {@attach focusError}
+							>{reasonErrors.join(' ')}</ErrorMessage>
 					{/if}
-				{/if}
-				<button class="button is-danger mt-3" type="submit" aria-busy={formEnhancer.loading}>
-					Confirmar estorno
-				</button>
-			</form>
-		</div>
-	</div>
+				{/snippet}
+			</Field>
+			{#if form?.message}
+				<p class={['text-sm', form?.status === 200 ? 'text-success-ink' : 'text-danger-ink']} role="alert">
+					{form.message}
+				</p>
+			{/if}
+			<div>
+				<Button type="submit" tone="danger" loading={formEnhancer.loading} bold>Confirmar estorno</Button>
+			</div>
+		</form>
+	</Card>
 {:else}
-	<p class="notification is-danger" role="alert">Lançamento não encontrado.</p>
+	<InlineNotification kind="danger" element="p" role="alert">Lançamento não encontrado.</InlineNotification>
 {/if}

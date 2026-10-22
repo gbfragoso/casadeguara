@@ -1,5 +1,15 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
+	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import Select from '#lib/components/forms/Select.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { moeda } from '#lib/utils/currency.js';
 	import { formatCivilDate } from '#lib/utils/date.js';
@@ -13,141 +23,118 @@
 	let { data, form }: Props = $props();
 	let values = $derived(form?.values ?? data?.values ?? {});
 	let page = $derived(form?.page ?? data?.page);
+	let periodErrors = $derived([...fieldErrors('lancamentoFim'), ...fieldErrors('estornoFim')]);
 
-	const formEnhancer = createFormEnhancer();
-	const value = (field: string) => values[field] ?? '';
-	const fieldErrors = (field: string) => form?.errors?.[field] ?? [];
+	const formEnhancer = createFormEnhancer({ reset: false });
+	const breadcrumb = [
+		{ label: 'Tesouraria', href: resolve('tesouraria') },
+		{ label: 'Estornos', href: resolve('tesouraria/estornos') },
+	];
+	const textFields = [
+		{ id: 'contraparte', label: 'Contraparte' },
+		{ id: 'descricao', label: 'Descrição' },
+	];
+	const dateFields = [
+		{ id: 'lancamentoInicio', label: 'Lançamento desde' },
+		{ id: 'lancamentoFim', label: 'Lançamento até' },
+		{ id: 'estornoInicio', label: 'Estorno desde' },
+		{ id: 'estornoFim', label: 'Estorno até' },
+	];
+	function value(field: string) {
+		return values[field] ?? '';
+	}
+	function fieldErrors(field: string) {
+		return form?.errors?.[field] ?? [];
+	}
 </script>
 
-<div class="mb-2">
-	<nav class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('tesouraria')}>Tesouraria</a></li>
-			<li class="is-active"><a href={resolve('tesouraria/estornos')} aria-current="page">Estornos</a></li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Auditoria de estornos</h1>
-</div>
+<PageHeader {breadcrumb}>Auditoria de estornos</PageHeader>
 
-<form class="card" action="?/pesquisar" method="POST" {@attach formEnhancer.submitWithLoading}>
-	<div class="card-content">
-		<div class="columns">
-			<div class="field column">
-				<label class="label" for="tipo">Tipo de lançamento</label>
-				<div class="select is-fullwidth">
-					<select id="tipo" name="tipo" value={value('tipo')}
-						><option value="todos">Todos</option><option value="entrada">Entrada</option><option
-							value="saida">Saída</option
-						></select>
-				</div>
-			</div>
-			<div class="field column">
-				<label class="label" for="contraparte">Contraparte</label>
-				<input
-					class="input"
-					id="contraparte"
-					name="contraparte"
-					maxlength="200"
-					value={value('contraparte')}
-					aria-invalid={fieldErrors('contraparte').length > 0} />
-			</div>
-			<div class="field column">
-				<label class="label" for="descricao">Descrição</label><input
-					class="input"
-					id="descricao"
-					name="descricao"
-					maxlength="200"
-					value={value('descricao')}
-					aria-invalid={fieldErrors('descricao').length > 0} />
-			</div>
-		</div>
-		<div class="columns">
-			<div class="field column">
-				<label class="label" for="lancamentoInicio">Lançamento desde</label><input
-					class="input"
-					type="date"
-					id="lancamentoInicio"
-					name="lancamentoInicio"
-					value={value('lancamentoInicio')} />
-			</div>
-			<div class="field column">
-				<label class="label" for="lancamentoFim">Lançamento até</label><input
-					class="input"
-					type="date"
-					id="lancamentoFim"
-					name="lancamentoFim"
-					value={value('lancamentoFim')} />
-			</div>
-			<div class="field column">
-				<label class="label" for="estornoInicio">Estorno desde</label><input
-					class="input"
-					type="date"
-					id="estornoInicio"
-					name="estornoInicio"
-					value={value('estornoInicio')} />
-			</div>
-			<div class="field column">
-				<label class="label" for="estornoFim">Estorno até</label><input
-					class="input"
-					type="date"
-					id="estornoFim"
-					name="estornoFim"
-					value={value('estornoFim')} />
-			</div>
-		</div>
-		{#if fieldErrors('lancamentoFim').length || fieldErrors('estornoFim').length}<p
-				class="help is-danger"
-				role="alert">
-				{[...fieldErrors('lancamentoFim'), ...fieldErrors('estornoFim')].join(' ')}
-			</p>{/if}
-		<button
-			class={['button is-primary has-text-weight-semibold is-fullwidth', { 'is-loading': formEnhancer.loading }]}
-			type="submit"
-			aria-busy={formEnhancer.loading}><i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar</button>
+<Card
+	element="form"
+	action="?/pesquisar"
+	method="POST"
+	class="flex flex-col gap-5"
+	{@attach formEnhancer.submitWithLoading}>
+	<Columns>
+		<Column>
+			<Field id="tipo" label="Tipo de lançamento">
+				{#snippet control()}
+					<Select id="tipo" name="tipo" value={value('tipo')}>
+						<option value="todos">Todos</option>
+						<option value="entrada">Entrada</option>
+						<option value="saida">Saída</option>
+					</Select>
+				{/snippet}
+			</Field>
+		</Column>
+		{#each textFields as field (field.id)}
+			<Column>
+				<Field id={field.id} label={field.label}>
+					{#snippet control()}
+						<TextInput
+							id={field.id}
+							name={field.id}
+							maxlength={200}
+							value={value(field.id)}
+							aria-invalid={fieldErrors(field.id).length > 0} />
+					{/snippet}
+				</Field>
+			</Column>
+		{/each}
+	</Columns>
+	<Columns>
+		{#each dateFields as field (field.id)}
+			<Column>
+				<Field id={field.id} label={field.label}>
+					{#snippet control()}
+						<TextInput type="date" id={field.id} name={field.id} value={value(field.id)} />
+					{/snippet}
+				</Field>
+			</Column>
+		{/each}
+	</Columns>
+	{#if periodErrors.length}
+		<ErrorMessage role="alert">{periodErrors.join(' ')}</ErrorMessage>
+	{/if}
+	<div>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
 	</div>
-</form>
+</Card>
 
 {#if page}
 	{#if page.items.length === 0}
-		<div class="card">
-			<div class="card-content">
-				<p role="status">Nenhum estorno encontrado.</p>
-			</div>
-		</div>
+		<Card class="mt-6"><p role="status">Nenhum estorno encontrado.</p></Card>
 	{:else}
-		<div class="card">
-			<div class="card-content">
-				<div class="table-container">
-					<table class="table is-striped is-hoverable is-fullwidth">
-						<caption class="is-sr-only">Estornos registrados</caption>
-						<thead>
-							<tr>
-								<th>Tipo</th>
-								<th>Contraparte</th>
-								<th>Descrição</th>
-								<th>Valor</th>
-								<th>Motivo</th>
-								<th>Usuário</th>
-								<th>Data do lançamento</th>
-								<th>Data do estorno</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each page.items as item (item.id)}
-								<tr>
-									<td>{item.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
-									<td>{item.contraparte?.nome ?? '—'}</td>
-									<td>{item.descricao}</td><td>{moeda(Number(item.valor))}</td>
-									<td>{item.motivo}</td>
-									<td>{item.usuario}</td>
-									<td>{formatCivilDate(item.dataLancamento)}</td>
-									<td>{formatCivilDate(item.dataEstorno)}</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
+		<Card class="mt-6 overflow-hidden" padded={false}>
+			<DataTable caption="Estornos registrados">
+				{#snippet head()}
+					<tr>
+						<th>Tipo</th>
+						<th>Contraparte</th>
+						<th>Descrição</th>
+						<th class="text-right">Valor</th>
+						<th>Motivo</th>
+						<th>Usuário</th>
+						<th>Data do lançamento</th>
+						<th>Data do estorno</th>
+					</tr>
+				{/snippet}
+				{#each page.items as item (item.id)}
+					<tr>
+						<td>{item.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
+						<td>{item.contraparte?.nome ?? '—'}</td>
+						<td>{item.descricao}</td>
+						<td class="text-right whitespace-nowrap">{moeda(Number(item.valor))}</td>
+						<td>{item.motivo}</td>
+						<td>{item.usuario}</td>
+						<td>{formatCivilDate(item.dataLancamento)}</td>
+						<td>{formatCivilDate(item.dataEstorno)}</td>
+					</tr>
+				{/each}
+			</DataTable>
+		</Card>
 	{/if}
 {/if}

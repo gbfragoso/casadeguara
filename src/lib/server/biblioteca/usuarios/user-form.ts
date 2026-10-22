@@ -28,7 +28,7 @@ export const validateUserForm = (
 		return { status: 400, field: 'username', message: 'E-mail inválido' };
 	}
 	if (!isAcceptablePassword(password)) {
-		return { status: 400, field: 'password', message: 'Senha não atente aos requisitos mínimos de segurança' };
+		return { status: 400, field: 'password', message: 'Senha não atende aos requisitos mínimos de segurança' };
 	}
 	if ((roles || requireRoles) && !hasOnlyLibraryRoles(roles ?? '')) {
 		return { status: 400, field: 'roles', message: 'Setor inválido' };

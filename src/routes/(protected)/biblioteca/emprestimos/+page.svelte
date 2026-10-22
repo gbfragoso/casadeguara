@@ -1,7 +1,21 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import Button from '#lib/components/actions/Button.svelte';
+	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
+	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import DataTable from '#lib/components/data/DataTable.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
+	import Tag from '#lib/components/feedback/Tag.svelte';
+	import type { Tone } from '#lib/components/feedback/tone.js';
+	import Checkbox from '#lib/components/forms/Checkbox.svelte';
+	import ChoiceGroup from '#lib/components/forms/ChoiceGroup.svelte';
+	import Field from '#lib/components/forms/Field.svelte';
+	import TextInput from '#lib/components/forms/TextInput.svelte';
+	import Card from '#lib/components/layout/Card.svelte';
+	import Column from '#lib/components/layout/Column.svelte';
+	import Columns from '#lib/components/layout/Columns.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { ActionData, PageServerData } from './$types';
@@ -10,246 +24,189 @@
 		form: ActionData;
 	}
 
+	type LoanStatus = { label: string; kind?: Tone };
+	type LoanUpdate = {
+		status?: LoanStatus;
+		dueDate?: string;
+		returnHidden?: boolean;
+		renewal?: 'disabled' | 'hidden';
+	};
+	type Loan = { data_devolvido: Date | null; data_devolucao: Date };
+
+	const RETURNED: LoanStatus = { label: 'Devolvido' };
+	const LATE: LoanStatus = { label: 'Atrasado', kind: 'warning' };
+	const ACTIVE: LoanStatus = { label: 'Ativo', kind: 'info' };
+	const RENEWED: LoanStatus = { label: 'Renovado', kind: 'success' };
+	const RETURN_FAILED: LoanStatus = { label: 'Erro ao devolver', kind: 'danger' };
+	const RENEWAL_FAILED: LoanStatus = { label: 'Erro ao renovar', kind: 'danger' };
+
 	let { data, form }: Props = $props();
 	let { isAdmin } = $derived(data);
-	let loading = $state(false);
+	let loanUpdates: Record<number, LoanUpdate> = $state({});
+	const formEnhancer = createFormEnhancer({
+		reset: false,
+		afterUpdate: () => {
+			loanUpdates = {};
+		},
+	});
+	const breadcrumb = [
+		{ label: 'Biblioteca', href: resolve('biblioteca') },
+		{ label: 'Empréstimos', href: resolve('biblioteca/emprestimos') },
+	];
 
-	function devolver(id: number) {
-		let button = document.getElementById('devolver-' + id.toString());
-		if (button) {
-			button.ariaDisabled = 'true';
-			button.setAttribute('disabled', 'true');
-		}
+	const formatDate = (date: Date | string) => dayjs.utc(date).format('DD/MM/YYYY');
 
-		let tr = document.getElementById(id.toString());
-		if (tr) {
-			fetch(`/api/biblioteca/devolucao?id=${id}`, {
-				method: 'POST',
-			}).then((data) => {
-				tr.classList = '';
-				if (data.status === 200) {
-					tr.classList.add('tag', 'is-light');
-					tr.innerHTML = 'Devolvido';
-				} else {
-					tr.classList.add('tag', 'is-danger');
-					tr.innerHTML = 'Erro ao devolver';
-				}
-			});
-		}
-		if (button) {
-			button.remove();
+	const currentStatus = (loan: Loan) => {
+		if (loan.data_devolvido) return RETURNED;
+		if (dayjs().isAfter(dayjs(loan.data_devolucao).add(1, 'day'))) return LATE;
+		return ACTIVE;
+	};
+
+	const updateLoan = (id: number, update: LoanUpdate) => {
+		loanUpdates[id] = { ...loanUpdates[id], ...update };
+	};
+
+	async function postLoanAction(path: string) {
+		try {
+			const response = await fetch(path, { method: 'POST' });
+			return response.status === 200 ? response : undefined;
+		} catch {
+			return undefined;
 		}
 	}
-	function renovar(id: number) {
-		let button = document.getElementById('renovar-' + id.toString());
-		if (button) {
-			button.ariaDisabled = 'true';
-			button.setAttribute('disabled', 'true');
-		}
 
-		let tr = document.getElementById(id.toString());
-		if (tr) {
-			fetch(`/api/biblioteca/renovacao?id=${id}`, {
-				method: 'POST',
-			})
-				.then((response) => {
-					tr.classList = '';
-					if (response.status === 200) {
-						tr.classList.add('tag', 'is-success');
-						tr.innerHTML = 'Renovado';
-					} else {
-						tr.classList.add('tag', 'is-danger');
-						tr.innerHTML = 'Erro ao renovar';
-					}
-					return response.text();
-				})
-				.then((text) => {
-					let span = document.getElementById(id + 'devolucao');
-					if (span) {
-						span.innerHTML = dayjs.utc(text).format('DD/MM/YYYY');
-					}
-				});
-		}
+	async function returnLoan(id: number) {
+		updateLoan(id, { returnHidden: true });
+		const response = await postLoanAction(`/api/biblioteca/devolucao?id=${id}`);
+		if (response) updateLoan(id, { status: RETURNED });
+		else updateLoan(id, { status: RETURN_FAILED, returnHidden: false });
+	}
 
-		if (button && !isAdmin) {
-			button.remove();
+	async function renewLoan(id: number) {
+		updateLoan(id, { renewal: isAdmin ? 'disabled' : 'hidden' });
+		const response = await postLoanAction(`/api/biblioteca/renovacao?id=${id}`);
+		if (!response) {
+			updateLoan(id, { status: RENEWAL_FAILED, renewal: undefined });
+			return;
 		}
+		updateLoan(id, { status: RENEWED, dueDate: formatDate(await response.text()) });
 	}
 	dayjs.extend(utc);
 </script>
 
-<div class="mb-2">
-	<nav id="breadcrumb" class="breadcrumb m-0" aria-label="breadcrumbs">
-		<ul>
-			<li><a href={resolve('biblioteca')}>Biblioteca</a></li>
-			<li class="is-active">
-				<a href={resolve('biblioteca/emprestimos')} aria-current="page">Empréstimos</a>
-			</li>
-		</ul>
-	</nav>
-	<h1 class="is-size-3 has-text-weight-semibold has-text-primary">Consulta de empréstimos</h1>
-</div>
+<PageHeader {breadcrumb}>Consulta de empréstimos</PageHeader>
 
-<form
-	class="card"
-	method="POST"
-	use:enhance={() => {
-		loading = true;
-		return async ({ update }) => {
-			await update();
-			loading = false;
-		};
-	}}>
-	<div class="card-content">
-		<div class="field">
-			<label class="label" for="leitor">Leitor</label>
-			<div class="control">
-				<input class="input" type="text" name="leitor" id="leitor" placeholder="Digite o nome do leitor" />
-			</div>
-		</div>
-		<div class="columns">
-			<div class="column">
-				<div class="field">
-					<label class="label" for="titulo">Tombo</label>
-					<div class="control">
-						<input class="input" type="number" name="tombo" id="tombo" placeholder="Digite o tombo" />
-					</div>
-				</div>
-			</div>
-			<div class="column">
-				<div class="field">
-					<label class="label" for="titulo">Título</label>
-					<div class="control">
-						<input
-							class="input"
-							type="text"
-							name="titulo"
-							id="titulo"
-							placeholder="Digite o título da obra" />
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="field is-grouped">
-			<label class="checkbox">
-				<input type="checkbox" name="ativos" id="ativos" checked />
-				Somente ativos
-			</label>
-			<label class="checkbox">
-				<input type="checkbox" name="atrasados" id="atrasados" />
-				Somente atrasados
-			</label>
-		</div>
-		<div class="columns">
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<button
-					aria-busy={loading}
-					class:is-loading={loading}
-					class="button is-primary is-fullwidth has-text-weight-semibold"
-					type="submit">
-					<i class="fa-solid fa-magnifying-glass fa-fw">&nbsp;</i>Pesquisar
-				</button>
-			</div>
-			<div class="column is-full-mobile is-2-tablet" style="min-width: 200px">
-				<a
-					class="button is-fullwidth has-text-weight-semibold is-warning"
-					href={resolve('biblioteca/emprestimos/novo')}><i class="fa-solid fa-plus fa-fw">&nbsp;</i>Novo</a>
-			</div>
-		</div>
-	</div>
-</form>
+<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
+	<Field id="leitor" label="Leitor">
+		{#snippet control()}
+			<TextInput type="text" name="leitor" id="leitor" placeholder="Digite o nome do leitor" />
+		{/snippet}
+	</Field>
+	<Columns>
+		<Column>
+			<Field id="tombo" label="Tombo">
+				{#snippet control()}
+					<TextInput type="number" name="tombo" id="tombo" placeholder="Digite o tombo" />
+				{/snippet}
+			</Field>
+		</Column>
+		<Column>
+			<Field id="titulo" label="Título">
+				{#snippet control()}
+					<TextInput type="text" name="titulo" id="titulo" placeholder="Digite o título da obra" />
+				{/snippet}
+			</Field>
+		</Column>
+	</Columns>
+	<ChoiceGroup>
+		<Checkbox name="ativos" id="ativos" checked>Somente ativos</Checkbox>
+		<Checkbox name="atrasados" id="atrasados">Somente atrasados</Checkbox>
+	</ChoiceGroup>
+	<ButtonGroup>
+		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
+			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
+		</Button>
+		<Button href={resolve('biblioteca/emprestimos/novo')} tone="default" bold class="tablet:min-w-40">
+			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
+		</Button>
+	</ButtonGroup>
+</Card>
 
-{#if form?.emprestimos}
-	<div class="card">
-		<div class="card-content">
-			<div class="table-container">
-				<table class="table is-striped is-hoverable is-fullwidth">
-					<thead>
-						<tr>
-							<th>Leitor</th>
-							<th>Título</th>
-							<th>Ex</th>
-							<th>Prazo</th>
-							<th>Status</th>
-							<th class="table-actions">Ações</th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each form.emprestimos as emprestimo (emprestimo.idemp)}
-							<tr>
-								<td>
-									<a
-										href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
-											id: `${emprestimo.idleitor}`,
-										})}>
-										{emprestimo.leitor}
-									</a>
-								</td>
-								<td>{emprestimo.titulo}</td>
-								<td>{emprestimo.numero}</td>
-								<td id={emprestimo.idemp.toString() + 'devolucao'}
-									>{dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}</td>
-								{#if emprestimo.data_devolvido}
-									<td
-										><span id={emprestimo.idemp.toString()} class="tag is-light">Devolvido</span
-										></td>
-								{:else if dayjs().isAfter(dayjs(emprestimo.data_devolucao).add(1, 'day'))}
-									<td
-										><span id={emprestimo.idemp.toString()} class="tag is-warning">Atrasado</span
-										></td>
-								{:else}
-									<td><span id={emprestimo.idemp.toString()} class="tag is-info">Ativo</span></td>
+{#if form?.emprestimos?.length === 0}
+	<Card class="mt-6"><p role="status">Nenhum empréstimo encontrado.</p></Card>
+{:else if form?.emprestimos}
+	<Card class="mt-6 overflow-hidden" padded={false}>
+		<DataTable>
+			{#snippet head()}
+				<tr>
+					<th>Leitor</th>
+					<th>Título</th>
+					<th>Ex</th>
+					<th>Prazo</th>
+					<th>Status</th>
+					<th class="print:hidden">Ações</th>
+				</tr>
+			{/snippet}
+			{#each form.emprestimos as emprestimo (emprestimo.idemp)}
+				{@const update = loanUpdates[emprestimo.idemp] ?? {}}
+				{@const status = update.status ?? currentStatus(emprestimo)}
+				<tr>
+					<td>
+						<a
+							href={resolve('/(protected)/biblioteca/leitores/[id=integer]', {
+								id: `${emprestimo.idleitor}`,
+							})}>{emprestimo.leitor}</a>
+					</td>
+					<td>{emprestimo.titulo}</td>
+					<td class="tabular-nums">{emprestimo.numero}</td>
+					<td id={`${emprestimo.idemp}devolucao`} class="tabular-nums"
+						>{update.dueDate ?? formatDate(emprestimo.data_devolucao)}</td>
+					<td aria-live="polite"><Tag id={`${emprestimo.idemp}`} kind={status.kind}>{status.label}</Tag></td>
+					<td class="print:hidden">
+						<div class="flex gap-1">
+							{#if !emprestimo.data_devolvido}
+								<IconAction
+									icon="fa-regular fa-pen-to-square"
+									href={resolve('/(protected)/biblioteca/emprestimos/[id=integer]', {
+										id: `${emprestimo.idemp}`,
+									})}
+									title="Editar"
+									aria-label="Editar" />
+								{#if (Number(emprestimo.renovacoes) < 1 || isAdmin) && update.renewal !== 'hidden'}
+									<IconAction
+										id={`renovar-${emprestimo.idemp}`}
+										icon="fa-solid fa-repeat"
+										disabled={update.renewal === 'disabled'}
+										onclick={() => renewLoan(emprestimo.idemp)}
+										title="Renovar"
+										aria-label="Renovar" />
 								{/if}
-								<td class="table-actions is-flex">
-									{#if !emprestimo.data_devolvido}
-										<a
-											class="mr-2"
-											href={resolve('/(protected)/biblioteca/emprestimos/[id=integer]', {
-												id: `${emprestimo.idemp}`,
-											})}
-											title="Editar"
-											aria-label="Editar">
-											<i class="fa-regular fa-pen-to-square fa-fw"></i>&nbsp;
-										</a>
-										{#if Number(emprestimo.renovacoes) < 1 || isAdmin}
-											<button
-												id={'renovar-' + emprestimo.idemp.toString()}
-												class="mr-2"
-												onclick={() => renovar(emprestimo.idemp)}
-												title="Renovar"
-												aria-label="Renovar"
-												><i class="fa-solid fa-repeat fa-fw"></i>&nbsp;</button>
-										{/if}
-										<button
-											id={'devolver-' + emprestimo.idemp.toString()}
-											class="mr-2"
-											onclick={() => devolver(emprestimo.idemp)}
-											title="Devolver"
-											aria-label="Devolver">
-											<i class="fa-solid fa-reply fa-fw"></i>&nbsp;
-										</button>
-									{/if}
-									<a
-										class="mr-2"
-										href={resolve('/(protected)/biblioteca/emprestimos/[id=integer]/recibo', {
-											id: `${emprestimo.idemp}`,
-										})}
-										title="Recibo"
-										aria-label="Recibo">
-										<i class="fa-regular fa-file-lines fa-fw"></i>&nbsp;
-									</a>
-								</td>
-							</tr>
-						{/each}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+								{#if !update.returnHidden}
+									<IconAction
+										id={`devolver-${emprestimo.idemp}`}
+										icon="fa-solid fa-reply"
+										onclick={() => returnLoan(emprestimo.idemp)}
+										title="Devolver"
+										aria-label="Devolver" />
+								{/if}
+							{/if}
+							<IconAction
+								icon="fa-regular fa-file-lines"
+								href={resolve('/(protected)/biblioteca/emprestimos/[id=integer]/recibo', {
+									id: `${emprestimo.idemp}`,
+								})}
+								title="Recibo"
+								aria-label="Recibo" />
+						</div>
+					</td>
+				</tr>
+			{/each}
+		</DataTable>
+	</Card>
 {/if}
 {#if form?.status === 201}
-	<Notification class="is-success">{form.message}</Notification>
+	<Notification kind="success">{form.message}</Notification>
 {/if}
 {#if form?.status === 400 && form?.message}
-	<Notification class="is-danger">{form.message}</Notification>
+	<Notification kind="danger">{form.message}</Notification>
 {/if}

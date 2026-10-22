@@ -46,6 +46,11 @@ const findButton = (target: Element, label: string) => {
 	return button;
 };
 
+const visibleStepIndexes = (target: Element) =>
+	[...target.querySelectorAll('fieldset')].flatMap((fieldset, index) =>
+		fieldset.hasAttribute('hidden') ? [] : [index],
+	);
+
 const fillRequiredBookData = async (target: Element) => {
 	await fill(getElement(target, 'input[name="tombo"]'), '12345678');
 	await fill(getElement(target, 'input[name="titulo"]'), 'Livro completo');
@@ -69,10 +74,10 @@ describe('new book stepper', () => {
 		const nextAuthors = getElement<HTMLButtonElement>(target, 'button:nth-of-type(1)');
 
 		await click(nextAuthors);
-		expect(fieldsets[0].classList).not.toContain('is-hidden');
+		expect(visibleStepIndexes(target)).toEqual([0]);
 		await fillRequiredBookData(target);
 		await click(nextAuthors);
-		expect(fieldsets[1].classList).not.toContain('is-hidden');
+		expect(visibleStepIndexes(target)).toEqual([1]);
 
 		const nextReview = findButton(target, 'Próximo: revisão');
 		await click(nextReview);
@@ -80,14 +85,26 @@ describe('new book stepper', () => {
 		await fill(getElement(target, 'input[name="novoAutor"]'), 'Novo Autor');
 		await click(nextReview);
 
-		expect(fieldsets[2].classList).not.toContain('is-hidden');
+		expect(visibleStepIndexes(target)).toEqual([2]);
 		expect(fieldsets[2].textContent).toContain('Livro completo');
 		expect(fieldsets[2].textContent).toContain('Novo Autor (novo)');
 		expect(fieldsets[2].textContent).toContain('nº 1 — Disponível');
 		await click(getElement(target, 'fieldset:nth-of-type(3) button[type="button"]'));
-		expect(fieldsets[1].classList).not.toContain('is-hidden');
+		expect(visibleStepIndexes(target)).toEqual([1]);
 		await click(getElement(target, 'fieldset:nth-of-type(2) button:first-of-type'));
-		expect(fieldsets[0].classList).not.toContain('is-hidden');
+		expect(visibleStepIndexes(target)).toEqual([0]);
+	});
+
+	it('hides the inactive steps and marks the current tab after hydration', async () => {
+		const target = document.body.appendChild(document.createElement('div'));
+
+		component = mount(Page, { target, props: { data, form: null } });
+		await tick();
+
+		const hiddenSteps = [...target.querySelectorAll('fieldset')].map((fieldset) => fieldset.hasAttribute('hidden'));
+		const currentTabs = [...target.querySelectorAll('nav[aria-label="Etapas do cadastro"] [aria-current="step"]')];
+		expect(hiddenSteps).toEqual([false, true, true]);
+		expect(currentTabs.map((tab) => tab.textContent?.trim())).toEqual(['1. Dados do livro']);
 	});
 
 	it('restores existing selections in the review after server validation', async () => {
