@@ -34,10 +34,17 @@ describe('secretaria attendance registration page', () => {
 	});
 
 	it('submits the generated list through the registration action', () => {
-		const document = renderPage({ leitores: [], datas: [], fulldates: [] });
+		const document = renderPage({ leitores: [{ id: 4, nome: 'Maria' }], datas: ['02'], fulldates: ['2026-10-02'] });
 
 		const submit = document.querySelector('form[action="?/registrar"] button[type="submit"]');
 
 		expect(submit?.textContent?.trim()).toBe('Concluir registro');
+	});
+
+	it('offers no registration when no worker is marked for attendance', () => {
+		const document = renderPage({ leitores: [], datas: ['02'], fulldates: ['2026-10-02'] });
+
+		expect(document.querySelector('form[action="?/registrar"]')).toBeNull();
+		expect(document.querySelector('[role="status"]')?.textContent).toContain('Marque-os em Cadastros');
 	});
 });

@@ -31,7 +31,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-wallet">Confirmar estorno</PageHeader>
+<PageHeader {breadcrumb}>Confirmar estorno</PageHeader>
 
 {#if lancamento}
 	<Card class="flex flex-col gap-3">

@@ -12,8 +12,8 @@ export const shellRegions = (page: Page) => ({
 	topbar: page.getByTestId('regiao-barra-superior'),
 	menuButton: page.getByTestId('regiao-barra-superior').getByRole('button', { name: 'menu', exact: true }),
 	themeToggle: page.getByTestId('regiao-barra-superior').locator('[data-theme-toggle]'),
-	userMenuTrigger: page.getByTestId('regiao-barra-superior').locator('[aria-haspopup="true"]'),
-	userMenu: page.getByRole('menu'),
+	userMenuTrigger: page.getByTestId('regiao-barra-superior').getByRole('button', { name: 'Menu do usuário' }),
+	userMenu: page.locator('#dropdown-menu'),
 });
 
 export const openModulePage = async (page: Page, e2e: E2EData, path = MODULE_HOME) => {

@@ -22,6 +22,7 @@ const renderShell = () =>
 				match: 'exact',
 			},
 		],
+		moduleName: 'Tesouraria',
 		isAdmin: false,
 		username: 'Ana Silva',
 		userid: 'ana-1',

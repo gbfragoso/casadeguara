@@ -23,7 +23,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-layer-group">Atualizar coleção</PageHeader>
+<PageHeader {breadcrumb}>Atualizar coleção</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome" errors={form?.errors?.nome}>

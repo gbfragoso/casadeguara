@@ -26,7 +26,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-hand-holding">Atualizar empréstimo</PageHeader>
+<PageHeader {breadcrumb}>Atualizar empréstimo</PageHeader>
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="leitor" label="Leitor">
@@ -53,6 +53,8 @@
 					{#each item as exemplar (exemplar.idexemplar)}
 						<option value={exemplar.idexemplar}>{exemplar.livro + ' - EX:' + exemplar.numero}</option>
 					{/each}
+				{:catch}
+					<option value="" disabled>Não foi possível carregar os exemplares</option>
 				{/await}
 			</Select>
 		{/snippet}

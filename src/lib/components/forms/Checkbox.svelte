@@ -12,6 +12,6 @@
 </script>
 
 <label for={rest.id} class={[CHOICE_LABEL_CLASSES, className]}>
-	<input {...rest} type="checkbox" bind:checked class="size-5 rounded-sm" />
+	<input {...rest} type="checkbox" bind:checked class="size-5 shrink-0 rounded-sm" />
 	{@render children()}
 </label>

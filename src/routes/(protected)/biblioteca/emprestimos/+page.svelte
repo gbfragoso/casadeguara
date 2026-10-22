@@ -44,6 +44,7 @@
 	let { isAdmin } = $derived(data);
 	let loanUpdates: Record<number, LoanUpdate> = $state({});
 	const formEnhancer = createFormEnhancer({
+		reset: false,
 		afterUpdate: () => {
 			loanUpdates = {};
 		},
@@ -65,17 +66,27 @@
 		loanUpdates[id] = { ...loanUpdates[id], ...update };
 	};
 
+	async function postLoanAction(path: string) {
+		try {
+			const response = await fetch(path, { method: 'POST' });
+			return response.status === 200 ? response : undefined;
+		} catch {
+			return undefined;
+		}
+	}
+
 	async function returnLoan(id: number) {
 		updateLoan(id, { returnHidden: true });
-		const response = await fetch(`/api/biblioteca/devolucao?id=${id}`, { method: 'POST' });
-		updateLoan(id, { status: response.status === 200 ? RETURNED : RETURN_FAILED });
+		const response = await postLoanAction(`/api/biblioteca/devolucao?id=${id}`);
+		if (response) updateLoan(id, { status: RETURNED });
+		else updateLoan(id, { status: RETURN_FAILED, returnHidden: false });
 	}
 
 	async function renewLoan(id: number) {
 		updateLoan(id, { renewal: isAdmin ? 'disabled' : 'hidden' });
-		const response = await fetch(`/api/biblioteca/renovacao?id=${id}`, { method: 'POST' });
-		if (response.status !== 200) {
-			updateLoan(id, { status: RENEWAL_FAILED });
+		const response = await postLoanAction(`/api/biblioteca/renovacao?id=${id}`);
+		if (!response) {
+			updateLoan(id, { status: RENEWAL_FAILED, renewal: undefined });
 			return;
 		}
 		updateLoan(id, { status: RENEWED, dueDate: formatDate(await response.text()) });
@@ -83,7 +94,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-hand-holding">Consulta de empréstimos</PageHeader>
+<PageHeader {breadcrumb}>Consulta de empréstimos</PageHeader>
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="leitor" label="Leitor">
@@ -115,13 +126,15 @@
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('biblioteca/emprestimos/novo')} tone="warning" bold class="tablet:min-w-40">
+		<Button href={resolve('biblioteca/emprestimos/novo')} tone="default" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>
 </Card>
 
-{#if form?.emprestimos}
+{#if form?.emprestimos?.length === 0}
+	<Card class="mt-6"><p role="status">Nenhum empréstimo encontrado.</p></Card>
+{:else if form?.emprestimos}
 	<Card class="mt-6 overflow-hidden" padded={false}>
 		<DataTable>
 			{#snippet head()}
@@ -148,7 +161,7 @@
 					<td class="tabular-nums">{emprestimo.numero}</td>
 					<td id={`${emprestimo.idemp}devolucao`} class="tabular-nums"
 						>{update.dueDate ?? formatDate(emprestimo.data_devolucao)}</td>
-					<td><Tag id={`${emprestimo.idemp}`} kind={status.kind}>{status.label}</Tag></td>
+					<td aria-live="polite"><Tag id={`${emprestimo.idemp}`} kind={status.kind}>{status.label}</Tag></td>
 					<td class="print:hidden">
 						<div class="flex gap-1">
 							{#if !emprestimo.data_devolvido}

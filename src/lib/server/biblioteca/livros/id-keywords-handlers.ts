@@ -7,6 +7,7 @@ import {
 	requireLibraryAccess,
 	requireLibraryAdminAccess,
 } from '#lib/server/authorization/biblioteca.js';
+import { keywordReferenceSchema } from '#lib/validation/keyword.js';
 import { error, fail } from '@sveltejs/kit';
 import { and, eq } from 'drizzle-orm';
 
@@ -48,9 +49,11 @@ const actions: Actions = {
 		const form = await request.formData();
 		const livro = Number(params.id);
 		const keyword = Number(form.get('keyword'));
+		const reference = keywordReferenceSchema.safeParse(form.get('referencia') ?? '');
+		if (!reference.success) return fail(400, { errors: { referencia: [reference.error.issues[0].message] } });
 
 		try {
-			await db.insert(livroHasKeyword).values({ keyword, livro });
+			await db.insert(livroHasKeyword).values({ keyword, livro, referencia: reference.data });
 			return { status: 201 };
 		} catch (err) {
 			console.error(err);

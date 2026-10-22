@@ -21,7 +21,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-landmark-flag">Cadastrar editora</PageHeader>
+<PageHeader {breadcrumb}>Cadastrar editora</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome" errors={form?.errors?.nome}>

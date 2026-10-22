@@ -21,6 +21,8 @@
 		danger: 'bg-danger-soft text-danger-ink',
 	};
 
+	const SOFT_DARK_OUTLINE = 'dark:ring-1 dark:ring-current/30 dark:ring-inset';
+
 	const LIGHT_TONES: Record<Tone, string> = {
 		primary: 'border border-divider bg-surface text-primary-ink',
 		link: 'border border-divider bg-surface text-primary-ink',
@@ -39,7 +41,7 @@
 
 	let toneClasses = $derived.by(() => {
 		if (kind === undefined) return 'bg-surface-muted text-ink';
-		return light ? LIGHT_TONES[kind] : SOFT_TONES[kind];
+		return light ? LIGHT_TONES[kind] : [SOFT_TONES[kind], SOFT_DARK_OUTLINE];
 	});
 </script>
 

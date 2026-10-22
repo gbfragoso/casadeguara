@@ -7,8 +7,8 @@ const TOUCH_WIDTHS = [390, 820];
 const VIEWPORT_HEIGHT = 768;
 const SHORT_VIEWPORT_HEIGHT = 480;
 const WHEEL_DISTANCE = 2000;
-const PRIMARY_COLOR = 'rgb(1, 127, 192)';
-const MARKER_COLOR = 'rgb(255, 183, 15)';
+const GOLD = 'rgb(255, 183, 15)';
+const DARK_INK = 'rgb(22, 26, 34)';
 
 test.describe('menu lateral dos módulos', () => {
 	for (const width of DESKTOP_WIDTHS) {
@@ -79,15 +79,15 @@ test.describe('menu lateral dos módulos', () => {
 		expect(await page.evaluate(() => window.scrollY)).toBe(0);
 	});
 
-	test('E2E-04 destaca o item ativo com a cor primária e o marcador dourado', async ({ page, e2e }) => {
+	test('E2E-04 destaca o item ativo com fundo dourado e texto escuro', async ({ page, e2e }) => {
 		await page.setViewportSize({ width: 1366, height: VIEWPORT_HEIGHT });
 		await openModulePage(page, e2e, '/biblioteca/livros');
 
 		const active = shellRegions(page).sidebar.locator('[aria-current="page"]');
 
 		await expect(active).toHaveAccessibleName('livros');
-		await expect(active.locator('i')).toHaveCSS('color', PRIMARY_COLOR);
-		await expect(active.locator('span[aria-hidden="true"]')).toHaveCSS('background-color', MARKER_COLOR);
+		await expect(active).toHaveCSS('background-color', GOLD);
+		await expect(active).toHaveCSS('color', DARK_INK);
 	});
 
 	test('E2E-04 muda o fundo do item sob o cursor', async ({ page, e2e }) => {

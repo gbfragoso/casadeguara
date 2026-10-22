@@ -22,7 +22,7 @@
 	type TextFilter = { name: string; label: string; placeholder: string; maxlength: number; inputmode?: 'numeric' };
 
 	let { data, form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	let { colecoes, isAdmin } = $derived(data);
 	let errors = $derived(form?.errors ?? {});
 	const getValue = (field: string) => {
@@ -70,7 +70,7 @@
 	</Field>
 {/snippet}
 
-<PageHeader {breadcrumb} icon="fa-solid fa-book">Consulta de livros</PageHeader>
+<PageHeader {breadcrumb}>Consulta de livros</PageHeader>
 
 <Card element="form" action="?/pesquisar" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="grid gap-4 tablet:grid-cols-3">
@@ -100,7 +100,7 @@
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('biblioteca/livros/novo')} tone="warning" bold class="tablet:min-w-40">
+		<Button href={resolve('biblioteca/livros/novo')} tone="default" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>

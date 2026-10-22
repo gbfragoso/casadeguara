@@ -15,7 +15,7 @@ test('E2E-05 imprime somente o recibo em preto na coluna de 72 mm', async ({ pag
 
 	await expect(page.getByTestId('regiao-menu-lateral')).toBeHidden();
 	await expect(page.getByRole('button', { name: 'menu', exact: true })).toBeHidden();
-	await expect(page.getByRole('navigation', { name: 'breadcrumbs' })).toBeHidden();
+	await expect(page.getByRole('navigation', { name: 'Trilha de navegação' })).toBeHidden();
 	await expect(page.getByRole('heading', { level: 1 })).toBeHidden();
 	await expect(page.getByRole('button', { name: 'Imprimir recibo' })).toBeHidden();
 	expect((await receipt.boundingBox())?.width).toBeLessThanOrEqual(millimetersToPixels(PRINT_COLUMN_MM));

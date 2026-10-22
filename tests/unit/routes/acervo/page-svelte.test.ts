@@ -28,10 +28,15 @@ describe('public acervo page', () => {
 		]);
 	});
 
-	it('offers only the empty choice while the collections load', () => {
+	it('offers only the all-collections choice while the collections load', () => {
 		const document = renderOnServer(null);
 
-		expect([...document.querySelectorAll('#serie option')].map((option) => option.textContent)).toEqual(['']);
+		const options = [...document.querySelectorAll('#serie option')].map((option) => [
+			option.getAttribute('value'),
+			option.textContent,
+		]);
+
+		expect(options).toEqual([['', 'Todas as coleções']]);
 	});
 
 	it('shows only the search form before a search', () => {
@@ -52,5 +57,24 @@ describe('public acervo page', () => {
 			'Paulo Sereno',
 		]);
 		expect(cells[1]?.textContent).toBe('2');
+	});
+
+	it('tells the visitor when no book matches the search', () => {
+		const document = renderOnServer({ livros: [] });
+
+		expect(document.querySelector('table')).toBeNull();
+		expect(document.querySelector('[role="status"]')?.textContent).toBe(
+			'Nenhum livro encontrado. Tente buscar por outro termo.',
+		);
+	});
+
+	it('limits each text filter to the size stored in the catalog', () => {
+		const document = renderOnServer(null);
+
+		const limits = ['titulo', 'autor', 'editora', 'keyword'].map((id) =>
+			document.querySelector(`#${id}`)?.getAttribute('maxlength'),
+		);
+
+		expect(limits).toEqual(['80', '60', '60', '30']);
 	});
 });

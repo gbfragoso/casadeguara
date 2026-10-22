@@ -22,12 +22,19 @@
 
 <AccessCard>
 	<div class="mb-6 flex justify-center">
-		<img src="/logo.png" alt="Avatar" class="h-auto w-2/5" />
+		<img src="/logo.png" alt="Grupo Espírita Casa de Guará" class="h-auto w-2/5" />
 	</div>
 	<form method="POST" class="flex flex-col gap-4" {@attach formEnhancer.submitWithLoading}>
 		<Field id="email" label="Email" errors={emailErrors}>
 			{#snippet control({ describedBy, invalid })}
-				<TextInput type="email" name="email" id="email" aria-describedby={describedBy} aria-invalid={invalid} />
+				<TextInput
+					type="email"
+					name="email"
+					id="email"
+					autocomplete="username"
+					required
+					aria-describedby={describedBy}
+					aria-invalid={invalid} />
 			{/snippet}
 		</Field>
 		<Field id="password" label="Senha" errors={passwordErrors}>
@@ -36,6 +43,8 @@
 					type="password"
 					name="password"
 					id="password"
+					autocomplete="current-password"
+					required
 					aria-describedby={describedBy}
 					aria-invalid={invalid} />
 			{/snippet}
@@ -44,7 +53,7 @@
 			<Button tone="primary" fullwidth loading={formEnhancer.loading} bold>Entrar</Button>
 		</div>
 		{#each generalErrors as message (message)}
-			<ErrorMessage>{message}</ErrorMessage>
+			<ErrorMessage role="alert">{message}</ErrorMessage>
 		{/each}
 	</form>
 </AccessCard>

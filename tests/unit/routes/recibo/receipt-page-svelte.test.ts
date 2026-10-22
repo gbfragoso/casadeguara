@@ -33,7 +33,9 @@ describe('public receipt page', () => {
 		expect(document.querySelector('#recibo')?.textContent).toContain('MENSALIDADE');
 		expect(document.querySelector('#recibo')?.textContent).toContain('R$ 1.700,00');
 		expect(document.querySelector('#recibo')?.textContent).toContain('MIL E SETECENTOS REAIS');
-		expect(document.querySelector('button[aria-label="print"]')).not.toBeNull();
+		expect([...document.querySelectorAll('button')].map((button) => button.textContent?.trim())).toContain(
+			'Clique aqui para imprimir',
+		);
 	});
 
 	it.each([

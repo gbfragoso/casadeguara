@@ -17,49 +17,66 @@
 	}
 
 	let { data, form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	let { colecoes } = $derived(data);
 	const breadcrumb = [
 		{ label: 'Acervo', href: resolve('acervo') },
 		{ label: 'Livros', href: resolve('acervo') },
 	];
 	const titleFields = [
-		{ id: 'titulo', label: 'Título', placeholder: 'Digite o título do livro' },
-		{ id: 'autor', label: 'Autor', placeholder: 'Digite o nome do autor' },
+		{ id: 'titulo', label: 'Título', placeholder: 'Digite o título do livro', maxlength: 80 },
+		{ id: 'autor', label: 'Autor', placeholder: 'Digite o nome do autor', maxlength: 60 },
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-book-open">Consulta de livros</PageHeader>
+<PageHeader {breadcrumb}>Consulta de livros</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="grid gap-4 tablet:grid-cols-6">
 		{#each titleFields as field (field.id)}
 			<Field id={field.id} label={field.label} class="tablet:col-span-3">
 				{#snippet control()}
-					<TextInput type="text" name={field.id} id={field.id} placeholder={field.placeholder} />
+					<TextInput
+						type="text"
+						name={field.id}
+						id={field.id}
+						placeholder={field.placeholder}
+						maxlength={field.maxlength} />
 				{/snippet}
 			</Field>
 		{/each}
 		<Field id="editora" label="Editora" class="tablet:col-span-2">
 			{#snippet control()}
-				<TextInput type="text" name="editora" id="editora" placeholder="Digite o nome da editora" />
+				<TextInput
+					type="text"
+					name="editora"
+					id="editora"
+					placeholder="Digite o nome da editora"
+					maxlength={60} />
 			{/snippet}
 		</Field>
 		<Field id="serie" label="Coleção" class="tablet:col-span-2">
 			{#snippet control()}
 				<Select name="serie" id="serie">
-					<option></option>
+					<option value="">Todas as coleções</option>
 					{#await colecoes then item}
 						{#each item as serie (serie.idserie)}
 							<option value={serie.idserie}>{serie.nome}</option>
 						{/each}
+					{:catch}
+						<option value="" disabled>Não foi possível carregar as coleções</option>
 					{/await}
 				</Select>
 			{/snippet}
 		</Field>
 		<Field id="keyword" label="Palavra-chave" class="tablet:col-span-2">
 			{#snippet control()}
-				<TextInput type="text" name="keyword" id="keyword" placeholder="Digite uma palavra-chave" />
+				<TextInput
+					type="text"
+					name="keyword"
+					id="keyword"
+					placeholder="Digite uma palavra-chave"
+					maxlength={30} />
 			{/snippet}
 		</Field>
 	</div>
@@ -70,7 +87,9 @@
 	</div>
 </Card>
 
-{#if form?.livros}
+{#if form?.livros?.length === 0}
+	<Card class="mt-6"><p role="status">Nenhum livro encontrado. Tente buscar por outro termo.</p></Card>
+{:else if form?.livros}
 	<Card class="mt-6 overflow-hidden" padded={false}>
 		<DataTable>
 			{#snippet head()}

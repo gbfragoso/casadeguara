@@ -22,10 +22,12 @@ const actions: Actions = {
 		const dataFinal = dayjs(form.get('dataFim') as string);
 		const dias = form.getAll('dias') as string[];
 		const datas = [];
+		const fulldates = [];
 
 		for (let i = 0; dataInicial <= dataFinal; i++) {
 			if (dias.includes(String(dataInicial.day()))) {
 				datas.push(dataInicial.format('DD'));
+				fulldates.push(dataInicial.format('YYYY-MM-DD'));
 			}
 			dataInicial = dataInicial.add(1, 'day');
 		}
@@ -37,7 +39,7 @@ const actions: Actions = {
 				.where(and(eq(cadastros.trab, true), eq(cadastros.frequencia, true)))
 				.orderBy(unaccent(cadastros.nome));
 
-			return { leitores, datas };
+			return { leitores, datas, fulldates };
 		} catch (err) {
 			console.error(err);
 			return error(500, 'Falha ao carregar a lista de leitores');

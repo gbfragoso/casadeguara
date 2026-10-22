@@ -44,13 +44,13 @@ const renderCharges = (emprestimos: Promise<OverdueLoan[]>) => renderComponent(P
 const readRows = (target: HTMLElement) => [...target.querySelectorAll('tbody tr')];
 
 describe('overdue loans page', () => {
-	it('shows a loading placeholder while the overdue loans are pending', async () => {
+	it('shows a loading placeholder across every column while the overdue loans are pending', async () => {
 		const target = await renderCharges(new Promise(() => undefined));
 
 		const row = readRows(target)[0];
 
-		expect(row?.querySelectorAll('td [aria-hidden="true"]')).toHaveLength(4);
-		expect(row?.textContent?.trim()).toBe('');
+		expect(row?.querySelectorAll('td [aria-hidden="true"]')).toHaveLength(6);
+		expect(row?.textContent?.trim()).toBe('Carregando…');
 	});
 
 	it('lists an uncharged loan with one contact form for each reader contact', async () => {
@@ -89,9 +89,30 @@ describe('overdue loans page', () => {
 		expect(target.querySelector<HTMLInputElement>('input[name="prazo"]')?.value).toBe('01/10/2026');
 	});
 
-	it('shows no rows when no loan is overdue', async () => {
+	it('tells that no loan is overdue', async () => {
 		const target = await renderCharges(Promise.resolve([]));
 
-		await vi.waitFor(() => expect(readRows(target)).toHaveLength(0));
+		await vi.waitFor(() => expect(readRows(target)[0]?.textContent?.trim()).toBe('Nenhum empréstimo em atraso.'));
+	});
+
+	it('offers a retry when the overdue loans cannot be loaded', async () => {
+		const target = await renderCharges(Promise.reject(new Error('database offline')));
+
+		await vi.waitFor(() => expect(target.querySelector('tbody [role="alert"]')).not.toBeNull());
+		expect(target.querySelector('tbody [role="alert"]')?.textContent).toContain(
+			'Não foi possível carregar os empréstimos em atraso.',
+		);
+		expect(target.querySelector('tbody button')?.textContent?.trim()).toBe('Tentar novamente');
+	});
+
+	it('names the reader and the channel on each charge button', async () => {
+		const loan = overdueLoan({ celular: '71987654321', email: 'rui@example.test' });
+
+		const target = await renderCharges(Promise.resolve([loan]));
+
+		await vi.waitFor(() => expect(target.querySelectorAll('tbody form')).toHaveLength(2));
+		expect(
+			[...target.querySelectorAll('tbody form button')].map((button) => button.getAttribute('aria-label')),
+		).toEqual(['Cobrar Rui Leitor por WhatsApp (71987654321)', 'Cobrar Rui Leitor por e-mail (rui@example.test)']);
 	});
 });

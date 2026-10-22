@@ -25,7 +25,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-inbox">Atualizar aviso</PageHeader>
+<PageHeader {breadcrumb}>Atualizar aviso</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="texto" label="Texto do aviso" errors={errorMessages}>

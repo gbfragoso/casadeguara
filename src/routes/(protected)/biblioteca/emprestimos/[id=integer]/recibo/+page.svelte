@@ -32,7 +32,7 @@
 	});
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-receipt" printTitle={false}>Recibo</PageHeader>
+<PageHeader {breadcrumb} printTitle={false}>Recibo</PageHeader>
 
 <LoanReceipt {recibo} />
 

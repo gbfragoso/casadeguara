@@ -23,22 +23,37 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-user-plus">Cadastro de usuários</PageHeader>
+<PageHeader {breadcrumb}>Cadastro de usuários</PageHeader>
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
-	<Field id="username" label="Usuário">
-		{#snippet control()}
-			<TextInput name="username" id="username" value={usuario.username} />
+	<Field id="username" label="Usuário" help="Use o e-mail de acesso, com até 30 caracteres.">
+		{#snippet control({ describedBy })}
+			<TextInput
+				type="email"
+				name="username"
+				id="username"
+				value={usuario.username}
+				maxlength={30}
+				autocomplete="off"
+				required
+				aria-describedby={describedBy} />
 		{/snippet}
 	</Field>
-	<Field id="password" label="Senha">
-		{#snippet control()}
-			<TextInput type="password" name="password" id="password" />
+	<Field id="password" label="Senha" help="Mínimo de 6 caracteres.">
+		{#snippet control({ describedBy })}
+			<TextInput
+				type="password"
+				name="password"
+				id="password"
+				minlength={6}
+				autocomplete="new-password"
+				required
+				aria-describedby={describedBy} />
 		{/snippet}
 	</Field>
 	<Field id="name" label="Nome">
 		{#snippet control()}
-			<TextInput name="name" id="name" value={usuario.name} />
+			<TextInput name="name" id="name" value={usuario.name} maxlength={255} autocomplete="off" required />
 		{/snippet}
 	</Field>
 	<Field id="roles" label="Setor">

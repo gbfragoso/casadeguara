@@ -22,7 +22,7 @@
 	}
 
 	let { form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	let pendingFlags = new SvelteSet<string>();
 	let flagError = $state('');
 	let cadastros = $derived(form?.cadastros);
@@ -58,7 +58,7 @@
 	}
 </script>
 
-<PageHeader {breadcrumb} icon="fa-brands fa-wpforms">Consulta de cadastros</PageHeader>
+<PageHeader {breadcrumb}>Consulta de cadastros</PageHeader>
 
 <Card element="form" method="POST" class="flex flex-col gap-4" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do trabalhador" errors={form?.errors?.nome}>
@@ -89,7 +89,7 @@
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('secretaria/cadastros/novo')} tone="warning" bold class="tablet:min-w-50">
+		<Button href={resolve('secretaria/cadastros/novo')} tone="default" bold class="tablet:min-w-50">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>

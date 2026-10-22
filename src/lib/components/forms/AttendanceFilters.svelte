@@ -6,10 +6,6 @@
 	import Column from '#lib/components/layout/Column.svelte';
 	import Columns from '#lib/components/layout/Columns.svelte';
 
-	const dateFields = [
-		{ id: 'dataInicio', label: 'Data inicial' },
-		{ id: 'dataFim', label: 'Data final' },
-	];
 	const weekdays = [
 		{ value: '1', label: 'Segunda', checked: true },
 		{ value: '2', label: 'Terça', checked: true },
@@ -19,18 +15,25 @@
 		{ value: '6', label: 'Sábado', checked: false },
 		{ value: '0', label: 'Domingo', checked: false },
 	];
+
+	let startDate = $state('');
 </script>
 
 <Columns>
-	{#each dateFields as field (field.id)}
-		<Column>
-			<Field id={field.id} label={field.label}>
-				{#snippet control()}
-					<TextInput type="date" name={field.id} id={field.id} aria-label="Date" required />
-				{/snippet}
-			</Field>
-		</Column>
-	{/each}
+	<Column>
+		<Field id="dataInicio" label="Data inicial">
+			{#snippet control()}
+				<TextInput type="date" name="dataInicio" id="dataInicio" bind:value={startDate} required />
+			{/snippet}
+		</Field>
+	</Column>
+	<Column>
+		<Field id="dataFim" label="Data final">
+			{#snippet control()}
+				<TextInput type="date" name="dataFim" id="dataFim" min={startDate || undefined} required />
+			{/snippet}
+		</Field>
+	</Column>
 </Columns>
 <ChoiceGroup>
 	{#each weekdays as weekday (weekday.value)}

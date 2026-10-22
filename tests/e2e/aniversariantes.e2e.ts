@@ -16,7 +16,7 @@ test.describe('relatório de aniversariantes', () => {
 		await page.emulateMedia({ media: 'print' });
 
 		const { sidebar, topbar } = shellRegions(page);
-		for (const region of [sidebar, topbar, page.getByRole('navigation', { name: 'breadcrumbs' })]) {
+		for (const region of [sidebar, topbar, page.getByRole('navigation', { name: 'Trilha de navegação' })]) {
 			await expect(region).toBeHidden();
 		}
 		await expect(page.getByRole('heading', { name: 'Lista de aniversariantes' })).toBeHidden();

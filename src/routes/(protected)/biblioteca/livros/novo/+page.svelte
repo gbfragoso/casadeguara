@@ -82,7 +82,7 @@
 	};
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-book">Cadastro de livros</PageHeader>
+<PageHeader {breadcrumb}>Cadastro de livros</PageHeader>
 
 <Card element="form" method="POST" {@attach initializeStepper} {@attach formEnhancer.submitWithLoading}>
 	<nav aria-label="Etapas do cadastro" class="mb-8">

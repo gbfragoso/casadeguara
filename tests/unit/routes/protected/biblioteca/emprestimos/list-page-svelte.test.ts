@@ -55,6 +55,13 @@ describe('loans page', () => {
 		expect(document.querySelector('[data-testid="regiao-notificacao"]')).toBeNull();
 	});
 
+	it('tells that the search found no loan', () => {
+		const document = renderLoans({ emprestimos: [] });
+
+		expect(document.querySelector('table')).toBeNull();
+		expect(document.querySelector('[role="status"]')?.textContent).toBe('Nenhum empréstimo encontrado.');
+	});
+
 	it('shows the status and the available actions of each loan', () => {
 		const rows = readRows({ emprestimos: LOANS, status: 200, message: 'OK' });
 

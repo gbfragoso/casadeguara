@@ -8,13 +8,14 @@
 
 	type Props = {
 		items: readonly ModuleMenuItem[];
+		moduleName: string;
 		isAdmin: boolean;
 		username: string;
 		userid: string;
 		children: Snippet;
 	};
 
-	let { items, isAdmin, username, userid, children }: Props = $props();
+	let { items, moduleName, isAdmin, username, userid, children }: Props = $props();
 	let sidebarExpanded = $state(false);
 
 	afterNavigate(() => {
@@ -23,7 +24,12 @@
 </script>
 
 <main class="flex min-h-dvh">
-	<ModuleSidebar {items} {isAdmin} expanded={sidebarExpanded} />
+	<ModuleSidebar
+		{items}
+		{moduleName}
+		{isAdmin}
+		expanded={sidebarExpanded}
+		onClose={() => (sidebarExpanded = false)} />
 	<section class="min-w-0 flex-1">
 		<Navbar {username} {userid} {sidebarExpanded} onToggleSidebar={() => (sidebarExpanded = !sidebarExpanded)} />
 		<Section>

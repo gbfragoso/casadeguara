@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import Button from '#lib/components/actions/Button.svelte';
 	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
+	import PublicHeader from '#lib/components/layout/PublicHeader.svelte';
 	import { formatBrlDecimal } from '#lib/utils/currency.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
@@ -31,6 +32,7 @@
 	</p>
 {/snippet}
 
+<PublicHeader />
 <main class="px-4 py-6 tablet:py-10 print:p-0">
 	{#if data.status === 'estornado'}
 		<InlineNotification
@@ -38,7 +40,7 @@
 			kind="warning"
 			element="section"
 			role="status"
-			class="mx-auto w-full border-l-8 desktop:max-w-receipt print:border-black">
+			class="mx-auto w-full desktop:max-w-receipt print:border-black">
 			<div class="flex flex-col gap-2">
 				<h1 class="text-2xl font-bold">Recibo estornado</h1>
 				<p>Este recibo não é válido.</p>
@@ -49,10 +51,9 @@
 		<div
 			id="recibo"
 			translate="no"
-			class="notranslate mx-auto w-full overflow-hidden rounded-lg bg-white text-black shadow-raised desktop:max-w-receipt print:max-w-none print:overflow-visible print:rounded-none">
+			class="notranslate mx-auto w-full overflow-hidden rounded-lg border border-divider bg-white text-black shadow-card desktop:max-w-receipt print:max-w-none print:overflow-visible print:rounded-none print:border-0">
 			<div class="flex flex-col gap-4 p-4 tablet:p-6">
-				<div
-					class="flex flex-col-reverse items-center gap-4 tablet:flex-row tablet:items-start tablet:justify-between">
+				<div class="flex flex-col items-center gap-4 tablet:flex-row tablet:items-start tablet:justify-between">
 					<div class="w-full border border-black p-3 text-center tablet:w-auto tablet:flex-1">
 						<h2 class="text-lg font-bold text-black underline tablet:text-2xl">
 							GRUPO ESPÍRITA CASA DE GUARÁ
@@ -63,7 +64,7 @@
 						<p>CNPJ: 13.271.788/0001-12</p>
 					</div>
 					{#await QRCode.toDataURL(page.url.href) then dataUrl}
-						<img class="size-32 shrink-0" alt="qrcode" src={dataUrl} />
+						<img class="size-32 shrink-0" alt="QR Code para conferir este recibo" src={dataUrl} />
 					{/await}
 				</div>
 				<div class="flex flex-wrap justify-end gap-x-6 gap-y-2">
@@ -95,7 +96,7 @@
 		</div>
 
 		<div class="mt-8 flex justify-center print:hidden">
-			<Button tone="primary" aria-label="print" onclick={() => window.print()}>Clique aqui para imprimir</Button>
+			<Button tone="primary" onclick={() => window.print()}>Clique aqui para imprimir</Button>
 		</div>
 	{/if}
 </main>

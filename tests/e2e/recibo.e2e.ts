@@ -36,7 +36,7 @@ test.describe('recibo de contribuição', () => {
 		const { scrollWidth, innerWidth } = await readDocumentWidth(page);
 
 		expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
-		await expect(receipt.getByRole('img', { name: 'qrcode' })).toBeVisible();
+		await expect(receipt.getByRole('img', { name: 'QR Code para conferir este recibo' })).toBeVisible();
 		for (const text of [contributor.name.toUpperCase(), entry.descricao.toUpperCase(), 'R$ 150,00']) {
 			await expect(receipt.getByText(text, { exact: true })).toBeVisible();
 		}
@@ -66,8 +66,8 @@ test.describe('recibo de contribuição', () => {
 		await page.emulateMedia({ media: 'print' });
 
 		expect(Math.abs((await readBox(receipt)).width - A4_VIEWPORT.width)).toBeLessThanOrEqual(TOLERANCE);
-		await expect(receipt.getByRole('img', { name: 'qrcode' })).toBeVisible();
-		await expect(page.getByRole('button', { name: 'print' })).toBeHidden();
+		await expect(receipt.getByRole('img', { name: 'QR Code para conferir este recibo' })).toBeVisible();
+		await expect(page.getByRole('button', { name: 'Clique aqui para imprimir' })).toBeHidden();
 		const border = await readBorder(receipt.getByText(contributor.name.toUpperCase(), { exact: true }));
 		expect(border.style).toBe('solid');
 		expect(border.width).toBeGreaterThan(0);

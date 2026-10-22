@@ -15,7 +15,7 @@ describe('Breadcrumb', () => {
 			],
 		});
 
-		const nav = getElement(target, 'nav#breadcrumb[aria-label="breadcrumbs"]', HTMLElement);
+		const nav = getElement(target, 'nav#breadcrumb[aria-label="Trilha de navegação"]', HTMLElement);
 		const links = [...nav.querySelectorAll('a')].map((link) => [
 			link.textContent,
 			link.getAttribute('aria-current'),

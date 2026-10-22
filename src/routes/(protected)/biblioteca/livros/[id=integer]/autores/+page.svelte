@@ -2,8 +2,8 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import AsyncTableRows from '#lib/components/data/AsyncTableRows.svelte';
 	import DataTable from '#lib/components/data/DataTable.svelte';
-	import SkeletonLines from '#lib/components/feedback/SkeletonLines.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import Select from '#lib/components/forms/Select.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
@@ -28,7 +28,7 @@
 	]);
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-user-pen">Consulta de autores</PageHeader>
+<PageHeader {breadcrumb}>Consulta de autores</PageHeader>
 
 <Card
 	element="form"
@@ -38,20 +38,24 @@
 	{@attach formEnhancer.submitWithLoading}>
 	<Columns>
 		{#await livros then livro}
-			<Column size={2}>
-				<Field id="tombo" label="Tombo">
-					{#snippet control()}
-						<TextInput type="number" name="tombo" id="tombo" value={livro[0].tombo} disabled />
-					{/snippet}
-				</Field>
-			</Column>
-			<Column>
-				<Field id="titulo" label="Título">
-					{#snippet control()}
-						<TextInput type="text" name="titulo" id="titulo" value={livro[0].titulo} disabled />
-					{/snippet}
-				</Field>
-			</Column>
+			{#if livro.length === 0}
+				<p role="alert" class="text-danger-ink">Livro não encontrado. Ele pode ter sido excluído.</p>
+			{:else}
+				<Column size={2}>
+					<Field id="tombo" label="Tombo">
+						{#snippet control()}
+							<TextInput type="number" name="tombo" id="tombo" value={livro[0].tombo} disabled />
+						{/snippet}
+					</Field>
+				</Column>
+				<Column>
+					<Field id="titulo" label="Título">
+						{#snippet control()}
+							<TextInput type="text" name="titulo" id="titulo" value={livro[0].titulo} disabled />
+						{/snippet}
+					</Field>
+				</Column>
+			{/if}
 		{/await}
 	</Columns>
 	<Field id="autor" label="Nome do autor">
@@ -62,6 +66,8 @@
 					{#each item as autor (autor.idautor)}
 						<option value={autor.idautor}>{autor.nome}</option>
 					{/each}
+				{:catch}
+					<option value="" disabled>Não foi possível carregar os autores</option>
 				{/await}
 			</Select>
 		{/snippet}
@@ -79,13 +85,12 @@
 				<th class="print:hidden">Ações</th>
 			</tr>
 		{/snippet}
-		{#await autoresLivro}
-			<tr>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-			</tr>
-		{:then item}
-			{#each item as autor (autor.idautor)}
+		<AsyncTableRows
+			rows={autoresLivro}
+			columns={2}
+			emptyMessage="Nenhum autor associado a este livro."
+			errorMessage="Não foi possível carregar os autores do livro.">
+			{#snippet row(autor)}
 				<tr>
 					<td>{autor.nome}</td>
 					<td class="print:hidden">
@@ -95,12 +100,13 @@
 									type="submit"
 									tone="danger"
 									icon="fa-regular fa-trash-can"
-									aria-label="trash" />
+									title="Remover"
+									aria-label={`Remover autor ${autor.nome} do livro`} />
 							</form>
 						{/if}
 					</td>
 				</tr>
-			{/each}
-		{/await}
+			{/snippet}
+		</AsyncTableRows>
 	</DataTable>
 </Card>

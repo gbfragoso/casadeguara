@@ -4,6 +4,7 @@
 	import Box from '#lib/components/layout/Box.svelte';
 	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import { formatMonthYear } from '#lib/utils/date.js';
 	import dayjs from 'dayjs';
 	import utc from 'dayjs/plugin/utc';
 	import type { PageServerData } from './$types';
@@ -20,25 +21,25 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-house">
-	Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
-</PageHeader>
+<PageHeader {breadcrumb}>Balanço de {formatMonthYear(new Date())}</PageHeader>
 
 <div data-testid="indicadores" class="grid gap-4 tablet:grid-cols-3">
-	<Indicator label="Empréstimos" icon="fa-solid fa-arrow-right" highlight>
+	<Indicator label="Empréstimos" highlight>
 		{#snippet value()}{emprestimos[0].counter}{/snippet}
 	</Indicator>
-	<Indicator label="Devoluções" icon="fa-solid fa-arrow-left">
+	<Indicator label="Devoluções">
 		{#snippet value()}{devolucoes[0].counter}{/snippet}
 	</Indicator>
-	<Indicator label="Renovações" icon="fa-solid fa-repeat">
+	<Indicator label="Renovações">
 		{#snippet value()}{emprestimos[0].renovacoes || 0}{/snippet}
 	</Indicator>
 </div>
 
 <section class="mt-10 flex flex-col gap-4">
-	<SectionHeading element="p" icon="fa-solid fa-inbox">Mural de avisos</SectionHeading>
-	{#if avisos.length > 0}
+	<SectionHeading element="p">Mural de avisos</SectionHeading>
+	{#if avisos.length === 0}
+		<p class="text-ink-muted">Nenhum aviso no mural.</p>
+	{:else}
 		<Box class="tablet:p-6">
 			{#each avisos as aviso (aviso.idaviso)}
 				<article class="flex flex-col gap-1 border-t border-divider py-4 first:border-t-0 first:pt-0 last:pb-0">

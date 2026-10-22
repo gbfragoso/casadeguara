@@ -25,7 +25,7 @@
 	let page = $derived(form?.page ?? data?.page);
 	let periodErrors = $derived([...fieldErrors('lancamentoFim'), ...fieldErrors('estornoFim')]);
 
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	const breadcrumb = [
 		{ label: 'Tesouraria', href: resolve('tesouraria') },
 		{ label: 'Estornos', href: resolve('tesouraria/estornos') },
@@ -48,7 +48,7 @@
 	}
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-clock-rotate-left">Auditoria de estornos</PageHeader>
+<PageHeader {breadcrumb}>Auditoria de estornos</PageHeader>
 
 <Card
 	element="form"
@@ -115,7 +115,7 @@
 						<th>Tipo</th>
 						<th>Contraparte</th>
 						<th>Descrição</th>
-						<th>Valor</th>
+						<th class="text-right">Valor</th>
 						<th>Motivo</th>
 						<th>Usuário</th>
 						<th>Data do lançamento</th>
@@ -127,7 +127,7 @@
 						<td>{item.tipo === 'entrada' ? 'Entrada' : 'Saída'}</td>
 						<td>{item.contraparte?.nome ?? '—'}</td>
 						<td>{item.descricao}</td>
-						<td class="whitespace-nowrap">{moeda(Number(item.valor))}</td>
+						<td class="text-right whitespace-nowrap">{moeda(Number(item.valor))}</td>
 						<td>{item.motivo}</td>
 						<td>{item.usuario}</td>
 						<td>{formatCivilDate(item.dataLancamento)}</td>

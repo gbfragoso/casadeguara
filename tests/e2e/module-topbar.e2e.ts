@@ -37,8 +37,8 @@ test.describe('barra superior dos módulos', () => {
 		await userMenuTrigger.click();
 
 		await expect(userMenu).toBeVisible();
-		await expect(userMenu).toContainText('Bem vindo(a),');
-		await expect(userMenu.getByRole('link', { name: 'Configurações' })).toBeVisible();
+		await expect(userMenu).toContainText('Bem-vindo(a),');
+		await expect(userMenu.getByRole('link', { name: 'Meu cadastro' })).toBeVisible();
 		const [menuBox, triggerBox] = [await readBox(userMenu), await readBox(userMenuTrigger)];
 		expect(Math.abs(menuBox.x + menuBox.width - (triggerBox.x + triggerBox.width))).toBeLessThanOrEqual(
 			EDGE_TOLERANCE,

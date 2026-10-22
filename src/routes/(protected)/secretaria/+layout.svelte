@@ -62,6 +62,6 @@
 	];
 </script>
 
-<ModuleShell {items} isAdmin={data.isAdmin} username={data.username} userid={data.userid}>
+<ModuleShell {items} moduleName="Secretaria" isAdmin={data.isAdmin} username={data.username} userid={data.userid}>
 	{@render children()}
 </ModuleShell>

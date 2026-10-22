@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import AsyncTableRows from '#lib/components/data/AsyncTableRows.svelte';
 	import DataTable from '#lib/components/data/DataTable.svelte';
-	import SkeletonLines from '#lib/components/feedback/SkeletonLines.svelte';
 	import Tag from '#lib/components/feedback/Tag.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
@@ -15,7 +15,13 @@
 	}
 
 	type Loan = { idemp: number; leitor: string; titulo: string };
-	type Contact = { action: '?/whatsapp' | '?/email'; field: 'telefone' | 'email'; value: string; icon: string };
+	type Contact = {
+		action: '?/whatsapp' | '?/email';
+		field: 'telefone' | 'email';
+		value: string;
+		icon: string;
+		channel: string;
+	};
 
 	let { data }: Props = $props();
 	let { emprestimos } = $derived(data);
@@ -33,11 +39,15 @@
 		<input type="hidden" name="titulo" value={loan.titulo} />
 		<input type="hidden" name={contact.field} value={contact.value} />
 		<input type="hidden" name="prazo" value={dueDate} />
-		<IconAction type="submit" icon={contact.icon} aria-label="Whatsapp" title="Whatsapp" />
+		<IconAction
+			type="submit"
+			icon={contact.icon}
+			aria-label={`Cobrar ${loan.leitor} por ${contact.channel} (${contact.value})`}
+			title={`Cobrar por ${contact.channel}`} />
 	</form>
 {/snippet}
 
-<PageHeader {breadcrumb} icon="fa-solid fa-envelopes-bulk">Empréstimos em atraso</PageHeader>
+<PageHeader {breadcrumb}>Empréstimos em atraso</PageHeader>
 
 <Card id="printable-content" class="notranslate overflow-hidden" translate="no" padded={false}>
 	<DataTable>
@@ -51,15 +61,12 @@
 				<th class="print:hidden">Ações</th>
 			</tr>
 		{/snippet}
-		{#await emprestimos}
-			<tr>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-			</tr>
-		{:then item}
-			{#each item as emprestimo (emprestimo.idemp)}
+		<AsyncTableRows
+			rows={emprestimos}
+			columns={6}
+			emptyMessage="Nenhum empréstimo em atraso."
+			errorMessage="Não foi possível carregar os empréstimos em atraso.">
+			{#snippet row(emprestimo)}
 				{@const dueDate = dayjs.utc(emprestimo.data_devolucao).format('DD/MM/YYYY')}
 				<tr>
 					<td>
@@ -86,6 +93,7 @@
 									field: 'telefone',
 									value: emprestimo.telefone,
 									icon: 'fa-brands fa-whatsapp',
+									channel: 'WhatsApp',
 								})}
 							{/if}
 							{#if emprestimo.celular}
@@ -94,6 +102,7 @@
 									field: 'telefone',
 									value: emprestimo.celular,
 									icon: 'fa-brands fa-whatsapp',
+									channel: 'WhatsApp',
 								})}
 							{/if}
 							{#if emprestimo.email}
@@ -102,12 +111,13 @@
 									field: 'email',
 									value: emprestimo.email,
 									icon: 'fa-regular fa-envelope',
+									channel: 'e-mail',
 								})}
 							{/if}
 						</div>
 					</td>
 				</tr>
-			{/each}
-		{/await}
+			{/snippet}
+		</AsyncTableRows>
 	</DataTable>
 </Card>

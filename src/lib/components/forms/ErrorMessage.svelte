@@ -11,6 +11,6 @@
 	let { element = 'p', class: className, children, ...rest }: Props = $props();
 </script>
 
-<svelte:element this={element} {...rest} class={['flex gap-1.5 text-sm text-danger-ink', className]}>
+<svelte:element this={element} {...rest} class={['flex gap-1.5 text-sm wrap-anywhere text-danger-ink', className]}>
 	<i class="fa-solid fa-circle-exclamation fa-fw mt-0.5" aria-hidden="true"></i>{@render children()}
 </svelte:element>

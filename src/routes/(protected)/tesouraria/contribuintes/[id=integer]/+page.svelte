@@ -30,7 +30,7 @@
 		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-user">Atualizar informações do contribuinte</PageHeader>
+<PageHeader {breadcrumb}>Atualizar informações do contribuinte</PageHeader>
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome">

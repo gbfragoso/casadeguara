@@ -6,7 +6,12 @@ import { describeLibraryAdminFlag } from './library-admin-flag-suite';
 
 type Handler = (...args: never[]) => unknown;
 type AssociationHandlers = { load: Handler; actions: Record<string, Handler> };
-type SuiteOptions = { field: string; listKeys: string[]; createHandlers: () => AssociationHandlers };
+type SuiteOptions = {
+	field: string;
+	listKeys: string[];
+	createHandlers: () => AssociationHandlers;
+	additionalValues?: Record<string, unknown>;
+};
 
 const params = { id: '3' };
 const librarian = { roles: 'biblioteca', params };
@@ -45,7 +50,7 @@ const describeLoad = ({ listKeys, createHandlers }: SuiteOptions) => {
 	describeLibraryAdminFlag(() => createHandlers().load, params);
 };
 
-const describeAddition = ({ field, createHandlers }: SuiteOptions) => {
+const describeAddition = ({ field, createHandlers, additionalValues = {} }: SuiteOptions) => {
 	it('rejects an addition from a user without library access before reading the form', async () => {
 		const { event, error } = await expectHttpError(createHandlers().actions.adicionar, {
 			roles: 'secretaria',
@@ -64,7 +69,7 @@ const describeAddition = ({ field, createHandlers }: SuiteOptions) => {
 		});
 
 		expect(result).toEqual({ status: 201 });
-		expect(fakeDatabase.argumentsOf('values')).toEqual([{ [field]: 5, livro: 3 }]);
+		expect(fakeDatabase.argumentsOf('values')).toEqual([{ [field]: 5, livro: 3, ...additionalValues }]);
 	});
 
 	it('fails when the association cannot be created', async () => {

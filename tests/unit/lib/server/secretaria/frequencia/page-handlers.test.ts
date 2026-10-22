@@ -24,7 +24,11 @@ describe('createSecretariaFrequenciaHandlers', () => {
 
 		const { result } = await runHandler(actions.default, { roles: 'secretaria', form: thursdaysOfOctober });
 
-		expect(result).toEqual({ leitores: [{ nome: 'Maria', desencarnado: false }], datas: ['01', '08'] });
+		expect(result).toEqual({
+			leitores: [{ nome: 'Maria', desencarnado: false }],
+			datas: ['01', '08'],
+			fulldates: ['2026-10-01', '2026-10-08'],
+		});
 	});
 
 	it('fails when the workers cannot be read', async () => {

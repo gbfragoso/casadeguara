@@ -53,14 +53,12 @@ describe('Indicator', () => {
 		const target = await renderComponent(Indicator, {
 			id: 'doacoes',
 			label: 'Doações',
-			icon: 'fa-solid fa-calculator',
 			loading: true,
 			value: htmlSnippet('<span>R$ 44,75</span>'),
 		});
 
 		const indicator = getElement(target, '#doacoes', HTMLElement);
 		expect(indicator.textContent?.trim()).toBe('Doações');
-		expect(indicator.querySelector('i')?.closest('[aria-hidden="true"]')).not.toBeNull();
 		expect(indicator.querySelector(':scope > div[aria-hidden="true"]')).not.toBeNull();
 		expect(indicator.querySelector('h2')).toBeNull();
 	});
@@ -73,7 +71,6 @@ describe('Indicator', () => {
 			...style,
 			id: 'saldo',
 			label: 'Saldo',
-			icon: 'fa-solid fa-sack-dollar',
 			value: htmlSnippet('<span>R$ 44,75</span>'),
 		});
 

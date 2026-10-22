@@ -23,7 +23,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-key">Atualizar palavra-chave</PageHeader>
+<PageHeader {breadcrumb}>Atualizar palavra-chave</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="chave" label="Palavra-chave" errors={form?.errors?.chave}>

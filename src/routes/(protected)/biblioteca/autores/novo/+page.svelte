@@ -21,7 +21,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-user-pen">Cadastro de autores</PageHeader>
+<PageHeader {breadcrumb}>Cadastro de autores</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do autor" errors={form?.errors?.nome}>

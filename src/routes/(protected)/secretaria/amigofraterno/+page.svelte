@@ -21,7 +21,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-people-group">Amigo Fraterno</PageHeader>
+<PageHeader {breadcrumb}>Amigo Fraterno</PageHeader>
 
 <Card class="flex flex-col gap-5">
 	<p>

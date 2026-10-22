@@ -77,7 +77,7 @@
 	}
 
 	function handlePointerdown(event: PointerEvent) {
-		if (disabled || (event.pointerType === 'mouse' && event.button !== 0)) return;
+		if (disabled || dragging || (event.pointerType === 'mouse' && event.button !== 0)) return;
 		dragging = true;
 		pointerId = event.pointerId;
 		lastPointerX = event.clientX;
@@ -91,6 +91,10 @@
 
 	function handlePointermove(event: PointerEvent) {
 		if (!dragging || event.pointerId !== pointerId || !frameElement) return;
+		if (event.pointerType === 'mouse' && event.buttons === 0) {
+			endDrag();
+			return;
+		}
 		const bounds = frameElement.getBoundingClientRect();
 		const deltaX = event.clientX - lastPointerX;
 		const deltaY = event.clientY - lastPointerY;
@@ -99,15 +103,20 @@
 		setPosition(focalX - deltaX / bounds.width / zoom, focalY - deltaY / bounds.height / zoom);
 	}
 
-	function handlePointerup(event: PointerEvent) {
-		if (event.pointerId !== pointerId) return;
+	function endDrag() {
+		if (pointerId === undefined) return;
+		const releasedPointerId = pointerId;
 		dragging = false;
 		pointerId = undefined;
 		try {
-			frameElement?.releasePointerCapture(event.pointerId);
+			frameElement?.releasePointerCapture(releasedPointerId);
 		} catch (error) {
 			if (!(error instanceof DOMException && error.name === 'NotFoundError')) throw error;
 		}
+	}
+
+	function handlePointerup(event: PointerEvent) {
+		if (event.pointerId === pointerId) endDrag();
 	}
 
 	function handleZoomInput(event: Event) {
@@ -130,6 +139,8 @@
 	let imageStyle = $derived(createImageStyle());
 </script>
 
+<svelte:window onblur={endDrag} />
+
 <div data-testid="photo-cropper">
 	<p class="text-sm text-ink-muted" id="photo-cropper-instructions">
 		Use as setas do teclado ou arraste a imagem para escolher a área que aparecerá no cartão.
@@ -146,7 +157,8 @@
 		onpointerdown={handlePointerdown}
 		onpointermove={handlePointermove}
 		onpointerup={handlePointerup}
-		onpointercancel={handlePointerup}>
+		onpointercancel={handlePointerup}
+		onlostpointercapture={handlePointerup}>
 		<img
 			class="absolute block max-h-none max-w-none object-cover select-none"
 			{src}

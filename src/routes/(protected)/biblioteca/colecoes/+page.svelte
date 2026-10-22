@@ -16,14 +16,14 @@
 	}
 
 	let { form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	const breadcrumb = [
 		{ label: 'Biblioteca', href: resolve('biblioteca') },
 		{ label: 'Coleções', href: resolve('biblioteca/colecoes') },
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-layer-group">Consulta de coleções</PageHeader>
+<PageHeader {breadcrumb}>Consulta de coleções</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome da coleção" errors={form?.errors?.nome}>
@@ -43,7 +43,7 @@
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('biblioteca/colecoes/novo')} tone="warning" bold class="tablet:min-w-40">
+		<Button href={resolve('biblioteca/colecoes/novo')} tone="default" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>

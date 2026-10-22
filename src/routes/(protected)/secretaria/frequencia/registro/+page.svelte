@@ -20,7 +20,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-list-check" printTitle={false}>Registro de frequência</PageHeader>
+<PageHeader {breadcrumb} printTitle={false}>Registro de frequência</PageHeader>
 
 <Card
 	element="form"
@@ -36,7 +36,11 @@
 	</div>
 </Card>
 
-{#if form?.leitores}
+{#if form?.leitores?.length === 0}
+	<Card class="mt-6">
+		<p role="status">Nenhum trabalhador marcado para a lista de frequência. Marque-os em Cadastros.</p>
+	</Card>
+{:else if form?.leitores}
 	<Card
 		element="form"
 		action="?/registrar"
@@ -46,13 +50,11 @@
 		<DataTable class="-mx-5 tablet:-mx-6 print:mx-0">
 			{#snippet head()}
 				<tr>
-					{#if form.datas}
-						{#each form.datas as date (date)}
-							<th class="print:pr-2!">
-								{date}
-							</th>
-						{/each}
-					{/if}
+					{#each form.fulldates as date, index (date)}
+						<th class="print:pr-2!">
+							{form.datas[index]}
+						</th>
+					{/each}
 					<th class="print:pl-12!">Nome</th>
 				</tr>
 			{/snippet}

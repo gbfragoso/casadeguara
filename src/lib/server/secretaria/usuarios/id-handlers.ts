@@ -50,7 +50,7 @@ const actions: Actions = {
 			return {
 				status: 400,
 				field: 'password',
-				message: 'Senha não atente aos requisitos mínimos de segurança',
+				message: 'Senha não atende aos requisitos mínimos de segurança',
 			};
 		}
 

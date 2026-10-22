@@ -51,7 +51,7 @@ describe('book authors page', () => {
 	it('marks the authors page of the book as the current breadcrumb', async () => {
 		const target = await renderAuthors(false);
 
-		const current = target.querySelector('nav[aria-label="breadcrumbs"] [aria-current="page"]');
+		const current = target.querySelector('nav[aria-label="Trilha de navegação"] [aria-current="page"]');
 
 		expect(current?.textContent).toBe('Autores');
 		expect(current?.getAttribute('href')).toBe('/biblioteca/livros/3/autores');
@@ -72,6 +72,44 @@ describe('book authors page', () => {
 
 		const removal = target.querySelector('tbody form');
 		expect(removal?.getAttribute('action')).toBe('?/excluir&autor=7');
-		expect(removal?.querySelector('button[type="submit"]')?.getAttribute('aria-label')).toBe('trash');
+		expect(removal?.querySelector('button[type="submit"]')?.getAttribute('aria-label')).toBe(
+			'Remover autor Conceição Evaristo do livro',
+		);
+	});
+
+	it('explains that the book no longer exists instead of failing', async () => {
+		const target = await renderComponent(Page, {
+			data: {
+				livros: Promise.resolve([]),
+				autores: Promise.resolve(AUTHORS),
+				autoresLivro: Promise.resolve([]),
+				isAdmin: false,
+			},
+			params: { id: '3' },
+		});
+
+		await vi.waitFor(() =>
+			expect(target.querySelector('[role="alert"]')?.textContent).toBe(
+				'Livro não encontrado. Ele pode ter sido excluído.',
+			),
+		);
+	});
+
+	it('tells that the authors to add could not be loaded', async () => {
+		const target = await renderComponent(Page, {
+			data: {
+				livros: Promise.resolve([]),
+				autores: Promise.reject(new Error('database offline')),
+				autoresLivro: Promise.resolve([]),
+				isAdmin: false,
+			},
+			params: { id: '3' },
+		});
+
+		await vi.waitFor(() =>
+			expect(target.querySelector('#autor option[disabled]')?.textContent).toBe(
+				'Não foi possível carregar os autores',
+			),
+		);
 	});
 });

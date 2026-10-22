@@ -56,7 +56,7 @@ describe('book keywords page', () => {
 	it('marks the keywords page of the book as the current breadcrumb', async () => {
 		const target = await renderKeywords(false);
 
-		const current = target.querySelector('nav[aria-label="breadcrumbs"] [aria-current="page"]');
+		const current = target.querySelector('nav[aria-label="Trilha de navegação"] [aria-current="page"]');
 
 		expect(current?.textContent).toBe('Palavras-Chave');
 		expect(current?.getAttribute('href')).toBe('/biblioteca/livros/3/keywords');
@@ -76,5 +76,67 @@ describe('book keywords page', () => {
 		await waitForKeywordRows(target);
 
 		expect(target.querySelector('tbody form')?.getAttribute('action')).toBe('?/excluir&keyword=4');
+	});
+
+	it('limits the reference to the size stored for the book keyword', async () => {
+		const target = await renderKeywords(false);
+
+		expect(target.querySelector('#referencia')?.getAttribute('maxlength')).toBe('100');
+	});
+
+	it('shows the server rejection next to the reference field', async () => {
+		const target = await renderComponent(Page, {
+			data: {
+				livros: Promise.resolve([BOOK]),
+				keywords: Promise.resolve(KEYWORDS),
+				keywordsLivro: Promise.resolve([]),
+				isAdmin: false,
+			},
+			form: { errors: { referencia: ['A referência deve ter até 100 caracteres.'] } },
+			params: { id: '3' },
+		});
+
+		const reference = target.querySelector('#referencia');
+
+		expect(reference?.getAttribute('aria-invalid')).toBe('true');
+		expect(target.querySelector('#referencia-errors')?.textContent).toContain(
+			'A referência deve ter até 100 caracteres.',
+		);
+	});
+
+	it('explains that the book no longer exists instead of failing', async () => {
+		const target = await renderComponent(Page, {
+			data: {
+				livros: Promise.resolve([]),
+				keywords: Promise.resolve(KEYWORDS),
+				keywordsLivro: Promise.resolve([]),
+				isAdmin: false,
+			},
+			params: { id: '3' },
+		});
+
+		await vi.waitFor(() =>
+			expect(target.querySelector('[role="alert"]')?.textContent).toBe(
+				'Livro não encontrado. Ele pode ter sido excluído.',
+			),
+		);
+	});
+
+	it('tells that the keywords to add could not be loaded', async () => {
+		const target = await renderComponent(Page, {
+			data: {
+				livros: Promise.resolve([BOOK]),
+				keywords: Promise.reject(new Error('database offline')),
+				keywordsLivro: Promise.resolve([]),
+				isAdmin: false,
+			},
+			params: { id: '3' },
+		});
+
+		await vi.waitFor(() =>
+			expect(target.querySelector('#keyword option[disabled]')?.textContent).toBe(
+				'Não foi possível carregar as palavras-chave',
+			),
+		);
 	});
 });

@@ -58,4 +58,15 @@ describe('loan edit page copies', () => {
 
 		expect([whileLoading, updateButton()]).toEqual(['true', 'false']);
 	});
+
+	it('tells that the copies could not be loaded', async () => {
+		const target = await renderComponent(Page, {
+			data: { ...data, exemplares: Promise.reject(new Error('database offline')) },
+			form: null,
+		});
+
+		await vi.waitFor(() => expect(target.querySelectorAll('#novoexemplar option')).toHaveLength(2));
+		const failure = target.querySelectorAll<HTMLOptionElement>('#novoexemplar option')[1];
+		expect([failure?.textContent, failure?.disabled]).toEqual(['Não foi possível carregar os exemplares', true]);
+	});
 });

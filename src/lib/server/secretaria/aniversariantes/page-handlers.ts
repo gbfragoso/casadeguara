@@ -30,7 +30,7 @@ const actions: Actions = {
 				.where(and(eq(cadastros.trab, true), mesFilter))
 				.orderBy(sql<number>`extract(day from cadastros.aniversario)`, cadastros.nome);
 
-			return { leitores };
+			return { leitores, mes };
 		} catch (err) {
 			console.error(err);
 			return error(500, 'Falha ao carregar a lista de leitores');

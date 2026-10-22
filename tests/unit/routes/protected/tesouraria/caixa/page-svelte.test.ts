@@ -40,11 +40,39 @@ describe('tesouraria cash page', () => {
 		expect(document.querySelector('tfoot')?.textContent).toMatch(/R\$\s50,50/);
 	});
 
-	it('shows a zero total and no rows when nothing awaits deposit', () => {
+	it('tells that nothing awaits deposit and offers no confirmation', () => {
 		const document = renderCash([]);
 
-		expect(document.querySelectorAll('tbody tr')).toHaveLength(0);
-		expect(document.querySelector('tfoot')?.textContent).toMatch(/R\$\s0,00/);
+		expect(document.querySelector('[role="status"]')?.textContent).toBe('Nenhuma entrada aguardando depósito.');
+		expect(document.querySelector('table')).toBeNull();
+		expect(document.querySelector('form')).toBeNull();
+	});
+
+	it('labels each pending entry checkbox with its receipt number', () => {
+		const document = renderCash([pendingEntry(12, '30.00', 'Mensalidade')]);
+
+		const checkbox = document.querySelector('tbody input[type="checkbox"]');
+
+		expect(checkbox?.getAttribute('aria-label')).toBe('Incluir recibo nº 12 no depósito');
+	});
+
+	it.each([
+		[
+			'the confirmed deposit',
+			{ status: 201, message: 'Depósito confirmado com sucesso.' },
+			'Depósito confirmado com sucesso.',
+		],
+		['a deposit conflict', { message: 'Lançamento já depositado.' }, 'Lançamento já depositado.'],
+		[
+			'an invalid selection',
+			{ values: { entradas: [] }, errors: { entradas: ['Seleção de lançamentos inválida.'] } },
+			'Seleção de lançamentos inválida.',
+		],
+	])('notifies %s', (_scenario, form, message) => {
+		const { body } = render(Page, { props: { data: { entradas: [] }, form } });
+		const document = parseRenderedBody(body);
+
+		expect(document.querySelector('[data-testid="regiao-notificacao"]')?.textContent?.trim()).toBe(message);
 	});
 
 	it('submits the confirmation by POST with an idle loading state', () => {

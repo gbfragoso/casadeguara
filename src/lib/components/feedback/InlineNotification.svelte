@@ -34,7 +34,7 @@
 <svelte:element
 	this={element}
 	{...rest}
-	class={['flex items-start gap-2 rounded-lg border p-4', TONES[kind], className]}>
+	class={['flex items-start gap-2 rounded-lg border p-4 wrap-anywhere', TONES[kind], className]}>
 	<i class={[ICONS[kind], 'fa-fw mt-1']} aria-hidden="true"></i>
 	{@render children()}
 </svelte:element>

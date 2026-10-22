@@ -37,7 +37,8 @@
 	const indexed = $derived(indexOptions(options));
 	const selected = $derived(options.find((option) => option.value === value));
 	const query = $derived(selected?.label ?? draft);
-	const suggestions = $derived(filterOptions(indexed, selected ? '' : query).slice(0, MAX_VISIBLE_SUGGESTIONS));
+	const matches = $derived(filterOptions(indexed, selected ? '' : query));
+	const suggestions = $derived(matches.slice(0, MAX_VISIBLE_SUGGESTIONS));
 	const activeOption = $derived(open ? suggestions[active] : undefined);
 	const listId = $derived(`${id}-options`);
 	const optionId = (option: AutocompleteOption) => `${id}-option-${option.value}`;
@@ -115,24 +116,29 @@
 	<input type="hidden" {name} value={selected?.value ?? ''} />
 	{#if open}
 		<div
-			class="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-md border border-divider bg-surface shadow-raised empty:hidden"
-			id={listId}
-			role="listbox"
-			aria-label={listLabel}>
-			{#each suggestions as option, index (option.value)}
-				<button
-					{@attach active === index && revealActiveOption}
-					id={optionId(option)}
-					type="button"
-					role="option"
-					tabindex="-1"
-					aria-selected={active === index}
-					class="block w-full cursor-pointer px-3 py-2 text-left text-ink hover:bg-surface-muted aria-selected:bg-surface-muted"
-					onpointerdown={(event) => event.preventDefault()}
-					onclick={() => select(option)}>
-					{option.label}
-				</button>
-			{/each}
+			class="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-divider bg-surface shadow-raised"
+			hidden={suggestions.length === 0}>
+			<div class="max-h-64 overflow-y-auto" id={listId} role="listbox" aria-label={listLabel}>
+				{#each suggestions as option, index (option.value)}
+					<button
+						{@attach active === index && revealActiveOption}
+						id={optionId(option)}
+						type="button"
+						role="option"
+						tabindex="-1"
+						aria-selected={active === index}
+						class="block w-full cursor-pointer px-3 py-2 text-left text-ink hover:bg-surface-muted aria-selected:bg-surface-muted"
+						onpointerdown={(event) => event.preventDefault()}
+						onclick={() => select(option)}>
+						{option.label}
+					</button>
+				{/each}
+			</div>
+			{#if matches.length > suggestions.length}
+				<p class="border-t border-divider px-3 py-2 text-sm text-ink-muted">
+					{`Mostrando ${suggestions.length} de ${matches.length} resultados. Continue digitando para refinar.`}
+				</p>
+			{/if}
 		</div>
 		{#if suggestions.length === 0}<p class="mt-1.5 text-sm text-ink-muted" role="status">{emptyMessage}</p>{/if}
 	{/if}

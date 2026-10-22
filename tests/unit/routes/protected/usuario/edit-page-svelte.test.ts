@@ -4,7 +4,7 @@ import Page from '../../../../../src/routes/(protected)/usuario/[id=alphanumeric
 import { describeUserFormPage, renderUserFormPage } from '../../../support/user-form-page-suite';
 import { getRenderedInput } from '../../../support/rendered-document';
 
-const data = { usuario: { name: 'Ana Souza' } };
+const data = { usuario: { id: 'ana-1', name: 'Ana Souza' } };
 
 describe('own user page', () => {
 	describeUserFormPage({
@@ -20,5 +20,19 @@ describe('own user page', () => {
 
 		expect(getRenderedInput(document, '#name').value).toBe('Ana Souza');
 		expect(getRenderedInput(document, '#password').value).toBe('');
+	});
+
+	it('links back to the module selection through the breadcrumb', () => {
+		const document = renderUserFormPage(Page, { data, form: null });
+
+		const trail = [...document.querySelectorAll('nav[aria-label="Trilha de navegação"] a')].map((link) => [
+			link.textContent?.trim(),
+			link.getAttribute('href'),
+		]);
+
+		expect(trail).toEqual([
+			['Módulos', '/sistemas'],
+			['Meu cadastro', '/usuario/ana-1'],
+		]);
 	});
 });

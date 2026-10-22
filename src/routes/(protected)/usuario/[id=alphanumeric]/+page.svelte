@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import Notification from '#lib/components/feedback/Notification.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
 	import Section from '#lib/components/layout/Section.svelte';
+	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
 	interface Props {
@@ -15,21 +17,38 @@
 	let { data, form }: Props = $props();
 	const formEnhancer = createFormEnhancer();
 	let { usuario } = $derived(data);
+	let breadcrumb = $derived([
+		{ label: 'Módulos', href: resolve('sistemas') },
+		{ label: 'Meu cadastro', href: resolve('/(protected)/usuario/[id=alphanumeric]', { id: usuario.id }) },
+	]);
 </script>
 
 <main>
-	<Section>
-		<h1 class="mb-6 text-2xl font-bold text-primary-ink tablet:text-3xl">Meu cadastro</h1>
+	<Section class="mx-auto max-w-2xl">
+		<PageHeader {breadcrumb}>Meu cadastro</PageHeader>
 
 		<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 			<Field id="name" label="Nome">
 				{#snippet control()}
-					<TextInput name="name" id="name" value={usuario.name} />
+					<TextInput
+						name="name"
+						id="name"
+						value={usuario.name}
+						maxlength={255}
+						autocomplete="name"
+						required />
 				{/snippet}
 			</Field>
-			<Field id="password" label="Nova senha">
-				{#snippet control()}
-					<TextInput type="password" name="password" id="password" />
+			<Field id="password" label="Nova senha" help="Mínimo de 6 caracteres.">
+				{#snippet control({ describedBy })}
+					<TextInput
+						type="password"
+						name="password"
+						id="password"
+						minlength={6}
+						autocomplete="new-password"
+						required
+						aria-describedby={describedBy} />
 				{/snippet}
 			</Field>
 			<div>

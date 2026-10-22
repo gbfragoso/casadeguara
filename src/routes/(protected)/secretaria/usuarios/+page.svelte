@@ -3,8 +3,8 @@
 	import Button from '#lib/components/actions/Button.svelte';
 	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
 	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import AsyncTableRows from '#lib/components/data/AsyncTableRows.svelte';
 	import DataTable from '#lib/components/data/DataTable.svelte';
-	import SkeletonLines from '#lib/components/feedback/SkeletonLines.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
@@ -22,7 +22,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-user-plus">Consulta de usuários</PageHeader>
+<PageHeader {breadcrumb}>Consulta de usuários</PageHeader>
 
 <Card element="form" action="/secretaria/usuarios" method="GET">
 	<Field id="nome" label="Nome do usuário">
@@ -34,7 +34,7 @@
 		<Button type="submit" tone="primary" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('secretaria/usuarios/novo')} tone="warning" bold class="tablet:min-w-40">
+		<Button href={resolve('secretaria/usuarios/novo')} tone="default" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>
@@ -48,23 +48,22 @@
 				<th class="print:hidden">Ações</th>
 			</tr>
 		{/snippet}
-		{#await usuarios}
-			<tr>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-			</tr>
-		{:then item}
-			{#each item as usuario (usuario.id)}
+		<AsyncTableRows
+			rows={usuarios}
+			columns={2}
+			emptyMessage="Nenhum usuário encontrado."
+			errorMessage="Não foi possível carregar os usuários.">
+			{#snippet row(usuario)}
 				<tr>
 					<td>{usuario.name}</td>
 					<td class="print:hidden">
 						<IconAction
 							icon="fa-regular fa-pen-to-square"
-							aria-label="editar"
+							aria-label={`Editar usuário ${usuario.name}`}
 							href={resolve('/(protected)/secretaria/usuarios/[id=alphanumeric]', { id: usuario.id })} />
 					</td>
 				</tr>
-			{/each}
-		{/await}
+			{/snippet}
+		</AsyncTableRows>
 	</DataTable>
 </Card>

@@ -4,7 +4,7 @@ import { expect, test } from './fixtures';
 import { holdAttendanceLock } from './support/attendance-lock';
 import { readBox } from './support/geometry';
 
-const INDICATOR_LABELS = ['Trabalhadores', /Frequência no mês \d{2}\/\d{4}/];
+const INDICATOR_LABELS = ['Trabalhadores', /Frequência em [a-zç]+ de \d{4}/];
 const BOX_TOLERANCE = 1;
 
 type Box = Awaited<ReturnType<typeof readBox>>;

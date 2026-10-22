@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+import { tick } from 'svelte';
 import { describe, expect, it, vi } from 'vitest';
 
 const pageState = vi.hoisted(() => ({ url: new URL('http://localhost/tesouraria') }));
@@ -38,7 +39,7 @@ const ITEMS: readonly ModuleMenuItem[] = [
 
 const renderSidebar = (pathname: string, isAdmin: boolean) => {
 	pageState.url = new URL(`http://localhost${pathname}`);
-	return renderComponent(ModuleSidebar, { items: ITEMS, isAdmin, expanded: false });
+	return renderComponent(ModuleSidebar, { items: ITEMS, moduleName: 'Tesouraria', isAdmin, expanded: false });
 };
 
 const readLinks = (target: HTMLElement) =>
@@ -50,6 +51,14 @@ const readLinks = (target: HTMLElement) =>
 	}));
 
 describe('ModuleSidebar', () => {
+	it('names the Casa and the current module above the menu', async () => {
+		const target = await renderSidebar('/tesouraria', false);
+
+		const identity = getElement(target, '[data-testid="regiao-menu-lateral"] p', HTMLParagraphElement);
+
+		expect([...identity.children].map((line) => line.textContent.trim())).toEqual(['Casa de Guará', 'Tesouraria']);
+	});
+
 	it('marks only the link that matches the current path', async () => {
 		const target = await renderSidebar('/tesouraria/lancamentos/12/estorno', true);
 
@@ -84,5 +93,27 @@ describe('ModuleSidebar', () => {
 		const icons = [...target.querySelectorAll('nav i')];
 
 		expect(icons.map((icon) => icon.getAttribute('aria-hidden'))).toEqual(['true', 'true', 'true']);
+	});
+
+	it('requests to close the expanded drawer when the backdrop is tapped', async () => {
+		const onClose = vi.fn();
+		const target = await renderComponent(ModuleSidebar, {
+			items: ITEMS,
+			moduleName: 'Tesouraria',
+			isAdmin: false,
+			expanded: true,
+			onClose,
+		});
+
+		getElement(target, '[data-testid="fundo-menu-lateral"]', HTMLDivElement).click();
+		await tick();
+
+		expect(onClose).toHaveBeenCalledOnce();
+	});
+
+	it('shows no backdrop while the drawer is collapsed', async () => {
+		const target = await renderSidebar('/tesouraria', false);
+
+		expect(target.querySelector('[data-testid="fundo-menu-lateral"]')).toBeNull();
 	});
 });

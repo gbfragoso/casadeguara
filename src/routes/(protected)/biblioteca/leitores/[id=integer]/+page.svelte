@@ -11,7 +11,7 @@
 	import Card from '#lib/components/layout/Card.svelte';
 	import Column from '#lib/components/layout/Column.svelte';
 	import Columns from '#lib/components/layout/Columns.svelte';
-	import type { ColumnSize } from '#lib/components/layout/column-sizes.js';
+	import { FIELD_WIDTHS, type FieldWidth } from '#lib/components/layout/field-widths.js';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import type { ActionData, PageServerData } from './$types';
@@ -28,7 +28,7 @@
 		label: string;
 		maxlength: number;
 		type?: 'email';
-		size?: ColumnSize;
+		width?: FieldWidth;
 	};
 	type IdentifierField = { name: 'rg' | 'cpf'; label: string; maxlength: number; registered: string };
 	type RemovalField = { name: 'removeRg' | 'removeCpf'; label: string };
@@ -71,7 +71,7 @@
 			{ name: 'telefone', label: 'WhatsApp', maxlength: 15, inputmode: 'tel', autocomplete: 'tel-national' },
 		],
 		[
-			{ name: 'logradouro', label: 'Logradouro', maxlength: 80, autocomplete: 'street-address', size: 'half' },
+			{ name: 'logradouro', label: 'Logradouro', maxlength: 80, autocomplete: 'street-address', width: 'medium' },
 			{ name: 'bairro', label: 'Bairro', maxlength: 30, autocomplete: 'address-level3' },
 			{ name: 'complemento', label: 'Complemento', maxlength: 100, autocomplete: 'address-line2' },
 			{ name: 'cidade', label: 'Cidade', maxlength: 100, autocomplete: 'address-level2' },
@@ -82,11 +82,11 @@
 		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-book-open-reader">Atualizar dados do leitor</PageHeader>
+<PageHeader {breadcrumb}>Atualizar dados do leitor</PageHeader>
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
-	<Columns>
-		<Column size="three-fifths">
+	<Columns class="flex-wrap">
+		<Column class={FIELD_WIDTHS.wide}>
 			<Field id="nome" label="Nome">
 				{#snippet control()}
 					<TextInput
@@ -102,7 +102,7 @@
 			</Field>
 		</Column>
 		{#each identifierFields as [identifier, removal] (identifier.name)}
-			<Column class="flex flex-col gap-2">
+			<Column class={[FIELD_WIDTHS.regular, 'flex flex-col gap-2']}>
 				<Field id={identifier.name} label={identifier.label} help={identifier.registered}>
 					{#snippet control()}
 						<TextInput
@@ -126,9 +126,9 @@
 		{/each}
 	</Columns>
 	{#each contactRows as row, index (index)}
-		<Columns>
+		<Columns class="flex-wrap">
 			{#each row as field (field.name)}
-				<Column size={field.size}>
+				<Column class={FIELD_WIDTHS[field.width ?? 'narrow']}>
 					<Field id={field.name} label={field.label}>
 						{#snippet control()}
 							<TextInput

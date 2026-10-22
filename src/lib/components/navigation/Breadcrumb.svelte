@@ -11,8 +11,8 @@
 	let { items, class: className, ...rest }: Props = $props();
 </script>
 
-<nav {...rest} aria-label="breadcrumbs" class={['print:hidden', className]}>
-	<ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+<nav {...rest} aria-label="Trilha de navegação" class={['print:hidden', className]}>
+	<ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm wrap-anywhere">
 		{#each items as item, index (item.label)}
 			{@const current = index === items.length - 1}
 			<li class="flex items-center gap-2">

@@ -12,6 +12,6 @@
 </script>
 
 <label for={rest.id} class={[CHOICE_LABEL_CLASSES, className]}>
-	<input {...rest} type="radio" class="size-5" />
+	<input {...rest} type="radio" class="size-5 shrink-0" />
 	{@render children()}
 </label>

@@ -130,4 +130,28 @@ describe('Autocomplete selection', () => {
 		expect(input.getAttribute('aria-invalid')).toBe('true');
 		expect(input.getAttribute('aria-describedby')).toBe('cadastro-errors');
 	});
+
+	it('tells how many matches are hidden beyond the visible suggestions', async () => {
+		const options = Array.from({ length: 75 }, (_, index) => ({
+			value: String(index),
+			label: `Cadastro ${index}`,
+		}));
+		const { input } = await renderAutocomplete({ options });
+
+		input.focus();
+		await tick();
+
+		expect(document.querySelector('[role="listbox"] + p')?.textContent?.trim()).toBe(
+			'Mostrando 50 de 75 resultados. Continue digitando para refinar.',
+		);
+	});
+
+	it('shows no hint when every match fits in the suggestions', async () => {
+		const { input } = await renderAutocomplete();
+
+		input.focus();
+		await tick();
+
+		expect(document.querySelector('[role="listbox"] + p')).toBeNull();
+	});
 });

@@ -13,7 +13,9 @@ describe('login page', () => {
 	it('renders the logo and the sign-in button without the module shell', () => {
 		const document = renderLogin();
 
-		expect(document.querySelector('img[alt="Avatar"]')?.getAttribute('src')).toBe('/logo.png');
+		expect(document.querySelector('img[alt="Grupo Espírita Casa de Guará"]')?.getAttribute('src')).toBe(
+			'/logo.png',
+		);
 		expect(getRenderedButton(document, 'form[method="POST"] button').textContent?.trim()).toBe('Entrar');
 		expect(hasModuleShell(document)).toBe(false);
 	});

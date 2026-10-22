@@ -4,8 +4,7 @@
 	import Indicator from '#lib/components/data/Indicator.svelte';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { moeda } from '#lib/utils/currency.js';
-	import dayjs from 'dayjs';
-	import utc from 'dayjs/plugin/utc';
+	import { formatMonthYear } from '#lib/utils/date.js';
 
 	import type { PageServerData } from './$types';
 	interface Props {
@@ -19,40 +18,42 @@
 		{ label: 'Tesouraria', href: resolve('tesouraria') },
 		{ label: 'Página Inicial', href: resolve('tesouraria') },
 	];
-	dayjs.extend(utc);
 
 	const calculateBalance = (received: string | number, expenses: string | number) =>
 		Number(received) - Number(expenses);
+
+	const balanceTone = (balance: number) => {
+		if (balance < 0) return 'danger';
+		return balance > 0 ? 'success' : 'default';
+	};
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-house">
-	Balanço do mês {dayjs.utc(new Date()).format('MM/YYYY')}
-</PageHeader>
+<PageHeader {breadcrumb}>Balanço de {formatMonthYear(new Date())}</PageHeader>
 
-<div data-testid="indicadores" class="mb-8 grid gap-4 tablet:grid-cols-3 desktop:grid-cols-5">
+<div data-testid="indicadores" class="mb-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,11.5rem),1fr))] gap-4">
 	{#await entradaMesAtual}
-		<Indicator label="Doações" icon="fa-solid fa-calculator" loading />
-		<Indicator label="Valor médio" icon="fa-solid fa-wave-square" loading />
-		<Indicator label="Valor recebido" icon="fa-solid fa-hand-holding-dollar" highlight loading />
-		<Indicator label="Despesas" icon="fa-solid fa-money-bill-transfer" loading />
-		<Indicator label="Saldo" icon="fa-solid fa-sack-dollar" loading />
+		<Indicator label="Valor recebido" highlight loading />
+		<Indicator label="Despesas" loading />
+		<Indicator label="Saldo" loading />
+		<Indicator label="Total de doações" loading />
+		<Indicator label="Valor médio" loading />
 	{:then entrada}
 		{#await saidaMesAtual then saida}
 			{@const balance = calculateBalance(entrada[0].value, saida[0].value)}
-			<Indicator label="Total de doações" icon="fa-solid fa-calculator">
-				{#snippet value()}{entrada[0].count}{/snippet}
-			</Indicator>
-			<Indicator label="Valor médio" icon="fa-solid fa-wave-square">
-				{#snippet value()}{moeda(Number(entrada[0].median))}{/snippet}
-			</Indicator>
-			<Indicator label="Valor recebido" icon="fa-solid fa-hand-holding-dollar" highlight>
+			<Indicator label="Valor recebido" highlight>
 				{#snippet value()}{moeda(Number(entrada[0].value))}{/snippet}
 			</Indicator>
-			<Indicator label="Despesas" icon="fa-solid fa-money-bill-transfer" valueTone="danger">
+			<Indicator label="Despesas" valueTone="danger">
 				{#snippet value()}{moeda(Number(saida[0].value))}{/snippet}
 			</Indicator>
-			<Indicator label="Saldo" icon="fa-solid fa-sack-dollar" valueTone={balance >= 1 ? 'success' : 'danger'}>
+			<Indicator label="Saldo" valueTone={balanceTone(balance)}>
 				{#snippet value()}{moeda(balance)}{/snippet}
+			</Indicator>
+			<Indicator label="Total de doações">
+				{#snippet value()}{entrada[0].count}{/snippet}
+			</Indicator>
+			<Indicator label="Valor médio">
+				{#snippet value()}{moeda(Number(entrada[0].median))}{/snippet}
 			</Indicator>
 		{/await}
 	{/await}

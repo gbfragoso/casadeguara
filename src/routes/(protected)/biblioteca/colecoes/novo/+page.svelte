@@ -21,7 +21,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-layer-group">Cadastrar coleção</PageHeader>
+<PageHeader {breadcrumb}>Cadastrar coleção</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome" errors={form?.errors?.nome}>

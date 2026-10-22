@@ -68,6 +68,7 @@
 		SIZES[size],
 		fullwidth ? 'w-full' : 'w-full tablet:w-auto',
 		bold ? 'font-bold' : 'font-medium',
+		tone !== 'link' && 'hover:no-underline',
 		rounded && 'rounded-full',
 		className,
 	]);

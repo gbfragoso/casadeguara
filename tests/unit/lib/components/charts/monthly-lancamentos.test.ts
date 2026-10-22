@@ -23,7 +23,6 @@ describe('MonthlyLancamentos', () => {
 		expect(document.querySelector('h2')?.textContent).toContain('últimos 12 meses');
 		expect(document.querySelector('[data-testid="legenda-grafico"]')?.textContent).toContain('Entradas');
 		expect(document.querySelector('[data-testid="legenda-grafico"]')?.textContent).toContain('Saídas');
-		expect(document.querySelector('canvas')?.getAttribute('aria-hidden')).toBe('true');
 		expect(document.querySelector('details')).toBeNull();
 		expect(document.querySelector('[aria-live]')).toBeNull();
 		expect(document.querySelector('table')).toBeNull();

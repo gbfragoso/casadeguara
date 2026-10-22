@@ -18,22 +18,31 @@ describe('module selection page', () => {
 		const links = readModuleLinks(['tesouraria', 'biblioteca', 'secretaria']);
 
 		expect(links).toEqual([
-			['biblioteca', '/biblioteca'],
-			['secretaria', '/secretaria'],
-			['tesouraria', '/tesouraria'],
+			['Biblioteca', '/biblioteca'],
+			['Secretaria', '/secretaria'],
+			['Tesouraria', '/tesouraria'],
 		]);
 	});
 
 	it('treats an administrative role as access to its module', () => {
 		const links = readModuleLinks(['tesouraria:admin']);
 
-		expect(links).toEqual([['tesouraria', '/tesouraria']]);
+		expect(links).toEqual([['Tesouraria', '/tesouraria']]);
 	});
 
 	it('renders the heading without the module shell', () => {
 		const document = renderModules(['biblioteca']);
 
-		expect(document.querySelector('main p')?.textContent).toBe('Selecione o módulo');
+		expect(document.querySelector('main h1')?.textContent).toBe('Selecione o módulo');
 		expect(hasModuleShell(document)).toBe(false);
+	});
+
+	it('explains how to get access when the user has no module', () => {
+		const document = renderModules([]);
+
+		expect(document.querySelector('main a')).toBeNull();
+		expect(document.querySelector('[role="status"]')?.textContent?.trim()).toBe(
+			'Seu usuário ainda não tem acesso a nenhum módulo. Peça à coordenação do seu setor para liberar o acesso.',
+		);
 	});
 });

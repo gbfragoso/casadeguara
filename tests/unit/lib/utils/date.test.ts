@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { addCivilDays, formatCivilDate, readBahiaCivilDate } from '#lib/utils/date.js';
+import { addCivilDays, formatCivilDate, formatMonthYear, readBahiaCivilDate } from '#lib/utils/date.js';
 
 const originalTimeZone = process.env.TZ;
 
@@ -23,6 +23,18 @@ describe('formatCivilDate', () => {
 
 	it('preserves an unexpected representation', () => {
 		expect(formatCivilDate('2026/09/02')).toBe('2026/09/02');
+	});
+});
+
+describe('formatMonthYear', () => {
+	it('writes the month name and the year in Portuguese', () => {
+		expect(formatMonthYear(new Date('2026-10-22T12:00:00Z'))).toBe('outubro de 2026');
+	});
+
+	it.each(['UTC', 'America/Sao_Paulo', 'Pacific/Auckland'])('keeps the UTC month in %s', (timeZone) => {
+		process.env.TZ = timeZone;
+
+		expect(formatMonthYear(new Date('2026-11-01T01:00:00Z'))).toBe('novembro de 2026');
 	});
 });
 

@@ -13,14 +13,18 @@ describe('PageHeader', () => {
 	it('renders the breadcrumb with the current page and the title heading', async () => {
 		const target = await renderComponent(PageHeader, {
 			breadcrumb: BREADCRUMB,
-			children: htmlSnippet('<span>Balanço do mês 10/2026</span>'),
+			children: htmlSnippet('<span>Balanço de outubro de 2026</span>'),
 		});
 
-		const current = getElement(target, 'nav[aria-label="breadcrumbs"] [aria-current="page"]', HTMLAnchorElement);
+		const current = getElement(
+			target,
+			'nav[aria-label="Trilha de navegação"] [aria-current="page"]',
+			HTMLAnchorElement,
+		);
 		const heading = getElement(target, 'h1', HTMLHeadingElement);
 
 		expect(current.textContent).toBe('Página Inicial');
-		expect(heading.textContent.trim()).toBe('Balanço do mês 10/2026');
+		expect(heading.textContent.trim()).toBe('Balanço de outubro de 2026');
 	});
 
 	it('keeps the header printable by default', async () => {
@@ -40,18 +44,5 @@ describe('PageHeader', () => {
 		});
 
 		expect(getElement(target, 'header', HTMLElement).dataset.print).toBe('hidden');
-	});
-
-	it('renders the optional icon hidden from assistive technology without changing the title', async () => {
-		const target = await renderComponent(PageHeader, {
-			breadcrumb: BREADCRUMB,
-			icon: 'fa-solid fa-house',
-			children: htmlSnippet('<span>Página Inicial</span>'),
-		});
-
-		const heading = getElement(target, 'h1', HTMLHeadingElement);
-
-		expect(heading.querySelector('[aria-hidden="true"] i')).not.toBeNull();
-		expect(heading.textContent.trim()).toBe('Página Inicial');
 	});
 });

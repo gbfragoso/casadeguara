@@ -70,7 +70,11 @@ describe('book copies page', () => {
 
 		const rows = await readRows(target);
 
-		expect(rows.map(({ actions }) => actions)).toEqual([['Arquivar', 'trash'], ['Disponibilizar', 'trash'], []]);
+		expect(rows.map(({ actions }) => actions)).toEqual([
+			['Arquivar exemplar 1', 'Excluir exemplar 1'],
+			['Disponibilizar exemplar 2', 'Excluir exemplar 2'],
+			[],
+		]);
 	});
 
 	it('pairs the labelled copy number field with the add button', async () => {
@@ -89,5 +93,39 @@ describe('book copies page', () => {
 		const target = await renderCopies(false, { status });
 
 		expect(target.querySelector('form')?.textContent).toContain(message);
+	});
+
+	it('tells that the book has no copies yet', async () => {
+		const target = await renderComponent(Page, {
+			data: { livros: Promise.resolve([BOOK]), exemplares: Promise.resolve([]), isAdmin: true },
+			form: null,
+			params: { id: '3' },
+		});
+
+		await vi.waitFor(() =>
+			expect(target.querySelector('tbody td')?.textContent?.trim()).toBe('Nenhum exemplar cadastrado.'),
+		);
+	});
+
+	it('explains that the book no longer exists instead of failing', async () => {
+		const target = await renderComponent(Page, {
+			data: { livros: Promise.resolve([]), exemplares: Promise.resolve([]), isAdmin: false },
+			form: null,
+			params: { id: '3' },
+		});
+
+		await vi.waitFor(() =>
+			expect(target.querySelector('[role="alert"]')?.textContent).toBe(
+				'Livro não encontrado. Ele pode ter sido excluído.',
+			),
+		);
+	});
+
+	it('requires a positive copy number', async () => {
+		const target = await renderCopies(false);
+
+		const numero = target.querySelector<HTMLInputElement>('#numero');
+
+		expect([numero?.required, numero?.min]).toEqual([true, '1']);
 	});
 });

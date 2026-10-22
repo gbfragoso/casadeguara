@@ -33,13 +33,15 @@ describe('secretaria user list page', () => {
 
 		await vi.waitFor(() => expect(target.querySelector('tbody td')?.textContent).toBe('Helena Secretária'));
 
-		const edit = target.querySelector('tbody a[aria-label="editar"]');
+		const edit = target.querySelector('tbody a[aria-label="Editar usuário Helena Secretária"]');
 		expect(edit?.getAttribute('href')).toBe('/secretaria/usuarios/abc123');
 	});
 
-	it('shows no rows when no user matches the search', async () => {
+	it('tells that no user matches the search', async () => {
 		const target = await renderUsers(Promise.resolve([]));
 
-		await vi.waitFor(() => expect(target.querySelectorAll('tbody tr')).toHaveLength(0));
+		await vi.waitFor(() =>
+			expect(target.querySelector('tbody td')?.textContent?.trim()).toBe('Nenhum usuário encontrado.'),
+		);
 	});
 });

@@ -23,7 +23,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-landmark-flag">Atualizar editora</PageHeader>
+<PageHeader {breadcrumb}>Atualizar editora</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome" errors={form?.errors?.nome}>

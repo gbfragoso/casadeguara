@@ -14,17 +14,18 @@
 	--color-white: #ffffff;
 	--color-black: #000000;
 
-	--color-primary: #017fc0;
-	--color-primary-50: #edf9ff;
-	--color-primary-100: #d6f1ff;
-	--color-primary-200: #a9e1ff;
-	--color-primary-300: #62c9fe;
-	--color-primary-400: #10adfe;
-	--color-primary-600: #01689d;
-	--color-primary-700: #01547f;
-	--color-primary-800: #004060;
-	--color-primary-900: #002c42;
-	--color-primary-950: #001d2b;
+	--color-primary: #006ca5;
+	--color-primary-50: #f0f8fe;
+	--color-primary-100: #ddf0fe;
+	--color-primary-200: #bae0fe;
+	--color-primary-300: #7ec6fc;
+	--color-primary-400: #43a7eb;
+	--color-primary-500: #0288cd;
+	--color-primary-600: var(--color-primary);
+	--color-primary-700: #015886;
+	--color-primary-800: #014469;
+	--color-primary-900: #012e4a;
+	--color-primary-950: #001d30;
 
 	--color-accent: #ffb70f;
 	--color-accent-50: #fff9eb;
@@ -57,6 +58,7 @@
 	--color-danger: #c52633;
 	--color-danger-50: #fdedee;
 	--color-danger-300: #f9868f;
+	--color-danger-400: #e2484c;
 	--color-danger-700: #a01c27;
 	--color-info: var(--color-primary-600);
 	--color-warning: var(--color-accent);
@@ -72,10 +74,10 @@
 	--color-divider: var(--color-neutral-200);
 	--color-focus: var(--color-primary-600);
 
-	--color-primary-ink: var(--color-primary-700);
+	--color-primary-ink: var(--color-primary);
 	--color-success-ink: var(--color-success-700);
 	--color-danger-ink: var(--color-danger-700);
-	--color-info-ink: var(--color-primary-700);
+	--color-info-ink: var(--color-primary);
 	--color-warning-ink: var(--color-accent-800);
 	--color-primary-soft: var(--color-primary-100);
 	--color-success-soft: var(--color-success-50);
@@ -88,32 +90,34 @@
 	--color-on-danger: var(--color-white);
 	--color-on-info: var(--color-white);
 	--color-on-warning: var(--color-neutral-900);
+	--color-highlight: var(--color-primary);
 	--color-on-highlight: var(--color-white);
 
-	--color-sidebar: var(--color-white);
-	--color-sidebar-ink: var(--color-neutral-700);
-	--color-sidebar-hover: var(--color-neutral-100);
-	--color-sidebar-hover-ink: var(--color-neutral-900);
-	--color-sidebar-active: var(--color-primary-100);
-	--color-sidebar-active-ink: var(--color-primary-800);
-	--color-sidebar-active-icon: var(--color-primary);
-	--color-sidebar-marker: var(--color-accent);
+	--color-sidebar: var(--color-primary);
+	--color-sidebar-ink: var(--color-white);
+	--color-sidebar-icon: var(--color-primary-100);
+	--color-sidebar-divider: color-mix(in srgb, var(--color-white) 25%, transparent);
+	--color-sidebar-focus: var(--color-white);
+	--color-sidebar-hover: var(--color-primary-700);
+	--color-sidebar-hover-ink: var(--color-white);
+	--color-sidebar-active: var(--color-accent);
+	--color-sidebar-active-ink: var(--color-neutral-900);
+	--color-sidebar-active-icon: var(--color-neutral-900);
 
 	--color-topbar: var(--color-neutral-50);
 	--color-overlay: var(--color-neutral-950);
-	--color-chart-surface: var(--color-white);
-	--color-chart-ink: var(--color-neutral-800);
-
-	--gradient-highlight: linear-gradient(135deg, var(--color-primary-800) 0%, var(--color-primary-600) 100%);
+	--color-chart-entry: var(--color-primary);
+	--color-chart-exit: var(--color-danger);
+	--color-chart-axis: var(--color-ink-muted);
 
 	--font-*: initial;
 	--font-sans: 'Roboto', sans-serif;
 
 	--text-*: initial;
-	--text-xs: 0.75rem;
-	--text-xs--line-height: 1rem;
-	--text-sm: 0.875rem;
-	--text-sm--line-height: 1.25rem;
+	--text-xs: 0.8125rem;
+	--text-xs--line-height: 1.125rem;
+	--text-sm: 0.9375rem;
+	--text-sm--line-height: 1.375rem;
 	--text-base: 1rem;
 	--text-base--line-height: 1.5rem;
 	--text-lg: 1.125rem;
@@ -142,7 +146,6 @@
 	--shadow-*: initial;
 	--shadow-card: 0 1px 2px 0 color-mix(in srgb, var(--color-neutral-950) 6%, transparent);
 	--shadow-raised: 0 8px 24px -6px color-mix(in srgb, var(--color-neutral-950) 22%, transparent);
-	--shadow-highlight: 0 10px 24px -10px color-mix(in srgb, var(--color-primary-800) 70%, transparent);
 	--inset-shadow-*: initial;
 	--drop-shadow-*: initial;
 	--text-shadow-*: initial;
@@ -202,17 +205,9 @@
 			--color-danger-soft: var(--color-neutral-800);
 			--color-warning-soft: var(--color-neutral-800);
 
-			--color-sidebar: var(--color-neutral-950);
-			--color-sidebar-ink: var(--color-neutral-300);
-			--color-sidebar-hover: var(--color-neutral-850);
-			--color-sidebar-hover-ink: var(--color-neutral-50);
-			--color-sidebar-active: var(--color-primary-800);
-			--color-sidebar-active-ink: var(--color-white);
-			--color-sidebar-active-icon: var(--color-primary-300);
-
 			--color-topbar: var(--color-neutral-900);
-			--color-chart-surface: var(--color-neutral-100);
-			--color-chart-ink: var(--color-neutral-900);
+			--color-chart-entry: var(--color-primary-500);
+			--color-chart-exit: var(--color-danger-400);
 		}
 	}
 }

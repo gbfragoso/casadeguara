@@ -32,6 +32,16 @@ export const describeUserFormPage = ({ page, data, fields, successStatus, succes
 		expect(document.querySelector(NOTIFICATION)).toBeNull();
 	});
 
+	it('asks for a new password of at least six characters without autofilling a saved one', () => {
+		const password = renderUserFormPage(page, { data, form: null }).querySelector('#password');
+
+		expect([
+			password?.getAttribute('minlength'),
+			password?.hasAttribute('required'),
+			password?.getAttribute('autocomplete'),
+		]).toEqual(['6', true, 'new-password']);
+	});
+
 	it('notifies the successful submission', () => {
 		const notifications = readNotifications(page, { data, form: { status: successStatus } });
 

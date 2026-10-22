@@ -1,28 +1,19 @@
 import { describe, expect, it } from 'vitest';
 
 import { contrastRatio } from '../../../support/contrast';
-import {
-	listReferencedTokens,
-	measureHueDistance,
-	readThemeTokens,
-	resolveColor,
-	resolveToken,
-	type TokenMap,
-} from './support/theme-tokens';
+import { measureHueDistance, readThemeTokens, resolveColor, resolveToken, type TokenMap } from './support/theme-tokens';
 
 const INSTITUTIONAL_COLORS = [
-	{ token: '--color-primary', value: '#017fc0' },
+	{ token: '--color-primary', value: '#006ca5' },
 	{ token: '--color-accent', value: '#ffb70f' },
 ];
 const TONE_FAMILIES = [
-	{ pattern: /^--color-primary-\d+$/, base: '#017fc0' },
+	{ pattern: /^--color-primary-\d+$/, base: '#006ca5' },
 	{ pattern: /^--color-accent-\d+$/, base: '#ffb70f' },
 ];
 const TONE_HUE_TOLERANCE_DEGREES = 10;
-const GRADIENT_STOP = /^--color-(?:primary|accent)(?:-\d+)?$/;
 const TEXT_CONTRAST_RATIO = 4.5;
 const NON_TEXT_CONTRAST_RATIO = 3;
-const FIXED_CHART_COLORS = ['#007a3d', '#b42318'];
 
 const TEXT_ROLES = [
 	'ink',
@@ -53,15 +44,19 @@ const TEXT_PAIRS = [
 	['danger-ink', 'danger-soft'],
 	['warning-ink', 'warning-soft'],
 	['primary-ink', 'surface-hover'],
-	['chart-ink', 'chart-surface'],
+	['chart-axis', 'surface'],
+	['on-highlight', 'highlight'],
 ];
 const NON_TEXT_PAIRS = [
 	['focus', 'page'],
 	['focus', 'surface'],
-	['focus', 'sidebar'],
+	['sidebar-focus', 'sidebar'],
+	['sidebar-icon', 'sidebar'],
 	['line', 'surface'],
 	['line', 'page'],
 	['sidebar-active-icon', 'sidebar-active'],
+	['chart-entry', 'surface'],
+	['chart-exit', 'surface'],
 ];
 
 const themes = readThemeTokens();
@@ -69,8 +64,6 @@ const THEMES = [
 	{ theme: 'claro', tokens: themes.light },
 	{ theme: 'escuro', tokens: themes.dark },
 ];
-
-const listGradients = (tokens: TokenMap) => Object.entries(tokens).filter(([name]) => name.startsWith('--gradient-'));
 
 const findWeakPairs = (tokens: TokenMap, pairs: string[][], minimumRatio: number) =>
 	pairs
@@ -88,17 +81,6 @@ describe('theme tokens', () => {
 
 		expect(lightValue).toBe(value);
 		expect(darkOverrides).not.toHaveProperty(token);
-	});
-
-	it('composes every gradient only from primary and accent tones', () => {
-		const gradients = listGradients(themes.light);
-
-		const foreignStops = gradients.flatMap(([, value]) =>
-			listReferencedTokens(value).filter((stop) => !GRADIENT_STOP.test(stop)),
-		);
-
-		expect(gradients.length).toBeGreaterThan(0);
-		expect(foreignStops).toEqual([]);
 	});
 
 	it('keeps every primary and accent tone within the hue tolerance of its base color', () => {
@@ -122,31 +104,12 @@ describe('theme tokens', () => {
 		expect(weakPairs).toEqual([]);
 	});
 
-	it.each(THEMES)('keeps focus, field borders and active icons visible in the $theme theme', ({ tokens }) => {
-		const weakPairs = findWeakPairs(tokens, NON_TEXT_PAIRS, NON_TEXT_CONTRAST_RATIO);
+	it.each(THEMES)(
+		'keeps focus, field borders, active icons and chart lines visible in the $theme theme',
+		({ tokens }) => {
+			const weakPairs = findWeakPairs(tokens, NON_TEXT_PAIRS, NON_TEXT_CONTRAST_RATIO);
 
-		expect(weakPairs).toEqual([]);
-	});
-
-	it.each(THEMES)('keeps highlight text legible over every gradient stop in the $theme theme', ({ tokens }) => {
-		const stops = listGradients(tokens).flatMap(([, value]) => listReferencedTokens(value));
-
-		const weakStops = stops.filter(
-			(stop) =>
-				contrastRatio(resolveColor(tokens, 'on-highlight'), resolveToken(tokens, stop)) < TEXT_CONTRAST_RATIO,
-		);
-
-		expect(stops.length).toBeGreaterThan(0);
-		expect(weakStops).toEqual([]);
-	});
-
-	it.each(THEMES)('keeps the fixed chart colors legible on the chart surface in the $theme theme', ({ tokens }) => {
-		const chartSurface = resolveColor(tokens, 'chart-surface');
-
-		const weakColors = FIXED_CHART_COLORS.filter(
-			(chartColor) => contrastRatio(chartColor, chartSurface) < TEXT_CONTRAST_RATIO,
-		);
-
-		expect(weakColors).toEqual([]);
-	});
+			expect(weakPairs).toEqual([]);
+		},
+	);
 });

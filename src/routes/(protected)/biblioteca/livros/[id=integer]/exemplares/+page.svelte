@@ -2,8 +2,8 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import IconAction from '#lib/components/actions/IconAction.svelte';
+	import AsyncTableRows from '#lib/components/data/AsyncTableRows.svelte';
 	import DataTable from '#lib/components/data/DataTable.svelte';
-	import SkeletonLines from '#lib/components/feedback/SkeletonLines.svelte';
 	import Tag from '#lib/components/feedback/Tag.svelte';
 	import type { Tone } from '#lib/components/feedback/tone.js';
 	import Field from '#lib/components/forms/Field.svelte';
@@ -39,7 +39,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-book">Consulta de exemplares</PageHeader>
+<PageHeader {breadcrumb}>Consulta de exemplares</PageHeader>
 
 <Card
 	element="form"
@@ -49,35 +49,41 @@
 	{@attach formEnhancer.submitWithLoading}>
 	<Columns>
 		{#await livros then livro}
-			<Column size={2}>
-				<Field id="tombo" label="Tombo">
-					{#snippet control()}
-						<TextInput type="number" name="tombo" id="tombo" value={livro[0].tombo} disabled />
-					{/snippet}
-				</Field>
-			</Column>
-			<Column>
-				<Field id="titulo" label="Título">
-					{#snippet control()}
-						<TextInput type="text" name="titulo" id="titulo" value={livro[0].titulo} disabled />
-					{/snippet}
-				</Field>
-			</Column>
+			{#if livro.length === 0}
+				<p role="alert" class="text-danger-ink">Livro não encontrado. Ele pode ter sido excluído.</p>
+			{:else}
+				<Column size={2}>
+					<Field id="tombo" label="Tombo">
+						{#snippet control()}
+							<TextInput type="number" name="tombo" id="tombo" value={livro[0].tombo} disabled />
+						{/snippet}
+					</Field>
+				</Column>
+				<Column>
+					<Field id="titulo" label="Título">
+						{#snippet control()}
+							<TextInput type="text" name="titulo" id="titulo" value={livro[0].titulo} disabled />
+						{/snippet}
+					</Field>
+				</Column>
+			{/if}
 		{/await}
 	</Columns>
 	<Field id="numero" label="Número do exemplar">
 		{#snippet control()}
 			<FieldAddons>
-				<TextInput type="number" name="numero" id="numero" step="1" class="grow" />
+				<TextInput type="number" name="numero" id="numero" min="1" step="1" required class="grow" />
 				<Button type="submit" tone="primary" loading={formEnhancer.loading} bold>Adicionar</Button>
 			</FieldAddons>
 		{/snippet}
 	</Field>
-	{#if form?.status === 201}
-		<p class="text-sm text-success-ink">Exemplar adicionado com sucesso!</p>
-	{:else if form?.status === 200}
-		<p class="text-sm text-success-ink">Exemplar excluído com sucesso!</p>
-	{/if}
+	<div role="status">
+		{#if form?.status === 201}
+			<p class="text-sm text-success-ink">Exemplar adicionado com sucesso!</p>
+		{:else if form?.status === 200}
+			<p class="text-sm text-success-ink">Exemplar excluído com sucesso!</p>
+		{/if}
+	</div>
 </Card>
 
 <Card class="mt-6 overflow-hidden" padded={false}>
@@ -92,64 +98,61 @@
 				{/if}
 			</tr>
 		{/snippet}
-		{#await exemplares}
-			<tr>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-				<td><SkeletonLines /></td>
-				{#if isAdmin}
-					<td><SkeletonLines /></td>
-				{/if}
-			</tr>
-		{:then item}
-			{#each item as exemplar (exemplar.idexemplar)}
+		<AsyncTableRows
+			rows={exemplares}
+			columns={isAdmin ? 4 : 3}
+			emptyMessage="Nenhum exemplar cadastrado."
+			errorMessage="Não foi possível carregar os exemplares.">
+			{#snippet row(exemplar)}
 				<tr>
 					<td class="tabular-nums">{exemplar.numero}</td>
 					<td class="tabular-nums">{dayjs.utc(exemplar.dataCadastro).format('DD/MM/YYYY')}</td>
 					<td><Tag kind={STATUS_TONES[exemplar.status ?? ''] ?? 'danger'}>{exemplar.status}</Tag></td>
-					<td class="print:hidden">
-						{#if isAdmin && exemplar.status !== 'Emprestado'}
-							<div class="flex gap-1">
-								{#if exemplar.status !== 'Disponível'}
+					{#if isAdmin}
+						<td class="print:hidden">
+							{#if exemplar.status !== 'Emprestado'}
+								<div class="flex gap-1">
+									{#if exemplar.status !== 'Disponível'}
+										<form
+											action={`?/disponivel&exemplar=${exemplar.idexemplar}`}
+											method="POST"
+											{@attach enhanceForm}>
+											<IconAction
+												type="submit"
+												icon="fa-solid fa-box-open"
+												title="Disponibilizar"
+												aria-label={`Disponibilizar exemplar ${exemplar.numero}`} />
+										</form>
+									{/if}
+									{#if exemplar.status !== 'Arquivado'}
+										<form
+											action={`?/arquivar&exemplar=${exemplar.idexemplar}`}
+											method="POST"
+											{@attach enhanceForm}>
+											<IconAction
+												type="submit"
+												icon="fa-solid fa-box-archive"
+												title="Arquivar"
+												aria-label={`Arquivar exemplar ${exemplar.numero}`} />
+										</form>
+									{/if}
 									<form
-										action={`?/disponivel&exemplar=${exemplar.idexemplar}`}
+										action={`?/excluir&exemplar=${exemplar.idexemplar}`}
 										method="POST"
 										{@attach enhanceForm}>
 										<IconAction
 											type="submit"
-											icon="fa-solid fa-box-open"
-											title="Disponibilizar"
-											aria-label="Disponibilizar" />
+											tone="danger"
+											icon="fa-regular fa-trash-can"
+											title="Excluir"
+											aria-label={`Excluir exemplar ${exemplar.numero}`} />
 									</form>
-								{/if}
-								{#if exemplar.status !== 'Arquivado'}
-									<form
-										action={`?/arquivar&exemplar=${exemplar.idexemplar}`}
-										method="POST"
-										{@attach enhanceForm}>
-										<IconAction
-											type="submit"
-											icon="fa-solid fa-box-archive"
-											title="Arquivar"
-											aria-label="Arquivar" />
-									</form>
-								{/if}
-								<form
-									action={`?/excluir&exemplar=${exemplar.idexemplar}`}
-									method="POST"
-									{@attach enhanceForm}>
-									<IconAction
-										type="submit"
-										tone="danger"
-										icon="fa-regular fa-trash-can"
-										title="Excluir"
-										aria-label="trash" />
-								</form>
-							</div>
-						{/if}
-					</td>
+								</div>
+							{/if}
+						</td>
+					{/if}
 				</tr>
-			{/each}
-		{/await}
+			{/snippet}
+		</AsyncTableRows>
 	</DataTable>
 </Card>

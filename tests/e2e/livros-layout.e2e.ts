@@ -106,7 +106,7 @@ test.describe('consulta de livros', () => {
 		expect((viewport?.height ?? 0) - (box.y + box.height)).toBeLessThanOrEqual(CORNER_GAP_LIMIT);
 		expect(box.width).toBeLessThanOrEqual(maxWidth * rootFontSize + WIDTH_TOLERANCE);
 
-		await notification.getByRole('button', { name: 'open' }).click();
+		await notification.getByRole('button', { name: 'Fechar aviso' }).click();
 		await expect(notification).toBeHidden();
 	});
 
@@ -150,7 +150,7 @@ test.describe('consulta de livros', () => {
 		await page.emulateMedia({ media: 'print' });
 
 		const { sidebar, topbar } = shellRegions(page);
-		for (const region of [sidebar, topbar, page.getByRole('navigation', { name: 'breadcrumbs' })]) {
+		for (const region of [sidebar, topbar, page.getByRole('navigation', { name: 'Trilha de navegação' })]) {
 			await expect(region).toBeHidden();
 		}
 		await expect(page.locator('form').first()).toBeHidden();

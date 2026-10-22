@@ -33,7 +33,7 @@
 	let errors = $derived(form?.errors ?? {});
 	let hasEntryFilters = $derived(selectedType === 'entrada');
 
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	const breadcrumb = [
 		{ label: 'Tesouraria', href: resolve('tesouraria') },
 		{ label: 'Lançamentos', href: resolve('tesouraria/lancamentos') },
@@ -56,7 +56,7 @@
 	const fieldErrors = (field: string) => errors[field] ?? [];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-wallet">Lançamentos</PageHeader>
+<PageHeader {breadcrumb}>Lançamentos</PageHeader>
 
 <Card
 	element="form"
@@ -135,7 +135,7 @@
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('tesouraria/lancamentos/novo')} tone="warning" bold class="tablet:min-w-50">
+		<Button href={resolve('tesouraria/lancamentos/novo')} tone="default" bold class="tablet:min-w-50">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo lançamento
 		</Button>
 	</ButtonGroup>
@@ -160,7 +160,7 @@
 						<th>Contraparte</th>
 						<th>Descrição</th>
 						<th>Tipo</th>
-						<th>Valor</th>
+						<th class="text-right">Valor</th>
 						<th>Data</th>
 						<th class="text-right print:hidden">Ações</th>
 					</tr>
@@ -177,7 +177,7 @@
 								<Tag kind="danger">Despesa</Tag>
 							{/if}
 						</td>
-						<td class="whitespace-nowrap">{moeda(Number(item.valor))}</td>
+						<td class="text-right whitespace-nowrap">{moeda(Number(item.valor))}</td>
 						<td>{formatCivilDate(item.dataLancamento)}</td>
 						<td class="print:hidden">
 							<div class="flex justify-end gap-1">
@@ -185,7 +185,7 @@
 									<IconAction
 										icon="fa-regular fa-file-lines"
 										title="Recibo"
-										aria-label="Recibo"
+										aria-label={`Recibo do lançamento ${item.id}`}
 										target="_blank"
 										href={resolve('/recibo/[uuid=uuid]', { uuid: item.reciboUuid })} />
 								{/if}
@@ -193,7 +193,7 @@
 									icon="fa-regular fa-trash-can"
 									tone="danger"
 									title="Estorno"
-									aria-label="Estornar"
+									aria-label={`Estornar lançamento ${item.id}`}
 									href={resolve('/(protected)/tesouraria/lancamentos/[id=integer]/estorno', {
 										id: `${item.id}`,
 									})} />

@@ -36,8 +36,9 @@ afterEach(async () => {
 	enhancerState.submits.length = 0;
 });
 
-const mountLoans = async (isAdmin: boolean, response: Response) => {
-	const fetchLoan = vi.fn().mockResolvedValue(response);
+const mountLoans = async (isAdmin: boolean, response: Response | TypeError) => {
+	const fetchLoan =
+		response instanceof TypeError ? vi.fn().mockRejectedValue(response) : vi.fn().mockResolvedValue(response);
 	vi.stubGlobal('fetch', fetchLoan);
 	const target = document.createElement('div');
 	document.body.append(target);
@@ -73,6 +74,24 @@ describe('loans page actions', () => {
 		clickAction(target, 'Devolver');
 
 		await vi.waitFor(() => expect(readStatus(target)).toBe('Erro ao devolver'));
+	});
+
+	it('reports a return interrupted by the network and offers it again', async () => {
+		const { target } = await mountLoans(false, new TypeError('Failed to fetch'));
+
+		clickAction(target, 'Devolver');
+
+		await vi.waitFor(() => expect(readStatus(target)).toBe('Erro ao devolver'));
+		expect(target.querySelector('button[aria-label="Devolver"]')).not.toBeNull();
+	});
+
+	it('reports a renewal interrupted by the network and offers it again', async () => {
+		const { target } = await mountLoans(false, new TypeError('Failed to fetch'));
+
+		clickAction(target, 'Renovar');
+
+		await vi.waitFor(() => expect(readStatus(target)).toBe('Erro ao renovar'));
+		expect(target.querySelector<HTMLButtonElement>('button[aria-label="Renovar"]')?.disabled).toBe(false);
 	});
 
 	it('renews a loan, shows the new due date and removes the renewal for regular users', async () => {

@@ -16,7 +16,7 @@
 	}
 
 	let { form }: Props = $props();
-	const formEnhancer = createFormEnhancer();
+	const formEnhancer = createFormEnhancer({ reset: false });
 	let leitores = $derived(form?.leitores);
 	let searchName = $derived(form?.values?.nome ?? '');
 	const breadcrumb = [
@@ -25,7 +25,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb} icon="fa-solid fa-book-open-reader">Consulta de leitores</PageHeader>
+<PageHeader {breadcrumb}>Consulta de leitores</PageHeader>
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do leitor" errors={form?.errors?.nome}>
@@ -46,7 +46,7 @@
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-40">
 			<i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Pesquisar
 		</Button>
-		<Button href={resolve('biblioteca/leitores/novo')} tone="warning" bold class="tablet:min-w-40">
+		<Button href={resolve('biblioteca/leitores/novo')} tone="default" bold class="tablet:min-w-40">
 			<i class="fa-solid fa-plus fa-fw" aria-hidden="true"></i>Novo
 		</Button>
 	</ButtonGroup>

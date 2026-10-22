@@ -4,8 +4,9 @@ import { describe, expect, it } from 'vitest';
 import Page from '../../../../../../src/routes/(protected)/secretaria/frequencia/+page.svelte';
 import { parseRenderedBody } from '../../../../support/rendered-document';
 
-const renderPage = (form: { leitores: { nome: string }[]; datas: string[] } | null) =>
-	parseRenderedBody(render(Page, { props: { form } }).body);
+type AttendanceList = { leitores: { nome: string }[]; datas: string[]; fulldates: string[] };
+
+const renderPage = (form: AttendanceList | null) => parseRenderedBody(render(Page, { props: { form } }).body);
 
 describe('secretaria attendance list page', () => {
 	it('preselects the usual meeting weekdays in the filters', () => {
@@ -44,12 +45,23 @@ describe('secretaria attendance list page', () => {
 	});
 
 	it('renders a mark column per selected date and the uppercased worker names', () => {
-		const document = renderPage({ leitores: [{ nome: 'Maria da Silva' }], datas: ['02', '03'] });
+		const document = renderPage({
+			leitores: [{ nome: 'Maria da Silva' }],
+			datas: ['02', '03'],
+			fulldates: ['2026-10-02', '2026-10-03'],
+		});
 
 		const headings = [...document.querySelectorAll('#printable-content th')].map((th) => th.textContent?.trim());
 		const cells = [...document.querySelectorAll('#printable-content tbody td')].map((td) => td.textContent?.trim());
 
 		expect(headings).toEqual(['02', '03', 'Nome']);
 		expect(cells).toEqual(['[  ]', '[  ]', 'MARIA DA SILVA']);
+	});
+
+	it('tells how to fill an empty attendance list', () => {
+		const document = renderPage({ leitores: [], datas: ['02'], fulldates: ['2026-10-02'] });
+
+		expect(document.querySelector('#printable-content')).toBeNull();
+		expect(document.querySelector('[role="status"]')?.textContent).toContain('Marque-os em Cadastros');
 	});
 });

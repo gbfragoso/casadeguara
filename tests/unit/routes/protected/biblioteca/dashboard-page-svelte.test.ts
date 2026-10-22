@@ -52,4 +52,20 @@ describe('library dashboard page', () => {
 
 		expect(renewals?.textContent?.trim()).toBe('0');
 	});
+
+	it('tells that the notice board is empty', () => {
+		const { body } = render(Page, {
+			props: {
+				data: {
+					avisos: [],
+					emprestimos: [{ counter: 0, renovacoes: null }],
+					devolucoes: [{ counter: 0 }],
+					username: 'Bibliotecária',
+					userid: 'user-1',
+				},
+			},
+		});
+
+		expect(parseRenderedBody(body).body.textContent).toContain('Nenhum aviso no mural.');
+	});
 });
