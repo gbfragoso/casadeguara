@@ -1,6 +1,14 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { addCivilDays, formatCivilDate, formatMonthYear, readBahiaCivilDate } from '#lib/utils/date.js';
+import {
+	addCivilDays,
+	formatCivilDate,
+	formatCivilDateWithWeekday,
+	formatMonthYear,
+	readBahiaCivilDate,
+	readBahiaIsoDate,
+	readIsoWeekday,
+} from '#lib/utils/date.js';
 
 const originalTimeZone = process.env.TZ;
 
@@ -61,5 +69,61 @@ describe('addCivilDays', () => {
 		const civilDate = addCivilDays(new Date('2026-10-25T00:00:00Z'), 14);
 
 		expect(civilDate).toEqual(new Date('2026-11-08T00:00:00Z'));
+	});
+});
+
+describe('TU-30 readBahiaIsoDate', () => {
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it('keeps the Bahia day one minute before midnight, when UTC is already tomorrow', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-03-03T02:59:00Z'));
+
+		const today = readBahiaIsoDate(new Date());
+
+		expect(today).toBe('2026-03-02');
+	});
+
+	it('moves to the next Bahia day at midnight', () => {
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-03-03T03:00:00Z'));
+
+		const today = readBahiaIsoDate(new Date());
+
+		expect(today).toBe('2026-03-03');
+	});
+});
+
+describe('TU-30 formatCivilDateWithWeekday', () => {
+	it.each([
+		['2026-03-02', 'Segunda-feira, 02/03/2026'],
+		['2026-03-07', 'Sábado, 07/03/2026'],
+		['2026-03-08', 'Domingo, 08/03/2026'],
+	])('writes %s with its capitalised weekday', (civilDate, expected) => {
+		expect(formatCivilDateWithWeekday(civilDate)).toBe(expected);
+	});
+
+	it.each(['UTC', 'Pacific/Auckland', 'America/Bahia'])('keeps the civil weekday in %s', (timeZone) => {
+		process.env.TZ = timeZone;
+
+		expect(formatCivilDateWithWeekday('2026-03-02')).toBe('Segunda-feira, 02/03/2026');
+	});
+});
+
+describe('TU-30 readIsoWeekday', () => {
+	it.each([
+		['2026-03-02', 1],
+		['2026-03-07', 6],
+		['2026-03-08', 7],
+	])('reads %s as ISO weekday %i', (civilDate, weekday) => {
+		expect(readIsoWeekday(civilDate)).toBe(weekday);
+	});
+
+	it.each(['UTC', 'Pacific/Auckland'])('ignores the server time zone %s', (timeZone) => {
+		process.env.TZ = timeZone;
+
+		expect(readIsoWeekday('2026-03-08')).toBe(7);
 	});
 });
