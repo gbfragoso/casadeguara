@@ -1,6 +1,6 @@
 import sharp, { type Metadata } from 'sharp';
 
-import type { PhotoUploadInput } from '#lib/validation/cadastros/foto.js';
+import type { PhotoUploadInput } from '#lib/validation/photo.js';
 
 const MINIMUM_PHOTO_SIDE = 300;
 export const MAXIMUM_PHOTO_PIXELS = 24_000_000;

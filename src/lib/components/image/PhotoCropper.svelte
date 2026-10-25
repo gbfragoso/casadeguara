@@ -9,6 +9,8 @@
 		alt?: string;
 		initialPosition?: Partial<PhotoPositionInput>;
 		disabled?: boolean;
+		aspectRatio?: number;
+		instructions?: string;
 		onCancel?: () => void;
 		onPositionChange?: (position: PhotoPositionInput) => void;
 	}
@@ -22,6 +24,8 @@
 		alt = 'Prévia da foto',
 		initialPosition = {},
 		disabled = false,
+		aspectRatio = PHOTO_FRAME.outputWidth / PHOTO_FRAME.outputHeight,
+		instructions = 'Use as setas do teclado ou arraste a imagem para escolher a área que aparecerá no cartão.',
 		onCancel,
 		onPositionChange,
 	}: Props = $props();
@@ -131,8 +135,7 @@
 
 	function createImageStyle() {
 		if (!sourceSize) return `object-position: ${focalX * 100}% ${focalY * 100}%; transform: scale(${zoom});`;
-		const frameAspectRatio = PHOTO_FRAME.outputWidth / PHOTO_FRAME.outputHeight;
-		const crop = createCropRectangle(sourceSize, { focalX, focalY, zoom }, frameAspectRatio);
+		const crop = createCropRectangle(sourceSize, { focalX, focalY, zoom }, aspectRatio);
 		return `width: ${(sourceSize.width / crop.width) * 100}%; height: ${(sourceSize.height / crop.height) * 100}%; left: ${(-crop.left / crop.width) * 100}%; top: ${(-crop.top / crop.height) * 100}%;`;
 	}
 
@@ -142,16 +145,15 @@
 <svelte:window onblur={endDrag} />
 
 <div data-testid="photo-cropper">
-	<p class="text-sm text-ink-muted" id="photo-cropper-instructions">
-		Use as setas do teclado ou arraste a imagem para escolher a área que aparecerá no cartão.
-	</p>
+	<p class="text-sm text-ink-muted" id="photo-cropper-instructions">{instructions}</p>
 	<div
-		class="relative mt-2 aspect-239/300 w-full max-w-72 cursor-grab touch-none overflow-hidden rounded-md bg-surface-muted focus-visible:outline-offset-3 active:cursor-grabbing"
+		class="relative mt-2 w-full max-w-72 cursor-grab touch-none overflow-hidden rounded-md bg-surface-muted focus-visible:outline-offset-3 active:cursor-grabbing"
 		role="button"
 		tabindex="0"
 		aria-label="Área de enquadramento da foto"
 		aria-describedby="photo-cropper-instructions"
 		aria-busy={disabled}
+		style:aspect-ratio={aspectRatio}
 		bind:this={frameElement}
 		onkeydown={handleKeydown}
 		onpointerdown={handlePointerdown}

@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
-import { createCardPhoto } from '#lib/server/image/cropper.js';
+import { createCardPhoto, createSquarePhoto, createThumbnail } from '#lib/server/image/cropper.js';
 
 const RGB_CHANNEL_COUNT = 3;
 
@@ -50,5 +50,25 @@ describe('createCardPhoto', () => {
 		await expect(
 			createCardPhoto(new Uint8Array([0, 1, 2]), { focalX: 0.5, focalY: 0.5, zoom: 1 }),
 		).rejects.toThrow();
+	});
+});
+
+describe('createSquarePhoto', () => {
+	it('generates an 800 × 800 JPEG from the selected source region', async () => {
+		const source = await createSplitPhoto();
+
+		const square = await createSquarePhoto(source, { focalX: 0.5, focalY: 0.5, zoom: 1 });
+
+		expect(await sharp(square).metadata()).toMatchObject({ format: 'jpeg', width: 800, height: 800 });
+	});
+});
+
+describe('createThumbnail', () => {
+	it('reduces the square photo to a 128 × 128 JPEG', async () => {
+		const square = await createSquarePhoto(await createSplitPhoto(), { focalX: 0.5, focalY: 0.5, zoom: 1 });
+
+		const thumbnail = await createThumbnail(square);
+
+		expect(await sharp(thumbnail).metadata()).toMatchObject({ format: 'jpeg', width: 128, height: 128 });
 	});
 });

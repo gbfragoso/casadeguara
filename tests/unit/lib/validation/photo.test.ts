@@ -7,8 +7,8 @@ import {
 	PHOTO_POSITION_MESSAGE,
 	photoPositionSchema,
 	photoUploadSchema,
-} from '#lib/validation/cadastros/foto.js';
-import { getFieldErrors } from '../field-errors';
+} from '#lib/validation/photo.js';
+import { getFieldErrors } from './field-errors';
 
 const createPhoto = (size = 1, type = 'image/png') => new File([new Uint8Array(size)], 'foto.png', { type });
 const validPosition = { focalX: '0.5', focalY: '0.5', zoom: '1' };
