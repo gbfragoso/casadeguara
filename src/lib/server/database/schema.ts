@@ -14,6 +14,7 @@ import {
 	smallint,
 	smallserial,
 	text,
+	time,
 	timestamp,
 	unique,
 	uniqueIndex,
@@ -217,7 +218,7 @@ export const user = pgTable(
 	{
 		id: varchar({ length: 30 }).primaryKey().notNull(),
 		passwordHash: varchar('password_hash', { length: 2000 }).notNull(),
-		roles: varchar({ length: 50 }).notNull(),
+		roles: varchar({ length: 255 }).notNull(),
 		username: varchar({ length: 30 }).notNull(),
 		name: varchar({ length: 255 }).notNull(),
 	},
@@ -229,3 +230,54 @@ export const session = pgTable('Session', {
 	userId: text().notNull(),
 	expiresAt: timestamp({ precision: 3, mode: 'date' }).notNull(),
 });
+
+const auditColumns = () => ({
+	userCadastro: varchar('user_cadastro', { length: 30 }).notNull(),
+	dataCadastro: timestamp('data_cadastro', { withTimezone: true }).defaultNow().notNull(),
+	userAlteracao: varchar('user_alteracao', { length: 30 }),
+	dataAlteracao: timestamp('data_alteracao', { withTimezone: true }),
+});
+
+export const palestrantes = pgTable(
+	'palestrantes',
+	{
+		id: serial().primaryKey().notNull(),
+		nome: varchar({ length: 60 }).notNull(),
+		nomeBusca: varchar('nome_busca', { length: 60 }).notNull(),
+		cadastroId: integer('cadastro_id').references(() => cadastros.idleitor, { onDelete: 'set null' }),
+		...auditColumns(),
+	},
+	(table) => [
+		unique('palestrantes_nome_busca_key').on(table.nomeBusca),
+		unique('palestrantes_cadastro_id_key').on(table.cadastroId),
+	],
+);
+
+export const palestranteFotos = pgTable('palestrante_fotos', {
+	palestranteId: integer('palestrante_id')
+		.primaryKey()
+		.notNull()
+		.references(() => palestrantes.id, { onDelete: 'cascade' }),
+	original: byteaColumn().notNull(),
+	quadrada: byteaColumn().notNull(),
+	miniatura: byteaColumn().notNull(),
+});
+
+export const palestras = pgTable(
+	'palestras',
+	{
+		id: serial().primaryKey().notNull(),
+		data: date({ mode: 'string' }).notNull(),
+		horario: time().notNull(),
+		titulo: varchar({ length: 120 }),
+		observacoes: varchar({ length: 500 }),
+		local: varchar({ length: 120 }),
+		palestranteId: integer('palestrante_id').references(() => palestrantes.id, { onDelete: 'restrict' }),
+		versao: integer().default(1).notNull(),
+		...auditColumns(),
+	},
+	(table) => [
+		index('palestras_agenda_idx').on(table.data, table.horario, table.id),
+		index('palestras_palestrante_id_idx').on(table.palestranteId),
+	],
+);

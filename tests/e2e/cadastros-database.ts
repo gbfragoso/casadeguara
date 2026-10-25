@@ -8,7 +8,7 @@ const databaseUrl = process.env.POSTGRES_URL;
 if (!databaseUrl) throw new Error('POSTGRES_URL is required for cadastro E2E tests.');
 
 const TEST_USER_TOKEN_LENGTH = 9;
-const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin';
+const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin';
 export type TestDatabase = postgres.Sql;
 
 export const createDatabase = (): TestDatabase => postgres(databaseUrl, { max: 4 });

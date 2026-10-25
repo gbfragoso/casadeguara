@@ -7,7 +7,12 @@ type Handler = (...args: never[]) => unknown;
 type UserHandlers = { load: Handler; actions: Record<string, Handler> };
 type SuiteOptions = { domain: string; createHandlers: () => UserHandlers };
 
-const validForm = { username: 'novo@example.com', name: 'Novo Usuário', password: 'senha-segura', roles: 'biblioteca' };
+const createValidForm = (domain: string) => ({
+	username: 'novo@example.com',
+	name: 'Novo Usuário',
+	password: 'senha-segura',
+	roles: domain,
+});
 const failingDatabase = () => {
 	vi.spyOn(console, 'error').mockImplementation(() => undefined);
 	fakeDatabase.failWith(new Error('database offline'));
@@ -15,6 +20,7 @@ const failingDatabase = () => {
 
 const describeAccessRules = ({ domain, createHandlers }: SuiteOptions) => {
 	const params = { id: 'user-9' };
+	const validForm = createValidForm(domain);
 
 	it.each(['load', 'action'] as const)('redirects an anonymous %s request', async (target) => {
 		const { load, actions } = createHandlers();
@@ -48,6 +54,7 @@ const describeAccessRules = ({ domain, createHandlers }: SuiteOptions) => {
 
 const describeCredentialValidation = ({ domain, createHandlers }: SuiteOptions) => {
 	const admin = { roles: `${domain},${domain}:admin`, params: { id: 'user-9' } };
+	const validForm = createValidForm(domain);
 
 	it('rejects an invalid e-mail', async () => {
 		const { result } = await runHandler(createHandlers().actions.default, {
@@ -92,7 +99,7 @@ export const describeUserCreationHandlers = (options: SuiteOptions) => {
 	});
 
 	it('creates the user with a hashed password', async () => {
-		const admin = { roles: `${options.domain}:admin`, form: validForm };
+		const admin = { roles: `${options.domain}:admin`, form: createValidForm(options.domain) };
 
 		const { result } = await runHandler(options.createHandlers().actions.default, admin);
 
@@ -156,14 +163,14 @@ export const describeUserEditHandlers = (options: SuiteOptions) => {
 	});
 
 	it.each([
-		['the submitted roles', 'biblioteca', 'biblioteca'],
+		['the submitted roles', options.domain, options.domain],
 		['the current roles when none are submitted', '', undefined],
 	])('updates the user keeping %s', async (_scenario, roles, storedRoles) => {
 		fakeDatabase.resolveWith([editedUser]);
 
 		const { result } = await runHandler(options.createHandlers().actions.default, {
 			...admin,
-			form: { ...validForm, roles },
+			form: { ...createValidForm(options.domain), roles },
 		});
 
 		expect(result).toEqual({ status: 200 });
