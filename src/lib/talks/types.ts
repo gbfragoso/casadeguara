@@ -16,3 +16,5 @@ export type TalkCard = {
 	palestrante: TalkSpeaker | null;
 	versao: number;
 };
+
+export type MoveDirection = 'up' | 'down';

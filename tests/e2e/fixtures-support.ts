@@ -29,6 +29,7 @@ import {
 	readReversal,
 } from './lancamentos-database';
 import { insertLoan } from './emprestimos-database';
+import { createTalkCalendar, deleteTalksBy, insertTalks, readTalks } from './palestras-database';
 import type { E2EData, FixtureResources } from './fixtures-types';
 
 const destinations = {
@@ -37,6 +38,7 @@ const destinations = {
 	tesouraria: '**/tesouraria',
 	admin: '**/sistemas',
 	fullAdmin: '**/sistemas',
+	comunicacao: '**/comunicacao/palestras',
 } as const;
 const createToken = () => randomUUID().replaceAll('-', '').slice(0, 12);
 
@@ -52,6 +54,11 @@ const cleanupResources = async (
 		() => deleteLancamentos(database, token),
 		() => deleteParticipants(database, [...names]),
 		() => deleteNotices(database, token),
+		() =>
+			deleteTalksBy(
+				database,
+				Object.values(users).map((user) => user.id),
+			),
 		() => deleteTestUsers(database, users),
 	]) {
 		try {
@@ -116,6 +123,9 @@ export const createFixtureResources = async (): Promise<FixtureResources> => {
 		readLancamentoByDescription: (description) => readLancamentoByDescription(database, description),
 		readReversal: (id) => readReversal(database, id),
 		createLoan: (livroId, leitorId) => insertLoan(database, livroId, leitorId, users.fullAdmin.id),
+		talkDate: createTalkCalendar(token),
+		createTalks: (seeds) => insertTalks(database, seeds, users.comunicacao.id),
+		readTalks: (ids) => readTalks(database, ids),
 	};
 	return { data, cleanup: () => cleanupResources(database, token, users, names) };
 };
