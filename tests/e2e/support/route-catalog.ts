@@ -1,5 +1,6 @@
 import { ACCESS_ROUTES } from './route-catalog/acesso';
 import { BIBLIOTECA_ROUTES } from './route-catalog/biblioteca';
+import { COMUNICACAO_ROUTES } from './route-catalog/comunicacao';
 import { SECRETARIA_ROUTES } from './route-catalog/secretaria';
 import { TESOURARIA_ROUTES } from './route-catalog/tesouraria';
 import type { CatalogRoute } from './route-catalog/types';
@@ -13,6 +14,7 @@ export const ROUTE_CATALOG: readonly CatalogRoute[] = [
 	...BIBLIOTECA_ROUTES,
 	...SECRETARIA_ROUTES,
 	...TESOURARIA_ROUTES,
+	...COMUNICACAO_ROUTES,
 ];
 
 export const selectRoutes = (ids: readonly string[]) =>

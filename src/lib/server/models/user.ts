@@ -8,6 +8,7 @@ export const USER_LIST_PAGE_SIZE = 5;
 
 const listedUserFields = { id: user.id, name: user.name };
 const editableUserFields = { id: user.id, username: user.username, name: user.name, roles: user.roles };
+const credentialFields = { id: user.id, passwordHash: user.passwordHash, roles: user.roles };
 
 export type UserListFilter = { name?: string; page: number };
 export type NewUser = { id: string; username: string; name: string; passwordHash: string; roles: string };
@@ -28,9 +29,15 @@ export class UserModel {
 	}
 
 	async get(id: string) {
-		const [found] = await this.database.select(editableUserFields).from(user).where(eq(user.id, id));
+		const found = await this.database.select(editableUserFields).from(user).where(eq(user.id, id));
 
-		return found;
+		return found.at(0);
+	}
+
+	async findCredentials(username: string) {
+		const found = await this.database.select(credentialFields).from(user).where(eq(user.username, username));
+
+		return found.at(0);
 	}
 
 	async create(values: NewUser) {

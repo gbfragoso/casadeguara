@@ -24,6 +24,15 @@ describe('module selection page', () => {
 		]);
 	});
 
+	it('TU-04 shows Secretaria and Comunicação to a user with both areas', () => {
+		const links = readModuleLinks(['secretaria', 'comunicacao']);
+
+		expect(links).toEqual([
+			['Secretaria', '/secretaria'],
+			['Comunicação', '/comunicacao'],
+		]);
+	});
+
 	it('treats an administrative role as access to its module', () => {
 		const links = readModuleLinks(['tesouraria:admin']);
 

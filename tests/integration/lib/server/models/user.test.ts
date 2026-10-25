@@ -86,3 +86,21 @@ describe('UserModel writes', () => {
 		});
 	});
 });
+
+describe('UserModel.findCredentials', () => {
+	it('returns the login credentials of the user with the given login', async () => {
+		await withUsers(['comunicacao'], async ([id]) => {
+			const { username } = (await model.get(id)) ?? { username: '' };
+
+			expect(await model.findCredentials(username)).toEqual({
+				id,
+				passwordHash: 'hash-de-teste',
+				roles: 'comunicacao',
+			});
+		});
+	});
+
+	it('finds nobody for an unknown login', async () => {
+		expect(await model.findCredentials('ninguem@teste.com')).toBeUndefined();
+	});
+});
