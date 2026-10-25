@@ -29,7 +29,7 @@ export const installPrintCounter = (page: Page) =>
 
 export const readPrintCount = (page: Page) => page.evaluate(() => (window as PrintCounterWindow).__e2ePrintCount ?? 0);
 
-const createLongReader = (e2e: E2EData) => {
+export const createLongReader = (e2e: E2EData) => {
 	const overheadLength = createName(`-${e2e.token}`).length;
 	return e2e.createParticipant('Leitor'.padEnd(MAX_READER_NAME_LENGTH - overheadLength, 'X'));
 };

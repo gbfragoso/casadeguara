@@ -19,7 +19,8 @@
 </script>
 
 {#snippet receiptField(label: string, content: string)}
-	<div class="grid gap-1 tablet:grid-cols-[11rem_1fr] tablet:items-center tablet:gap-3">
+	<div
+		class="grid gap-1 tablet:grid-cols-[11rem_1fr] tablet:items-center tablet:gap-3 print:grid-cols-[11rem_1fr] print:items-center print:gap-3">
 		<span>{label}</span>
 		<span class="rounded-sm border border-black px-3 py-1">{content}</span>
 	</div>
@@ -51,11 +52,13 @@
 		<div
 			id="recibo"
 			translate="no"
-			class="notranslate mx-auto w-full overflow-hidden rounded-lg border border-divider bg-white text-black shadow-card desktop:max-w-receipt print:max-w-none print:overflow-visible print:rounded-none print:border-0">
-			<div class="flex flex-col gap-4 p-4 tablet:p-6">
-				<div class="flex flex-col items-center gap-4 tablet:flex-row tablet:items-start tablet:justify-between">
-					<div class="w-full border border-black p-3 text-center tablet:w-auto tablet:flex-1">
-						<h2 class="text-lg font-bold text-black underline tablet:text-2xl">
+			class="notranslate mx-auto w-full overflow-hidden rounded-lg border border-divider bg-white text-black shadow-card desktop:max-w-receipt print:max-w-none print:overflow-visible print:rounded-none print:border-0 print:text-sm print:leading-5">
+			<div class="flex flex-col gap-4 p-4 tablet:p-6 print:gap-3 print:p-0">
+				<div
+					class="flex flex-col items-center gap-4 tablet:flex-row tablet:items-start tablet:justify-between print:flex-row print:items-start print:justify-between">
+					<div
+						class="w-full border border-black p-3 text-center tablet:w-auto tablet:flex-1 print:w-auto print:flex-1">
+						<h2 class="text-lg font-bold text-black underline tablet:text-2xl print:text-xl">
 							GRUPO ESPÍRITA CASA DE GUARÁ
 						</h2>
 						<p>Rua Major Dórea, 86 - B. Castália - Itabuna - Ba</p>
@@ -71,7 +74,7 @@
 					{@render receiptNumber('N°', data.entrada.id)}
 					{@render receiptNumber('Valor', formatBrlDecimal(data.entrada.valor))}
 				</div>
-				<div class="flex flex-col gap-3">
+				<div class="flex flex-col gap-3 print:gap-2">
 					{@render receiptField('Recebemos do Sr.(a)', data.entrada.contribuinte.toUpperCase())}
 					{@render receiptField(
 						'A quantia de',
@@ -79,7 +82,8 @@
 					)}
 					{@render receiptField('Referente a', data.entrada.descricao.toUpperCase())}
 				</div>
-				<div class="flex flex-col items-center gap-4 pt-2 tablet:flex-row tablet:justify-around">
+				<div
+					class="flex flex-col items-center gap-4 pt-2 tablet:flex-row tablet:justify-around print:flex-row print:justify-around">
 					<div class="text-center">
 						<div class="font-bold">{dayjs.utc(data.entrada.dataRegistro).format('DD / MM / YYYY')}</div>
 						<div>Data</div>
@@ -100,3 +104,19 @@
 		</div>
 	{/if}
 </main>
+
+<style>
+	@page recibo-contribuicao {
+		size: A4 portrait;
+		margin: 0;
+	}
+
+	@media print {
+		#recibo {
+			page: recibo-contribuicao;
+			width: 210mm;
+			height: 148.5mm;
+			padding: 8mm 10mm;
+		}
+	}
+</style>
