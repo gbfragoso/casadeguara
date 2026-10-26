@@ -96,7 +96,7 @@
 
 <div class="min-w-0">
 	{#if readonly}
-		<p class={['flex min-h-11 items-center gap-3 wrap-anywhere', !shownName && 'text-ink-muted']}>
+		<p class={['flex min-h-11 items-center gap-3 py-2 wrap-anywhere', !shownName && 'text-ink-muted']}>
 			{@render avatar()}{shownName || EMPTY_TEXT}
 		</p>
 	{:else if editing}
@@ -122,7 +122,7 @@
 			aria-label={`Editar palestrante: ${shownName || EMPTY_TEXT}`}
 			aria-describedby={status === 'error' ? errorId : undefined}
 			class={[
-				'-mx-2 flex min-h-11 w-[calc(100%+1rem)] cursor-text items-center gap-3 rounded-md px-2 text-left wrap-anywhere transition-colors hover:bg-surface-muted motion-reduce:transition-none',
+				'-mx-2 flex min-h-11 w-[calc(100%+1rem)] cursor-text items-center gap-3 rounded-md px-2 py-2 text-left wrap-anywhere transition-colors hover:bg-surface-muted motion-reduce:transition-none',
 				!shownName && 'text-ink-muted',
 			]}
 			onclick={startEditing}>

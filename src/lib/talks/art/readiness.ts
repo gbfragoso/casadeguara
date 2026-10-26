@@ -17,9 +17,9 @@ export type TalkArtFacts = {
 export type ReadyTalk<T extends TalkArtFacts> = T & { titulo: string; palestrante: NonNullable<T['palestrante']> };
 
 const BLOCKER_MESSAGES = {
-	'titulo-palestrante-ausentes': 'Para gerar a arte, defina o título e o palestrante da palestra.',
+	'titulo-palestrante-ausentes': 'Para gerar a arte, defina o título e o palestrante.',
 	'titulo-ausente': 'Para gerar a arte, defina o título da palestra.',
-	'palestrante-ausente': 'Para gerar a arte, defina o palestrante da palestra.',
+	'palestrante-ausente': 'Para gerar a arte, defina o palestrante.',
 	'titulo-longo': 'O título está maior do que cabe na arte. Encurte-o no card para gerar a arte.',
 	'observacoes-longas': 'As observações estão maiores do que cabe na arte. Encurte-as no card para gerar a arte.',
 	'local-longo': 'O local está maior do que cabe na arte. Encurte-o no card para gerar a arte.',

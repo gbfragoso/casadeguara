@@ -8,12 +8,16 @@
 	import TextInput from '#lib/components/forms/TextInput.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
 	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
+	import SpeakerChoiceField from '#lib/components/talks/SpeakerChoiceField.svelte';
 	import { sendTalkRequest, type TalkRequestContext } from '#lib/talks/requests.js';
 	import { suggestTalkTime } from '#lib/talks/schedule.js';
-	import type { WeekdayTimes } from '#lib/talks/types.js';
+	import { createEmptySpeakerChoice, isSpeakerChoiceUnconfirmed } from '#lib/talks/speaker-choice.js';
+	import type { SpeakerOption, WeekdayTimes } from '#lib/talks/types.js';
 	import { talkCreateSchema } from '#lib/validation/comunicacao/palestras.js';
 
-	type CreateField = 'data' | 'horario' | 'local' | 'reuniaoCom';
+	type CreateField =
+		'data' | 'horario' | 'titulo' | 'palestranteId' | 'novoPalestrante' | 'observacoes' | 'local' | 'reuniaoCom';
+	type CreateFields = Record<CreateField, string>;
 	type Props = {
 		context: TalkRequestContext;
 		hoje: string;
@@ -21,16 +25,22 @@
 		localPadrao: string;
 		reuniaoComPadrao: readonly string[];
 		horariosSugeridos: WeekdayTimes;
+		palestrantes: readonly SpeakerOption[];
 	};
 
 	const CREATE_FAILURE_MESSAGE = 'Não foi possível criar a palestra. Tente de novo.';
+	const UNCONFIRMED_SPEAKER_MESSAGE = 'Selecione um palestrante da lista ou cadastre um novo.';
 	const MEETING_ACTIVITIES_ROWS = 5;
+	const NOTES_ROWS = 2;
 
-	let { context, hoje, isAdmin, localPadrao, reuniaoComPadrao, horariosSugeridos }: Props = $props();
+	let { context, hoje, isAdmin, localPadrao, reuniaoComPadrao, horariosSugeridos, palestrantes }: Props = $props();
 
 	let open = $state(false);
 	let data = $state('');
 	let horario = $state('');
+	let titulo = $state('');
+	let speaker = $state(createEmptySpeakerChoice());
+	let observacoes = $state('');
 	let local = $state('');
 	let reuniaoCom = $state('');
 	let errors = $state<Partial<Record<CreateField, string[]>>>({});
@@ -46,6 +56,9 @@
 	function start() {
 		data = '';
 		horario = '';
+		titulo = '';
+		speaker = createEmptySpeakerChoice();
+		observacoes = '';
 		local = localPadrao;
 		reuniaoCom = reuniaoComPadrao.join('\n');
 		timeEdited = false;
@@ -69,13 +82,22 @@
 		else formError = message;
 	}
 
+	function validate(fields: CreateFields) {
+		const parsed = talkCreateSchema.safeParse(fields);
+		const fieldErrors: Partial<Record<CreateField, string[]>> = parsed.success
+			? {}
+			: flattenError(parsed.error).fieldErrors;
+		const unconfirmed = isSpeakerChoiceUnconfirmed(speaker);
+		errors = unconfirmed ? { ...fieldErrors, palestranteId: [UNCONFIRMED_SPEAKER_MESSAGE] } : fieldErrors;
+		return parsed.success && !unconfirmed;
+	}
+
 	async function create(event: SubmitEvent) {
 		event.preventDefault();
 		formError = '';
-		const fields = { data, horario, local, reuniaoCom };
-		const parsed = talkCreateSchema.safeParse(fields);
-		errors = parsed.success ? {} : flattenError(parsed.error).fieldErrors;
-		if (!parsed.success) return;
+		const { palestranteId, novoPalestrante } = speaker;
+		const fields = { data, horario, titulo, palestranteId, novoPalestrante, observacoes, local, reuniaoCom };
+		if (!validate(fields)) return;
 
 		saving = true;
 		const result = await sendTalkRequest(context, '?/criar', fields, CREATE_FAILURE_MESSAGE);
@@ -113,6 +135,39 @@
 						required
 						bind:value={horario}
 						oninput={() => (timeEdited = true)}
+						aria-describedby={describedBy}
+						aria-invalid={invalid} />
+				{/snippet}
+			</Field>
+			<Field id="nova-palestra-titulo-palestra" label="Título" errors={errors.titulo} class="tablet:col-span-6">
+				{#snippet control({ describedBy, invalid })}
+					<TextInput
+						id="nova-palestra-titulo-palestra"
+						name="titulo"
+						type="text"
+						bind:value={titulo}
+						aria-describedby={describedBy}
+						aria-invalid={invalid} />
+				{/snippet}
+			</Field>
+			<SpeakerChoiceField
+				id="nova-palestra-palestrante"
+				options={palestrantes}
+				bind:choice={speaker}
+				errors={errors.palestranteId ?? errors.novoPalestrante}
+				class="tablet:col-span-6" />
+			<Field
+				id="nova-palestra-observacoes"
+				label="Observações"
+				help="Aparece na arte de divulgação, abaixo do título."
+				errors={errors.observacoes}
+				class="tablet:col-span-6">
+				{#snippet control({ describedBy, invalid })}
+					<TextArea
+						id="nova-palestra-observacoes"
+						name="observacoes"
+						rows={NOTES_ROWS}
+						bind:value={observacoes}
 						aria-describedby={describedBy}
 						aria-invalid={invalid} />
 				{/snippet}

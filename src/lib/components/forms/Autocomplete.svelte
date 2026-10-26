@@ -17,6 +17,7 @@
 		emptyMessage?: string;
 		selectionMessage?: string;
 		onSelect?: (option: AutocompleteOption) => void;
+		onSearch?: (text: string) => void;
 		onkeydown?: (event: KeyboardEvent) => void;
 		createOption?: CreateOption;
 	}
@@ -34,6 +35,7 @@
 		emptyMessage = 'Nenhum cadastro encontrado.',
 		selectionMessage = 'Selecione um cadastro da lista.',
 		onSelect,
+		onSearch,
 		onkeydown,
 		createOption,
 	}: Props = $props();
@@ -77,6 +79,7 @@
 		value = '';
 		active = -1;
 		open = true;
+		onSearch?.(text);
 	}
 
 	function select(option: AutocompleteOption) {

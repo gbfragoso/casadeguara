@@ -55,6 +55,7 @@ test('E2E-04 cria uma palestra com as atividades padrão editadas', async ({ pag
 	await created;
 
 	const card = page.getByRole('article', { name: scheduleName(date, '19:30', 'Título a definir') });
+	await card.getByText('Local e reunião com').click();
 	await expect(meetingActivities(card)).toHaveAccessibleName(`Editar reunião com: ${remaining.join(' ')}`);
 });
 
@@ -87,7 +88,7 @@ test('E2E-03 explica o que falta em vez de abrir a prévia', async ({ page, e2e 
 
 	await artAction(card).click();
 
-	await expect(card.getByRole('alert')).toHaveText('Para gerar a arte, defina o palestrante da palestra.');
+	await expect(card.getByRole('alert')).toHaveText('Para gerar a arte, defina o palestrante.');
 	await expect(artDialog(page)).toHaveCount(0);
 });
 

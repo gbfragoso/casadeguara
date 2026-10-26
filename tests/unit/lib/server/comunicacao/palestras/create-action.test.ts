@@ -4,7 +4,14 @@ import { expectHttpError, runHandler } from '../../../../support/handler-event';
 import { COORDINATOR, createBoard, createFakeTalks, TODAY, VOLUNTEER } from './board-fakes';
 
 const validForm = { data: '2026-03-09', horario: '08:45', local: 'Rua Major Dórea, 86', reuniaoCom: '' };
-const createdTalk = { ...validForm, reuniaoCom: [] };
+const createdTalk = {
+	...validForm,
+	reuniaoCom: [],
+	titulo: null,
+	palestranteId: null,
+	novoPalestrante: null,
+	observacoes: null,
+};
 
 describe('talk board create action', () => {
 	afterEach(() => {

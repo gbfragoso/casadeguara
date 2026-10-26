@@ -74,8 +74,10 @@ const identifierSchema = z.coerce
 	.int(INVALID_IDENTIFIER_MESSAGE)
 	.positive(INVALID_IDENTIFIER_MESSAGE);
 
+const missingAsNull = (value: unknown) => (isMissing(value) ? null : value);
+
 const speakerIdSchema = z.preprocess(
-	(value) => (value === '' ? null : value),
+	missingAsNull,
 	z.coerce
 		.number({ error: INVALID_SPEAKER_MESSAGE })
 		.int(INVALID_SPEAKER_MESSAGE)
@@ -83,9 +85,15 @@ const speakerIdSchema = z.preprocess(
 		.nullable(),
 );
 
+const newSpeakerNameSchema = z.preprocess(missingAsNull, speakerNameSchema.nullable());
+
 export const talkCreateSchema = z.object({
 	data: civilDateSchema,
 	horario: clockTimeSchema,
+	titulo: titleSchema,
+	palestranteId: speakerIdSchema,
+	novoPalestrante: newSpeakerNameSchema,
+	observacoes: notesSchema,
 	local: locationSchema,
 	reuniaoCom: meetingActivitiesSchema,
 });

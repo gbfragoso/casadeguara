@@ -88,7 +88,8 @@
 			isAdmin={data.isAdmin}
 			localPadrao={data.localPadrao}
 			reuniaoComPadrao={data.reuniaoComPadrao}
-			horariosSugeridos={data.horariosSugeridos} />
+			horariosSugeridos={data.horariosSugeridos}
+			palestrantes={data.palestrantes} />
 		{#if data.palestras.length === 0}
 			<Card>
 				<p role="status">

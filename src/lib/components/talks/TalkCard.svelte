@@ -4,7 +4,9 @@
 	import InlineEditField from '#lib/components/forms/InlineEditField.svelte';
 	import SpeakerField from '#lib/components/talks/SpeakerField.svelte';
 	import TalkCardActions from '#lib/components/talks/TalkCardActions.svelte';
-	import { checkTalkArtReadiness } from '#lib/talks/art/readiness.js';
+	import TalkCardDetails from '#lib/components/talks/TalkCardDetails.svelte';
+	import TalkFieldLabel from '#lib/components/talks/TalkFieldLabel.svelte';
+	import { checkTalkArtReadiness, type TalkArtBlockerCode } from '#lib/talks/art/readiness.js';
 	import { formatTalkSchedule } from '#lib/talks/schedule.js';
 	import type { SpeakerOption, TalkCard } from '#lib/talks/types.js';
 	import { formatCivilDateWithWeekday } from '#lib/utils/date.js';
@@ -23,9 +25,12 @@
 		onArtStale: () => Promise<void>;
 	};
 
+	const DETAILS_BLOCKERS: readonly TalkArtBlockerCode[] = ['local-longo', 'reuniao-com-invalida'];
+
 	let { talk, hoje, isAdmin, readonly = false, palestrantes, move, onUpdate, onDelete, onArtStale }: Props = $props();
 
 	let shownArtBlocker = $state<string | null>(null);
+	let detailsOpen = $state(false);
 
 	const fieldId = $derived(`palestra-${talk.id}`);
 	const schedule = $derived(formatTalkSchedule(talk.data, talk.horario));
@@ -34,9 +39,14 @@
 	const artBlocker = $derived(artReadiness.ready ? null : artReadiness.blocker.mensagem);
 	const art = $derived({
 		readiness: artReadiness,
-		onBlocked: () => (shownArtBlocker = artBlocker),
+		onBlocked: showArtBlocker,
 		onStale: onArtStale,
 	});
+
+	function showArtBlocker() {
+		shownArtBlocker = artBlocker;
+		if (!artReadiness.ready && DETAILS_BLOCKERS.includes(artReadiness.blocker.codigo)) detailsOpen = true;
+	}
 
 	const validate = (campo: TalkChange['campo']) => (valor: string) => {
 		const parsed = talkChangeSchema.safeParse({ campo, valor });
@@ -50,12 +60,6 @@
 		onSave: (valor: string) => onUpdate(campo, valor),
 	});
 </script>
-
-{#snippet fieldLabel(icon: string, text: string)}
-	<span class="flex items-center gap-1.5 text-sm font-medium text-ink-muted">
-		<i class={[icon, 'fa-fw']} aria-hidden="true"></i>{text}
-	</span>
-{/snippet}
 
 <article
 	id={fieldId}
@@ -99,7 +103,7 @@
 				emptyText="Título a definir"
 				class="text-lg font-medium text-ink-strong" />
 			<div>
-				{@render fieldLabel('fa-solid fa-user', 'Palestrante')}
+				<TalkFieldLabel icon="fa-solid fa-user" text="Palestrante" />
 				<SpeakerField
 					id={`${fieldId}-palestrante`}
 					speaker={talk.palestrante}
@@ -108,11 +112,7 @@
 					onSave={({ campo, valor }) => onUpdate(campo, valor)} />
 			</div>
 			<div>
-				{@render fieldLabel('fa-solid fa-location-dot', 'Local')}
-				<InlineEditField {...fieldProps('local')} label="Local" value={talk.local} />
-			</div>
-			<div>
-				{@render fieldLabel('fa-solid fa-align-left', 'Observações')}
+				<TalkFieldLabel icon="fa-solid fa-align-left" text="Observações" />
 				<InlineEditField
 					{...fieldProps('observacoes')}
 					label="Observações"
@@ -120,15 +120,7 @@
 					value={talk.observacoes}
 					help="Aparece na arte de divulgação, abaixo do título." />
 			</div>
-			<div>
-				{@render fieldLabel('fa-solid fa-list-ul', 'Reunião com')}
-				<InlineEditField
-					{...fieldProps('reuniaoCom')}
-					label="Reunião com"
-					type="textarea"
-					value={talk.reuniaoCom.join('\n')}
-					help={readonly ? undefined : 'Uma atividade por linha'} />
-			</div>
+			<TalkCardDetails {talk} {readonly} {fieldProps} bind:open={detailsOpen} />
 		</div>
 	</div>
 </article>

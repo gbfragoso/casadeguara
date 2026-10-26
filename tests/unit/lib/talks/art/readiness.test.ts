@@ -15,9 +15,9 @@ const buildTalk = (overrides: Partial<TalkArtFacts> = {}): TalkArtFacts => ({
 
 describe('TU-07 checkTalkArtReadiness', () => {
 	it.each([
-		[{ titulo: null, palestrante: null }, 'Para gerar a arte, defina o título e o palestrante da palestra.'],
+		[{ titulo: null, palestrante: null }, 'Para gerar a arte, defina o título e o palestrante.'],
 		[{ titulo: null }, 'Para gerar a arte, defina o título da palestra.'],
-		[{ palestrante: null }, 'Para gerar a arte, defina o palestrante da palestra.'],
+		[{ palestrante: null }, 'Para gerar a arte, defina o palestrante.'],
 	])('names the missing title, speaker or both for %o', (overrides, message) => {
 		const talk = buildTalk(overrides);
 

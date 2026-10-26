@@ -7,3 +7,10 @@ export const DEFAULT_MEETING_ACTIVITIES: readonly string[] = [
 	'Atendimento fraterno',
 	'Atendimento espiritual',
 ];
+
+type TalkLogistics = { local: string | null; reuniaoCom: readonly string[] };
+
+export const hasDefaultLocationAndActivities = ({ local, reuniaoCom }: TalkLogistics) =>
+	local === DEFAULT_TALK_LOCATION &&
+	reuniaoCom.length === DEFAULT_MEETING_ACTIVITIES.length &&
+	reuniaoCom.every((activity, index) => activity === DEFAULT_MEETING_ACTIVITIES[index]);

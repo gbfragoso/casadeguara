@@ -56,6 +56,10 @@ describe('NewTalkCard', () => {
 		expect(context.submit).toHaveBeenCalledWith('?/criar', {
 			data: MONDAY,
 			horario: '08:45',
+			titulo: '',
+			palestranteId: '',
+			novoPalestrante: '',
+			observacoes: '',
 			local: DEFAULT_TALK_LOCATION,
 			reuniaoCom: DEFAULT_MEETING_ACTIVITIES.join('\n'),
 		});

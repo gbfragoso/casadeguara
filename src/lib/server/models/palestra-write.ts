@@ -9,21 +9,40 @@ import type { TalkDatabase, TalkTransaction } from './palestra-projections';
 const AGENDA_LOCK_KEY = 'casadeguara.comunicacao.palestras.agenda';
 
 export type TalkRules = { today: string; allowPast: boolean };
-type TalkRejection = 'missing' | 'conflict' | 'locked' | 'duplicate-speaker' | 'missing-speaker';
+export type SpeakerRejection = 'duplicate-speaker' | 'missing-speaker';
+type TalkRejection = 'missing' | 'conflict' | 'locked' | SpeakerRejection;
 export type TalkUpdateOutcome = { status: 'updated'; versao: number } | { status: TalkRejection };
+export type TalkCreateOutcome = { status: 'created'; id: number } | { status: SpeakerRejection };
 
 export const lockAgenda = (transaction: TalkTransaction) =>
 	transaction.execute(sql`select pg_advisory_xact_lock(hashtextextended(${AGENDA_LOCK_KEY}, 0))`);
 
-export const createTalk = (database: TalkDatabase, input: TalkCreateData, actorId: string) =>
-	database.transaction(async (transaction) => {
-		await lockAgenda(transaction);
-		const [created] = await transaction
-			.insert(palestras)
-			.values({ ...input, userCadastro: actorId })
-			.returning({ id: palestras.id });
-		return created;
-	});
+const translateSpeakerFailure = (error: unknown): { status: SpeakerRejection } => {
+	if (error instanceof DuplicatePalestranteNameError) return { status: 'duplicate-speaker' };
+	if (isTalkSpeakerReferenceViolation(error)) return { status: 'missing-speaker' };
+	throw error;
+};
+
+const resolveSpeakerId = async (transaction: TalkTransaction, input: TalkCreateData, actorId: string) =>
+	input.novoPalestrante ? (await createSpeaker(transaction, input.novoPalestrante, actorId)).id : input.palestranteId;
+
+const insertTalk = async (transaction: TalkTransaction, input: TalkCreateData, actorId: string) => {
+	await lockAgenda(transaction);
+	const { data, horario, titulo, observacoes, local, reuniaoCom } = input;
+	const palestranteId = await resolveSpeakerId(transaction, input, actorId);
+	const [created] = await transaction
+		.insert(palestras)
+		.values({ data, horario, titulo, observacoes, local, reuniaoCom, palestranteId, userCadastro: actorId })
+		.returning({ id: palestras.id });
+	return { status: 'created' as const, id: created.id };
+};
+
+export const createTalk = (
+	database: TalkDatabase,
+	input: TalkCreateData,
+	actorId: string,
+): Promise<TalkCreateOutcome> =>
+	database.transaction((transaction) => insertTalk(transaction, input, actorId)).catch(translateSpeakerFailure);
 
 export const removeTalk = (database: TalkDatabase, id: number) =>
 	database.transaction(async (transaction) => {
@@ -91,12 +110,6 @@ const updateInTransaction = async (
 	return { status: 'updated', versao: updated.versao };
 };
 
-const translateUpdateFailure = (error: unknown): TalkUpdateOutcome => {
-	if (error instanceof DuplicatePalestranteNameError) return { status: 'duplicate-speaker' };
-	if (isTalkSpeakerReferenceViolation(error)) return { status: 'missing-speaker' };
-	throw error;
-};
-
 export const updateTalk = (
 	database: TalkDatabase,
 	target: TalkTarget,
@@ -106,4 +119,4 @@ export const updateTalk = (
 ) =>
 	database
 		.transaction((transaction) => updateInTransaction(transaction, target, change, rules, actorId))
-		.catch(translateUpdateFailure);
+		.catch(translateSpeakerFailure);
