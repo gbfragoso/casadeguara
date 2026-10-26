@@ -31,6 +31,10 @@ const REPRESENTATIVE_ROUTES = selectRoutes([
 	'secretaria-cadastros-edicao',
 	'secretaria-aniversariantes',
 	'tesouraria-inicio',
+	'comunicacao-palestras',
+	'comunicacao-palestrantes-edicao',
+	'comunicacao-palestrantes-importar',
+	'comunicacao-usuarios-novo',
 	'recibo',
 ]);
 const [LIBRARY_HOME, LAUNCHES, NEW_LAUNCH, ACERVO] = selectRoutes([

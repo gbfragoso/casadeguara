@@ -29,8 +29,8 @@ export const isTopmostAtCenter = (locator: Locator) =>
 	});
 
 // Native unmodified checkboxes and radios and links inside a sentence are WCAG 2.5.8 exceptions.
-const collectTargets = (page: Page): Promise<TargetBox[]> =>
-	page.evaluate(() => {
+const collectTargets = (page: Page, scopeSelector = 'body'): Promise<TargetBox[]> =>
+	page.evaluate((scope) => {
 		const selector = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"]';
 		const isNativeChoice = (element: Element) =>
 			element instanceof HTMLInputElement &&
@@ -40,7 +40,9 @@ const collectTargets = (page: Page): Promise<TargetBox[]> =>
 			element instanceof HTMLAnchorElement &&
 			getComputedStyle(element).display === 'inline' &&
 			(element.parentElement?.textContent ?? '').trim() !== (element.textContent ?? '').trim();
-		return [...document.querySelectorAll(selector)]
+		const root = document.querySelector(scope);
+		if (!root) throw new Error(`Região ausente da página: ${scope}`);
+		return [...root.querySelectorAll(selector)]
 			.filter((element) => getComputedStyle(element).visibility !== 'hidden')
 			.map((element) => {
 				const { left, top, right, bottom, width, height } = element.getBoundingClientRect();
@@ -49,7 +51,7 @@ const collectTargets = (page: Page): Promise<TargetBox[]> =>
 				return { label, left, top, right, bottom, width, height, exempt };
 			})
 			.filter((target) => target.width > 0 && target.height > 0);
-	});
+	}, scopeSelector);
 
 const spacingSquare = (target: TargetBox): Rectangle => {
 	const half = MINIMUM_TARGET_SIZE / 2;
@@ -69,5 +71,16 @@ export const findSmallTargets = async (page: Page): Promise<TargetViolation[]> =
 	const targets = await collectTargets(page);
 	return targets
 		.filter((target) => isSmall(target) && !target.exempt && !hasSpacing(target, targets))
+		.map(({ label, width, height }) => ({ label, width, height }));
+};
+
+export const findTargetsSmallerThan = async (
+	page: Page,
+	scopeSelector: string,
+	minimumSize: number,
+): Promise<TargetViolation[]> => {
+	const targets = await collectTargets(page, scopeSelector);
+	return targets
+		.filter((target) => !target.exempt && (target.width < minimumSize || target.height < minimumSize))
 		.map(({ label, width, height }) => ({ label, width, height }));
 };

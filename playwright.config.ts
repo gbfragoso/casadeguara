@@ -25,7 +25,7 @@ export default defineConfig({
 	testMatch: '**/*.e2e.{ts,js}',
 	projects: [
 		{ name: 'e2e', grepInvert: [PERFORMANCE_TAG, ISOLATED_TAG] },
-		{ name: 'performance', grep: PERFORMANCE_TAG, dependencies: ['e2e'] },
+		{ name: 'performance', grep: PERFORMANCE_TAG, dependencies: ['e2e'], workers: 1 },
 		{ name: 'isolated', grep: ISOLATED_TAG, dependencies: ['e2e'] },
 	],
 	use: { baseURL: 'http://127.0.0.1:5173', trace: 'retain-on-failure' },
