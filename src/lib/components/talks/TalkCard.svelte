@@ -100,7 +100,17 @@
 					{...fieldProps('observacoes')}
 					label="Observações"
 					type="textarea"
-					value={talk.observacoes} />
+					value={talk.observacoes}
+					help="Aparece na arte de divulgação, abaixo do título." />
+			</div>
+			<div>
+				{@render fieldLabel('fa-solid fa-list-ul', 'Reunião com')}
+				<InlineEditField
+					{...fieldProps('reuniaoCom')}
+					label="Reunião com"
+					type="textarea"
+					value={talk.reuniaoCom.join('\n')}
+					help={readonly ? undefined : 'Uma atividade por linha'} />
 			</div>
 		</div>
 	</div>

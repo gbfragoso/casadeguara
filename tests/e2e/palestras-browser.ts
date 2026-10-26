@@ -58,3 +58,5 @@ export const dragWithMouse = async (page: Page, origin: Locator, target: Locator
 	await page.mouse.move(start.x, start.y + distance, { steps: DRAG_STEPS });
 	await page.mouse.up();
 };
+
+export const meetingActivities = (card: Locator) => card.getByRole('button', { name: /^Editar reunião com:/ });
