@@ -1,7 +1,7 @@
 import { createTextBlock, createUniformBlocks, toTextItem, type ArtMeasurers } from './blocks';
 import {
-	CONTENT_LEFT,
-	CONTENT_RIGHT,
+	ART_SIZE,
+	SAFE_MARGIN,
 	stackItems,
 	translateElement,
 	type ArtElement,
@@ -11,22 +11,43 @@ import {
 } from './elements';
 import type { TalkArtContent } from './content';
 
-const PHOTO_RADIUS = 130;
+const CARD = {
+	left: SAFE_MARGIN,
+	width: ART_SIZE - 2 * SAFE_MARGIN,
+	horizontalPadding: 32,
+	verticalPadding: 24,
+	radius: 28,
+	stripeWidth: 10,
+};
+const PHOTO_RADIUS = 112;
 const RING_WIDTH = 8;
 const LOGO_PADDING = 8;
 const OUTER_RADIUS = PHOTO_RADIUS + RING_WIDTH;
-const PHOTO_CENTER_X = CONTENT_LEFT + OUTER_RADIUS;
-const COLUMN_LEFT = CONTENT_LEFT + 2 * OUTER_RADIUS + 32;
-const COLUMN_WIDTH = CONTENT_RIGHT - COLUMN_LEFT;
+const PHOTO_CENTER_X = CARD.left + CARD.stripeWidth + CARD.horizontalPadding + OUTER_RADIUS;
+const COLUMN_LEFT = PHOTO_CENTER_X + OUTER_RADIUS + 32;
+const COLUMN_WIDTH = CARD.left + CARD.width - CARD.horizontalPadding - COLUMN_LEFT;
 const BULLET_RADIUS = 5;
 const BULLET_INDENT = 24;
 const NAME_GAP = 4;
-const MEETING_GAP = 24;
+const MEETING_GAP = 16;
 const LABEL_GAP = 8;
 const SPEAKER_LABEL = 'Palestrante:';
 const MEETING_LABEL = 'Reunião com:';
 
-const columnPlacement = { x: COLUMN_LEFT, width: COLUMN_WIDTH, background: 'fundo' } as const;
+const columnPlacement = { x: COLUMN_LEFT, width: COLUMN_WIDTH, background: 'cartao' } as const;
+
+const buildCard = (height: number): ArtElement[] => [
+	{ kind: 'rect', x: CARD.left, y: 0, width: CARD.width, height, radius: CARD.radius, fill: 'cartao' },
+	{
+		kind: 'rect',
+		x: CARD.left,
+		y: CARD.radius,
+		width: CARD.stripeWidth,
+		height: height - 2 * CARD.radius,
+		radius: 0,
+		fill: 'destaque',
+	},
+];
 
 const buildPortrait = (hasPhoto: boolean, centerY: number): ArtElement[] => {
 	const ring: ArtElement = {
@@ -81,11 +102,14 @@ const buildColumn = ({ palestrante, atividades }: TalkArtContent, measurers: Art
 
 export const buildSpeakerSection = (content: TalkArtContent, measurers: ArtMeasurers): ArtSection => {
 	const column = buildColumn(content, measurers);
-	const height = Math.max(2 * OUTER_RADIUS, column.height);
+	const contentHeight = Math.max(2 * OUTER_RADIUS, column.height);
+	const height = contentHeight + 2 * CARD.verticalPadding;
+	const columnTop = CARD.verticalPadding + (contentHeight - column.height) / 2;
 	return {
 		elements: [
+			...buildCard(height),
 			...buildPortrait(content.foto !== null, height / 2),
-			...column.elements.map((element) => translateElement(element, (height - column.height) / 2)),
+			...column.elements.map((element) => translateElement(element, columnTop)),
 		],
 		height,
 	};
