@@ -10,6 +10,7 @@
 	import Field from '#lib/components/forms/Field.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
 	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
+	import { PHOTO_FRAME } from '#lib/image/geometry/card.js';
 	import PhotoCropper from './PhotoCropper.svelte';
 
 	type PhotoForm = {
@@ -24,12 +25,22 @@
 		originalPhotoUrl?: string;
 		alt: string;
 		form?: PhotoForm | null;
+		aspectRatio?: number;
+		instructions?: string;
 	}
 
 	const PHOTO_MAX_BYTES = 3 * 1024 * 1024;
 	const INVALID_PHOTO_MESSAGE = 'A foto deve ser JPEG ou PNG, ter até 3 MiB e pelo menos 300 × 300 pixels.';
 
-	let { hasPhoto, photoUrl = 'foto', originalPhotoUrl = 'foto/original', alt, form }: Props = $props();
+	let {
+		hasPhoto,
+		photoUrl = 'foto',
+		originalPhotoUrl = 'foto/original',
+		alt,
+		form,
+		aspectRatio = PHOTO_FRAME.outputWidth / PHOTO_FRAME.outputHeight,
+		instructions,
+	}: Props = $props();
 	let editorMode = $state<'upload' | 'reframe' | null>(null);
 	let selectedFile = $state<File | null>(null);
 	let objectUrl = $state<string | null>(null);
@@ -125,7 +136,11 @@
 	</SectionHeading>
 
 	{#if hasPhoto}
-		<img class="mb-4 block aspect-239/300 w-full max-w-72 rounded-md object-cover" src={photoUrl} {alt} />
+		<img
+			class="mb-4 block w-full max-w-72 rounded-md object-cover"
+			style:aspect-ratio={aspectRatio}
+			src={photoUrl}
+			{alt} />
 	{/if}
 
 	<form
@@ -157,6 +172,8 @@
 			<PhotoCropper
 				src={objectUrl}
 				alt={`Prévia de ${alt}`}
+				{aspectRatio}
+				{instructions}
 				onCancel={cancelEditor}
 				disabled={uploadEnhancer.loading} />
 		{/if}
@@ -170,6 +187,8 @@
 			<PhotoCropper
 				src={previewUrl}
 				alt={`Prévia de ${alt}`}
+				{aspectRatio}
+				{instructions}
 				onCancel={cancelEditor}
 				disabled={reframeEnhancer.loading} />
 		</form>

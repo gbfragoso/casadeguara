@@ -4,6 +4,7 @@ import { expect, test, type E2EData } from './fixtures';
 import { findSmallTargets, readDocumentWidth } from './support/geometry';
 import { openCatalogRoute, shellRegions } from './support/module-shell';
 import { BIBLIOTECA_ROUTES } from './support/route-catalog/biblioteca';
+import { COMUNICACAO_ROUTES } from './support/route-catalog/comunicacao';
 import { SECRETARIA_ROUTES } from './support/route-catalog/secretaria';
 import { TESOURARIA_ROUTES } from './support/route-catalog/tesouraria';
 import { NOT_FOUND_PATH, selectRoutes, type CatalogRoute } from './support/route-catalog';
@@ -16,6 +17,7 @@ const MIGRATED_ROUTES = [
 	...BIBLIOTECA_ROUTES,
 	...SECRETARIA_ROUTES,
 	...TESOURARIA_ROUTES,
+	...COMUNICACAO_ROUTES,
 ];
 
 const openScreen = async (page: Page, e2e: E2EData, route: CatalogRoute | null) => {

@@ -2,10 +2,12 @@
 	import type { ClassValue, HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 
 	type IconActionTone = 'default' | 'danger';
+	type IconActionSize = 'normal' | 'large';
 	type IconActionStyle = {
 		icon: string;
 		'aria-label': string;
 		tone?: IconActionTone;
+		size?: IconActionSize;
 		class?: ClassValue;
 	};
 	type Props = IconActionStyle &
@@ -15,16 +17,18 @@
 		);
 
 	const BASE =
-		'inline-grid size-9 shrink-0 place-items-center rounded-md transition-colors hover:no-underline disabled:cursor-not-allowed disabled:opacity-55 motion-reduce:transition-none';
+		'inline-grid shrink-0 place-items-center rounded-md transition-colors hover:no-underline disabled:cursor-not-allowed disabled:opacity-55 motion-reduce:transition-none';
 
 	const TONES: Record<IconActionTone, string> = {
 		default: 'text-ink-muted hover:bg-surface-muted hover:text-primary-ink',
 		danger: 'text-danger-ink hover:bg-danger-soft',
 	};
 
-	let { icon, tone = 'default', class: className, ...rest }: Props = $props();
+	const SIZES: Record<IconActionSize, string> = { normal: 'size-9', large: 'size-11' };
 
-	let classes = $derived([BASE, TONES[tone], className]);
+	let { icon, tone = 'default', size = 'normal', class: className, ...rest }: Props = $props();
+
+	let classes = $derived([BASE, TONES[tone], SIZES[size], className]);
 </script>
 
 {#if rest.href !== undefined}

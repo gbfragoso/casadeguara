@@ -1,4 +1,4 @@
-import { hasOnlyLibraryRoles } from '#lib/server/biblioteca/usuarios/roles.js';
+import type { AreaRoles } from '#lib/server/users/area-roles.js';
 import validator from 'validator';
 
 const PASSWORD_MIN_LENGTH = 6;
@@ -22,7 +22,7 @@ const isAcceptablePassword = (password: string) =>
 
 export const validateUserForm = (
 	{ username, password, roles }: UserForm,
-	{ requireRoles }: { requireRoles: boolean },
+	{ area, requireRoles }: { area: Pick<AreaRoles, 'hasOnly'>; requireRoles: boolean },
 ) => {
 	if (!validator.isEmail(username)) {
 		return { status: 400, field: 'username', message: 'E-mail inválido' };
@@ -30,7 +30,7 @@ export const validateUserForm = (
 	if (!isAcceptablePassword(password)) {
 		return { status: 400, field: 'password', message: 'Senha não atende aos requisitos mínimos de segurança' };
 	}
-	if ((roles || requireRoles) && !hasOnlyLibraryRoles(roles ?? '')) {
+	if ((roles || requireRoles) && !area.hasOnly(roles ?? '')) {
 		return { status: 400, field: 'roles', message: 'Setor inválido' };
 	}
 };

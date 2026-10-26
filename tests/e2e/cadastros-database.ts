@@ -8,7 +8,7 @@ const databaseUrl = process.env.POSTGRES_URL;
 if (!databaseUrl) throw new Error('POSTGRES_URL is required for cadastro E2E tests.');
 
 const TEST_USER_TOKEN_LENGTH = 9;
-const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin';
+const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin';
 export type TestDatabase = postgres.Sql;
 
 export const createDatabase = (): TestDatabase => postgres(databaseUrl, { max: 4 });
@@ -20,6 +20,7 @@ export type TestUsers = {
 	tesouraria: TestUser;
 	admin: TestUser;
 	fullAdmin: TestUser;
+	comunicacao: TestUser;
 };
 export type CadastroSnapshot = {
 	idleitor: number;
@@ -63,6 +64,7 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	const tesouraria = createUser(token, 'tesouraria', password);
 	const admin = createUser(token, 'admin', password);
 	const fullAdmin = createUser(token, 'full', password);
+	const comunicacao = createUser(token, 'comun', password);
 	const passwordHash = await hash(password);
 
 	await insertUser(database, owner, 'biblioteca,secretaria,tesouraria', passwordHash);
@@ -70,8 +72,9 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	await insertUser(database, tesouraria, 'tesouraria', passwordHash);
 	await insertUser(database, admin, 'biblioteca,biblioteca:admin,tesouraria:admin', passwordHash);
 	await insertUser(database, fullAdmin, FULL_ADMIN_ROLES, passwordHash);
+	await insertUser(database, comunicacao, 'comunicacao', passwordHash);
 
-	return { owner, wrongRole, tesouraria, admin, fullAdmin };
+	return { owner, wrongRole, tesouraria, admin, fullAdmin, comunicacao };
 };
 export const readCadastro = async (database: TestDatabase, name: string): Promise<CadastroSnapshot> => {
 	const [cadastro] = await database<CadastroSnapshot[]>`

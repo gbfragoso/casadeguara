@@ -6,7 +6,8 @@ import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { generateUserId } from '#lib/server/auth/user-id.js';
 import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
-import { readUserForm, validateUserForm } from '#lib/server/biblioteca/usuarios/user-form.js';
+import { LIBRARY_AREA } from '#lib/server/users/area-roles.js';
+import { readUserForm, validateUserForm } from '#lib/server/users/user-form.js';
 
 const load = async ({ locals }: RequestEvent) => {
 	requireLibraryAdminAccess(locals.user);
@@ -17,7 +18,7 @@ const actions: Actions = {
 		requireLibraryAdminAccess(locals.user);
 
 		const form = await readUserForm(request);
-		const rejection = validateUserForm(form, { requireRoles: true });
+		const rejection = validateUserForm(form, { area: LIBRARY_AREA, requireRoles: true });
 		if (rejection) return rejection;
 
 		const { username, name, password, roles } = form;

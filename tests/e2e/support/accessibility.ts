@@ -77,3 +77,10 @@ export const findFocusIndicatorGaps = async (page: Page) => {
 	}
 	return gaps;
 };
+
+const WCAG_AA_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
+
+export const auditWcagViolations = async (page: Page) => {
+	const results = await new AxeBuilder({ page }).withTags(WCAG_AA_TAGS).analyze();
+	return results.violations.flatMap((rule) => rule.nodes.map((node) => `${rule.id}: ${node.target.join(' ')}`));
+};

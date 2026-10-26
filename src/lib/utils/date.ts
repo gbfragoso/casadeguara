@@ -20,11 +20,28 @@ const bahiaIsoDateFormatter = new Intl.DateTimeFormat('en-CA', {
 	day: '2-digit',
 });
 
-export const readBahiaCivilDate = (reference: Date): Date =>
-	new Date(`${bahiaIsoDateFormatter.format(reference)}T00:00:00Z`);
+export const readBahiaIsoDate = (reference: Date): string => bahiaIsoDateFormatter.format(reference);
+
+export const readBahiaCivilDate = (reference: Date): Date => new Date(`${readBahiaIsoDate(reference)}T00:00:00Z`);
 
 export const addCivilDays = (civilDate: Date, days: number): Date => {
 	const shifted = new Date(civilDate);
 	shifted.setUTCDate(shifted.getUTCDate() + days);
 	return shifted;
+};
+
+const ISO_WEEKDAYS_FROM_SUNDAY = [7, 1, 2, 3, 4, 5, 6] as const;
+
+export type IsoWeekday = (typeof ISO_WEEKDAYS_FROM_SUNDAY)[number];
+
+const weekdayFormatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', timeZone: 'UTC' });
+
+const toUtcMidnight = (civilDate: string) => new Date(`${civilDate}T00:00:00Z`);
+
+export const readIsoWeekday = (civilDate: string): IsoWeekday =>
+	ISO_WEEKDAYS_FROM_SUNDAY[toUtcMidnight(civilDate).getUTCDay()];
+
+export const formatCivilDateWithWeekday = (civilDate: string): string => {
+	const weekday = weekdayFormatter.format(toUtcMidnight(civilDate));
+	return `${weekday.charAt(0).toLocaleUpperCase('pt-BR')}${weekday.slice(1)}, ${formatCivilDate(civilDate)}`;
 };

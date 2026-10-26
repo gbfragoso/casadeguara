@@ -64,6 +64,13 @@
       "when": 1788438901694,
       "tag": "0008_tiresome_klaw",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792958368518,
+      "tag": "0009_bright_prima",
+      "breakpoints": true
     }
   ]
 }

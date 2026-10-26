@@ -1,15 +1,14 @@
 import { createCardPhoto } from '#lib/server/image/cropper.js';
 import { InvalidPhotoError, normalizePhotoSource } from '#lib/server/image/normalizer.js';
+import { getPhotoInput, getPositionInput } from '#lib/server/image/photo-form.js';
 import type { SecretariaPhotoModel } from '#lib/server/models/secretaria-photo.js';
 
-import { INVALID_PHOTO_MESSAGE, PHOTO_POSITION_MESSAGE } from '#lib/validation/cadastros/foto.js';
+import { INVALID_PHOTO_MESSAGE, PHOTO_POSITION_MESSAGE } from '#lib/validation/photo.js';
 import { error, fail } from '@sveltejs/kit';
 
 import {
 	missingCadastro,
 	missingPhoto,
-	getPhotoInput,
-	getPositionInput,
 	rejectInput,
 	rejectMalformedInput,
 	requireSource,

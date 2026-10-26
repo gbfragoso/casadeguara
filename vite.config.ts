@@ -69,6 +69,8 @@ export default defineConfig({
 				'src/lib/scripts/**/*.js',
 				// O contrato do recibo de empréstimo contém só tipos, apagados em tempo de execução.
 				'src/lib/receipts/loan-receipt.ts',
+				// Os contratos das palestras contêm só tipos, apagados em tempo de execução.
+				'src/lib/talks/types.ts',
 			],
 			thresholds: {
 				perFile: true,

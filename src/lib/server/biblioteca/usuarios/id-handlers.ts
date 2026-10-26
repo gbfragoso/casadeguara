@@ -6,13 +6,8 @@ import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
 import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
-import { hasBibliotecaAccess } from '#lib/server/authorization/cadastros.js';
-import {
-	administersOtherAreasOf,
-	replaceLibraryRoles,
-	selectLibraryRoles,
-} from '#lib/server/biblioteca/usuarios/roles.js';
-import { readUserForm, validateUserForm, type UserForm } from '#lib/server/biblioteca/usuarios/user-form.js';
+import { LIBRARY_AREA } from '#lib/server/users/area-roles.js';
+import { readUserForm, validateUserForm, type UserForm } from '#lib/server/users/user-form.js';
 
 const editableUserFields = { id: user.id, username: user.username, name: user.name, roles: user.roles };
 
@@ -28,8 +23,8 @@ const findUser = async (id: string) => {
 
 const findEditableUser = async (id: string, editor: { roles: string }) => {
 	const usuario = await findUser(id);
-	if (!usuario || !hasBibliotecaAccess(usuario)) error(404, 'Usuário não encontrado');
-	if (!administersOtherAreasOf(editor, usuario)) {
+	if (!usuario || !LIBRARY_AREA.includesAny(usuario.roles)) error(404, 'Usuário não encontrado');
+	if (!LIBRARY_AREA.administersOtherAreasOf(editor, usuario)) {
 		error(401, 'Usuário não possui acesso administrativo às demais áreas deste usuário');
 	}
 
@@ -53,7 +48,7 @@ const load = async ({ locals, params }: RequestEvent) => {
 
 	const usuario = await findEditableUser(String(params.id), editor);
 
-	return { usuario: { ...usuario, roles: selectLibraryRoles(usuario.roles) } };
+	return { usuario: { ...usuario, roles: LIBRARY_AREA.select(usuario.roles) } };
 };
 
 const actions: Actions = {
@@ -61,11 +56,11 @@ const actions: Actions = {
 		const editor = requireLibraryAdminAccess(locals.user);
 
 		const form = await readUserForm(request);
-		const rejection = validateUserForm(form, { requireRoles: false });
+		const rejection = validateUserForm(form, { area: LIBRARY_AREA, requireRoles: false });
 		if (rejection) return rejection;
 
 		const target = await findEditableUser(String(params.id), editor);
-		const roles = form.roles ? replaceLibraryRoles(target.roles, form.roles) : undefined;
+		const roles = form.roles ? LIBRARY_AREA.replace(target.roles, form.roles) : undefined;
 		return updateUser(String(params.id), form, roles);
 	},
 };

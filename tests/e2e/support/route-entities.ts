@@ -9,6 +9,7 @@ export type RouteEntities = {
 	keyword: number;
 	livro: number;
 	cadastro: number;
+	palestrante: number;
 	emprestimo: number;
 	lancamento: number;
 	recibo: string;
@@ -35,6 +36,7 @@ export const createRouteEntities = async (e2e: E2EData): Promise<RouteEntities> 
 		keyword: catalog.keyword[0].id,
 		livro: catalog.livros.primary.idlivro,
 		cadastro: participant.id,
+		palestrante: await e2e.createSpeaker({ nome: `Palestrante catálogo ${e2e.token}` }),
 		emprestimo: await e2e.createLoan(loanedBook, participant.id),
 		...(await createReceipt(e2e, participant.id)),
 		usuario: e2e.users.owner.id,

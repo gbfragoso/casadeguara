@@ -2,21 +2,13 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import AccessCard from '#lib/components/layout/AccessCard.svelte';
+	import { listAccessibleModules } from '#lib/navigation/system-modules.js';
 	import type { PageServerData } from './$types';
 
 	type Props = { data: PageServerData };
-	type ModulePath = 'biblioteca' | 'secretaria' | 'tesouraria';
 
 	let { data }: Props = $props();
-	let { roles } = $derived(data);
-	const modules: Array<{ role: string; path: ModulePath; label: string; icon: string }> = [
-		{ role: 'biblioteca', path: 'biblioteca', label: 'Biblioteca', icon: 'fa-solid fa-book' },
-		{ role: 'secretaria', path: 'secretaria', label: 'Secretaria', icon: 'fa-solid fa-address-book' },
-		{ role: 'tesouraria', path: 'tesouraria', label: 'Tesouraria', icon: 'fa-solid fa-sack-dollar' },
-	];
-	let availableModules = $derived(
-		modules.filter((module) => roles.some((role) => role.replace(':admin', '') === module.role)),
-	);
+	let availableModules = $derived(listAccessibleModules(data.roles));
 </script>
 
 <AccessCard>

@@ -1,15 +1,17 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
-import { ulike, unaccent } from '#lib/server/database/functions.js';
+import { rolesOverlap, ulike, unaccent } from '#lib/server/database/functions.js';
 import { user } from '#lib/server/database/schema.js';
-import { error, redirect } from '@sveltejs/kit';
-import { and, not } from 'drizzle-orm';
+import { requireSecretariaAdminAccess } from '#lib/server/secretaria/access.js';
+import { SECRETARIA_AREA } from '#lib/server/users/area-roles.js';
+import { error } from '@sveltejs/kit';
+import { and } from 'drizzle-orm';
 
 const listedUserFields = { id: user.id, name: user.name };
 
 const load = async ({ locals, url }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireSecretariaAdminAccess(locals.user);
 
 	const page = Number(url.searchParams.get('page') || 1);
 	const nome = url.searchParams.get('nome') || undefined;
@@ -21,7 +23,7 @@ const load = async ({ locals, url }: RequestEvent) => {
 				.select(listedUserFields)
 				.from(user)
 				.offset((page - 1) * 5)
-				.where(and(nameFilter, not(ulike(user.roles, 'biblioteca%'))))
+				.where(and(nameFilter, rolesOverlap(user.roles, SECRETARIA_AREA.areaRoles)))
 				.orderBy(unaccent(user.name));
 		};
 

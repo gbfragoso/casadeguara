@@ -1,9 +1,10 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
-import { ulike, unaccent } from '#lib/server/database/functions.js';
+import { rolesOverlap, ulike, unaccent } from '#lib/server/database/functions.js';
 import { user } from '#lib/server/database/schema.js';
 import { requireLibraryAdminAccess } from '#lib/server/authorization/biblioteca.js';
+import { LIBRARY_AREA } from '#lib/server/users/area-roles.js';
 import { error } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 
@@ -22,7 +23,7 @@ const load = async ({ locals, url }: RequestEvent) => {
 				.select(listedUserFields)
 				.from(user)
 				.offset((page - 1) * 5)
-				.where(and(nameFilter, ulike(user.roles, 'biblioteca%')))
+				.where(and(nameFilter, rolesOverlap(user.roles, LIBRARY_AREA.areaRoles)))
 				.orderBy(unaccent(user.name));
 		};
 
