@@ -27,6 +27,7 @@ import {
 	cadastroFotos,
 	cadastros,
 	estornos,
+	lancamentoDescricoes,
 	lancamentos,
 	user,
 } from '#lib/server/database/schema.js';
@@ -60,6 +61,18 @@ describe('lancamento domain utilities', () => {
 		expect(mapPersistenceError(new Error()).code).toBe('PERSISTENCE_ERROR');
 		expect(isUniqueViolation(null)).toBe(false);
 		expect(isUniqueViolation({ code: 23505 })).toBe(false);
+	});
+
+	it('TU-01 references lancamentos from the description history', () => {
+		const historyConfig = getTableConfig(lancamentoDescricoes);
+
+		const [foreignKey] = historyConfig.foreignKeys;
+		const reference = foreignKey?.reference();
+
+		expect(historyConfig.foreignKeys).toHaveLength(1);
+		expect(reference?.foreignTable).toBe(lancamentos);
+		expect(reference?.foreignColumns).toEqual([lancamentos.idlancamento]);
+		expect(foreignKey?.onDelete).toBe('restrict');
 	});
 
 	it('keeps schema foreign keys and constraints available to Drizzle', () => {

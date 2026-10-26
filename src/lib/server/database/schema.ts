@@ -115,6 +115,21 @@ export const estornos = pgTable(
 	(table) => [index('estornos_data_id_idx').on(desc(table.dataEstorno), desc(table.idlancamento))],
 );
 
+export const lancamentoDescricoes = pgTable(
+	'lancamento_descricoes',
+	{
+		id: serial().primaryKey().notNull(),
+		idlancamento: integer('idlancamento')
+			.notNull()
+			.references(() => lancamentos.idlancamento, { onDelete: 'restrict' }),
+		descricaoAnterior: varchar('descricao_anterior', { length: 200 }).notNull(),
+		descricaoNova: varchar('descricao_nova', { length: 200 }).notNull(),
+		userAlteracao: varchar('user_alteracao', { length: 30 }).notNull(),
+		dataAlteracao: timestamp('data_alteracao', { withTimezone: true }).defaultNow().notNull(),
+	},
+	(table) => [index('lancamento_descricoes_lancamento_data_idx').on(table.idlancamento, desc(table.dataAlteracao))],
+);
+
 export const activeLancamentoPredicate = (idColumn = lancamentos.idlancamento) =>
 	sql`NOT EXISTS (SELECT 1 FROM ${estornos} WHERE ${estornos.idlancamento} = ${idColumn})`;
 

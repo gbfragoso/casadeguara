@@ -44,7 +44,7 @@ test('E2E-01 consulta lançamentos, filtros, totais e teclado', async ({ page, e
 	await expect(page.locator('tbody tr')).toHaveCount(100);
 	await page.getByLabel('Tipo de lançamento').selectOption('entrada');
 	await expect(page.getByLabel('Tipo de lançamento')).toHaveValue('entrada');
-	await page.getByLabel('Descrição').focus();
+	await page.getByLabel('Descrição', { exact: true }).focus();
 	await page.keyboard.press('Tab');
 	await expect(page.getByLabel('Registrado em')).toBeFocused();
 	await expect((await submitLancamentosSearch(page)).ok()).toBe(true);
@@ -167,7 +167,7 @@ test('E2E-03 cadastra saída sem contraparte, recibo ou ação de recibo', async
 		page.waitForURL(/\/tesouraria\/lancamentos\?criado=\d+$/),
 		page.getByRole('button', { name: 'Cadastrar' }).click(),
 	]);
-	await expect(page.getByLabel('Descrição')).toBeVisible();
+	await expect(page.getByLabel('Descrição', { exact: true })).toBeVisible();
 	await searchLancamentosByDescription(page, seed.descricao);
 	const row = findLancamentoRow(page, seed.descricao);
 	await expect(row).toBeVisible();

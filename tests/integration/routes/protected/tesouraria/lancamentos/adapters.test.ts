@@ -77,6 +77,10 @@ describe('tesouraria lancamento adapters', () => {
 			auditRouteActions.pesquisar,
 		]).toEqual(expect.arrayContaining([expect.any(Function)]));
 	});
+
+	it('exposes the description correction action on the list route', () => {
+		expect(listRouteActions).toEqual({ pesquisar: expect.any(Function), editarDescricao: expect.any(Function) });
+	});
 	it('authorizes list searches before reading the request or model', async () => {
 		const model = createListModel();
 		const requireAccess = vi.fn(() => {

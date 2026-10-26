@@ -26,7 +26,7 @@ export const submitLancamentosSearch = async (page: Page) => {
 };
 
 export const searchLancamentosByDescription = async (page: Page, description: string) => {
-	await page.getByLabel('Descrição').fill(description);
+	await page.getByLabel('Descrição', { exact: true }).fill(description);
 	const response = await submitLancamentosSearch(page);
 	expect(response.ok()).toBe(true);
 	await expect(page.locator('tbody')).toContainText(description);
