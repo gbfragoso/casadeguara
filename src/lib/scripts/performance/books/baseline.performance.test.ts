@@ -1,5 +1,5 @@
 import { bookPerformanceScenarios } from './scenarios';
-import { connectPerformanceDatabase } from './database';
+import { withPerformanceDatabase } from './database';
 import { captureEnvironment } from './environment';
 import { measureScenario, STATEMENT_TIMEOUT_MS, type BookMeasurement } from './measure';
 import { profile } from './profile';
@@ -8,8 +8,7 @@ import { seedBookProfile } from './seed';
 import { describe, expect, it } from 'vitest';
 
 async function captureBaseline() {
-	const { client, database } = connectPerformanceDatabase();
-	try {
+	return withPerformanceDatabase(async ({ client, database }) => {
 		await seedBookProfile(database);
 		await client.unsafe(`SET statement_timeout = ${STATEMENT_TIMEOUT_MS}`);
 		const environment = await captureEnvironment(client);
@@ -22,9 +21,7 @@ async function captureBaseline() {
 		}
 		await writeBaselineArtifacts(environment, measurements);
 		return { environment, measurements };
-	} finally {
-		await client.end();
-	}
+	});
 }
 
 describe('TI-12 baseline de pesquisa de livros', () => {
