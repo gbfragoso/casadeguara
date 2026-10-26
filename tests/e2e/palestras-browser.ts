@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 import { waitForHydration } from './fixtures-hydration';
 
@@ -58,3 +58,30 @@ export const dragWithMouse = async (page: Page, origin: Locator, target: Locator
 	await page.mouse.move(start.x, start.y + distance, { steps: DRAG_STEPS });
 	await page.mouse.up();
 };
+
+export const meetingActivities = (card: Locator) => card.getByRole('button', { name: /^Editar reunião com:/ });
+
+export const artAction = (card: Locator) => card.getByRole('button', { name: /^Gerar arte para redes sociais:/ });
+
+export const artDialog = (page: Page) => page.getByRole('dialog', { name: 'Arte para redes sociais' });
+
+export const artPreview = (page: Page) => artDialog(page).getByRole('img', { name: /^Arte de divulgação da palestra/ });
+
+export const openArt = async (page: Page, card: Locator) => {
+	await artAction(card).click();
+	const preview = artPreview(page);
+	await expect(preview).toBeVisible();
+	return preview;
+};
+
+export const readPreviewSize = (preview: Locator) =>
+	preview.evaluate(async (image: HTMLImageElement) => {
+		await image.decode();
+		return { width: image.naturalWidth, height: image.naturalHeight };
+	});
+
+export const readPreviewBytes = (preview: Locator) =>
+	preview.evaluate(async (image: HTMLImageElement) => {
+		const response = await fetch(image.src);
+		return [...new Uint8Array(await response.arrayBuffer())];
+	});

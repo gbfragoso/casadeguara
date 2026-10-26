@@ -13,6 +13,7 @@ export type TalkCard = {
 	titulo: string | null;
 	observacoes: string | null;
 	local: string | null;
+	reuniaoCom: string[];
 	palestrante: TalkSpeaker | null;
 	versao: number;
 };

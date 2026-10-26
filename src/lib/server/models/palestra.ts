@@ -1,6 +1,7 @@
 import { db } from '#lib/server/database/connection.js';
 import type { TalkChange, TalkCreateData, TalkMoveRequest, TalkTarget } from '#lib/validation/comunicacao/palestras.js';
 
+import { findArtSource } from './palestra-art';
 import { listAgenda, listHistory, suggestTimes } from './palestra-board';
 import { moveTalk } from './palestra-move';
 import type { TalkDatabase } from './palestra-projections';
@@ -19,6 +20,10 @@ export class PalestraModel {
 
 	suggestTimes() {
 		return suggestTimes(this.database);
+	}
+
+	findArtSource(id: number) {
+		return findArtSource(this.database, id);
 	}
 
 	create(input: TalkCreateData, actorId: string) {

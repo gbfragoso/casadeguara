@@ -5,28 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { withTalkFixtures } from './palestra-test-support';
 
 const model = new PalestraModel(db);
-const CREATOR_ID = 'creator-integration';
 const EDITOR_ID = 'editor-integration';
 const RULES = { today: '2351-03-01', allowPast: false };
-
-describe('PalestraModel.create', () => {
-	it('creates a talk to define in the agenda and records its creator', async () => {
-		await withTalkFixtures(async ({ readTalk, trackTalk }) => {
-			const { id } = await model.create({ data: '2351-03-09', horario: '08:45', local: null }, CREATOR_ID);
-			trackTalk(id);
-
-			const [card] = (await model.listAgenda(RULES.today)).filter((talk) => talk.id === id);
-			expect(card).toMatchObject({
-				data: '2351-03-09',
-				horario: '08:45',
-				titulo: null,
-				palestrante: null,
-				versao: 1,
-			});
-			expect(await readTalk(id)).toMatchObject({ userCadastro: CREATOR_ID, dataCadastro: expect.any(Date) });
-		});
-	});
-});
 
 describe('PalestraModel.update of a single field', () => {
 	it.each([

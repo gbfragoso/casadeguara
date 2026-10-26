@@ -1,3 +1,4 @@
+import type { SpeakerRejection } from '#lib/server/models/palestra-write.js';
 import { DUPLICATE_PALESTRANTE_NAME_MESSAGE } from '#lib/server/models/palestrante-error.js';
 import { error, fail } from '@sveltejs/kit';
 import { flattenError, type ZodError } from 'zod';
@@ -19,6 +20,7 @@ type InputFailureDetails = { palestraId?: number; valueField?: string };
 
 const INVALID_INPUT_MESSAGE = 'Dados inválidos.';
 const UNEXPECTED_FAILURE_MESSAGE = 'Não foi possível concluir a operação. Nada foi alterado.';
+const MISSING_SPEAKER_MESSAGE = 'Palestrante não encontrado.';
 
 const FAILURE_STATUS: Record<TalkFailureCode, number> = {
 	validacao: 400,
@@ -38,6 +40,8 @@ const FAILURE_MESSAGES: Record<TalkFailureCode, string> = {
 	conflito: 'Outra pessoa alterou esta programação. O board foi atualizado; confira e tente de novo.',
 };
 
+export const readTalkFailureMessage = (codigo: 'inexistente' | 'conflito') => FAILURE_MESSAGES[codigo];
+
 export const rejectTalk = (operacao: TalkOperation, codigo: TalkFailureCode, details: FailureDetails = {}) => {
 	const failure: TalkActionFailure = {
 		operacao,
@@ -47,6 +51,11 @@ export const rejectTalk = (operacao: TalkOperation, codigo: TalkFailureCode, det
 	};
 	return fail(FAILURE_STATUS[codigo], failure);
 };
+
+export const rejectSpeaker = (operacao: TalkOperation, status: SpeakerRejection, palestraId?: number) =>
+	status === 'duplicate-speaker'
+		? rejectTalk(operacao, 'nome-duplicado', { palestraId, campo: 'novoPalestrante' })
+		: rejectTalk(operacao, 'validacao', { palestraId, campo: 'palestranteId', mensagem: MISSING_SPEAKER_MESSAGE });
 
 export const rejectInvalidInput = (
 	operacao: TalkOperation,

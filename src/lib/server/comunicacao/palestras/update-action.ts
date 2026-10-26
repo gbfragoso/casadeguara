@@ -1,21 +1,25 @@
 import { requireComunicacaoAccess } from '#lib/server/authorization/comunicacao.js';
 import type { PalestraModel } from '#lib/server/models/palestra.js';
-import type { TalkUpdateOutcome } from '#lib/server/models/palestra-write.js';
+import type { SpeakerRejection, TalkUpdateOutcome } from '#lib/server/models/palestra-write.js';
 import { talkChangeSchema, talkTargetSchema, type TalkChange } from '#lib/validation/comunicacao/palestras.js';
 
 import { acceptsDate, readTalkRules, type TalkActionContext } from './access';
-import { rejectConflict, rejectInvalidInput, rejectTalk, runTalkOperation, type TalkFailureCode } from './failures';
+import {
+	rejectConflict,
+	rejectInvalidInput,
+	rejectSpeaker,
+	rejectTalk,
+	runTalkOperation,
+	type TalkFailureCode,
+} from './failures';
 
 type UpdateDependencies = { talks: Pick<PalestraModel, 'update'>; today: () => string };
 type UpdateRejection = Exclude<TalkUpdateOutcome['status'], 'updated'>;
 type UpdateContext = { palestraId: number; campo: TalkChange['campo']; actorId: string };
 
-const MISSING_SPEAKER_MESSAGE = 'Palestrante não encontrado.';
-
-const REJECTION_CODES: Record<Exclude<UpdateRejection, 'conflict' | 'missing-speaker'>, TalkFailureCode> = {
+const REJECTION_CODES: Record<Exclude<UpdateRejection, 'conflict' | SpeakerRejection>, TalkFailureCode> = {
 	missing: 'inexistente',
 	locked: 'historico-bloqueado',
-	'duplicate-speaker': 'nome-duplicado',
 };
 
 const readSubmittedField = (form: FormData) => {
@@ -38,8 +42,8 @@ const parseUpdateForm = (form: FormData) => {
 
 const rejectOutcome = (status: UpdateRejection, { palestraId, campo, actorId }: UpdateContext) => {
 	if (status === 'conflict') return rejectConflict('atualizar', palestraId, actorId);
-	if (status === 'missing-speaker') {
-		return rejectTalk('atualizar', 'validacao', { palestraId, campo, mensagem: MISSING_SPEAKER_MESSAGE });
+	if (status === 'duplicate-speaker' || status === 'missing-speaker') {
+		return rejectSpeaker('atualizar', status, palestraId);
 	}
 	return rejectTalk('atualizar', REJECTION_CODES[status], { palestraId, campo });
 };

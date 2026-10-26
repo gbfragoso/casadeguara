@@ -15,6 +15,7 @@ const renderCard = (props: Partial<CardProps> = {}) => {
 		hoje: '2026-03-01',
 		isAdmin: false,
 		palestrantes: speakers,
+		onArtStale: vi.fn(() => Promise.resolve()),
 		onUpdate,
 		...props,
 	});
@@ -122,7 +123,7 @@ describe('TalkCard', () => {
 	it('shows a past talk read-only to volunteers', async () => {
 		const target = await renderCard({ readonly: true });
 
-		expect(target.querySelector('button')).toBeNull();
+		expect(target.querySelector('button[aria-label^="Editar"]')).toBeNull();
 		expect(target.textContent).toContain('Carmélia Amorim');
 	});
 
@@ -132,12 +133,12 @@ describe('TalkCard', () => {
 		findByLabel(target, 'Editar título: A prece', HTMLButtonElement).click();
 		await tick();
 		const title = findByLabel(target, 'Título', HTMLInputElement);
-		await typeText(title, 'x'.repeat(121));
+		await typeText(title, 'x'.repeat(71));
 
 		await pressKey(title, 'Enter');
 
 		expect(onUpdate).not.toHaveBeenCalled();
-		expect(target.querySelector('[role="alert"]')?.textContent).toBe('O título deve ter até 120 caracteres.');
+		expect(target.querySelector('[role="alert"]')?.textContent).toBe('O título deve ter até 70 caracteres.');
 	});
 
 	it('sends a changed field to the board', async () => {

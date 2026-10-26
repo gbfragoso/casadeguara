@@ -2,9 +2,11 @@ import { z } from 'zod';
 
 import { speakerNameSchema } from './palestrantes';
 
-export const TALK_TITLE_MAX_LENGTH = 120;
-export const TALK_NOTES_MAX_LENGTH = 500;
-export const TALK_LOCATION_MAX_LENGTH = 120;
+export const TALK_TITLE_MAX_LENGTH = 70;
+export const TALK_NOTES_MAX_LENGTH = 80;
+export const TALK_LOCATION_MAX_LENGTH = 60;
+export const MEETING_ACTIVITIES_MAX_COUNT = 5;
+export const MEETING_ACTIVITY_MAX_LENGTH = 32;
 export const MOVE_RANGE_MIN = 2;
 export const MOVE_RANGE_MAX = 200;
 
@@ -49,13 +51,33 @@ const locationSchema = optionalTextSchema(
 	`O local deve ter até ${TALK_LOCATION_MAX_LENGTH} caracteres.`,
 );
 
+const MEETING_ACTIVITIES_COUNT_MESSAGE = `Informe até ${MEETING_ACTIVITIES_MAX_COUNT} atividades, uma por linha.`;
+const MEETING_ACTIVITY_LENGTH_MESSAGE = `Cada atividade deve ter até ${MEETING_ACTIVITY_MAX_LENGTH} caracteres.`;
+
+const toMeetingActivities = (text: string) =>
+	text
+		.split('\n')
+		.map((activity) => activity.trim())
+		.filter(Boolean);
+
+export const meetingActivitiesSchema = z
+	.string({ error: INVALID_TEXT_MESSAGE })
+	.transform(toMeetingActivities)
+	.pipe(
+		z
+			.array(z.string().max(MEETING_ACTIVITY_MAX_LENGTH, MEETING_ACTIVITY_LENGTH_MESSAGE))
+			.max(MEETING_ACTIVITIES_MAX_COUNT, MEETING_ACTIVITIES_COUNT_MESSAGE),
+	);
+
 const identifierSchema = z.coerce
 	.number({ error: INVALID_IDENTIFIER_MESSAGE })
 	.int(INVALID_IDENTIFIER_MESSAGE)
 	.positive(INVALID_IDENTIFIER_MESSAGE);
 
+const missingAsNull = (value: unknown) => (isMissing(value) ? null : value);
+
 const speakerIdSchema = z.preprocess(
-	(value) => (value === '' ? null : value),
+	missingAsNull,
 	z.coerce
 		.number({ error: INVALID_SPEAKER_MESSAGE })
 		.int(INVALID_SPEAKER_MESSAGE)
@@ -63,7 +85,18 @@ const speakerIdSchema = z.preprocess(
 		.nullable(),
 );
 
-export const talkCreateSchema = z.object({ data: civilDateSchema, horario: clockTimeSchema, local: locationSchema });
+const newSpeakerNameSchema = z.preprocess(missingAsNull, speakerNameSchema.nullable());
+
+export const talkCreateSchema = z.object({
+	data: civilDateSchema,
+	horario: clockTimeSchema,
+	titulo: titleSchema,
+	palestranteId: speakerIdSchema,
+	novoPalestrante: newSpeakerNameSchema,
+	observacoes: notesSchema,
+	local: locationSchema,
+	reuniaoCom: meetingActivitiesSchema,
+});
 
 export const talkTargetSchema = z.object({ id: identifierSchema, versao: identifierSchema });
 
@@ -71,6 +104,7 @@ export const talkChangeSchema = z.discriminatedUnion('campo', [
 	z.object({ campo: z.literal('titulo'), valor: titleSchema }),
 	z.object({ campo: z.literal('observacoes'), valor: notesSchema }),
 	z.object({ campo: z.literal('local'), valor: locationSchema }),
+	z.object({ campo: z.literal('reuniaoCom'), valor: meetingActivitiesSchema }),
 	z.object({ campo: z.literal('palestranteId'), valor: speakerIdSchema }),
 	z.object({ campo: z.literal('novoPalestrante'), valor: speakerNameSchema }),
 	z.object({ campo: z.literal('data'), valor: civilDateSchema }),

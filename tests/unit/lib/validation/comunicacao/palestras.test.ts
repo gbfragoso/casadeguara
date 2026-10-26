@@ -12,7 +12,12 @@ import {
 } from '#lib/validation/comunicacao/palestras.js';
 import { getFieldErrors } from '../field-errors';
 
-const VALID_CREATION = { data: '2026-03-09', horario: '08:45', local: 'Rua Major Dórea, 86, Castália, Itabuna-BA' };
+const VALID_CREATION = {
+	data: '2026-03-09',
+	horario: '08:45',
+	local: 'Rua Major Dórea, 86, Castália, Itabuna-BA',
+	reuniaoCom: 'Estudo do Evangelho',
+};
 const INVALID_MOVE_MESSAGE = 'Troca de datas inválida.';
 
 const createMove = (ids: string[], versoes: string[], origemId = ids[0], destinoId = ids.at(-1)) => ({
@@ -49,39 +54,36 @@ describe('TU-10 talkCreateSchema', () => {
 		expect(getFieldErrors(result)).toEqual({ [field]: [message] });
 	});
 
-	it('rejects a location with 121 characters', () => {
+	it('rejects a location with 61 characters', () => {
 		const result = talkCreateSchema.safeParse({
 			...VALID_CREATION,
 			local: 'a'.repeat(TALK_LOCATION_MAX_LENGTH + 1),
 		});
 
-		expect(getFieldErrors(result)).toEqual({ local: ['O local deve ter até 120 caracteres.'] });
+		expect(getFieldErrors(result)).toEqual({ local: ['O local deve ter até 60 caracteres.'] });
 	});
 });
 
 describe('TU-10 talkChangeSchema', () => {
 	it.each([
-		['titulo', TALK_TITLE_MAX_LENGTH, 'O título deve ter até 120 caracteres.'],
-		['observacoes', TALK_NOTES_MAX_LENGTH, 'As observações devem ter até 500 caracteres.'],
-		['local', TALK_LOCATION_MAX_LENGTH, 'O local deve ter até 120 caracteres.'],
-	])('rejects %s above %i characters with the limit message', (campo, maxLength, message) => {
+		['titulo', TALK_TITLE_MAX_LENGTH, 'O título deve ter até 70 caracteres.'],
+		['observacoes', TALK_NOTES_MAX_LENGTH, 'As observações devem ter até 80 caracteres.'],
+		['local', TALK_LOCATION_MAX_LENGTH, 'O local deve ter até 60 caracteres.'],
+	])('TU-04 rejects %s above %i characters with the limit message', (campo, maxLength, message) => {
 		const result = talkChangeSchema.safeParse({ campo, valor: 'a'.repeat(maxLength + 1) });
 
 		expect(getFieldErrors(result)).toEqual({ valor: [message] });
 	});
 
-	it.each(['titulo', 'observacoes', 'local'])('accepts %s at the maximum length', (campo) => {
-		const maxLength = {
-			titulo: TALK_TITLE_MAX_LENGTH,
-			observacoes: TALK_NOTES_MAX_LENGTH,
-			local: TALK_LOCATION_MAX_LENGTH,
-		}[campo];
-
-		const result = talkChangeSchema.safeParse({ campo, valor: 'a'.repeat(maxLength ?? 0) });
+	it.each([
+		['titulo', TALK_TITLE_MAX_LENGTH],
+		['observacoes', TALK_NOTES_MAX_LENGTH],
+		['local', TALK_LOCATION_MAX_LENGTH],
+	])('TU-04 accepts %s at %i characters', (campo, maxLength) => {
+		const result = talkChangeSchema.safeParse({ campo, valor: 'a'.repeat(maxLength) });
 
 		expect(result.success).toBe(true);
 	});
-
 	it('clears a blank title to be defined later', () => {
 		expect(talkChangeSchema.parse({ campo: 'titulo', valor: '   ' })).toEqual({ campo: 'titulo', valor: null });
 	});

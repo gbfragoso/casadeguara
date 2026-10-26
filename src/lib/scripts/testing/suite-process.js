@@ -10,7 +10,9 @@ export function suiteCommand(suite) {
 	const vitest = resolve('node_modules/vitest/vitest.mjs');
 	const playwright = resolve('node_modules/@playwright/test/cli.js');
 	if (suite === 'integration') return [executable, [vitest, 'run', '--project', 'integration']];
-	if (suite === 'coverage') return [executable, [vitest, 'run', '--coverage']];
+	if (suite === 'coverage') {
+		return [executable, [vitest, 'run', '--coverage', '--project', 'unit', '--project', 'integration']];
+	}
 	if (suite === 'performance') return [executable, [vitest, 'run', '--project', 'performance']];
 	return [executable, [playwright, 'test']];
 }

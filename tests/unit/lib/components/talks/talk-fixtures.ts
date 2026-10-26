@@ -2,7 +2,7 @@ import { flushSync, tick } from 'svelte';
 import { vi } from 'vitest';
 import type { ActionResult } from '$app/forms';
 import type { TalkCard } from '#lib/talks/types.js';
-import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
+import { DEFAULT_MEETING_ACTIVITIES, DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
 import { actionSuccess } from '../../talks/action-results.js';
 
 export const buildTalk = (overrides: Partial<TalkCard> = {}): TalkCard => ({
@@ -12,6 +12,7 @@ export const buildTalk = (overrides: Partial<TalkCard> = {}): TalkCard => ({
 	titulo: 'A prece',
 	observacoes: null,
 	local: DEFAULT_TALK_LOCATION,
+	reuniaoCom: [...DEFAULT_MEETING_ACTIVITIES],
 	palestrante: { id: 4, nome: 'Carmélia Amorim', temFoto: false },
 	versao: 3,
 	...overrides,

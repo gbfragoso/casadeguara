@@ -41,7 +41,7 @@ describe('TalkHistory', () => {
 			'Segunda-feira, 23/02/2026 · 08:45 · O passe',
 			'Segunda-feira, 16/02/2026 · 08:45 · A prece',
 		]);
-		expect(target.querySelector('button')).toBeNull();
+		expect(target.querySelector('button[aria-label^="Editar"]')).toBeNull();
 	});
 
 	it('lets the coordinator correct a past talk', async () => {

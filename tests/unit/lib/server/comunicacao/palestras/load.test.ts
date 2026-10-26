@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
+import { DEFAULT_MEETING_ACTIVITIES, DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
 import { expectHttpError, expectRedirect, runHandler } from '../../../../support/handler-event';
 import {
 	COORDINATOR,
@@ -38,6 +38,7 @@ describe('talk board load', () => {
 			horariosSugeridos: { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null },
 			palestrantes: [{ id: 4, nome: 'Carmélia Amorim' }],
 			localPadrao: DEFAULT_TALK_LOCATION,
+			reuniaoComPadrao: DEFAULT_MEETING_ACTIVITIES,
 			isAdmin: false,
 		});
 		expect(talks.listAgenda).toHaveBeenCalledWith(TODAY);

@@ -133,7 +133,8 @@
 				{palestrantes}
 				move={moveControls(index)}
 				onUpdate={(campo, valor) => updateTalkField(context, talk, campo, valor)}
-				onDelete={isAdmin ? () => deleteTalk(context, talk.id) : undefined} />
+				onDelete={isAdmin ? () => deleteTalk(context, talk.id) : undefined}
+				onArtStale={context.refresh} />
 			{#if SHADOW_ITEM_MARKER_PROPERTY_NAME in talk}
 				<div
 					aria-hidden="true"

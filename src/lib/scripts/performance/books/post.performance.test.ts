@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { bookPerformanceScenarios, type BookPerformanceScenario } from './scenarios';
-import { connectPerformanceDatabase } from './database';
+import { withPerformanceDatabase } from './database';
 import { captureEnvironment } from './environment';
 import { measureScenario, STATEMENT_TIMEOUT_MS, type BookMeasurement } from './measure';
 import { profile } from './profile';
@@ -17,8 +17,7 @@ function toFinalScenario(scenario: BookPerformanceScenario): BookPerformanceScen
 }
 
 async function capturePostPerformance() {
-	const { client, database } = connectPerformanceDatabase();
-	try {
+	return withPerformanceDatabase(async ({ client, database }) => {
 		await seedBookProfile(database);
 		await client.unsafe(`SET statement_timeout = ${STATEMENT_TIMEOUT_MS}`);
 		const environment = await captureEnvironment(client);
@@ -31,9 +30,7 @@ async function capturePostPerformance() {
 		}
 		await writePostArtifacts(environment, measurements);
 		return { environment, measurements };
-	} finally {
-		await client.end();
-	}
+	});
 }
 
 describe('TI-13 performance pós-revitalização da pesquisa de livros', () => {

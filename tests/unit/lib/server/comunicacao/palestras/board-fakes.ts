@@ -17,6 +17,7 @@ export const createTalkCard = (id: number, data: string): TalkCard => ({
 	titulo: null,
 	observacoes: null,
 	local: null,
+	reuniaoCom: [],
 	palestrante: null,
 	versao: 1,
 });
@@ -25,7 +26,7 @@ export const createFakeTalks = () => ({
 	listAgenda: vi.fn<PalestraModel['listAgenda']>(async () => []),
 	listHistory: vi.fn<PalestraModel['listHistory']>(async () => ({ rows: [] as TalkCard[], hasNext: false })),
 	suggestTimes: vi.fn<PalestraModel['suggestTimes']>(async () => NO_SUGGESTIONS),
-	create: vi.fn<PalestraModel['create']>(async () => ({ id: 1 })),
+	create: vi.fn<PalestraModel['create']>(async () => ({ status: 'created', id: 1 })),
 	update: vi.fn<PalestraModel['update']>(async () => ({ status: 'updated', versao: 2 })),
 	move: vi.fn<PalestraModel['move']>(async () => ({
 		status: 'moved',

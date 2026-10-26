@@ -1,0 +1,2 @@
+ALTER TABLE "palestras" ADD COLUMN "reuniao_com" varchar(32)[] DEFAULT '{"Estudo do Evangelho","Palestra doutrinária","Passes e água fluidificada","Atendimento fraterno","Atendimento espiritual"}' NOT NULL;--> statement-breakpoint
+ALTER TABLE "palestras" ADD CONSTRAINT "palestras_reuniao_com_ck" CHECK (cardinality("palestras"."reuniao_com") <= 5);

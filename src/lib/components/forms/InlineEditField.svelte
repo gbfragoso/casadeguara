@@ -16,6 +16,7 @@
 		min?: string;
 		readonly?: boolean;
 		emptyText?: string;
+		help?: string;
 		format?: (value: string) => string;
 		validate?: (value: string) => string | null;
 		onSave: (value: string) => Promise<SaveResult>;
@@ -32,6 +33,7 @@
 		min,
 		readonly = false,
 		emptyText = 'a definir',
+		help,
 		format = (text) => text,
 		validate = () => null,
 		onSave,
@@ -47,6 +49,8 @@
 
 	const displayText = $derived(current ? format(current) : emptyText);
 	const errorId = $derived(`${id}-error`);
+	const helpId = $derived(help ? `${id}-help` : undefined);
+	const triggerDescription = $derived([helpId, status === 'error' && errorId].filter(Boolean).join(' ') || undefined);
 
 	function focusOnMount(element: HTMLElement) {
 		element.focus();
@@ -115,6 +119,7 @@
 				{id}
 				aria-label={label}
 				rows={4}
+				aria-describedby={helpId}
 				bind:value={draft}
 				onblur={() => commit(false)}
 				onkeydown={handleKey} />
@@ -125,6 +130,7 @@
 				{type}
 				{min}
 				aria-label={label}
+				aria-describedby={helpId}
 				bind:value={draft}
 				onblur={() => commit(false)}
 				onkeydown={handleKey} />
@@ -134,7 +140,7 @@
 			bind:this={trigger}
 			type="button"
 			aria-label={`Editar ${label.toLocaleLowerCase('pt-BR')}: ${displayText}`}
-			aria-describedby={status === 'error' ? errorId : undefined}
+			aria-describedby={triggerDescription}
 			class={[
 				'-mx-2 flex min-h-11 w-[calc(100%+1rem)] cursor-text items-center rounded-md px-2 text-left wrap-anywhere transition-colors hover:bg-surface-muted motion-reduce:transition-none',
 				type === 'textarea' && 'whitespace-pre-line',
@@ -143,6 +149,9 @@
 			onclick={startEditing}>
 			{displayText}
 		</button>
+	{/if}
+	{#if help}
+		<p id={helpId} class="text-sm text-ink-muted">{help}</p>
 	{/if}
 	<p class="text-sm text-ink-muted" role="status">{STATUS_TEXT[status]}</p>
 	{#if status === 'error'}

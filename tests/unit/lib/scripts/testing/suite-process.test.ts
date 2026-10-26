@@ -9,7 +9,10 @@ const playwright = resolve('node_modules/@playwright/test/cli.js');
 describe('suite process routing', () => {
 	it.each([
 		['integration', [process.execPath, [vitest, 'run', '--project', 'integration']]],
-		['coverage', [process.execPath, [vitest, 'run', '--coverage']]],
+		[
+			'coverage',
+			[process.execPath, [vitest, 'run', '--coverage', '--project', 'unit', '--project', 'integration']],
+		],
 		['performance', [process.execPath, [vitest, 'run', '--project', 'performance']]],
 		['e2e', [process.execPath, [playwright, 'test']]],
 	])('routes %s to its dedicated runner', (suite, expected) => {

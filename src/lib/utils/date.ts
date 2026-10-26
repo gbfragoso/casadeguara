@@ -41,7 +41,14 @@ const toUtcMidnight = (civilDate: string) => new Date(`${civilDate}T00:00:00Z`);
 export const readIsoWeekday = (civilDate: string): IsoWeekday =>
 	ISO_WEEKDAYS_FROM_SUNDAY[toUtcMidnight(civilDate).getUTCDay()];
 
-export const formatCivilDateWithWeekday = (civilDate: string): string => {
+export const formatWeekday = (civilDate: string): string => {
 	const weekday = weekdayFormatter.format(toUtcMidnight(civilDate));
-	return `${weekday.charAt(0).toLocaleUpperCase('pt-BR')}${weekday.slice(1)}, ${formatCivilDate(civilDate)}`;
+	return `${weekday.charAt(0).toLocaleUpperCase('pt-BR')}${weekday.slice(1)}`;
 };
+
+export const formatCivilDateWithWeekday = (civilDate: string): string =>
+	`${formatWeekday(civilDate)}, ${formatCivilDate(civilDate)}`;
+
+const monthNameFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'long', timeZone: 'UTC' });
+
+export const formatMonthName = (civilDate: string): string => monthNameFormatter.format(toUtcMidnight(civilDate));

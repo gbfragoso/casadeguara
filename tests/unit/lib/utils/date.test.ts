@@ -4,7 +4,9 @@ import {
 	addCivilDays,
 	formatCivilDate,
 	formatCivilDateWithWeekday,
+	formatMonthName,
 	formatMonthYear,
+	formatWeekday,
 	readBahiaCivilDate,
 	readBahiaIsoDate,
 	readIsoWeekday,
@@ -125,5 +127,26 @@ describe('TU-30 readIsoWeekday', () => {
 		process.env.TZ = timeZone;
 
 		expect(readIsoWeekday('2026-03-08')).toBe(7);
+	});
+});
+
+describe('formatWeekday', () => {
+	it.each([
+		['2026-10-26', 'Segunda-feira'],
+		['2026-03-08', 'Domingo'],
+	])('writes the capitalised weekday of %s', (civilDate, expected) => {
+		expect(formatWeekday(civilDate)).toBe(expected);
+	});
+});
+
+describe('formatMonthName', () => {
+	it('writes the month name in Portuguese', () => {
+		expect(formatMonthName('2026-10-26')).toBe('outubro');
+	});
+
+	it.each(['UTC', 'Pacific/Auckland', 'America/Bahia'])('keeps the civil month in %s', (timeZone) => {
+		process.env.TZ = timeZone;
+
+		expect(formatMonthName('2026-03-01')).toBe('março');
 	});
 });
