@@ -38,6 +38,8 @@ const FAILURE_MESSAGES: Record<TalkFailureCode, string> = {
 	conflito: 'Outra pessoa alterou esta programação. O board foi atualizado; confira e tente de novo.',
 };
 
+export const readTalkFailureMessage = (codigo: 'inexistente' | 'conflito') => FAILURE_MESSAGES[codigo];
+
 export const rejectTalk = (operacao: TalkOperation, codigo: TalkFailureCode, details: FailureDetails = {}) => {
 	const failure: TalkActionFailure = {
 		operacao,
