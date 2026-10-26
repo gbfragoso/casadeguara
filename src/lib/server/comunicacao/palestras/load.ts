@@ -1,7 +1,7 @@
 import { hasComunicacaoAdminAccess, requireComunicacaoAccess } from '#lib/server/authorization/comunicacao.js';
 import type { PalestraModel } from '#lib/server/models/palestra.js';
 import type { PalestranteModel } from '#lib/server/models/palestrante.js';
-import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
+import { DEFAULT_MEETING_ACTIVITIES, DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
 
 import type { BoardUser } from './access';
 import { runTalkOperation } from './failures';
@@ -53,5 +53,11 @@ export const createTalkBoardLoad =
 		const hoje = dependencies.today();
 		const board = await runTalkOperation('carregar', () => loadBoard(dependencies, url, hoje));
 
-		return { ...board, hoje, localPadrao: DEFAULT_TALK_LOCATION, isAdmin: hasComunicacaoAdminAccess(user) };
+		return {
+			...board,
+			hoje,
+			localPadrao: DEFAULT_TALK_LOCATION,
+			reuniaoComPadrao: DEFAULT_MEETING_ACTIVITIES,
+			isAdmin: hasComunicacaoAdminAccess(user),
+		};
 	};

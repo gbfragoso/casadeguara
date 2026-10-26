@@ -1,6 +1,7 @@
 import { db } from '#lib/server/database/connection.js';
 import { HISTORY_PAGE_SIZE } from '#lib/server/models/palestra-board.js';
 import { PalestraModel } from '#lib/server/models/palestra.js';
+import { DEFAULT_MEETING_ACTIVITIES } from '#lib/talks/defaults.js';
 import { describe, expect, it } from 'vitest';
 
 import { withTalkFixtures } from './palestra-test-support';
@@ -50,6 +51,7 @@ describe('TI-01 PalestraModel.listAgenda', () => {
 				titulo: 'A prece',
 				observacoes: null,
 				local: null,
+				reuniaoCom: DEFAULT_MEETING_ACTIVITIES,
 				palestrante: { id: speakerId, nome: `Carmélia Amorim ${token}`, temFoto: false },
 				versao: 1,
 			});

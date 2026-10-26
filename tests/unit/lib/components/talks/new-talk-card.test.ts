@@ -1,39 +1,12 @@
 // @vitest-environment happy-dom
-import { tick } from 'svelte';
 import { describe, expect, it, vi } from 'vitest';
 
-import NewTalkCard from '#lib/components/talks/NewTalkCard.svelte';
-import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
-import { getElement, renderComponent } from '../support/render-component.js';
+import { DEFAULT_MEETING_ACTIVITIES, DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
 import { actionError, actionFailure } from '../../talks/action-results.js';
-import { createRequestContext, typeText } from './talk-fixtures';
+import { MONDAY, readErrors, readInput, renderNewTalk, submit } from './new-talk-card-support';
+import { typeText } from './talk-fixtures';
 
-const MONDAY = '2026-03-09';
 const TUESDAY = '2026-03-10';
-const SUGGESTED_TIMES = { 1: '08:45', 2: null, 3: null, 4: null, 5: null, 6: '14:30', 7: null };
-
-const renderNewTalk = async (result?: Parameters<typeof createRequestContext>[0]) => {
-	const context = createRequestContext(result);
-	const target = await renderComponent(NewTalkCard, {
-		context,
-		hoje: '2026-03-01',
-		isAdmin: false,
-		localPadrao: DEFAULT_TALK_LOCATION,
-		horariosSugeridos: SUGGESTED_TIMES,
-	});
-	getElement(target, 'button', HTMLButtonElement).click();
-	await tick();
-	return { target, context };
-};
-
-const readInput = (target: HTMLElement, id: string) => getElement(target, `#${id}`, HTMLInputElement);
-
-const submit = async (target: HTMLElement) => {
-	getElement(target, 'form', HTMLFormElement).requestSubmit();
-	await tick();
-};
-
-const readErrors = (target: HTMLElement, id: string) => target.querySelector(`#${id}-errors`)?.textContent?.trim();
 
 describe('NewTalkCard', () => {
 	it('suggests the time of the same weekday and the default location', async () => {
@@ -84,6 +57,7 @@ describe('NewTalkCard', () => {
 			data: MONDAY,
 			horario: '08:45',
 			local: DEFAULT_TALK_LOCATION,
+			reuniaoCom: DEFAULT_MEETING_ACTIVITIES.join('\n'),
 		});
 		expect(context.refresh).toHaveBeenCalledOnce();
 		expect(document.activeElement?.textContent?.trim()).toBe('Nova palestra');

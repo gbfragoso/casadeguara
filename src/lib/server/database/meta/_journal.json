@@ -78,6 +78,13 @@
       "when": 1793021338140,
       "tag": "0010_lancamento_descricoes",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793034388918,
+      "tag": "0011_curly_tenebrous",
+      "breakpoints": true
     }
   ]
 }

@@ -12,7 +12,10 @@ const RULES = { today: '2351-03-01', allowPast: false };
 describe('PalestraModel.create', () => {
 	it('creates a talk to define in the agenda and records its creator', async () => {
 		await withTalkFixtures(async ({ readTalk, trackTalk }) => {
-			const { id } = await model.create({ data: '2351-03-09', horario: '08:45', local: null }, CREATOR_ID);
+			const { id } = await model.create(
+				{ data: '2351-03-09', horario: '08:45', local: null, reuniaoCom: [] },
+				CREATOR_ID,
+			);
 			trackTalk(id);
 
 			const [card] = (await model.listAgenda(RULES.today)).filter((talk) => talk.id === id);

@@ -8,7 +8,7 @@ vi.mock('$app/navigation', () => ({ refreshAll: boundary.refreshAll }));
 vi.mock('$app/forms', () => ({ deserialize: boundary.deserialize }));
 
 import Page from '../../../../../../src/routes/(protected)/comunicacao/palestras/+page.svelte';
-import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
+import { DEFAULT_MEETING_ACTIVITIES, DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
 import { getElement, renderComponent } from '../../../../lib/components/support/render-component.js';
 import { buildTalk, findByLabel, speakers, typeText } from '../../../../lib/components/talks/talk-fixtures.js';
 
@@ -18,6 +18,7 @@ const BOARD = {
 	horariosSugeridos: SUGGESTED_TIMES,
 	palestrantes: speakers,
 	localPadrao: DEFAULT_TALK_LOCATION,
+	reuniaoComPadrao: DEFAULT_MEETING_ACTIVITIES,
 	isAdmin: false,
 };
 const talks = [buildTalk({ id: 31, titulo: 'A' }), buildTalk({ id: 32, titulo: 'B', data: '2026-03-07' })];

@@ -17,6 +17,7 @@ export const createTalkCard = (id: number, data: string): TalkCard => ({
 	titulo: null,
 	observacoes: null,
 	local: null,
+	reuniaoCom: [],
 	palestrante: null,
 	versao: 1,
 });

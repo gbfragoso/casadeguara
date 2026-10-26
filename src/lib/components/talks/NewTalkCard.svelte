@@ -4,6 +4,7 @@
 	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
 	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
+	import TextArea from '#lib/components/forms/TextArea.svelte';
 	import TextInput from '#lib/components/forms/TextInput.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
 	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
@@ -12,23 +13,26 @@
 	import type { WeekdayTimes } from '#lib/talks/types.js';
 	import { talkCreateSchema } from '#lib/validation/comunicacao/palestras.js';
 
-	type CreateField = 'data' | 'horario' | 'local';
+	type CreateField = 'data' | 'horario' | 'local' | 'reuniaoCom';
 	type Props = {
 		context: TalkRequestContext;
 		hoje: string;
 		isAdmin: boolean;
 		localPadrao: string;
+		reuniaoComPadrao: readonly string[];
 		horariosSugeridos: WeekdayTimes;
 	};
 
 	const CREATE_FAILURE_MESSAGE = 'Não foi possível criar a palestra. Tente de novo.';
+	const MEETING_ACTIVITIES_ROWS = 5;
 
-	let { context, hoje, isAdmin, localPadrao, horariosSugeridos }: Props = $props();
+	let { context, hoje, isAdmin, localPadrao, reuniaoComPadrao, horariosSugeridos }: Props = $props();
 
 	let open = $state(false);
 	let data = $state('');
 	let horario = $state('');
 	let local = $state('');
+	let reuniaoCom = $state('');
 	let errors = $state<Partial<Record<CreateField, string[]>>>({});
 	let formError = $state('');
 	let saving = $state(false);
@@ -43,6 +47,7 @@
 		data = '';
 		horario = '';
 		local = localPadrao;
+		reuniaoCom = reuniaoComPadrao.join('\n');
 		timeEdited = false;
 		errors = {};
 		formError = '';
@@ -67,7 +72,7 @@
 	async function create(event: SubmitEvent) {
 		event.preventDefault();
 		formError = '';
-		const fields = { data, horario, local };
+		const fields = { data, horario, local, reuniaoCom };
 		const parsed = talkCreateSchema.safeParse(fields);
 		errors = parsed.success ? {} : flattenError(parsed.error).fieldErrors;
 		if (!parsed.success) return;
@@ -119,6 +124,22 @@
 						name="local"
 						type="text"
 						bind:value={local}
+						aria-describedby={describedBy}
+						aria-invalid={invalid} />
+				{/snippet}
+			</Field>
+			<Field
+				id="nova-palestra-reuniao-com"
+				label="Reunião com"
+				help="Uma atividade por linha"
+				errors={errors.reuniaoCom}
+				class="tablet:col-span-6">
+				{#snippet control({ describedBy, invalid })}
+					<TextArea
+						id="nova-palestra-reuniao-com"
+						name="reuniaoCom"
+						rows={MEETING_ACTIVITIES_ROWS}
+						bind:value={reuniaoCom}
 						aria-describedby={describedBy}
 						aria-invalid={invalid} />
 				{/snippet}

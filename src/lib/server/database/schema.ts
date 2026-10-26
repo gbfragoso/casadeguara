@@ -287,11 +287,22 @@ export const palestras = pgTable(
 		titulo: varchar({ length: 120 }),
 		observacoes: varchar({ length: 500 }),
 		local: varchar({ length: 120 }),
+		reuniaoCom: varchar('reuniao_com', { length: 32 })
+			.array()
+			.notNull()
+			.default([
+				'Estudo do Evangelho',
+				'Palestra doutrinária',
+				'Passes e água fluidificada',
+				'Atendimento fraterno',
+				'Atendimento espiritual',
+			]),
 		palestranteId: integer('palestrante_id').references(() => palestrantes.id, { onDelete: 'restrict' }),
 		versao: integer().default(1).notNull(),
 		...auditColumns(),
 	},
 	(table) => [
+		check('palestras_reuniao_com_ck', sql`cardinality(${table.reuniaoCom}) <= 5`),
 		index('palestras_agenda_idx').on(table.data, table.horario, table.id),
 		index('palestras_palestrante_id_idx').on(table.palestranteId),
 	],

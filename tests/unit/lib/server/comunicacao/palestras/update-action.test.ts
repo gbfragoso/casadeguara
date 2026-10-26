@@ -103,11 +103,11 @@ describe('talk board update action', () => {
 	it('names the edited field when its value is too long', async () => {
 		const talks = createFakeTalks();
 
-		const { result } = await submitUpdate(talks, { campo: 'titulo', valor: 'x'.repeat(121) });
+		const { result } = await submitUpdate(talks, { campo: 'titulo', valor: 'x'.repeat(71) });
 
 		expect(result).toMatchObject({
 			status: 400,
-			data: { codigo: 'validacao', campo: 'titulo', mensagem: 'O título deve ter até 120 caracteres.' },
+			data: { codigo: 'validacao', campo: 'titulo', mensagem: 'O título deve ter até 70 caracteres.' },
 		});
 		expect(talks.update).not.toHaveBeenCalled();
 	});

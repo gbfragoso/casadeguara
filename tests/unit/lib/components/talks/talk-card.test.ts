@@ -132,12 +132,12 @@ describe('TalkCard', () => {
 		findByLabel(target, 'Editar título: A prece', HTMLButtonElement).click();
 		await tick();
 		const title = findByLabel(target, 'Título', HTMLInputElement);
-		await typeText(title, 'x'.repeat(121));
+		await typeText(title, 'x'.repeat(71));
 
 		await pressKey(title, 'Enter');
 
 		expect(onUpdate).not.toHaveBeenCalled();
-		expect(target.querySelector('[role="alert"]')?.textContent).toBe('O título deve ter até 120 caracteres.');
+		expect(target.querySelector('[role="alert"]')?.textContent).toBe('O título deve ter até 70 caracteres.');
 	});
 
 	it('sends a changed field to the board', async () => {

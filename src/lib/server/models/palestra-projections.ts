@@ -18,6 +18,7 @@ const talkCardFields = {
 	titulo: palestras.titulo,
 	observacoes: palestras.observacoes,
 	local: palestras.local,
+	reuniaoCom: palestras.reuniaoCom,
 	versao: palestras.versao,
 	palestranteId: palestrantes.id,
 	palestranteNome: palestrantes.nome,
@@ -46,6 +47,7 @@ export const toTalkCard = (row: TalkCardRow): TalkCard => ({
 	titulo: row.titulo,
 	observacoes: row.observacoes,
 	local: row.local,
+	reuniaoCom: row.reuniaoCom,
 	palestrante: toTalkSpeaker(row),
 	versao: row.versao,
 });

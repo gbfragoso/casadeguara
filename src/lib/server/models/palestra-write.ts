@@ -42,6 +42,8 @@ const toColumnValues = async (transaction: TalkTransaction, change: TalkChange, 
 			return { observacoes: change.valor };
 		case 'local':
 			return { local: change.valor };
+		case 'reuniaoCom':
+			return { reuniaoCom: change.valor };
 		case 'palestranteId':
 			return { palestranteId: change.valor };
 		case 'novoPalestrante':

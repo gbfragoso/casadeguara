@@ -11,6 +11,7 @@ const readCreateForm = (form: FormData) => ({
 	data: form.get('data'),
 	horario: form.get('horario'),
 	local: form.get('local'),
+	reuniaoCom: form.get('reuniaoCom'),
 });
 
 export const createTalkCreateAction =
