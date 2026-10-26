@@ -11,7 +11,7 @@ vi.mock('$app/server', async () => {
 	let readCount = 0;
 	const assets = [
 		await readFile('src/lib/server/pdf/amigo-fraterno/assets/NotoSans-Regular.ttf'),
-		await readFile('src/lib/server/pdf/amigo-fraterno/assets/casa-de-guara.png'),
+		await readFile('src/lib/server/brand/casa-de-guara.png'),
 	];
 	return { read: () => new Response(assets[readCount++]) };
 });
