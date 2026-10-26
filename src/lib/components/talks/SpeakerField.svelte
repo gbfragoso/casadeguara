@@ -2,6 +2,7 @@
 	import { tick } from 'svelte';
 	import Autocomplete from '#lib/components/forms/Autocomplete.svelte';
 	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
+	import SpeakerAvatar from '#lib/components/talks/SpeakerAvatar.svelte';
 	import type { AutocompleteOption } from '#lib/forms/autocomplete.js';
 	import type { SpeakerOption, TalkSpeaker } from '#lib/talks/types.js';
 
@@ -88,17 +89,8 @@
 </script>
 
 {#snippet avatar()}
-	{#if showsPhoto && speaker}
-		<img
-			src={`/comunicacao/palestrantes/${speaker.id}/foto/miniatura`}
-			alt={`Foto de ${speaker.nome}`}
-			class="size-10 shrink-0 rounded-full border border-divider object-cover" />
-	{:else if shownName}
-		<span
-			aria-hidden="true"
-			class="grid size-10 shrink-0 place-items-center rounded-full bg-surface-muted text-ink-muted">
-			<i class="fa-solid fa-user"></i>
-		</span>
+	{#if shownName}
+		<SpeakerAvatar id={speaker?.id ?? 0} nome={shownName} temFoto={showsPhoto} />
 	{/if}
 {/snippet}
 

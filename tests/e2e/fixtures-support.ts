@@ -29,7 +29,15 @@ import {
 	readReversal,
 } from './lancamentos-database';
 import { insertLoan } from './emprestimos-database';
-import { createTalkCalendar, deleteTalksBy, insertTalks, readTalks } from './palestras-database';
+import {
+	assignSpeaker,
+	createTalkCalendar,
+	deleteSpeakersBy,
+	deleteTalksBy,
+	insertSpeaker,
+	insertTalks,
+	readTalks,
+} from './palestras-database';
 import type { E2EData, FixtureResources } from './fixtures-types';
 
 const destinations = {
@@ -49,16 +57,14 @@ const cleanupResources = async (
 	names: Set<string>,
 ) => {
 	const failures: unknown[] = [];
+	const userIds = Object.values(users).map((user) => user.id);
 	for (const operation of [
 		() => deleteBookCatalog(database, token),
 		() => deleteLancamentos(database, token),
 		() => deleteParticipants(database, [...names]),
 		() => deleteNotices(database, token),
-		() =>
-			deleteTalksBy(
-				database,
-				Object.values(users).map((user) => user.id),
-			),
+		() => deleteTalksBy(database, userIds),
+		() => deleteSpeakersBy(database, token, userIds),
 		() => deleteTestUsers(database, users),
 	]) {
 		try {
@@ -126,6 +132,10 @@ export const createFixtureResources = async (): Promise<FixtureResources> => {
 		talkDate: createTalkCalendar(token),
 		createTalks: (seeds) => insertTalks(database, seeds, users.comunicacao.id),
 		readTalks: (ids) => readTalks(database, ids),
+		createSpeaker: (seed) => insertSpeaker(database, seed, users.comunicacao.id),
+		assignSpeaker: async (talkId, speakerId) => {
+			await assignSpeaker(database, talkId, speakerId);
+		},
 	};
 	return { data, cleanup: () => cleanupResources(database, token, users, names) };
 };

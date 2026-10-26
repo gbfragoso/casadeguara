@@ -1,19 +1,25 @@
 import { db } from '#lib/server/database/connection.js';
 import { normalizeSearch } from '#lib/forms/autocomplete.js';
+import { escapeLikePattern } from '#lib/server/database/functions.js';
 import { palestranteFotos, palestrantes } from '#lib/server/database/schema.js';
 import type { SpeakerOption } from '#lib/talks/types.js';
 import { asc, eq, like, sql } from 'drizzle-orm';
 
+import { importSpeakerFromCadastro, searchImportCandidates } from './palestrante-import';
+import {
+	getSpeakerPhoto,
+	reframeSpeakerPhoto,
+	removeSpeakerPhoto,
+	replaceSpeakerPhoto,
+	type SpeakerPhotoSet,
+	type SpeakerPhotoVariant,
+} from './palestrante-photo';
 import { createSpeaker, removeSpeaker, renameSpeaker } from './palestrante-write';
 
 export const SPEAKER_LIST_LIMIT = 100;
 
 export type SpeakerListItem = { id: number; nome: string; temFoto: boolean; importado: boolean };
-export type SpeakerDetail = SpeakerListItem;
-
-const LIKE_WILDCARD_PATTERN = /[\\%_]/g;
-
-const escapeLikePattern = (text: string) => text.replace(LIKE_WILDCARD_PATTERN, '\\$&');
+export type SpeakerDetail = SpeakerListItem & { fotoVersao: string | null };
 
 const speakerFields = {
 	id: palestrantes.id,
@@ -22,13 +28,21 @@ const speakerFields = {
 	importado: sql<boolean>`${palestrantes.cadastroId} is not null`,
 };
 
+const speakerDetailFields = {
+	...speakerFields,
+	fotoVersao: sql<string | null>`md5(${palestranteFotos.original} || ${palestranteFotos.quadrada})`,
+};
+
 export class PalestranteModel {
 	constructor(private readonly database: typeof db = db) {}
 
 	list(search: string): Promise<SpeakerListItem[]> {
 		const pattern = `%${escapeLikePattern(normalizeSearch(search))}%`;
 
-		return this.selectSpeakers()
+		return this.database
+			.select(speakerFields)
+			.from(palestrantes)
+			.leftJoin(palestranteFotos, eq(palestranteFotos.palestranteId, palestrantes.id))
 			.where(like(palestrantes.nomeBusca, pattern))
 			.orderBy(asc(palestrantes.nomeBusca), asc(palestrantes.id))
 			.limit(SPEAKER_LIST_LIMIT);
@@ -42,7 +56,11 @@ export class PalestranteModel {
 	}
 
 	async get(id: number): Promise<SpeakerDetail | undefined> {
-		const [speaker] = await this.selectSpeakers().where(eq(palestrantes.id, id));
+		const [speaker] = await this.database
+			.select(speakerDetailFields)
+			.from(palestrantes)
+			.leftJoin(palestranteFotos, eq(palestranteFotos.palestranteId, palestrantes.id))
+			.where(eq(palestrantes.id, id));
 		return speaker;
 	}
 
@@ -58,12 +76,28 @@ export class PalestranteModel {
 		return removeSpeaker(this.database, id);
 	}
 
-	private selectSpeakers() {
-		return this.database
-			.select(speakerFields)
-			.from(palestrantes)
-			.leftJoin(palestranteFotos, eq(palestranteFotos.palestranteId, palestrantes.id))
-			.$dynamic();
+	searchImportCandidates(search: string) {
+		return searchImportCandidates(this.database, search);
+	}
+
+	importFromCadastro(cadastroId: number, actorId: string) {
+		return importSpeakerFromCadastro(this.database, cadastroId, actorId);
+	}
+
+	getPhoto(id: number, variant: SpeakerPhotoVariant) {
+		return getSpeakerPhoto(this.database, id, variant);
+	}
+
+	replacePhoto(id: number, photos: SpeakerPhotoSet, actorId: string) {
+		return replaceSpeakerPhoto(this.database, id, photos, actorId);
+	}
+
+	reframePhoto(id: number, photos: SpeakerPhotoSet, actorId: string) {
+		return reframeSpeakerPhoto(this.database, id, photos, actorId);
+	}
+
+	removePhoto(id: number, actorId: string) {
+		return removeSpeakerPhoto(this.database, id, actorId);
 	}
 }
 

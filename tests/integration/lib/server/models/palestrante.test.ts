@@ -67,7 +67,13 @@ describe('TI-12 PalestranteModel reads', () => {
 		await withTalkFixtures(async ({ insertSpeaker, token }) => {
 			const id = await insertSpeaker(`Ana Amorim ${token}`);
 
-			expect(await model.get(id)).toEqual({ id, nome: `Ana Amorim ${token}`, temFoto: false, importado: false });
+			expect(await model.get(id)).toEqual({
+				id,
+				nome: `Ana Amorim ${token}`,
+				temFoto: false,
+				importado: false,
+				fotoVersao: null,
+			});
 			expect(await model.listOptions()).toContainEqual({ id, nome: `Ana Amorim ${token}` });
 		});
 	});

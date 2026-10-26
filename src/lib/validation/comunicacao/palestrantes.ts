@@ -6,6 +6,7 @@ export const SPEAKER_NAME_MAX_LENGTH = 60;
 const REQUIRED_NAME_MESSAGE = 'Informe o nome do palestrante.';
 const MAX_NAME_LENGTH_MESSAGE = `O nome do palestrante deve ter até ${SPEAKER_NAME_MAX_LENGTH} caracteres.`;
 const INVALID_SEARCH_MESSAGE = 'Busca de palestrante inválida.';
+const INVALID_CADASTRO_MESSAGE = 'Selecione um cadastro válido.';
 
 export const speakerNameSchema = z
 	.string({ error: REQUIRED_NAME_MESSAGE })
@@ -22,6 +23,13 @@ export const speakerSearchSchema = z.object({
 		.max(SPEAKER_NAME_MAX_LENGTH, MAX_NAME_LENGTH_MESSAGE)
 		.nullish()
 		.transform((nome) => normalizeSearch(nome ?? '')),
+});
+
+export const speakerImportSchema = z.object({
+	cadastroId: z.coerce
+		.number({ error: INVALID_CADASTRO_MESSAGE })
+		.int(INVALID_CADASTRO_MESSAGE)
+		.positive(INVALID_CADASTRO_MESSAGE),
 });
 
 export type SpeakerInput = z.infer<typeof speakerSchema>;

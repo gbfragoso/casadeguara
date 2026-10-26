@@ -1,3 +1,4 @@
+import { normalizeSearch } from '../../src/lib/forms/autocomplete';
 import type { TestDatabase } from './cadastros-database';
 
 export type TalkSeed = { titulo: string; data: string; horario: string };
@@ -33,3 +34,29 @@ export const readTalks = (database: TestDatabase, ids: readonly number[]) =>
 
 export const deleteTalksBy = (database: TestDatabase, actorIds: readonly string[]) =>
 	database`delete from palestras where user_cadastro = any(${actorIds})`;
+
+export type SpeakerSeed = { nome: string; photo?: Uint8Array };
+
+export const insertSpeaker = async (database: TestDatabase, { nome, photo }: SpeakerSeed, actorId: string) => {
+	const [speaker] = await database<{ id: number }[]>`
+		insert into palestrantes (nome, nome_busca, user_cadastro)
+		values (${nome}, ${normalizeSearch(nome)}, ${actorId})
+		returning id
+	`;
+	if (photo) {
+		await database`
+			insert into palestrante_fotos (palestrante_id, original, quadrada, miniatura)
+			values (${speaker.id}, ${photo}, ${photo}, ${photo})
+		`;
+	}
+	return speaker.id;
+};
+
+export const assignSpeaker = (database: TestDatabase, talkId: number, speakerId: number) =>
+	database`update palestras set palestrante_id = ${speakerId} where id = ${talkId}`;
+
+export const deleteSpeakersBy = (database: TestDatabase, token: string, actorIds: readonly string[]) =>
+	database`
+		delete from palestrantes
+		where nome_busca like ${`%${token}%`} or user_cadastro = any(${actorIds})
+	`;

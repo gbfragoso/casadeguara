@@ -7,7 +7,7 @@ import type { PhotoSize } from './amigo-fraterno-support';
 import type { BookSnapshot, LivroCatalog } from './livros-database';
 import type { LancamentoSeed } from './lancamentos-fixture';
 import type { LancamentoSnapshot, ReversalSnapshot } from './lancamentos-database';
-import type { TalkSeed, TalkSnapshot } from './palestras-database';
+import type { SpeakerSeed, TalkSeed, TalkSnapshot } from './palestras-database';
 
 export type Participant = { id: number; name: string };
 export type E2EData = {
@@ -39,5 +39,7 @@ export type E2EData = {
 	talkDate: (offsetDays: number) => string;
 	createTalks: (seeds: readonly TalkSeed[]) => Promise<TalkSnapshot[]>;
 	readTalks: (ids: readonly number[]) => Promise<TalkSnapshot[]>;
+	createSpeaker: (seed: SpeakerSeed) => Promise<number>;
+	assignSpeaker: (talkId: number, speakerId: number) => Promise<void>;
 };
 export type FixtureResources = { data: E2EData; cleanup: () => Promise<void> };

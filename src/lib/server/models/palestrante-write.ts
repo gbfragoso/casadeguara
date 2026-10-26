@@ -11,10 +11,10 @@ type SpeakerWriter = SpeakerDatabase | SpeakerTransaction;
 
 export type SpeakerRemoval = { status: 'removed' | 'missing' } | { status: 'in-use'; palestras: number };
 
-export const createSpeaker = async (writer: SpeakerWriter, nome: string, actorId: string) => {
+export const createSpeaker = async (writer: SpeakerWriter, nome: string, actorId: string, cadastroId?: number) => {
 	const [created] = await writer
 		.insert(palestrantes)
-		.values({ nome, nomeBusca: normalizeSearch(nome), userCadastro: actorId })
+		.values({ nome, nomeBusca: normalizeSearch(nome), cadastroId, userCadastro: actorId })
 		.returning({ id: palestrantes.id })
 		.catch(translatePalestranteError);
 
