@@ -10,6 +10,7 @@ import {
 	INVALID_FILTER_MESSAGE,
 	INVALID_RANGE_MESSAGE,
 	INVALID_REASON_MESSAGE,
+	LANCAMENTO_NOT_FOUND_MESSAGE,
 	MAX_TEXT_LENGTH,
 	normalizeBoolean,
 	normalizeInteger,
@@ -121,6 +122,13 @@ export const depositIdsSchema = z.preprocess(
 		.transform((ids) => [...new Set(ids)]),
 );
 export const confirmDepositsSchema = z.strictObject({ ids: depositIdsSchema }, INVALID_DATA_MESSAGE);
+export const lancamentoDescriptionSchema = z.strictObject(
+	{
+		id: z.preprocess((value) => normalizeInteger(value, undefined), integerSchema(LANCAMENTO_NOT_FOUND_MESSAGE)),
+		descricao: descriptionSchema,
+	},
+	INVALID_DATA_MESSAGE,
+);
 
 export type TipoLancamento = 'entrada' | 'saida';
 export type CreateLancamentoForm = z.output<typeof createLancamentoFormSchema>;
@@ -129,3 +137,4 @@ export type LancamentoSearch = z.output<typeof lancamentoSearchSchema>;
 export type EstornoSearch = z.output<typeof estornoSearchSchema>;
 export type EstornoReason = z.output<typeof estornoReasonSchema>;
 export type DepositIds = z.output<typeof depositIdsSchema>;
+export type LancamentoDescription = z.output<typeof lancamentoDescriptionSchema>;

@@ -1,6 +1,7 @@
 export { LancamentoModel, lancamentoModel } from './model';
 export { createLancamento } from './creation';
 export { confirmLancamentoDeposits } from './deposits';
+export { updateLancamentoDescription } from './description';
 export { getLancamentoForReversal, reverseLancamento } from './reversal';
 export { searchLancamentos } from './search';
 export { searchReversals } from './reversal-search';

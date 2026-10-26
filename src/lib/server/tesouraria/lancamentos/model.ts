@@ -1,6 +1,7 @@
 import { db } from '#lib/server/database/connection.js';
 import { createLancamento } from './creation';
 import { listCounterparts } from './counterparts';
+import { updateLancamentoDescription } from './description';
 import { getDashboardProjection } from './dashboard';
 import { listPendingDeposits } from './cash';
 import { confirmLancamentoDeposits } from './deposits';
@@ -22,6 +23,7 @@ import type {
 	DashboardProjection,
 	CashEntry,
 	ReceiptState,
+	UpdatedDescription,
 } from './types';
 import type { MonthlyLancamentoTotal } from '#lib/tesouraria/monthly-totals.js';
 
@@ -46,6 +48,10 @@ export class LancamentoModel {
 
 	reverse(id: number, reason: string, actorId: string): Promise<void> {
 		return reverseLancamento(this.database, id, reason, actorId);
+	}
+
+	updateDescription(id: number, descricao: string, actorId: string): Promise<UpdatedDescription> {
+		return updateLancamentoDescription(this.database, id, descricao, actorId);
 	}
 
 	searchReversals(input: EstornoSearch): Promise<EstornoPage> {

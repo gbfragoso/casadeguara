@@ -57,8 +57,20 @@ describe('lancamentos list page', () => {
 		expect(document.querySelector('input[name="contraparte"]')).not.toBeNull();
 		expect(document.querySelector('nav[aria-label="Paginação de lançamentos"]')).toBeNull();
 		expect(document.querySelector('button[type="submit"]')?.getAttribute('aria-busy')).toBe('false');
-		expect(document.body.textContent).not.toContain('Editar');
 		expect(document.body.textContent).not.toContain('Excluir');
+	});
+
+	it('offers a description edit for every active entry and exit', () => {
+		const { body } = render(Page, {
+			props: { data: { username: 'Tesouraria', userid: 'u', page, values: { tipo: 'todos' }, isAdmin: false } },
+		});
+		const document = parseRenderedBody(body);
+
+		const labels = [...document.querySelectorAll('tbody button[title="Editar descrição"]')].map((button) =>
+			button.getAttribute('aria-label'),
+		);
+
+		expect(labels).toEqual(['Editar descrição do lançamento 12', 'Editar descrição do lançamento 13']);
 	});
 
 	it('renders an accessible empty state', () => {

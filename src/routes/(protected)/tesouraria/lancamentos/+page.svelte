@@ -2,10 +2,7 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import ButtonGroup from '#lib/components/actions/ButtonGroup.svelte';
-	import IconAction from '#lib/components/actions/IconAction.svelte';
-	import DataTable from '#lib/components/data/DataTable.svelte';
 	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
-	import Tag from '#lib/components/feedback/Tag.svelte';
 	import Checkbox from '#lib/components/forms/Checkbox.svelte';
 	import ChoiceGroup from '#lib/components/forms/ChoiceGroup.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
@@ -16,9 +13,9 @@
 	import Column from '#lib/components/layout/Column.svelte';
 	import Columns from '#lib/components/layout/Columns.svelte';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
+	import LancamentosTable from '#lib/components/tesouraria/LancamentosTable.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
 	import { moeda } from '#lib/utils/currency.js';
-	import { formatCivilDate } from '#lib/utils/date.js';
 	import type { ActionData, PageData } from './$types';
 
 	interface Props {
@@ -152,56 +149,8 @@
 	{#if page.items.length === 0}
 		<Card class="mt-6"><p role="status">Nenhum lançamento encontrado.</p></Card>
 	{:else}
-		<Card class="mt-6 overflow-hidden" padded={false}>
-			<DataTable caption="Lançamentos ativos">
-				{#snippet head()}
-					<tr>
-						<th>ID</th>
-						<th>Contraparte</th>
-						<th>Descrição</th>
-						<th>Tipo</th>
-						<th class="text-right">Valor</th>
-						<th>Data</th>
-						<th class="text-right print:hidden">Ações</th>
-					</tr>
-				{/snippet}
-				{#each page.items as item (item.id)}
-					<tr>
-						<td>{item.id}</td>
-						<td>{item.contraparte?.nome ?? '—'}</td>
-						<td>{item.descricao}</td>
-						<td>
-							{#if item.tipo === 'entrada'}
-								<Tag kind="success">Entrada</Tag>
-							{:else}
-								<Tag kind="danger">Despesa</Tag>
-							{/if}
-						</td>
-						<td class="text-right whitespace-nowrap">{moeda(Number(item.valor))}</td>
-						<td>{formatCivilDate(item.dataLancamento)}</td>
-						<td class="print:hidden">
-							<div class="flex justify-end gap-1">
-								{#if item.tipo === 'entrada' && item.reciboUuid}
-									<IconAction
-										icon="fa-regular fa-file-lines"
-										title="Recibo"
-										aria-label={`Recibo do lançamento ${item.id}`}
-										target="_blank"
-										href={resolve('/recibo/[uuid=uuid]', { uuid: item.reciboUuid })} />
-								{/if}
-								<IconAction
-									icon="fa-regular fa-trash-can"
-									tone="danger"
-									title="Estorno"
-									aria-label={`Estornar lançamento ${item.id}`}
-									href={resolve('/(protected)/tesouraria/lancamentos/[id=integer]/estorno', {
-										id: `${item.id}`,
-									})} />
-							</div>
-						</td>
-					</tr>
-				{/each}
-			</DataTable>
-		</Card>
+		{#key page}
+			<LancamentosTable items={page.items} />
+		{/key}
 	{/if}
 {/if}

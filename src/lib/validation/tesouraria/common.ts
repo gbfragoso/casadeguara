@@ -13,6 +13,7 @@ export const INVALID_RANGE_MESSAGE = 'O início não pode ser posterior ao fim.'
 export const REQUIRED_COUNTERPART_MESSAGE = 'Contraparte é obrigatória para entradas.';
 export const REQUIRED_REASON_MESSAGE = 'Motivo do estorno é obrigatório.';
 export const INVALID_REASON_MESSAGE = 'Motivo do estorno inválido.';
+export const LANCAMENTO_NOT_FOUND_MESSAGE = 'Lançamento não encontrado.';
 export const REQUIRED_IDS_MESSAGE = 'Selecione ao menos um lançamento.';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

@@ -6,7 +6,7 @@ const FIRST_MONTH = '2021-10-01';
 const TOTAL_ROWS = treasuryMonthlyProfile.lancamentos - 1;
 
 export async function seedTreasuryMonthlyProfile(client: Sql) {
-	await client`TRUNCATE estornos, lancamentos RESTART IDENTITY`;
+	await client`TRUNCATE lancamento_descricoes, estornos, lancamentos RESTART IDENTITY`;
 	const [counterpart] = await client<{ id: number }[]>`
 		INSERT INTO cadastros (nome, trab)
 		VALUES ('Perfil de performance da tesouraria', true)

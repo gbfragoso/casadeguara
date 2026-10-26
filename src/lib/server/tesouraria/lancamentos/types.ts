@@ -55,6 +55,8 @@ export type EstornoItem = {
 	dataEstorno: string;
 };
 
+export type UpdatedDescription = { id: number; descricao: string };
+
 export type EstornoPage = { items: EstornoItem[] };
 
 export type ReceiptData = {
