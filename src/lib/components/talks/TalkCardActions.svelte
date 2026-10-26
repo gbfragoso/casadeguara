@@ -2,7 +2,9 @@
 	import Button from '#lib/components/actions/Button.svelte';
 	import IconAction from '#lib/components/actions/IconAction.svelte';
 	import SectionHeading from '#lib/components/layout/SectionHeading.svelte';
-	import type { MoveDirection } from '#lib/talks/types.js';
+	import TalkArtAction from '#lib/components/talks/TalkArtAction.svelte';
+	import type { TalkArtReadiness } from '#lib/talks/art/readiness.js';
+	import type { MoveDirection, TalkCard } from '#lib/talks/types.js';
 
 	type MoveControls = {
 		canMoveUp: boolean;
@@ -11,19 +13,27 @@
 		onMove: (direction: MoveDirection) => void;
 	};
 
+	type ArtControls = {
+		readiness: TalkArtReadiness<TalkCard>;
+		onBlocked: () => void;
+		onStale: () => Promise<void>;
+	};
+
 	type Props = {
 		id: string;
 		name: string;
+		art: ArtControls;
 		move?: MoveControls;
 		onDelete?: () => Promise<void>;
 	};
 
-	let { id, name, move, onDelete }: Props = $props();
+	let { id, name, art, move, onDelete }: Props = $props();
 
 	const confirmationId = $derived(`${id}-excluir`);
 </script>
 
 <div class="flex shrink-0 items-center gap-1 print:hidden">
+	<TalkArtAction {id} {name} {...art} />
 	{#if move}
 		<IconAction
 			icon="fa-solid fa-arrow-up"

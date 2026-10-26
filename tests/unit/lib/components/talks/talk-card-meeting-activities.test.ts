@@ -18,6 +18,7 @@ const renderCard = (props: Partial<CardProps> = {}) =>
 		hoje: '2026-03-01',
 		isAdmin: false,
 		palestrantes: speakers,
+		onArtStale: vi.fn(() => Promise.resolve()),
 		onUpdate: vi.fn<CardProps['onUpdate']>(() => Promise.resolve({ ok: true })),
 		...props,
 	});
@@ -76,7 +77,7 @@ describe('TU-28 TalkCard meeting activities', () => {
 	it('shows the meeting activities read-only in the history', async () => {
 		const target = await renderCard({ readonly: true });
 
-		expect(target.querySelector('button')).toBeNull();
+		expect(target.querySelector('button[aria-label^="Editar"]')).toBeNull();
 		expect(target.textContent).toContain('Passes e água fluidificada');
 	});
 

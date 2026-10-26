@@ -37,7 +37,8 @@
 					{palestrantes}
 					readonly={!isAdmin}
 					onUpdate={(campo, valor) => updateTalkField(context, talk, campo, valor)}
-					onDelete={isAdmin ? () => deleteTalk(context, talk.id) : undefined} />
+					onDelete={isAdmin ? () => deleteTalk(context, talk.id) : undefined}
+					onArtStale={context.refresh} />
 			</li>
 		{/each}
 	</ol>

@@ -15,6 +15,7 @@ const renderCard = (props: Partial<CardProps> = {}) => {
 		hoje: '2026-03-01',
 		isAdmin: false,
 		palestrantes: speakers,
+		onArtStale: vi.fn(() => Promise.resolve()),
 		onUpdate,
 		...props,
 	});
@@ -122,7 +123,7 @@ describe('TalkCard', () => {
 	it('shows a past talk read-only to volunteers', async () => {
 		const target = await renderCard({ readonly: true });
 
-		expect(target.querySelector('button')).toBeNull();
+		expect(target.querySelector('button[aria-label^="Editar"]')).toBeNull();
 		expect(target.textContent).toContain('Carmélia Amorim');
 	});
 

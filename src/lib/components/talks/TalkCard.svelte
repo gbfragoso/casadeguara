@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
+	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
 	import InlineEditField from '#lib/components/forms/InlineEditField.svelte';
 	import SpeakerField from '#lib/components/talks/SpeakerField.svelte';
 	import TalkCardActions from '#lib/components/talks/TalkCardActions.svelte';
+	import { checkTalkArtReadiness } from '#lib/talks/art/readiness.js';
 	import { formatTalkSchedule } from '#lib/talks/schedule.js';
 	import type { SpeakerOption, TalkCard } from '#lib/talks/types.js';
 	import { formatCivilDateWithWeekday } from '#lib/utils/date.js';
@@ -18,13 +20,23 @@
 		move?: ComponentProps<typeof TalkCardActions>['move'];
 		onUpdate: (campo: TalkChange['campo'], valor: string) => Promise<SaveResult>;
 		onDelete?: () => Promise<void>;
+		onArtStale: () => Promise<void>;
 	};
 
-	let { talk, hoje, isAdmin, readonly = false, palestrantes, move, onUpdate, onDelete }: Props = $props();
+	let { talk, hoje, isAdmin, readonly = false, palestrantes, move, onUpdate, onDelete, onArtStale }: Props = $props();
+
+	let shownArtBlocker = $state<string | null>(null);
 
 	const fieldId = $derived(`palestra-${talk.id}`);
 	const schedule = $derived(formatTalkSchedule(talk.data, talk.horario));
 	const name = $derived(talk.titulo ?? schedule);
+	const artReadiness = $derived(checkTalkArtReadiness(talk));
+	const artBlocker = $derived(artReadiness.ready ? null : artReadiness.blocker.mensagem);
+	const art = $derived({
+		readiness: artReadiness,
+		onBlocked: () => (shownArtBlocker = artBlocker),
+		onStale: onArtStale,
+	});
 
 	const validate = (campo: TalkChange['campo']) => (valor: string) => {
 		const parsed = talkChangeSchema.safeParse({ campo, valor });
@@ -72,8 +84,13 @@
 					<InlineEditField {...fieldProps('horario')} label="Horário" type="time" value={talk.horario} />
 				</span>
 			</div>
-			<TalkCardActions id={fieldId} {name} {move} {onDelete} />
+			<TalkCardActions id={fieldId} {name} {art} {move} {onDelete} />
 		</div>
+		{#if artBlocker && shownArtBlocker === artBlocker}
+			<InlineNotification kind="warning" element="p" role="alert" class="mt-2 print:hidden">
+				{artBlocker}
+			</InlineNotification>
+		{/if}
 		<div class="mt-2 flex flex-col gap-3">
 			<InlineEditField
 				{...fieldProps('titulo')}
