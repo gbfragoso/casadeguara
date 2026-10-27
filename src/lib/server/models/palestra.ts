@@ -4,6 +4,7 @@ import type { TalkChange, TalkCreateData, TalkMoveRequest, TalkTarget } from '#l
 import { findArtSource } from './palestra-art';
 import { listAgenda, listHistory, suggestTimes } from './palestra-board';
 import { moveTalk } from './palestra-move';
+import { listMonthProgram, type MonthRange } from './palestra-program';
 import type { TalkDatabase } from './palestra-projections';
 import { createTalk, removeTalk, updateTalk, type TalkRules } from './palestra-write';
 
@@ -24,6 +25,10 @@ export class PalestraModel {
 
 	findArtSource(id: number) {
 		return findArtSource(this.database, id);
+	}
+
+	listMonthProgram(range: MonthRange) {
+		return listMonthProgram(this.database, range);
 	}
 
 	create(input: TalkCreateData, actorId: string) {
