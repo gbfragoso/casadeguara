@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ProgramElement } from '#lib/server/pdf/talk-program/elements.js';
+import type { ProgramElement, ProgramTextElement } from '#lib/server/pdf/talk-program/elements.js';
 import { layoutTalkProgram } from '#lib/server/pdf/talk-program/layout.js';
 import { PROGRAM_PALETTE } from '#lib/server/pdf/talk-program/palette.js';
+import { HEADING_LINE_GAP } from '#lib/server/pdf/talk-program/typography.js';
 import { contrastRatio } from '../../../../../support/contrast';
 import { readThemeTokens, resolveToken } from '../../../styles/support/theme-tokens';
 import { listTexts, readTexts } from './support/layout-queries';
@@ -18,6 +19,20 @@ const MINIMUM_TEXT_CONTRAST = 4.5;
 const WHITE = '#ffffff';
 
 const HEADER_ROLES = new Set(['instituicao', 'cabecalho', 'mes', 'filete']);
+const HEADING_ROLES = new Set(['instituicao', 'cabecalho', 'mes']);
+const DATE_ROLES = new Set(['dia', 'diaSemana', 'horario']);
+const ENTRY_TEXT_ROLES = new Set(['titulo', 'observacao', 'palestrante', 'local']);
+
+const bottomOf = (element: ProgramTextElement) => element.top + element.lines.length * element.lineHeight;
+
+const spanOf = (elements: ProgramTextElement[]) => ({
+	top: Math.min(...elements.map(({ top }) => top)),
+	bottom: Math.max(...elements.map(bottomOf)),
+});
+
+const heightOf = (elements: ProgramTextElement[]) => spanOf(elements).bottom - spanOf(elements).top;
+
+const centerOf = (elements: ProgramTextElement[]) => (spanOf(elements).top + spanOf(elements).bottom) / 2;
 
 const describeHeaderElement = (element: ProgramElement) => {
 	if (element.kind === 'logo') return 'logo';
@@ -44,6 +59,28 @@ describe('layoutTalkProgram', () => {
 				'filete',
 			]),
 		);
+	});
+
+	it('separates the header lines with the approved spacing', () => {
+		const document = createProgramDocument([BASE_TALK]);
+
+		const [page] = layoutTalkProgram(document, testMeasurers);
+
+		const heading = listTexts(page).filter(({ role }) => HEADING_ROLES.has(role));
+		const gaps = heading.slice(1).map((element, index) => element.top - bottomOf(heading[index]));
+		expect(gaps).toEqual([HEADING_LINE_GAP, HEADING_LINE_GAP]);
+	});
+
+	it('centers the date and the text of an entry on the same line', () => {
+		const document = createProgramDocument([{ ...BASE_TALK, observacoes: null }]);
+
+		const [page] = layoutTalkProgram(document, testMeasurers);
+
+		const texts = listTexts(page);
+		const date = texts.filter(({ role }) => DATE_ROLES.has(role));
+		const entryText = texts.filter(({ role }) => ENTRY_TEXT_ROLES.has(role));
+		expect(heightOf(date)).not.toBe(heightOf(entryText));
+		expect(centerOf(entryText)).toBeCloseTo(centerOf(date));
 	});
 
 	it('shows the house and the generation date in the footer of a single page', () => {

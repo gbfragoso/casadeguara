@@ -79,8 +79,11 @@ const buildTextColumn = (content: ProgramEntryContent, measurers: ProgramMeasure
 export const buildEntry = (content: ProgramEntryContent, measurers: ProgramMeasurers): EntryLayout => {
 	const date = buildDateColumn(content, measurers);
 	const text = buildTextColumn(content, measurers);
+	const contentHeight = Math.max(date.height, text.height);
+	const centerInRow = (block: ProgramBlock) =>
+		translateBlock(block, ENTRY_PADDING + (contentHeight - block.height) / 2);
 	return {
-		elements: [...translateBlock(date, ENTRY_PADDING), ...translateBlock(text, ENTRY_PADDING)],
-		height: Math.max(date.height, text.height) + 2 * ENTRY_PADDING,
+		elements: [...centerInRow(date), ...centerInRow(text)],
+		height: contentHeight + 2 * ENTRY_PADDING,
 	};
 };

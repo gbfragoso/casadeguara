@@ -11,6 +11,7 @@ const webServerEnv = Object.fromEntries(
 );
 
 export default defineConfig({
+	tsconfig: './playwright.tsconfig.json',
 	timeout: 30_000,
 	forbidOnly: true,
 	fullyParallel: true,

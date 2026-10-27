@@ -18,6 +18,8 @@ import {
 	FOOTER_COLUMN_GAP,
 	FOOTER_RULE_TOP,
 	FOOTER_TEXT_TOP,
+	HEADER_HEIGHT,
+	HEADING_LINE_GAP,
 	LOGO_SIZE,
 	RULE_THICKNESS,
 	TEXT_LEFT,
@@ -33,6 +35,8 @@ export type FooterPage = { generatedOn: string; pageNumber: number; pageCount: n
 
 const toUpperCase = (text: string) => text.toLocaleUpperCase('pt-BR');
 
+const centerInHeader = (height: number) => TOP_MARGIN + (HEADER_HEIGHT - height) / 2;
+
 export const buildHeader = (month: ProgramMonth, measurers: ProgramMeasurers): ProgramElement[] => {
 	const placement = { x: TEXT_LEFT, width: TEXT_WIDTH };
 	const heading = stackTexts(
@@ -40,11 +44,11 @@ export const buildHeader = (month: ProgramMonth, measurers: ProgramMeasurers): P
 			createTextElement('instituicao', toUpperCase(INSTITUTION_NAME), measurers, placement),
 			createTextElement('cabecalho', PROGRAM_HEADING, measurers, placement),
 			createTextElement('mes', toUpperCase(formatProgramMonth(month)), measurers, placement),
-		].map((element) => ({ element, gapBefore: 0 })),
+		].map((element) => ({ element, gapBefore: HEADING_LINE_GAP })),
 	);
 	return [
-		{ kind: 'logo', x: CONTENT_LEFT, top: TOP_MARGIN, size: LOGO_SIZE },
-		...translateBlock(heading, TOP_MARGIN + (LOGO_SIZE - heading.height) / 2),
+		{ kind: 'logo', x: CONTENT_LEFT, top: centerInHeader(LOGO_SIZE), size: LOGO_SIZE },
+		...translateBlock(heading, centerInHeader(heading.height)),
 		{
 			kind: 'rule',
 			role: 'filete',
