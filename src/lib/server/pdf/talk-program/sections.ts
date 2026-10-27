@@ -1,5 +1,7 @@
+import { INSTITUTION_NAME } from '#lib/brand/institution.js';
 import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
-import { formatProgramMonth, type ProgramMonth } from '#lib/talks/program/months.js';
+import type { ProgramMonth } from '#lib/talks/program/months.js';
+import { formatCalendarMonth } from '#lib/utils/calendar-month.js';
 import { formatCivilDate } from '#lib/utils/date.js';
 import {
 	stackTexts,
@@ -28,7 +30,6 @@ import {
 	TOP_MARGIN,
 } from './typography';
 
-export const INSTITUTION_NAME = 'Grupo Espírita Casa de Guará';
 const PROGRAM_HEADING = 'Programação de palestras';
 
 export type FooterPage = { generatedOn: string; pageNumber: number; pageCount: number };
@@ -43,7 +44,7 @@ export const buildHeader = (month: ProgramMonth, measurers: ProgramMeasurers): P
 		[
 			createTextElement('instituicao', toUpperCase(INSTITUTION_NAME), measurers, placement),
 			createTextElement('cabecalho', PROGRAM_HEADING, measurers, placement),
-			createTextElement('mes', toUpperCase(formatProgramMonth(month)), measurers, placement),
+			createTextElement('mes', toUpperCase(formatCalendarMonth(month)), measurers, placement),
 		].map((element) => ({ element, gapBefore: HEADING_LINE_GAP })),
 	);
 	return [
