@@ -8,6 +8,7 @@
 	import NewTalkCard from '#lib/components/talks/NewTalkCard.svelte';
 	import TalkBoard from '#lib/components/talks/TalkBoard.svelte';
 	import TalkHistory from '#lib/components/talks/TalkHistory.svelte';
+	import TalkProgramAction from '#lib/components/talks/TalkProgramAction.svelte';
 	import { submitAction } from '#lib/forms/action-request.js';
 	import type { TalkRequestContext } from '#lib/talks/requests.js';
 	import type { PageServerData } from './$types';
@@ -40,26 +41,29 @@
 <PageHeader {breadcrumb}>Palestras</PageHeader>
 
 <div class="flex max-w-3xl flex-col gap-4">
-	<nav aria-label="Visão das palestras">
-		<ul class="flex gap-2">
-			{#each views as view (view.visao)}
-				{@const current = data.visao === view.visao}
-				<li>
-					<a
-						href={view.href}
-						aria-current={current ? 'page' : undefined}
-						class={[
-							'inline-flex min-h-11 items-center gap-2 rounded-md px-4 font-medium transition-colors hover:no-underline motion-reduce:transition-none',
-							current
-								? 'bg-primary-600 text-on-primary'
-								: 'border border-line bg-surface text-ink-strong hover:bg-surface-muted',
-						]}>
-						<i class={[view.icon, 'fa-fw']} aria-hidden="true"></i>{view.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</nav>
+	<div class="flex flex-col gap-3 tablet:flex-row tablet:items-center tablet:justify-between">
+		<nav aria-label="Visão das palestras">
+			<ul class="flex gap-2">
+				{#each views as view (view.visao)}
+					{@const current = data.visao === view.visao}
+					<li>
+						<a
+							href={view.href}
+							aria-current={current ? 'page' : undefined}
+							class={[
+								'inline-flex min-h-11 items-center gap-2 rounded-md px-4 font-medium transition-colors hover:no-underline motion-reduce:transition-none',
+								current
+									? 'bg-primary-600 text-on-primary'
+									: 'border border-line bg-surface text-ink-strong hover:bg-surface-muted',
+							]}>
+							<i class={[view.icon, 'fa-fw']} aria-hidden="true"></i>{view.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+		<TalkProgramAction hoje={data.hoje} />
+	</div>
 
 	{#if notice}
 		<InlineNotification kind="warning" role="alert">

@@ -1,12 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import {
-	buildTalkArtFileName,
-	describeTalkArt,
-	formatArtDateSeal,
-	formatArtSchedule,
-	formatArtTime,
-} from '#lib/talks/art/format.js';
+import { buildTalkArtFileName, describeTalkArt, formatArtDateSeal, formatArtSchedule } from '#lib/talks/art/format.js';
 
 const originalTimeZone = process.env.TZ;
 
@@ -16,10 +10,6 @@ afterEach(() => {
 });
 
 describe('TU-10 talk art formatting', () => {
-	it('writes the time as HHhMM', () => {
-		expect(formatArtTime('08:45')).toBe('08h45');
-	});
-
 	it('formats the date seal with the day and the month in capitals', () => {
 		expect(formatArtDateSeal('2026-10-26')).toEqual({ dia: '26', mes: 'OUTUBRO' });
 	});

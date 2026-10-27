@@ -1,5 +1,5 @@
 import { hasSecretariaAccess } from '#lib/server/authorization/cadastros.js';
-import { createPdfStream } from '#lib/server/pdf/amigo-fraterno/stream.js';
+import { createPdfStream } from '#lib/server/pdf/stream.js';
 import type { AmigoFraternoPdfParticipant } from '#lib/server/pdf/amigo-fraterno/participant-projections.js';
 import { parseAmigoFraternoPdfRequest } from '#lib/validation/pdf/amigo-fraterno.js';
 

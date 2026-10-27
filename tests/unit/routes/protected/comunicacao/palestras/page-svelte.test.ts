@@ -95,6 +95,15 @@ describe('talk board page', () => {
 		expect(readButtons(target)).not.toContain('Nova palestra');
 	});
 
+	it.each([
+		['agenda', renderAgenda],
+		['history', renderHistory],
+	])('TU-36 offers the monthly program in the %s', async (_view, render) => {
+		const target = await render();
+
+		expect(readButtons(target)).toContain('Programação do mês');
+	});
+
 	it('refreshes the board and explains a conflict until the notice is closed', async () => {
 		vi.stubGlobal(
 			'fetch',
