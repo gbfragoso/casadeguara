@@ -1,21 +1,16 @@
-import type {
-	ProgramElement,
-	ProgramPageLayout,
-	ProgramTextElement,
-	ProgramTextRole,
-} from '#lib/server/pdf/talk-program/elements.js';
+import type { SheetElement, SheetPageLayout, SheetTextElement } from '#lib/server/pdf/sheet/elements.js';
 
 export type Box = { left: number; top: number; right: number; bottom: number };
 
-export const listTexts = ({ elements }: ProgramPageLayout) =>
-	elements.filter((element): element is ProgramTextElement => element.kind === 'text');
+export const listTexts = <Role extends string>({ elements }: SheetPageLayout<Role>) =>
+	elements.filter((element): element is SheetTextElement<Role> => element.kind === 'text');
 
-export const readTexts = (page: ProgramPageLayout, role: ProgramTextRole) =>
+export const readTexts = <Role extends string>(page: SheetPageLayout<Role>, role: Role) =>
 	listTexts(page)
 		.filter((element) => element.role === role)
 		.map((element) => element.lines.join(' '));
 
-export const boundsOf = (element: ProgramElement): Box => {
+export const boundsOf = (element: SheetElement): Box => {
 	switch (element.kind) {
 		case 'text':
 			return {

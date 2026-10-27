@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createTalkProgramHandler } from '#lib/server/comunicacao/palestras/program-handler.js';
 import type { PalestraModel } from '#lib/server/models/palestra.js';
+import type { GeneratedSheet } from '#lib/server/pdf/sheet/document.js';
 import type { ProgramTalkSource } from '#lib/server/pdf/talk-program/content.js';
-import type { GeneratedProgram } from '#lib/server/pdf/talk-program/generator.js';
 import { COORDINATOR, VOLUNTEER } from './board-fakes';
 
 const TODAY = '2026-10-27';
 const NOVEMBER = { key: '2026-11', year: 2026, month: 11 };
-const pdf: GeneratedProgram = { bytes: new Uint8Array([37, 80, 68, 70]), pageCount: 1 };
+const pdf: GeneratedSheet = { bytes: new Uint8Array([37, 80, 68, 70]), pageCount: 1 };
 
 const readyTalk: ProgramTalkSource = {
 	id: 412,

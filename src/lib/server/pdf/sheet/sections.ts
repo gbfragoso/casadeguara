@@ -1,16 +1,15 @@
-import { INSTITUTION_NAME } from '#lib/brand/institution.js';
-import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
-import type { ProgramMonth } from '#lib/talks/program/months.js';
-import { formatCalendarMonth } from '#lib/utils/calendar-month.js';
+import { INSTITUTION_ADDRESS, INSTITUTION_NAME } from '#lib/brand/institution.js';
+import { formatCalendarMonth, type CalendarMonth } from '#lib/utils/calendar-month.js';
 import { formatCivilDate } from '#lib/utils/date.js';
 import {
 	stackTexts,
 	translateBlock,
-	type ProgramElement,
-	type ProgramMeasurers,
-	type ProgramRuleElement,
+	type SheetElement,
+	type SheetFrameRole,
+	type SheetMeasurers,
+	type SheetRuleElement,
 } from './elements';
-import { createTextElement } from './entries';
+import { createSheetText, type TextPlacement } from './text';
 import {
 	CONTENT_LEFT,
 	CONTENT_RIGHT,
@@ -20,17 +19,15 @@ import {
 	FOOTER_COLUMN_GAP,
 	FOOTER_RULE_TOP,
 	FOOTER_TEXT_TOP,
+	FRAME_STYLES,
 	HEADER_HEIGHT,
 	HEADING_LINE_GAP,
 	LOGO_SIZE,
 	RULE_THICKNESS,
 	TEXT_LEFT,
-	TEXT_STYLES,
 	TEXT_WIDTH,
 	TOP_MARGIN,
 } from './typography';
-
-const PROGRAM_HEADING = 'Programação de palestras';
 
 export type FooterPage = { generatedOn: string; pageNumber: number; pageCount: number };
 
@@ -38,18 +35,25 @@ const toUpperCase = (text: string) => text.toLocaleUpperCase('pt-BR');
 
 const centerInHeader = (height: number) => TOP_MARGIN + (HEADER_HEIGHT - height) / 2;
 
-export const buildHeader = (month: ProgramMonth, measurers: ProgramMeasurers): ProgramElement[] => {
+const createFrameText = (role: SheetFrameRole, text: string, measurers: SheetMeasurers, placement: TextPlacement) =>
+	createSheetText(role, text, FRAME_STYLES[role], measurers, placement);
+
+export const buildSheetHeader = (
+	heading: string,
+	month: CalendarMonth,
+	measurers: SheetMeasurers,
+): SheetElement<SheetFrameRole>[] => {
 	const placement = { x: TEXT_LEFT, width: TEXT_WIDTH };
-	const heading = stackTexts(
+	const headingBlock = stackTexts(
 		[
-			createTextElement('instituicao', toUpperCase(INSTITUTION_NAME), measurers, placement),
-			createTextElement('cabecalho', PROGRAM_HEADING, measurers, placement),
-			createTextElement('mes', toUpperCase(formatCalendarMonth(month)), measurers, placement),
+			createFrameText('instituicao', toUpperCase(INSTITUTION_NAME), measurers, placement),
+			createFrameText('cabecalho', heading, measurers, placement),
+			createFrameText('mes', toUpperCase(formatCalendarMonth(month)), measurers, placement),
 		].map((element) => ({ element, gapBefore: HEADING_LINE_GAP })),
 	);
 	return [
 		{ kind: 'logo', x: CONTENT_LEFT, top: centerInHeader(LOGO_SIZE), size: LOGO_SIZE },
-		...translateBlock(heading, centerInHeader(heading.height)),
+		...translateBlock(headingBlock, centerInHeader(headingBlock.height)),
 		{
 			kind: 'rule',
 			role: 'filete',
@@ -62,7 +66,7 @@ export const buildHeader = (month: ProgramMonth, measurers: ProgramMeasurers): P
 	];
 };
 
-export const buildEntrySeparator = (y: number): ProgramRuleElement => ({
+export const buildBlockSeparator = (y: number): SheetRuleElement => ({
 	kind: 'rule',
 	role: 'separador',
 	x: CONTENT_LEFT,
@@ -77,18 +81,18 @@ const describeGeneration = ({ generatedOn, pageNumber, pageCount }: FooterPage) 
 	return pageCount > 1 ? `${generation} · Página ${pageNumber} de ${pageCount}` : generation;
 };
 
-export const buildFooter = (page: FooterPage, measurers: ProgramMeasurers): ProgramElement[] => {
+export const buildSheetFooter = (page: FooterPage, measurers: SheetMeasurers): SheetElement<SheetFrameRole>[] => {
 	const generation = describeGeneration(page);
-	const generationWidth = Math.ceil(measurers.regular.widthOfTextAtSize(generation, TEXT_STYLES.geracao.size));
-	const address = `${INSTITUTION_NAME} · ${DEFAULT_TALK_LOCATION}`;
+	const generationWidth = Math.ceil(measurers.regular.widthOfTextAtSize(generation, FRAME_STYLES.geracao.size));
+	const address = `${INSTITUTION_NAME} · ${INSTITUTION_ADDRESS}`;
 	const addressWidth = CONTENT_WIDTH - generationWidth - FOOTER_COLUMN_GAP;
 	const right = { x: CONTENT_RIGHT - generationWidth, width: generationWidth, align: 'end' } as const;
 	return [
-		{ ...buildEntrySeparator(FOOTER_RULE_TOP), role: 'rodape' },
+		{ ...buildBlockSeparator(FOOTER_RULE_TOP), role: 'rodape' },
 		{
-			...createTextElement('rodape', address, measurers, { x: CONTENT_LEFT, width: addressWidth }),
+			...createFrameText('rodape', address, measurers, { x: CONTENT_LEFT, width: addressWidth }),
 			top: FOOTER_TEXT_TOP,
 		},
-		{ ...createTextElement('geracao', generation, measurers, right), top: FOOTER_TEXT_TOP },
+		{ ...createFrameText('geracao', generation, measurers, right), top: FOOTER_TEXT_TOP },
 	];
 };

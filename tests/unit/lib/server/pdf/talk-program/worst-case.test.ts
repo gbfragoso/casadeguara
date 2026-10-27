@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
 import { toProgramEntryContent, type ProgramEntryContent } from '#lib/server/pdf/talk-program/content.js';
-import type { ProgramPageLayout } from '#lib/server/pdf/talk-program/elements.js';
+import type { SheetPageLayout } from '#lib/server/pdf/sheet/elements.js';
+import { BODY_BOTTOM, BODY_TOP } from '#lib/server/pdf/sheet/typography.js';
 import { layoutTalkProgram } from '#lib/server/pdf/talk-program/layout.js';
-import { BODY_BOTTOM, BODY_TOP } from '#lib/server/pdf/talk-program/typography.js';
-import { boundsOf, intersects, listTexts, readTexts } from './support/layout-queries';
+import { boundsOf, intersects, listTexts, readTexts } from '../sheet/support/layout-queries';
+import { testMeasurers } from '../sheet/support/measurers';
 import {
 	BASE_TALK,
 	createProgramDocument,
 	LEGACY_LIMIT_TALK,
 	LONG_WORST_CASE_TALK,
-	testMeasurers,
 	WIDE_WORST_CASE_TALK,
 } from './support/program-fixtures';
 
@@ -18,18 +18,18 @@ const ENTRY_TEXT_ROLES = ['titulo', 'observacao', 'palestrante', 'local'] as con
 
 const withoutSpaces = (text: string | null) => (text ?? '').replace(/\s/g, '');
 
-const readRenderedEntry = (page: ProgramPageLayout) =>
+const readRenderedEntry = (page: SheetPageLayout) =>
 	ENTRY_TEXT_ROLES.map((role) => withoutSpaces(readTexts(page, role).join('')));
 
 const readExpectedEntry = (content: ProgramEntryContent) =>
 	ENTRY_TEXT_ROLES.map((role) => withoutSpaces(content[role]));
 
-const listOverflowingLines = (page: ProgramPageLayout) =>
+const listOverflowingLines = (page: SheetPageLayout) =>
 	listTexts(page).flatMap((text) =>
 		text.lines.filter((line) => testMeasurers[text.weight].widthOfTextAtSize(line, text.size) > text.width),
 	);
 
-const findCollisions = ({ elements }: ProgramPageLayout) =>
+const findCollisions = ({ elements }: SheetPageLayout) =>
 	elements.flatMap((element, index) =>
 		elements
 			.slice(index + 1)
@@ -39,7 +39,7 @@ const findCollisions = ({ elements }: ProgramPageLayout) =>
 
 const isEntryText = (role: string) => !['instituicao', 'cabecalho', 'mes', 'rodape', 'geracao'].includes(role);
 
-const listEntryBounds = (page: ProgramPageLayout) =>
+const listEntryBounds = (page: SheetPageLayout) =>
 	listTexts(page)
 		.filter(({ role }) => isEntryText(role))
 		.map(boundsOf);
@@ -71,7 +71,7 @@ describe('talk program worst cases', () => {
 	});
 });
 
-const readObservationLines = (page: ProgramPageLayout) =>
+const readObservationLines = (page: SheetPageLayout) =>
 	listTexts(page).find(({ role }) => role === 'observacao')?.lines;
 
 describe('talk program observation line breaks', () => {

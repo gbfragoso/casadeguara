@@ -1,35 +1,16 @@
+import type { SheetFrameRole, SheetMeasurers, SheetPageLayout } from '#lib/server/pdf/sheet/elements.js';
+import { composeSheetPages } from '#lib/server/pdf/sheet/pages.js';
 import { toProgramEntryContent, type TalkProgramDocument } from './content';
-import { translateBlock, type ProgramElement, type ProgramMeasurers, type ProgramPageLayout } from './elements';
-import { buildEntry, type EntryLayout } from './entries';
-import { paginateEntries } from './pagination';
-import { buildEntrySeparator, buildFooter, buildHeader } from './sections';
-import { BODY_HEIGHT, BODY_TOP } from './typography';
+import { buildEntry } from './entries';
+import type { ProgramEntryRole } from './typography';
 
-export type { ProgramMeasurers } from './elements';
+const PROGRAM_HEADING = 'Programação de palestras';
 
-type PlacedEntries = { top: number; elements: ProgramElement[] };
-
-const placeEntries = (entries: EntryLayout[]) =>
-	entries.reduce<PlacedEntries>(
-		({ top, elements }, entry, index) => ({
-			top: top + entry.height,
-			elements: [...elements, ...(index > 0 ? [buildEntrySeparator(top)] : []), ...translateBlock(entry, top)],
-		}),
-		{ top: BODY_TOP, elements: [] },
-	).elements;
-
-export const layoutTalkProgram = (document: TalkProgramDocument, measurers: ProgramMeasurers): ProgramPageLayout[] => {
-	const header = buildHeader(document.month, measurers);
+export const layoutTalkProgram = (
+	document: TalkProgramDocument,
+	measurers: SheetMeasurers,
+): SheetPageLayout<ProgramEntryRole | SheetFrameRole>[] => {
 	const entries = document.talks.map((talk) => buildEntry(toProgramEntryContent(talk), measurers));
-	const pages = paginateEntries(entries, BODY_HEIGHT);
-	return pages.map((entriesOfPage, index) => ({
-		elements: [
-			...header,
-			...placeEntries(entriesOfPage),
-			...buildFooter(
-				{ generatedOn: document.generatedOn, pageNumber: index + 1, pageCount: pages.length },
-				measurers,
-			),
-		],
-	}));
+	const frame = { heading: PROGRAM_HEADING, month: document.month, generatedOn: document.generatedOn };
+	return composeSheetPages(frame, entries, measurers);
 };

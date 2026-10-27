@@ -1,15 +1,15 @@
 import { hasComunicacaoAccess } from '#lib/server/authorization/comunicacao.js';
 import type { PalestraModel } from '#lib/server/models/palestra.js';
+import { createPdfResponse } from '#lib/server/pdf/response.js';
+import type { GeneratedSheet } from '#lib/server/pdf/sheet/document.js';
 import type { TalkProgramDocument } from '#lib/server/pdf/talk-program/content.js';
-import { createPdfStream } from '#lib/server/pdf/stream.js';
-import type { GeneratedProgram } from '#lib/server/pdf/talk-program/generator.js';
 import { buildProgramFileName, describeEmptyProgram } from '#lib/talks/program/format.js';
 import { findProgramMonth, readMonthRange, type ProgramMonth } from '#lib/talks/program/months.js';
 import { checkProgramReadiness, type ProgramPendency } from '#lib/talks/program/readiness.js';
 
 type TalkProgramDependencies = {
 	talks: Pick<PalestraModel, 'listMonthProgram'>;
-	generateProgram: (document: TalkProgramDocument) => Promise<GeneratedProgram>;
+	generateProgram: (document: TalkProgramDocument) => Promise<GeneratedSheet>;
 	today: () => string;
 };
 
@@ -27,16 +27,6 @@ const UNPROCESSABLE_STATUS = 422;
 
 const reply = (message: string, status: number, pendencias: ProgramPendency[] = []) =>
 	Response.json({ message, pendencias }, { status });
-
-const createProgramResponse = ({ bytes }: GeneratedProgram, month: ProgramMonth) =>
-	new Response(createPdfStream(bytes), {
-		headers: {
-			'cache-control': 'private, no-store',
-			'content-disposition': `inline; filename="${buildProgramFileName(month)}"`,
-			'content-type': 'application/pdf',
-			'x-content-type-options': 'nosniff',
-		},
-	});
 
 const logBlockedProgram = ({ month, actorId }: ProgramRequest, motivo: string, pendencias: number) =>
 	console.warn('comunicacao.palestras.programacao_bloqueada', { mes: month.key, motivo, pendencias, actorId });
@@ -65,7 +55,7 @@ const serveProgram = async (
 		duracaoMs: performance.now() - request.startedAt,
 		actorId,
 	});
-	return createProgramResponse(program, month);
+	return createPdfResponse(program.bytes, buildProgramFileName(month));
 };
 
 export const createTalkProgramHandler =

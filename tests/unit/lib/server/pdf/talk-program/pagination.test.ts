@@ -1,21 +1,17 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ProgramPageLayout } from '#lib/server/pdf/talk-program/elements.js';
+import type { SheetPageLayout } from '#lib/server/pdf/sheet/elements.js';
 import { layoutTalkProgram } from '#lib/server/pdf/talk-program/layout.js';
-import { listTexts, readTexts } from './support/layout-queries';
-import {
-	createProgramDocument,
-	FULL_MONTH_TALKS,
-	TYPICAL_MONTH_TALKS,
-	testMeasurers,
-} from './support/program-fixtures';
+import { listTexts, readTexts } from '../sheet/support/layout-queries';
+import { testMeasurers } from '../sheet/support/measurers';
+import { createProgramDocument, FULL_MONTH_TALKS, TYPICAL_MONTH_TALKS } from './support/program-fixtures';
 
 const ENTRY_ROLES = new Set(['dia', 'diaSemana', 'horario', 'titulo', 'observacao', 'palestrante']);
 
-const readTalkNumbers = (page: ProgramPageLayout, role: 'titulo' | 'observacao') =>
+const readTalkNumbers = (page: SheetPageLayout, role: 'titulo' | 'observacao') =>
 	readTexts(page, role).map((text) => text.match(/\d{2}/)?.[0]);
 
-const listTextStyles = (page: ProgramPageLayout) =>
+const listTextStyles = (page: SheetPageLayout) =>
 	new Set(
 		listTexts(page)
 			.filter(({ role }) => ENTRY_ROLES.has(role))
@@ -37,12 +33,8 @@ describe('talk program pagination', () => {
 
 		const pages = layoutTalkProgram(document, testMeasurers);
 
-		const pageCount = pages.length;
 		const expectedNumbers = FULL_MONTH_TALKS.map((_, index) => String(index + 1).padStart(2, '0'));
-		expect(pageCount).toBeGreaterThan(1);
-		expect(pages.map((page) => readTexts(page, 'geracao'))).toEqual(
-			pages.map((_, index) => [`Gerado em 27/10/2026 · Página ${index + 1} de ${pageCount}`]),
-		);
+		expect(pages.length).toBeGreaterThan(1);
 		expect(pages.flatMap((page) => readTalkNumbers(page, 'titulo'))).toEqual(expectedNumbers);
 		expect(pages.map((page) => readTalkNumbers(page, 'observacao'))).toEqual(
 			pages.map((page) => readTalkNumbers(page, 'titulo')),
