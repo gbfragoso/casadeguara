@@ -5,10 +5,10 @@ import { embedProgramAssets } from './assets';
 import type { TalkProgramDocument } from './content';
 import { layoutTalkProgram } from './layout';
 import { drawProgramPage } from './renderer';
+import { INSTITUTION_NAME } from './sections';
 
 export type GeneratedProgram = { bytes: Uint8Array; pageCount: number };
 
-const PROGRAM_AUTHOR = 'Grupo Espírita Casa de Guará';
 const PROGRAM_LANGUAGE = 'pt-BR';
 
 export const generateTalkProgramPdf = async (program: TalkProgramDocument): Promise<GeneratedProgram> => {
@@ -16,7 +16,7 @@ export const generateTalkProgramPdf = async (program: TalkProgramDocument): Prom
 	document.setTitle(`Programação de palestras — ${formatProgramMonth(program.month)}`, {
 		showInWindowTitleBar: true,
 	});
-	document.setAuthor(PROGRAM_AUTHOR);
+	document.setAuthor(INSTITUTION_NAME);
 	document.setLanguage(PROGRAM_LANGUAGE);
 	const assets = await embedProgramAssets(document);
 	const pages = layoutTalkProgram(program, assets.fonts);

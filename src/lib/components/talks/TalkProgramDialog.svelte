@@ -5,6 +5,7 @@
 	import { buildProgramFileName } from '#lib/talks/program/format.js';
 	import { formatProgramMonthOption, listProgramMonths, type ProgramMonth } from '#lib/talks/program/months.js';
 	import { requestTalkProgram } from '#lib/talks/program/request.js';
+	import { readBahiaIsoDate } from '#lib/utils/date.js';
 
 	type ProgramState = { status: 'idle' } | ActiveProgram;
 	type Props = { id: string; hoje: string; fetcher?: typeof fetch };
@@ -13,9 +14,10 @@
 
 	let program = $state.raw<ProgramState>({ status: 'idle' });
 	let dialog = $state<HTMLElement>();
+	let openedOn = $state<string>();
 	let controller: AbortController | undefined;
 
-	const months = $derived(listProgramMonths(hoje));
+	const months = $derived(listProgramMonths(openedOn ?? hoje));
 	const chosenMonthKey = $derived(program.status === 'idle' ? undefined : program.month.key);
 
 	function releaseProgram() {
@@ -39,6 +41,7 @@
 
 	function handleToggle(event: ToggleEvent) {
 		if (event.newState === 'open') {
+			openedOn = readBahiaIsoDate(new Date());
 			dialog?.focus();
 			return;
 		}

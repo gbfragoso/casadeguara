@@ -28,7 +28,7 @@ import {
 	TOP_MARGIN,
 } from './typography';
 
-const INSTITUTION_NAME = 'Grupo Espírita Casa de Guará';
+export const INSTITUTION_NAME = 'Grupo Espírita Casa de Guará';
 const PROGRAM_HEADING = 'Programação de palestras';
 
 export type FooterPage = { generatedOn: string; pageNumber: number; pageCount: number };

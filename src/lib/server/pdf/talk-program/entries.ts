@@ -9,6 +9,7 @@ import {
 	type ProgramTextRole,
 } from './elements';
 import {
+	BODY_HEIGHT,
 	CONTENT_LEFT,
 	DATE_COLUMN_WIDTH,
 	ENTRY_PADDING,
@@ -23,6 +24,11 @@ export type EntryLayout = ProgramBlock;
 export type TextPlacement = { x: number; width: number; align?: ProgramTextElement['align'] };
 
 const FIXED_SIZE_STEP = 1;
+const LINE_BREAK = /\r?\n/;
+
+const splitParagraphs = (text: string) => text.split(LINE_BREAK).filter((paragraph) => paragraph.trim());
+
+const mergeLineBreaks = (text: string) => text.replace(/\s+/g, ' ');
 
 export const createTextElement = (
 	role: ProgramTextRole,
@@ -31,14 +37,16 @@ export const createTextElement = (
 	placement: TextPlacement,
 ): ProgramTextElement => {
 	const style = TEXT_STYLES[role];
-	const { lines } = fitText(text, measurers[style.weight], {
-		width: placement.width,
-		maxLines: Number.POSITIVE_INFINITY,
-		maxSize: style.size,
-		minSize: style.size,
-		step: FIXED_SIZE_STEP,
-		breakWords: true,
-	});
+	const wrapParagraph = (paragraph: string) =>
+		fitText(paragraph, measurers[style.weight], {
+			width: placement.width,
+			maxLines: Number.POSITIVE_INFINITY,
+			maxSize: style.size,
+			minSize: style.size,
+			step: FIXED_SIZE_STEP,
+			breakWords: true,
+		}).lines;
+	const lines = splitParagraphs(text).flatMap(wrapParagraph);
 	return {
 		kind: 'text',
 		role,
@@ -76,7 +84,7 @@ const buildTextColumn = (content: ProgramEntryContent, measurers: ProgramMeasure
 	return stackTexts([{ element: title, gapBefore: 0 }, ...detailItems]);
 };
 
-export const buildEntry = (content: ProgramEntryContent, measurers: ProgramMeasurers): EntryLayout => {
+const layoutEntry = (content: ProgramEntryContent, measurers: ProgramMeasurers): EntryLayout => {
 	const date = buildDateColumn(content, measurers);
 	const text = buildTextColumn(content, measurers);
 	const contentHeight = Math.max(date.height, text.height);
@@ -86,4 +94,18 @@ export const buildEntry = (content: ProgramEntryContent, measurers: ProgramMeasu
 		elements: [...centerInRow(date), ...centerInRow(text)],
 		height: contentHeight + 2 * ENTRY_PADDING,
 	};
+};
+
+const mergeEntryLineBreaks = (content: ProgramEntryContent): ProgramEntryContent => ({
+	...content,
+	titulo: mergeLineBreaks(content.titulo),
+	observacao: content.observacao && mergeLineBreaks(content.observacao),
+	palestrante: mergeLineBreaks(content.palestrante),
+	local: content.local && mergeLineBreaks(content.local),
+});
+
+export const buildEntry = (content: ProgramEntryContent, measurers: ProgramMeasurers): EntryLayout => {
+	const entry = layoutEntry(content, measurers);
+	if (entry.height <= BODY_HEIGHT) return entry;
+	return layoutEntry(mergeEntryLineBreaks(content), measurers);
 };

@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { tick, type ComponentProps } from 'svelte';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import TalkProgramDialog from '#lib/components/talks/TalkProgramDialog.svelte';
 import { getElement, renderComponent } from '../support/render-component.js';
@@ -60,7 +60,15 @@ const findLink = (target: HTMLElement, text: string) => {
 
 const waitForReady = (target: HTMLElement) => vi.waitFor(() => findLink(target, 'Abrir para imprimir'));
 
+const setBahiaTime = (isoDateTime: string) => vi.setSystemTime(new Date(`${isoDateTime}-03:00`));
+
+beforeEach(() => {
+	vi.useFakeTimers({ toFake: ['Date'] });
+	setBahiaTime('2026-10-27T10:00:00');
+});
+
 afterEach(() => {
+	vi.useRealTimers();
 	vi.restoreAllMocks();
 });
 
@@ -71,6 +79,18 @@ describe('TU-31 TalkProgramDialog offers the months', () => {
 		expect(readMonths(target)).toEqual([
 			['Outubro de 2026', 'false'],
 			['Novembro de 2026', 'false'],
+		]);
+	});
+
+	it('offers the months of the day the dialog opens when the page was loaded the month before', async () => {
+		const target = await renderDialog({ hoje: '2026-10-31' });
+		setBahiaTime('2026-11-01T08:00:00');
+
+		await toggleDialog('open');
+
+		expect(readMonths(target)).toEqual([
+			['Novembro de 2026', 'false'],
+			['Dezembro de 2026', 'false'],
 		]);
 	});
 

@@ -20,12 +20,14 @@ export type ProgramReadiness<T extends ProgramTalkFacts> =
 	| { status: 'vazia' }
 	| { status: 'pendente'; pendencias: ProgramPendency[] };
 
-const hasRequiredData = <T extends ProgramTalkFacts>(talk: T): talk is ReadyProgramTalk<T> =>
-	Boolean(talk.titulo) && talk.palestrante !== null;
+const hasTitle = ({ titulo }: ProgramTalkFacts) => Boolean(titulo?.trim());
 
-const describeMissingData = ({ titulo, palestrante }: ProgramTalkFacts): string => {
-	if (!titulo && !palestrante) return 'Faltam o título e o palestrante.';
-	return titulo ? 'Falta o palestrante.' : 'Falta o título.';
+const hasRequiredData = <T extends ProgramTalkFacts>(talk: T): talk is ReadyProgramTalk<T> =>
+	hasTitle(talk) && talk.palestrante !== null;
+
+const describeMissingData = (talk: ProgramTalkFacts): string => {
+	if (!hasTitle(talk) && !talk.palestrante) return 'Faltam o título e o palestrante.';
+	return hasTitle(talk) ? 'Falta o palestrante.' : 'Falta o título.';
 };
 
 const toPendency = (talk: ProgramTalkFacts): ProgramPendency => ({

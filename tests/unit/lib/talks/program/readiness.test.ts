@@ -48,3 +48,16 @@ describe('TU-08 checkProgramReadiness with an empty month', () => {
 		expect(checkProgramReadiness([])).toEqual({ status: 'vazia' });
 	});
 });
+
+describe('checkProgramReadiness with a blank title', () => {
+	it('lists a title made only of spaces as missing', () => {
+		const talks = [buildTalk({ titulo: '   ' })];
+
+		const readiness = checkProgramReadiness(talks);
+
+		expect(readiness).toEqual({
+			status: 'pendente',
+			pendencias: [{ id: 501, quando: 'Segunda-feira, 02/11/2026 · 08:45', falta: 'Falta o título.' }],
+		});
+	});
+});

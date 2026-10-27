@@ -6,6 +6,7 @@ import { layoutTalkProgram } from '#lib/server/pdf/talk-program/layout.js';
 import { BODY_BOTTOM, BODY_TOP } from '#lib/server/pdf/talk-program/typography.js';
 import { boundsOf, intersects, listTexts, readTexts } from './support/layout-queries';
 import {
+	BASE_TALK,
 	createProgramDocument,
 	LEGACY_LIMIT_TALK,
 	LONG_WORST_CASE_TALK,
@@ -66,6 +67,32 @@ describe('talk program worst cases', () => {
 		expect(pages).toHaveLength(1);
 		expect(readRenderedEntry(pages[0])).toEqual(readExpectedEntry(toProgramEntryContent(LEGACY_LIMIT_TALK)));
 		expect(Math.min(...entryBounds.map(({ top }) => top))).toBeGreaterThanOrEqual(BODY_TOP);
+		expect(Math.max(...entryBounds.map(({ bottom }) => bottom))).toBeLessThanOrEqual(BODY_BOTTOM);
+	});
+});
+
+const readObservationLines = (page: ProgramPageLayout) =>
+	listTexts(page).find(({ role }) => role === 'observacao')?.lines;
+
+describe('talk program observation line breaks', () => {
+	it('keeps each typed line of an observation on its own line', () => {
+		const document = createProgramDocument([
+			{ ...BASE_TALK, observacoes: 'Tema: O perdão\r\n\nTrazer o Evangelho' },
+		]);
+
+		const [page] = layoutTalkProgram(document, testMeasurers);
+
+		expect(readObservationLines(page)).toEqual(['Tema: O perdão', 'Trazer o Evangelho']);
+	});
+
+	it('joins the typed lines when keeping them would push the talk past the sheet body', () => {
+		const document = createProgramDocument([{ ...BASE_TALK, observacoes: 'Item 1.\n'.repeat(62) }]);
+
+		const pages = layoutTalkProgram(document, testMeasurers);
+
+		const entryBounds = listEntryBounds(pages[0]);
+		expect(pages).toHaveLength(1);
+		expect(readObservationLines(pages[0])?.length).toBeLessThan(62);
 		expect(Math.max(...entryBounds.map(({ bottom }) => bottom))).toBeLessThanOrEqual(BODY_BOTTOM);
 	});
 });

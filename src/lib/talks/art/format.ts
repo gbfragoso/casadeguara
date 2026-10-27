@@ -1,14 +1,9 @@
-import { formatTalkTime } from '#lib/talks/schedule.js';
+import { formatTalkTime, readTalkClock } from '#lib/talks/schedule.js';
 import { formatCivilDate, formatMonthName, formatWeekday } from '#lib/utils/date.js';
 
 import type { ReadyTalk, TalkArtFacts } from './readiness';
 
 type DescribedTalk = ReadyTalk<TalkArtFacts> & { data: string; horario: string };
-
-const readClock = (horario: string) => {
-	const [hours, minutes] = horario.split(':');
-	return { hours, minutes };
-};
 
 export const formatArtSchedule = (data: string, horario: string): string =>
 	`${formatWeekday(data)}, às ${formatTalkTime(horario)}`;
@@ -19,7 +14,7 @@ export const formatArtDateSeal = (data: string): { dia: string; mes: string } =>
 });
 
 export const buildTalkArtFileName = (data: string, horario: string): string => {
-	const { hours, minutes } = readClock(horario);
+	const { hours, minutes } = readTalkClock(horario);
 	return `palestra-${data}-${hours}${minutes}.png`;
 };
 
