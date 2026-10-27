@@ -7,7 +7,7 @@ import { createArtMeasurers } from '#lib/server/image/text/shaper.js';
 import type { TalkArtSource } from '#lib/server/image/talk-art/content.js';
 import type { ReadyTalk } from '#lib/talks/art/readiness.js';
 
-const FONT_DIRECTORY = 'src/lib/server/image/text/fonts';
+const FONT_DIRECTORY = 'src/lib/server/brand/fonts';
 
 const readTestFont = (name: string) => fontkit.create(new Uint8Array(readFileSync(`${FONT_DIRECTORY}/${name}.ttf`)));
 

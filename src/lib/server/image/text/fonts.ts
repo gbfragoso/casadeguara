@@ -1,20 +1,17 @@
-import { read } from '$app/server';
 import fontkit, { type Font } from '@pdf-lib/fontkit';
 
-import boldAsset from './fonts/Roboto-Bold.ttf';
-import mediumAsset from './fonts/Roboto-Medium.ttf';
-import regularAsset from './fonts/Roboto-Regular.ttf';
+import { type FontWeight, readBrandFont } from '#lib/server/brand/fonts.js';
 
-export type FontWeight = 'regular' | 'medium' | 'bold';
+export type { FontWeight };
 
 export type ArtFonts = Record<FontWeight, Font>;
 
 let cachedFonts: Promise<ArtFonts> | undefined;
 
-const readFont = async (asset: string) => fontkit.create(new Uint8Array(await read(asset).arrayBuffer()));
+const readFont = async (weight: FontWeight) => fontkit.create(await readBrandFont(weight));
 
 const readArtFonts = async (): Promise<ArtFonts> => {
-	const [regular, medium, bold] = await Promise.all([regularAsset, mediumAsset, boldAsset].map(readFont));
+	const [regular, medium, bold] = await Promise.all((['regular', 'medium', 'bold'] as const).map(readFont));
 	return { regular, medium, bold };
 };
 
