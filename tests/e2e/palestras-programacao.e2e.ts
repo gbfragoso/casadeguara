@@ -12,10 +12,10 @@ import {
 	seedCompleteMonth,
 } from './palestras-programacao-support';
 import { auditWcagViolations } from './support/accessibility';
+import { PDF_BLOB, readPdfBlobHead } from './support/pdf-blob';
 
 const COLOR_SCHEMES = ['light', 'dark'] as const;
 const SEEDED_TALKS = 2;
-const PDF_SIGNATURE = '%PDF-';
 const HISTORY_PATH = '/comunicacao/palestras?visao=historico';
 
 const [, nextMonth] = readProgramMonths();
@@ -48,15 +48,6 @@ const chooseNextMonthByKeyboard = async (page: Page, e2e: E2EData) => {
 	await expect(readyStatus(page, nextMonth)).toBeVisible();
 };
 
-const readBlob = (page: Page, href: string) =>
-	page.evaluate(
-		async ({ url, length }) => {
-			const blob = await (await fetch(url)).blob();
-			return { type: blob.type, head: await blob.slice(0, length).text() };
-		},
-		{ url: href, length: PDF_SIGNATURE.length },
-	);
-
 test('E2E-01 abre a programação do mês seguinte em três interações', async ({ page, e2e }) => {
 	await openPreparedDialog(page, e2e);
 	await monthOption(page, nextMonth).click();
@@ -66,7 +57,7 @@ test('E2E-01 abre a programação do mês seguinte em três interações', async
 
 	const href = await openLink.getAttribute('href');
 	expect(href).toMatch(/^blob:/);
-	expect(await readBlob(page, href ?? '')).toEqual({ type: 'application/pdf', head: PDF_SIGNATURE });
+	expect(await readPdfBlobHead(page, href ?? '')).toEqual(PDF_BLOB);
 });
 
 test('E2E-01 baixa a programação com o nome do mês', async ({ page, e2e }) => {

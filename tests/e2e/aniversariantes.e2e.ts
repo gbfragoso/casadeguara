@@ -1,17 +1,38 @@
+import { formatBirthdayListTitle } from '../../src/lib/birthdays/format';
+import {
+	chooseMonth,
+	downloadPdfLink,
+	generateListButton,
+	generatePdfButton,
+	openBirthdaysPage,
+	openPdfLink,
+	readCurrentMonthOption,
+	readFollowingMonthOption,
+	readReferenceMonth,
+	readyStatus,
+	seedBirthdayWorkers,
+} from './aniversariantes-support';
 import { expect, test } from './fixtures';
 import { findPrintBackgroundViolations } from './support/computed-colors';
-import { openModulePage, shellRegions } from './support/module-shell';
+import { shellRegions } from './support/module-shell';
 
-const BIRTHDAY = '1990-01-15';
+const SEEDED_WORKERS = 1;
+
+const birthdayOption = readFollowingMonthOption(readCurrentMonthOption());
+const birthdayMonth = readReferenceMonth(birthdayOption);
 
 test.describe('relatório de aniversariantes', () => {
-	test('E2E-16 oculta navegação, formulário e ações e remove fundos ao imprimir a lista', async ({ page, e2e }) => {
-		const participant = await e2e.createParticipant('aniversario');
-		await e2e.database`update cadastros set aniversario = ${BIRTHDAY} where idleitor = ${participant.id}`;
-		await openModulePage(page, e2e, '/secretaria/aniversariantes');
-		await page.getByRole('button', { name: 'Gerar lista' }).click();
+	test('E2E-16 oculta controles e resultado do PDF e remove fundos ao imprimir a lista', async ({ page, e2e }) => {
+		const [participant] = await seedBirthdayWorkers(e2e, birthdayOption, SEEDED_WORKERS);
+		await openBirthdaysPage(page, e2e);
+		await chooseMonth(page, birthdayOption);
+		await generateListButton(page).click();
 		const birthdayCell = page.getByRole('cell', { name: participant.name.toUpperCase(), exact: true });
 		await expect(birthdayCell).toBeVisible();
+		const title = formatBirthdayListTitle(birthdayOption, birthdayMonth.year);
+		await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
+		await generatePdfButton(page).click();
+		await expect(readyStatus(page, birthdayMonth)).toBeVisible();
 
 		await page.emulateMedia({ media: 'print' });
 
@@ -21,7 +42,12 @@ test.describe('relatório de aniversariantes', () => {
 		}
 		await expect(page.getByRole('heading', { name: 'Lista de aniversariantes' })).toBeHidden();
 		await expect(page.locator('form').filter({ has: page.getByRole('combobox') })).toBeHidden();
-		await expect(page.getByRole('button', { name: 'Gerar lista' })).toBeHidden();
+		for (const control of [generateListButton(page), generatePdfButton(page)]) {
+			await expect(control).toBeHidden();
+		}
+		for (const pdfArea of [readyStatus(page, birthdayMonth), openPdfLink(page), downloadPdfLink(page)]) {
+			await expect(pdfArea).toBeHidden();
+		}
 		await expect(birthdayCell).toBeVisible();
 		expect(await findPrintBackgroundViolations(page)).toEqual([]);
 	});

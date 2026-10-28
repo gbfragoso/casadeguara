@@ -14,7 +14,7 @@
 			href: resolve('secretaria'),
 			label: 'Início',
 			title: 'Página Inicial',
-			ariaLabel: 'home',
+			ariaLabel: 'início',
 			icon: 'fa-solid fa-house',
 			match: 'exact',
 		},
