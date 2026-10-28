@@ -1,16 +1,33 @@
+import type { FontWeight } from '#lib/server/brand/fonts.js';
 import type { SheetTextStyle } from '#lib/server/pdf/sheet/elements.js';
+import { computeLineHeight } from '#lib/server/pdf/sheet/line-box.js';
+import type { SheetColor } from '#lib/server/pdf/sheet/palette.js';
 
 export type ProgramEntryRole = 'dia' | 'diaSemana' | 'horario' | 'titulo' | 'observacao' | 'palestrante' | 'local';
 
+export const ENTRY_LINE_GAP = 5.5;
+const DATE_LINE_GAP = 5;
+
+const createEntryStyle = (
+	size: number,
+	weight: FontWeight,
+	color: SheetColor,
+	lineGap = ENTRY_LINE_GAP,
+): SheetTextStyle => ({
+	size,
+	lineHeight: computeLineHeight(size, lineGap),
+	weight,
+	color,
+});
+
 export const ENTRY_STYLES: Record<ProgramEntryRole, SheetTextStyle> = {
-	dia: { size: 20, lineHeight: 20, weight: 'bold', color: 'primary' },
-	diaSemana: { size: 10, lineHeight: 12, weight: 'medium', color: 'primary700' },
-	horario: { size: 10, lineHeight: 12, weight: 'regular', color: 'primary700' },
-	titulo: { size: 13, lineHeight: 16, weight: 'bold', color: 'neutral900' },
-	observacao: { size: 10.5, lineHeight: 13, weight: 'regular', color: 'neutral800' },
-	palestrante: { size: 10.5, lineHeight: 13, weight: 'medium', color: 'neutral800' },
-	local: { size: 10.5, lineHeight: 13, weight: 'regular', color: 'neutral800' },
+	dia: createEntryStyle(20, 'bold', 'primary', DATE_LINE_GAP),
+	diaSemana: createEntryStyle(10, 'medium', 'primary700', DATE_LINE_GAP),
+	horario: createEntryStyle(10, 'regular', 'primary700', DATE_LINE_GAP),
+	titulo: createEntryStyle(12, 'bold', 'neutral900'),
+	observacao: createEntryStyle(10, 'regular', 'neutral800'),
+	palestrante: createEntryStyle(10, 'medium', 'neutral800'),
+	local: createEntryStyle(10, 'regular', 'neutral800'),
 };
 
-export const ENTRY_PADDING = 4;
-export const TITLE_GAP = 2;
+export const ENTRY_PADDING = 3;

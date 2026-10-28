@@ -36,8 +36,8 @@ describe('TU-27 birthday list header and footer', () => {
 		expect(page.elements.map(describeHeaderElement).filter(Boolean)).toEqual([
 			'logo',
 			'instituicao: GRUPO ESPÍRITA CASA DE GUARÁ',
-			'cabecalho: Aniversariantes do mês',
-			'mes: NOVEMBRO DE 2026',
+			'cabecalho: ANIVERSARIANTES DO MÊS',
+			'mes: — NOVEMBRO DE 2026',
 			'filete',
 		]);
 	});

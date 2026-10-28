@@ -36,8 +36,8 @@ describe('composeSheetPages', () => {
 			pages.map(() => [
 				'logo',
 				'instituicao: GRUPO ESPÍRITA CASA DE GUARÁ',
-				'cabecalho: Aniversariantes do mês',
-				'mes: NOVEMBRO DE 2026',
+				'cabecalho: ANIVERSARIANTES DO MÊS',
+				'mes: — NOVEMBRO DE 2026',
 				'filete',
 			]),
 		);

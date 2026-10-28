@@ -1,4 +1,12 @@
-import type { SheetElement, SheetPageLayout, SheetTextElement } from '#lib/server/pdf/sheet/elements.js';
+import { BRAND_FONT_CAP_HEIGHT } from '#lib/server/brand/font-metrics.js';
+import type {
+	SheetElement,
+	SheetPageLayout,
+	SheetRuleElement,
+	SheetTextElement,
+} from '#lib/server/pdf/sheet/elements.js';
+import { measureBaselineOffset } from '#lib/server/pdf/sheet/line-box.js';
+import { testMeasurers } from './measurers';
 
 export type Box = { left: number; top: number; right: number; bottom: number };
 
@@ -38,3 +46,21 @@ export const boundsOf = (element: SheetElement): Box => {
 
 export const intersects = (first: Box, second: Box) =>
 	first.left < second.right && second.left < first.right && first.top < second.bottom && second.top < first.bottom;
+
+export const baselineOf = (element: SheetTextElement, lineIndex: number) =>
+	element.top + lineIndex * element.lineHeight + measureBaselineOffset(element);
+
+export const capTopOf = (element: SheetTextElement, lineIndex = 0) =>
+	baselineOf(element, lineIndex) - element.size * BRAND_FONT_CAP_HEIGHT;
+
+export const lastBaselineOf = (element: SheetTextElement) => baselineOf(element, element.lines.length - 1);
+
+export const drawnLeftOf = (element: SheetTextElement, lineIndex = 0) => {
+	const lineWidth = testMeasurers[element.weight].widthOfTextAtSize(element.lines[lineIndex], element.size);
+	if (element.align === 'center') return element.x + (element.width - lineWidth) / 2;
+	if (element.align === 'end') return element.x + element.width - lineWidth;
+	return element.x;
+};
+
+export const listRules = ({ elements }: SheetPageLayout, role: SheetRuleElement['role']) =>
+	elements.filter((element): element is SheetRuleElement => element.kind === 'rule' && element.role === role);

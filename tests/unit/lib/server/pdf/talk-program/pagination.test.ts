@@ -4,7 +4,12 @@ import type { SheetPageLayout } from '#lib/server/pdf/sheet/elements.js';
 import { layoutTalkProgram } from '#lib/server/pdf/talk-program/layout.js';
 import { listTexts, readTexts } from '../sheet/support/layout-queries';
 import { testMeasurers } from '../sheet/support/measurers';
-import { createProgramDocument, FULL_MONTH_TALKS, TYPICAL_MONTH_TALKS } from './support/program-fixtures';
+import {
+	createProgramDocument,
+	FOURTEEN_TALKS,
+	FULL_MONTH_TALKS,
+	TYPICAL_MONTH_TALKS,
+} from './support/program-fixtures';
 
 const ENTRY_ROLES = new Set(['dia', 'diaSemana', 'horario', 'titulo', 'observacao', 'palestrante']);
 
@@ -26,6 +31,15 @@ describe('talk program pagination', () => {
 
 		expect(pages).toHaveLength(1);
 		expect(readTexts(pages[0], 'titulo')).toEqual(TYPICAL_MONTH_TALKS.map(({ titulo }) => titulo));
+	});
+
+	it('fits 14 one-line talks with upper-case titles on a single sheet', () => {
+		const document = createProgramDocument(FOURTEEN_TALKS);
+
+		const pages = layoutTalkProgram(document, testMeasurers);
+
+		expect(pages).toHaveLength(1);
+		expect(readTexts(pages[0], 'titulo')).toEqual(FOURTEEN_TALKS.map(({ titulo }) => titulo));
 	});
 
 	it('continues a full month on the following pages without splitting a talk', () => {

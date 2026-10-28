@@ -58,6 +58,15 @@ export const TYPICAL_MONTH_TALKS = TYPICAL_TITLES.map((titulo, index) =>
 	createMonthTalk(index, { titulo, observacoes: '(O Evangelho Segundo o Espiritismo, Cap. IV)' }),
 );
 
+const EXTRA_TITLES = [
+	'O perdão das ofensas e a reconciliação com os adversários já',
+	'A caridade material e a caridade moral no convívio diário já',
+].map((title) => exactly(title, 60));
+
+export const FOURTEEN_TALKS = [...TYPICAL_TITLES, ...EXTRA_TITLES].map((titulo, index) =>
+	createMonthTalk(index, { titulo: titulo.toLocaleUpperCase('pt-BR'), observacoes: '(Cap. IV, itens 1 a 17)' }),
+);
+
 const FULL_MONTH_SIZE = 15;
 
 export const FULL_MONTH_TALKS = Array.from({ length: FULL_MONTH_SIZE }, (_, index) => {

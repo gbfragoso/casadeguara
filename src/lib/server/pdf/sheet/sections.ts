@@ -1,14 +1,7 @@
 import { INSTITUTION_ADDRESS, INSTITUTION_NAME } from '#lib/brand/institution.js';
 import { formatCalendarMonth, type CalendarMonth } from '#lib/utils/calendar-month.js';
 import { formatCivilDate } from '#lib/utils/date.js';
-import {
-	stackTexts,
-	translateBlock,
-	type SheetElement,
-	type SheetFrameRole,
-	type SheetMeasurers,
-	type SheetRuleElement,
-} from './elements';
+import { type SheetElement, type SheetFrameRole, type SheetMeasurers, type SheetRuleElement } from './elements';
 import { createSheetText, type TextPlacement } from './text';
 import {
 	CONTENT_LEFT,
@@ -20,7 +13,6 @@ import {
 	FOOTER_RULE_TOP,
 	FOOTER_TEXT_TOP,
 	FRAME_STYLES,
-	HEADER_HEIGHT,
 	HEADING_LINE_GAP,
 	LOGO_SIZE,
 	RULE_THICKNESS,
@@ -33,27 +25,40 @@ export type FooterPage = { generatedOn: string; pageNumber: number; pageCount: n
 
 const toUpperCase = (text: string) => text.toLocaleUpperCase('pt-BR');
 
-const centerInHeader = (height: number) => TOP_MARGIN + (HEADER_HEIGHT - height) / 2;
-
 const createFrameText = (role: SheetFrameRole, text: string, measurers: SheetMeasurers, placement: TextPlacement) =>
 	createSheetText(role, text, FRAME_STYLES[role], measurers, placement);
+
+const measureFrameText = (role: SheetFrameRole, text: string, measurers: SheetMeasurers) => {
+	const { weight, size } = FRAME_STYLES[role];
+	return Math.ceil(measurers[weight].widthOfTextAtSize(text, size));
+};
+
+const buildHeadingLine = (heading: string, month: CalendarMonth, measurers: SheetMeasurers, top: number) => {
+	const headingText = toUpperCase(heading);
+	const monthText = `— ${toUpperCase(formatCalendarMonth(month))}`;
+	const availableWidth = TEXT_WIDTH - measureFrameText('mes', monthText, measurers);
+	const headingWidth = Math.min(measureFrameText('cabecalho', `${headingText} `, measurers), availableWidth);
+	const monthLeft = TEXT_LEFT + headingWidth;
+	return [
+		{ ...createFrameText('cabecalho', headingText, measurers, { x: TEXT_LEFT, width: headingWidth }), top },
+		{ ...createFrameText('mes', monthText, measurers, { x: monthLeft, width: CONTENT_RIGHT - monthLeft }), top },
+	];
+};
 
 export const buildSheetHeader = (
 	heading: string,
 	month: CalendarMonth,
 	measurers: SheetMeasurers,
 ): SheetElement<SheetFrameRole>[] => {
-	const placement = { x: TEXT_LEFT, width: TEXT_WIDTH };
-	const headingBlock = stackTexts(
-		[
-			createFrameText('instituicao', toUpperCase(INSTITUTION_NAME), measurers, placement),
-			createFrameText('cabecalho', heading, measurers, placement),
-			createFrameText('mes', toUpperCase(formatCalendarMonth(month)), measurers, placement),
-		].map((element) => ({ element, gapBefore: HEADING_LINE_GAP })),
-	);
+	const institution = createFrameText('instituicao', toUpperCase(INSTITUTION_NAME), measurers, {
+		x: TEXT_LEFT,
+		width: TEXT_WIDTH,
+	});
+	const headingTop = TOP_MARGIN + FRAME_STYLES.instituicao.lineHeight + HEADING_LINE_GAP;
 	return [
-		{ kind: 'logo', x: CONTENT_LEFT, top: centerInHeader(LOGO_SIZE), size: LOGO_SIZE },
-		...translateBlock(headingBlock, centerInHeader(headingBlock.height)),
+		{ kind: 'logo', x: CONTENT_LEFT, top: TOP_MARGIN, size: LOGO_SIZE },
+		{ ...institution, top: TOP_MARGIN },
+		...buildHeadingLine(heading, month, measurers, headingTop),
 		{
 			kind: 'rule',
 			role: 'filete',

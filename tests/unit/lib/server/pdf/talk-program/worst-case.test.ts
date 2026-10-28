@@ -58,6 +58,15 @@ describe('talk program worst cases', () => {
 		expect(readRenderedEntry(page)).toEqual(readExpectedEntry(toProgramEntryContent(talk)));
 	});
 
+	it('fits a realistic 70-character upper-case title on one line', () => {
+		const titulo = LONG_WORST_CASE_TALK.titulo.toLocaleUpperCase('pt-BR');
+		const document = createProgramDocument([{ ...LONG_WORST_CASE_TALK, titulo }]);
+
+		const [page] = layoutTalkProgram(document, testMeasurers);
+
+		expect(listTexts(page).find(({ role }) => role === 'titulo')?.lines).toEqual([titulo]);
+	});
+
 	it('fits a legacy talk at the database limits on one sheet', () => {
 		const document = createProgramDocument([LEGACY_LIMIT_TALK]);
 

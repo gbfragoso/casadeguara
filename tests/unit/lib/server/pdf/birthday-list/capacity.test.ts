@@ -72,7 +72,7 @@ describe('TU-31 full month', () => {
 		const pages = layoutBirthdayList(FULL_MONTH, testMeasurers);
 
 		expect(pages.length).toBeGreaterThan(1);
-		expect(pages.map((page) => readTexts(page, 'cabecalho'))).toEqual(pages.map(() => ['Aniversariantes do mês']));
+		expect(pages.map((page) => readTexts(page, 'cabecalho'))).toEqual(pages.map(() => ['ANIVERSARIANTES DO MÊS']));
 		expect(pages.map((page) => readTexts(page, 'geracao'))).toEqual(
 			pages.map((_, index) => [`Gerado em 27/10/2026 · Página ${index + 1} de ${pages.length}`]),
 		);

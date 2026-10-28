@@ -8,13 +8,8 @@ import {
 	type SheetTextElement,
 } from '#lib/server/pdf/sheet/elements.js';
 import { createSheetText, type TextPlacement } from '#lib/server/pdf/sheet/text.js';
-import {
-	CONTENT_LEFT,
-	CONTENT_WIDTH,
-	DATE_COLUMN_WIDTH,
-	TEXT_LEFT,
-	TEXT_WIDTH,
-} from '#lib/server/pdf/sheet/typography.js';
+import { DATE_COLUMN_PLACEMENT, stackDateColumn } from '#lib/server/pdf/sheet/date-column.js';
+import { CONTENT_LEFT, CONTENT_WIDTH, TEXT_LEFT, TEXT_WIDTH } from '#lib/server/pdf/sheet/typography.js';
 import type { BirthdayGroupContent, BirthdayTextRole } from './content';
 import { BIRTHDAY_STYLES, GROUP_PADDING, NOTICE_GAP } from './typography';
 
@@ -31,13 +26,15 @@ const stackWithoutGaps = (elements: SheetTextElement<BirthdayTextRole>[]) =>
 	stackTexts(elements.map((element) => ({ element, gapBefore: 0 })));
 
 const buildDateColumn = ({ dia, diaSemana }: BirthdayGroupContent, measurers: SheetMeasurers) => {
-	const placement = { x: CONTENT_LEFT, width: DATE_COLUMN_WIDTH, align: 'center' } as const;
 	const texts: [BirthdayTextRole, string | null][] = [
 		['dia', dia],
 		['diaSemana', diaSemana],
 	];
-	return stackWithoutGaps(
-		texts.flatMap(([role, text]) => (text ? [createBirthdayText(role, text, measurers, placement)] : [])),
+	return stackDateColumn(
+		texts.flatMap(([role, text]) =>
+			text ? [createBirthdayText(role, text, measurers, DATE_COLUMN_PLACEMENT)] : [],
+		),
+		measurers,
 	);
 };
 
