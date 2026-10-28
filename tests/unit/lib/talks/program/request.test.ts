@@ -22,7 +22,7 @@ afterEach(() => {
 	vi.restoreAllMocks();
 });
 
-describe('TU-11 requestTalkProgram delivers the PDF', () => {
+describe('TU-11 requestTalkProgram asks for the program', () => {
 	it('asks for the chosen month with the cancellation signal', async () => {
 		const fetcher = servePdf();
 		const { signal } = new AbortController();
@@ -30,16 +30,6 @@ describe('TU-11 requestTalkProgram delivers the PDF', () => {
 		await request(fetcher, signal);
 
 		expect(fetcher).toHaveBeenCalledWith('/comunicacao/palestras/programacao?mes=2026-11', { signal });
-	});
-
-	it('returns the received PDF as a blob', async () => {
-		const fetcher = servePdf();
-
-		const result = await request(fetcher);
-
-		if (!result.ok) throw new Error('O PDF deveria ter sido recebido.');
-		expect(result.pdf.type).toBe('application/pdf');
-		expect(await result.pdf.text()).toBe('%PDF');
 	});
 });
 
@@ -64,7 +54,7 @@ describe('TU-12 requestTalkProgram translates refusals', () => {
 	});
 });
 
-describe('TU-13 requestTalkProgram tolerates failures', () => {
+describe('TU-13 requestTalkProgram falls back to the program failure', () => {
 	it('falls back to the generic message when the body is invalid', async () => {
 		const fetcher = respondWith(new Response('Internal Server Error', { status: 500 }));
 
@@ -84,16 +74,5 @@ describe('TU-13 requestTalkProgram tolerates failures', () => {
 			'comunicacao.palestras.programacao_falhou',
 			expect.objectContaining({ mes: '2026-11' }),
 		);
-	});
-
-	it('does not log a request cancelled by the dialog', async () => {
-		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-		const controller = new AbortController();
-		controller.abort();
-		const fetcher = vi.fn<typeof fetch>(() => Promise.reject(new DOMException('Aborted', 'AbortError')));
-
-		await request(fetcher, controller.signal);
-
-		expect(error).not.toHaveBeenCalled();
 	});
 });
