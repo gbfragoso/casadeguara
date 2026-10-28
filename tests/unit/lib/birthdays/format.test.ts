@@ -5,6 +5,7 @@ import {
 	describeEmptyBirthdays,
 	describeReadyBirthdays,
 	formatBirthdayDate,
+	formatBirthdayListTitle,
 } from '#lib/birthdays/format.js';
 import type { BirthdayMonthOption } from '#lib/birthdays/months.js';
 import { createCalendarMonth } from '#lib/utils/calendar-month.js';
@@ -24,6 +25,10 @@ describe('TU-14 birthday file name and messages', () => {
 		expect(describeReadyBirthdays(createCalendarMonth(2026, 11))).toBe(
 			'Lista de aniversariantes de novembro de 2026 pronta para impressão.',
 		);
+	});
+
+	it('titles the table with the lowercase month and the reference year', () => {
+		expect(formatBirthdayListTitle(november, 2026)).toBe('Aniversariantes do mês novembro / 2026');
 	});
 
 	it('formats the table date as DD/MM', () => {

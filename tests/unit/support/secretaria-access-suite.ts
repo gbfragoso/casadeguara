@@ -5,7 +5,7 @@ import { expectHttpError, expectRedirect, runHandler } from './handler-event';
 
 type Handler = (...args: never[]) => unknown;
 
-export const describeSecretariaAccess = (load: Handler, actions: Record<string, Handler>) => {
+export const describeSecretariaAccess = (load: Handler, actions: Record<string, Handler>, loaded?: unknown) => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(load);
 
@@ -15,7 +15,7 @@ export const describeSecretariaAccess = (load: Handler, actions: Record<string, 
 	it('lets a secretaria user open the page', async () => {
 		const { result } = await runHandler(load, { roles: 'secretaria' });
 
-		expect(result).toBeUndefined();
+		expect(result).toEqual(loaded);
 	});
 
 	it.each(Object.keys(actions))('rejects the %s action for a user without secretaria access', async (name) => {

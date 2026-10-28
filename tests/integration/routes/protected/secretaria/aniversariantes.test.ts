@@ -6,10 +6,12 @@ vi.mock('$app/server', async () => {
 	return { read: (asset: string) => new Response(readFileSync(asset.replace(/^\//, ''))) };
 });
 
-import { createTestName, withBirthdayCadastros } from '../../../lib/server/models/cadastro/test-support';
+import { createTestName, model, withBirthdayCadastros } from '../../../lib/server/models/cadastro/test-support';
 import { createRequestEvent, invoke, type TestUser } from '../../../support/request-event';
+import { actions } from '../../../../../src/routes/(protected)/secretaria/aniversariantes/+page.server';
 import { GET } from '../../../../../src/routes/(protected)/secretaria/aniversariantes/pdf/+server';
 
+const BIRTHDAY_PAGE_URL = 'http://localhost/secretaria/aniversariantes';
 const BIRTHDAY_PDF_URL = 'http://localhost/secretaria/aniversariantes/pdf';
 const SALVADOR_OCTOBER_27 = '2026-10-27T15:00:00Z';
 const SALVADOR_OCTOBER_31_LATE = '2026-11-01T02:30:00Z';
@@ -84,6 +86,46 @@ describe('birthday PDF route', () => {
 
 			expect(response.status).toBe(200);
 			expect(response.headers.get('content-disposition')).toBe(`inline; filename="${fileName}"`);
+		});
+	});
+});
+
+const birthdayListEvent = (mes: string) => {
+	const body = new FormData();
+	body.append('mes', mes);
+	return createRequestEvent({
+		locals: { user: createUser('secretaria'), session: null },
+		request: new Request(BIRTHDAY_PAGE_URL, { method: 'POST', body }),
+		url: new URL(BIRTHDAY_PAGE_URL),
+	});
+};
+
+const januaryWorker = (aniversario: string, desencarnado = false) => ({
+	nome: createTestName('aniv'),
+	trab: true,
+	aniversario: new Date(aniversario),
+	desencarnado,
+});
+
+describe('birthday list action', () => {
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
+	it('TI-06 lists the month birthdays with the reference year through the real composition', async () => {
+		const seeds = [januaryWorker('1980-01-20'), januaryWorker('1975-01-05', true), januaryWorker('1990-01-05')];
+		await withBirthdayCadastros(seeds, async (created) => {
+			const seededIds = new Set(created.map(({ idleitor }) => idleitor));
+			const isSeeded = ({ id }: { id: number }) => seededIds.has(id);
+			setBahiaNow(SALVADOR_OCTOBER_27);
+
+			const result = await invoke(actions.default, birthdayListEvent('01'));
+			if (!result) throw new Error('Expected the birthday list');
+
+			expect(result).toMatchObject({ mes: '01', ano: 2027 });
+			const expected = (await model.listMonthBirthdays(1)).filter(isSeeded);
+			expect(result.leitores.filter(isSeeded)).toEqual(expected);
+			expect(expected).toHaveLength(seeds.length);
 		});
 	});
 });

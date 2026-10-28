@@ -17,5 +17,8 @@ export const describeEmptyBirthdays = (option: BirthdayMonthOption): string =>
 export const describeReadyBirthdays = (month: CalendarMonth): string =>
 	`Lista de aniversariantes de ${formatCalendarMonth(month)} pronta para impressão.`;
 
+export const formatBirthdayListTitle = (option: BirthdayMonthOption, year: number): string =>
+	`Aniversariantes do mês ${readMonthName(option)} / ${year}`;
+
 export const formatBirthdayDate = (dia: number, option: BirthdayMonthOption): string =>
 	`${String(dia).padStart(DAY_DIGITS, '0')}/${option.value}`;
