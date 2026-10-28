@@ -1,91 +1,94 @@
+import type { ComponentProps } from 'svelte';
 import { render } from 'svelte/server';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
+import { CORRECTION_NOTICE } from '#lib/birthdays/format.js';
 import Page from '../../../../../../src/routes/(protected)/secretaria/aniversariantes/+page.svelte';
 import { parseRenderedBody } from '../../../../support/rendered-document';
 
-describe('birthday list page', () => {
-	it('renders the birthday month in Portuguese', () => {
-		const { body } = render(Page, {
-			props: {
-				form: {
-					mes: '01',
-					leitores: [
-						{ nome: 'MARIA', aniversario: new Date('2026-01-15T00:00:00.000Z'), desencarnado: false },
-					],
-				},
-			},
-		});
-		const document = parseRenderedBody(body);
-		const heading = document.querySelector('#printable-content h2');
+type PageForm = ComponentProps<typeof Page>['form'];
 
-		expect(heading?.textContent).toContain('Aniversariantes do mês janeiro');
-		expect(heading?.textContent).not.toContain('January');
+const PAGE_DATA = { username: 'secretaria@example.com', userid: 'user-1', isAdmin: false, hoje: '2026-10-27' };
+const MARIA = { id: 31, nome: 'Maria', dia: 15, desencarnado: false };
+
+const renderPage = (form: PageForm = null) =>
+	parseRenderedBody(render(Page, { props: { data: PAGE_DATA, form } }).body);
+
+const readText = (element: { textContent: string | null } | null | undefined) =>
+	element?.textContent?.replace(/\s+/g, ' ').trim();
+
+describe('TU-35 birthday page offers both actions', () => {
+	it('offers the twelve months with the current month selected', () => {
+		const document = renderPage();
+
+		const options = [...document.querySelectorAll('select[name="mes"] option')];
+
+		expect(options.map((option) => option.getAttribute('value'))).toEqual([
+			'01',
+			'02',
+			'03',
+			'04',
+			'05',
+			'06',
+			'07',
+			'08',
+			'09',
+			'10',
+			'11',
+			'12',
+		]);
+		expect(document.querySelector('select[name="mes"] option[selected]')?.getAttribute('value')).toBe('10');
 	});
 
-	it('marks deceased readers in memoriam', () => {
-		const { body } = render(Page, {
-			props: {
-				form: {
-					mes: '01',
-					leitores: [
-						{ nome: 'MARIA', aniversario: new Date('2026-01-15T00:00:00.000Z'), desencarnado: true },
-					],
-				},
-			},
-		});
-		const document = parseRenderedBody(body);
-		const readerRow = document.querySelector('#printable-content tbody tr');
+	it('offers to generate the list and the PDF', () => {
+		const document = renderPage();
 
-		expect(readerRow?.textContent).toContain('MARIA (IN MEMORIAM)');
-	});
+		const buttons = [...document.querySelectorAll('form button')].map((button) => readText(button));
 
-	it('tells that no worker has a birthday in the searched month', () => {
-		const { body } = render(Page, { props: { form: { mes: '02', leitores: [] } } });
-		const document = parseRenderedBody(body);
-
-		expect(document.querySelector('#printable-content')).toBeNull();
-		expect(document.querySelector('[role="status"]')?.textContent).toBe(
-			'Nenhum aniversariante encontrado em fevereiro.',
-		);
+		expect(buttons).toEqual(['Gerar lista', 'Gerar PDF']);
 	});
 
 	it('keeps the searched month selected after generating the list', () => {
-		const { body } = render(Page, { props: { form: { mes: '07', leitores: [] } } });
-		const document = parseRenderedBody(body);
+		const document = renderPage({ leitores: [], mes: '07', ano: 2027 });
 
 		expect(document.querySelector('select[name="mes"] option[selected]')?.getAttribute('value')).toBe('07');
 	});
+});
 
-	describe('before a list is generated', () => {
-		afterEach(() => vi.useRealTimers());
+describe('TU-36 birthday table uses the reference year', () => {
+	const searchJanuary = (desencarnado = false) =>
+		renderPage({ leitores: [{ ...MARIA, desencarnado }], mes: '01', ano: 2027 });
 
-		it('preselects the current month', () => {
-			vi.useFakeTimers();
-			vi.setSystemTime(new Date('2026-03-10T12:00:00Z'));
+	it('titles the list with the month in Portuguese and the reference year', () => {
+		const document = searchJanuary();
 
-			const { body } = render(Page, { props: { form: null } });
-
-			expect(
-				parseRenderedBody(body).querySelector('select[name="mes"] option[selected]')?.getAttribute('value'),
-			).toBe('03');
-		});
+		expect(readText(document.querySelector('#printable-content h2'))).toBe('Aniversariantes do mês janeiro / 2027');
 	});
 
-	it('titles a list of every month without a month name', () => {
-		const { body } = render(Page, {
-			props: {
-				form: {
-					mes: null,
-					leitores: [
-						{ nome: 'MARIA', aniversario: new Date('2026-01-15T00:00:00.000Z'), desencarnado: false },
-					],
-				},
-			},
-		});
+	it('shows the birthday as day and month', () => {
+		const document = searchJanuary();
 
-		const heading = parseRenderedBody(body).querySelector('#printable-content h2');
+		expect(readText(document.querySelector('#printable-content tbody tr'))).toBe('MARIA 15/01');
+	});
 
-		expect(heading?.textContent?.replace(/\s+/g, ' ').trim()).toMatch(/^Aniversariantes do mês \/ \d{4}$/);
+	it('marks deceased readers in memoriam', () => {
+		const document = searchJanuary(true);
+
+		expect(readText(document.querySelector('#printable-content tbody tr td'))).toBe('MARIA (IN MEMORIAM)');
+	});
+
+	it('asks for corrections below the list', () => {
+		const document = searchJanuary();
+
+		expect(readText(document.querySelector('#printable-content p'))).toBe(CORRECTION_NOTICE);
+	});
+
+	it('tells that no worker has a birthday in the searched month', () => {
+		const document = renderPage({ leitores: [], mes: '02', ano: 2027 });
+
+		expect(document.querySelector('#printable-content')).toBeNull();
+		expect(readText(document.querySelector('[role="status"]'))).toBe(
+			'Nenhum aniversariante encontrado em fevereiro.',
+		);
 	});
 });

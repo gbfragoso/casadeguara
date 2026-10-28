@@ -1,8 +1,8 @@
 import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
-import { formatWeekdayAbbreviation } from '#lib/talks/program/format.js';
 import type { ProgramMonth } from '#lib/talks/program/months.js';
 import type { ReadyProgramTalk } from '#lib/talks/program/readiness.js';
 import { formatTalkTime } from '#lib/talks/schedule.js';
+import { formatWeekdayAbbreviation } from '#lib/utils/date.js';
 
 export type ProgramTalkSource = {
 	id: number;

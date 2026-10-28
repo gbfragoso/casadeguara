@@ -7,6 +7,7 @@ import {
 	formatMonthName,
 	formatMonthYear,
 	formatWeekday,
+	formatWeekdayAbbreviation,
 	readBahiaCivilDate,
 	readBahiaIsoDate,
 	readIsoWeekday,
@@ -148,5 +149,19 @@ describe('formatMonthName', () => {
 		process.env.TZ = timeZone;
 
 		expect(formatMonthName('2026-03-01')).toBe('março');
+	});
+});
+
+describe('TU-07 formatWeekdayAbbreviation', () => {
+	it.each([
+		['2026-11-02', 'SEG'],
+		['2026-11-03', 'TER'],
+		['2026-11-04', 'QUA'],
+		['2026-11-05', 'QUI'],
+		['2026-11-06', 'SEX'],
+		['2026-11-07', 'SÁB'],
+		['2026-11-08', 'DOM'],
+	])('abbreviates %s as %s', (data, abbreviation) => {
+		expect(formatWeekdayAbbreviation(data)).toBe(abbreviation);
 	});
 });

@@ -29,7 +29,7 @@ const ACTIVE_ITEMS = [
 ];
 
 const READER_LINKS = [
-	{ label: 'Início', title: 'Página Inicial', ariaLabel: 'home' },
+	{ label: 'Início', title: 'Página Inicial', ariaLabel: 'início' },
 	{ label: 'Frequência', title: 'Frequência', ariaLabel: 'frequência' },
 	{ label: 'Aniversariantes', title: 'Aniversariantes', ariaLabel: 'aniversariantes' },
 	{ label: 'Cadastros', title: 'Cadastros', ariaLabel: 'cadastros' },

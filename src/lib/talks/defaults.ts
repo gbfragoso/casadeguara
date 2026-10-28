@@ -1,4 +1,6 @@
-export const DEFAULT_TALK_LOCATION = 'Rua Major Dórea, 86, Castália, Itabuna-BA';
+import { INSTITUTION_ADDRESS } from '#lib/brand/institution.js';
+
+export const DEFAULT_TALK_LOCATION = INSTITUTION_ADDRESS;
 
 export const DEFAULT_MEETING_ACTIVITIES: readonly string[] = [
 	'Estudo do Evangelho',

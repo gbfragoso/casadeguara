@@ -1,6 +1,7 @@
 import { db } from '#lib/server/database/connection.js';
 
 import { createBiblioteca, updateBiblioteca } from './cadastro-biblioteca';
+import { listMonthBirthdays } from './cadastro-birthdays';
 import type { CadastroDatabase } from './cadastro-database';
 import type {
 	BibliotecaCreateData,
@@ -59,6 +60,10 @@ export class CadastroModel {
 
 	updateSecretariaFlag(id: number, flag: SecretariaFlagData, userAlteracao: string) {
 		return updateSecretariaFlag(this.database, id, flag, userAlteracao);
+	}
+
+	listMonthBirthdays(month: number) {
+		return listMonthBirthdays(this.database, month);
 	}
 
 	fetchTesouraria(name: string) {

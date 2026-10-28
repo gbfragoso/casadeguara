@@ -1,32 +1,7 @@
-import { readFileSync } from 'node:fs';
-
-import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument } from 'pdf-lib';
-
-import type { FontWeight } from '#lib/server/brand/fonts.js';
 import type { ProgramTalkSource, TalkProgramDocument } from '#lib/server/pdf/talk-program/content.js';
-import type { ProgramMeasurers } from '#lib/server/pdf/talk-program/layout.js';
 import type { ReadyProgramTalk } from '#lib/talks/program/readiness.js';
 
 type ReadyTalk = ReadyProgramTalk<ProgramTalkSource>;
-
-const FONT_DIRECTORY = 'src/lib/server/brand/fonts';
-const FONT_FILES: Record<FontWeight, string> = {
-	regular: 'Roboto-Regular',
-	medium: 'Roboto-Medium',
-	bold: 'Roboto-Bold',
-};
-
-const loadTestMeasurers = async (): Promise<ProgramMeasurers> => {
-	const document = await PDFDocument.create();
-	document.registerFontkit(fontkit);
-	const embed = (weight: FontWeight) =>
-		document.embedFont(new Uint8Array(readFileSync(`${FONT_DIRECTORY}/${FONT_FILES[weight]}.ttf`)));
-	const [regular, medium, bold] = await Promise.all([embed('regular'), embed('medium'), embed('bold')]);
-	return { regular, medium, bold };
-};
-
-export const testMeasurers = await loadTestMeasurers();
 
 const exactly = (text: string, length: number) => {
 	if (text.length !== length) throw new Error(`Fixture "${text}" has ${text.length} characters, expected ${length}.`);
@@ -81,6 +56,15 @@ const createMonthTalk = (index: number, talk: Partial<ReadyTalk>): ReadyTalk => 
 
 export const TYPICAL_MONTH_TALKS = TYPICAL_TITLES.map((titulo, index) =>
 	createMonthTalk(index, { titulo, observacoes: '(O Evangelho Segundo o Espiritismo, Cap. IV)' }),
+);
+
+const EXTRA_TITLES = [
+	'O perdão das ofensas e a reconciliação com os adversários já',
+	'A caridade material e a caridade moral no convívio diário já',
+].map((title) => exactly(title, 60));
+
+export const FOURTEEN_TALKS = [...TYPICAL_TITLES, ...EXTRA_TITLES].map((titulo, index) =>
+	createMonthTalk(index, { titulo: titulo.toLocaleUpperCase('pt-BR'), observacoes: '(Cap. IV, itens 1 a 17)' }),
 );
 
 const FULL_MONTH_SIZE = 15;

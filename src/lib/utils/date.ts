@@ -52,3 +52,16 @@ export const formatCivilDateWithWeekday = (civilDate: string): string =>
 const monthNameFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'long', timeZone: 'UTC' });
 
 export const formatMonthName = (civilDate: string): string => monthNameFormatter.format(toUtcMidnight(civilDate));
+
+const WEEKDAY_ABBREVIATIONS: Record<IsoWeekday, string> = {
+	1: 'SEG',
+	2: 'TER',
+	3: 'QUA',
+	4: 'QUI',
+	5: 'SEX',
+	6: 'SÁB',
+	7: 'DOM',
+};
+
+export const formatWeekdayAbbreviation = (civilDate: string): string =>
+	WEEKDAY_ABBREVIATIONS[readIsoWeekday(civilDate)];

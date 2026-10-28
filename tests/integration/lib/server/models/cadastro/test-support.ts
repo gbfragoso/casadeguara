@@ -4,7 +4,7 @@ import { db } from '#lib/server/database/connection.js';
 import { cadastros } from '#lib/server/database/schema.js';
 import { CadastroModel } from '#lib/server/models/cadastro.js';
 import type { BibliotecaCreateData } from '#lib/server/models/cadastro-inputs.js';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 export const model = new CadastroModel(db);
 const TEST_TOKEN_LENGTH = 16;
@@ -69,5 +69,33 @@ export const withBibliotecaCadastros = async <Result>(
 		return await callback(created);
 	} finally {
 		await Promise.all(created.map(({ idleitor }) => deleteCadastro(idleitor)));
+	}
+};
+
+export type BirthdayCadastroSeed = {
+	nome: string;
+	trab: boolean;
+	aniversario: Date | null;
+	desencarnado: boolean | null;
+};
+
+export const withBirthdayCadastros = async <Result>(
+	seeds: BirthdayCadastroSeed[],
+	callback: (created: { idleitor: number; nome: string }[]) => Promise<Result>,
+) => {
+	const created = await db
+		.insert(cadastros)
+		.values(seeds.map((seed) => ({ ...seed, userCadastro: TEST_ACTOR })))
+		.returning({ idleitor: cadastros.idleitor, nome: cadastros.nome });
+
+	try {
+		return await callback(created);
+	} finally {
+		await db.delete(cadastros).where(
+			inArray(
+				cadastros.idleitor,
+				created.map(({ idleitor }) => idleitor),
+			),
+		);
 	}
 };
