@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createTestUserValues } from '../lib/server/models/user-test-support';
 import { createRequestEvent, invoke } from '../support/request-event';
-import { actions } from '../../../src/routes/+page.server';
+import { actions } from '../../../src/routes/login/+page.server';
 
 const PASSWORD = 'senha-segura';
 

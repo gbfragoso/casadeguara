@@ -64,9 +64,9 @@ test.describe('barra superior dos módulos', () => {
 		await userMenuTrigger.click();
 		await userMenu.getByRole('button', { name: 'sair' }).click();
 
-		await expect(page).toHaveURL('/');
+		await expect(page).toHaveURL('/login');
 		await page.goto('/sistemas');
-		await expect(page).toHaveURL('/');
+		await expect(page).toHaveURL('/login');
 	});
 
 	test('E2E-06 alterna para o tema escuro e volta ao do sistema após recarregar', async ({ page, e2e }) => {

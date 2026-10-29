@@ -110,8 +110,17 @@
 	--color-chart-exit: var(--color-danger);
 	--color-chart-axis: var(--color-ink-muted);
 
+	--color-ground: var(--color-white);
+	--color-sky: var(--color-primary-100);
+	--color-sky-wave: var(--color-primary-200);
+	--color-tint-gold: var(--color-accent-100);
+	--color-tint-sky: var(--color-primary-100);
+	--color-warm-band: var(--color-accent-100);
+	--color-footer: var(--color-primary-700);
+
 	--font-*: initial;
 	--font-sans: 'Roboto', sans-serif;
+	--font-display: 'Bricolage Grotesque Variable', 'Roboto', sans-serif;
 
 	--text-*: initial;
 	--text-xs: 0.8125rem;
@@ -130,17 +139,29 @@
 	--text-3xl--line-height: 2.25rem;
 	--text-4xl: 2.25rem;
 	--text-4xl--line-height: 2.5rem;
+	--text-numeral: 4rem;
+	--text-numeral--line-height: 0.9;
+	--text-display: clamp(2.125rem, 1.5rem + 2vw, 3.25rem);
+	--text-display--line-height: 1.05;
+	--text-hero-time: clamp(1.625rem, 1.1rem + 1.6vw, 2.75rem);
+	--text-hero-time--line-height: 1.2;
+	--text-hero: clamp(2.75rem, 1.2rem + 4.8vw, 5.75rem);
+	--text-hero--line-height: 0.98;
 
 	--font-weight-*: initial;
 	--font-weight-normal: 400;
 	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
 	--font-weight-bold: 700;
+	--font-weight-extrabold: 800;
 
 	--radius-*: initial;
 	--radius-sm: 0.25rem;
 	--radius-md: 0.5rem;
 	--radius-lg: 0.75rem;
 	--radius-xl: 1rem;
+	--radius-2xl: 1.75rem;
+	--radius-3xl: 2rem;
 	--radius-full: 9999px;
 
 	--shadow-*: initial;
@@ -164,6 +185,36 @@
 	--animate-*: initial;
 	--animate-spin: spin 0.8s linear infinite;
 	--animate-skeleton: skeleton 1.4s ease-in-out infinite;
+	--animate-hero-settle: hero-settle 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+	--animate-hero-rise: hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+	--animate-recanto-fade: recanto-fade 24s linear infinite both;
+
+	@keyframes hero-settle {
+		from {
+			filter: blur(10px);
+			transform: scale(1.04);
+		}
+	}
+
+	@keyframes hero-rise {
+		from {
+			opacity: 0.5;
+			transform: translateY(1rem);
+		}
+	}
+
+	@keyframes recanto-fade {
+		0%,
+		30%,
+		100% {
+			opacity: 0;
+		}
+
+		5%,
+		25% {
+			opacity: 1;
+		}
+	}
 
 	@keyframes spin {
 		to {
@@ -208,6 +259,14 @@
 			--color-topbar: var(--color-neutral-900);
 			--color-chart-entry: var(--color-primary-500);
 			--color-chart-exit: var(--color-danger-400);
+
+			--color-ground: var(--color-primary-950);
+			--color-sky: var(--color-primary-900);
+			--color-sky-wave: var(--color-primary-800);
+			--color-tint-gold: var(--color-accent-900);
+			--color-tint-sky: var(--color-primary-900);
+			--color-warm-band: var(--color-accent-900);
+			--color-footer: var(--color-primary-900);
 		}
 	}
 }

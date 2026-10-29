@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { expectHttpError, expectRedirect, runHandler } from '../../../../support/handler-event';
@@ -50,7 +51,7 @@ describe('createBibliotecaEmprestimosNovoHandlers default action', () => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(actions.default, { form: loanForm });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('rejects a user without library access before recording the loan', async () => {

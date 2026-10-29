@@ -8,10 +8,19 @@ import { fail, redirect } from '@sveltejs/kit';
 
 const PASSWORD_MAX_LENGTH = 255;
 
+type LoginContext = { locals: { user: { roles: string } | null } };
+
 type LoginDependencies = {
 	users: Pick<UserModel, 'findCredentials'>;
 	sessions: Pick<SessionModel, 'create'>;
 	verifyPassword: (passwordHash: string, password: string) => Promise<boolean>;
+};
+
+const load = ({ locals }: LoginContext) => {
+	if (!locals.user) return;
+
+	const destination = resolveLoginDestination(locals.user.roles);
+	if (destination) redirect(302, destination);
 };
 
 export const createLoginHandlers = ({ users, sessions, verifyPassword }: LoginDependencies) => {
@@ -46,5 +55,5 @@ export const createLoginHandlers = ({ users, sessions, verifyPassword }: LoginDe
 		},
 	};
 
-	return { actions };
+	return { load, actions };
 };

@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createBibliotecaEmprestimosIdIntegerReciboHandlers } from '#lib/server/biblioteca/emprestimos/id-recibo-handlers.js';
@@ -32,7 +33,7 @@ describe('createBibliotecaEmprestimosIdIntegerReciboHandlers load', () => {
 
 		const { redirect } = await expectRedirect(createLoad(model), { params: { id: '7' } });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 		expect(model.findReceipt).not.toHaveBeenCalled();
 	});
 

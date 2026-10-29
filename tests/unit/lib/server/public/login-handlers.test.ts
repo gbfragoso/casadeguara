@@ -90,4 +90,25 @@ describe('login handlers', () => {
 			message: 'Solicite ao administrador do sistema cadastramento no setor',
 		});
 	});
+
+	it('sends a signed-in user with a module straight to the module', async () => {
+		const { load } = createLoginHandlers({ users: createUsers([]), sessions: createSessions(), verifyPassword });
+
+		const outcome = await Promise.resolve()
+			.then(() => load({ locals: { user: { roles: 'comunicacao' } } }))
+			.catch((reason: unknown) => reason);
+
+		expect(isRedirect(outcome) && [outcome.status, outcome.location]).toEqual([302, '/comunicacao']);
+	});
+
+	it.each([
+		['an anonymous visitor', null],
+		['a signed-in user without a module', { roles: 'desconhecido' }],
+	])('shows the form to %s', (_scenario, user) => {
+		const { load } = createLoginHandlers({ users: createUsers([]), sessions: createSessions(), verifyPassword });
+
+		const outcome = load({ locals: { user } });
+
+		expect(outcome).toBeUndefined();
+	});
 });

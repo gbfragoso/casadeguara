@@ -22,6 +22,15 @@ const bahiaIsoDateFormatter = new Intl.DateTimeFormat('en-CA', {
 
 export const readBahiaIsoDate = (reference: Date): string => bahiaIsoDateFormatter.format(reference);
 
+const bahiaClockFormatter = new Intl.DateTimeFormat('en-GB', {
+	timeZone: BAHIA_TIME_ZONE,
+	hour: '2-digit',
+	minute: '2-digit',
+	hourCycle: 'h23',
+});
+
+export const readBahiaClock = (reference: Date): string => bahiaClockFormatter.format(reference);
+
 export const readBahiaCivilDate = (reference: Date): Date => new Date(`${readBahiaIsoDate(reference)}T00:00:00Z`);
 
 export const addCivilDays = (civilDate: Date, days: number): Date => {

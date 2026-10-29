@@ -26,7 +26,7 @@ const assertBlockedAction = async (
 	name: string,
 ) => {
 	expect(response.status()).toBe(status);
-	if (status === 302) expect(response.headers().location).toBe('/');
+	if (status === 302) expect(response.headers().location).toBe('/login');
 	expect(await response.text()).not.toContain(name);
 };
 

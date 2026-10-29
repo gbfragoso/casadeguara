@@ -1,5 +1,6 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
+import { requireAuthenticatedUser } from './authenticated-user';
 import { parseRoles } from './cadastros';
 
 export type TesourariaUser = { roles: string } | null | undefined;
@@ -22,12 +23,12 @@ export const getTesourariaAccess = (user: TesourariaUser): TesourariaAccess => {
 };
 
 export const requireTesourariaAccess = <User extends { roles: string }>(user: User | null | undefined): User => {
-	if (!user) redirect(302, '/');
-	if (!hasTesourariaAccess(user)) {
+	const authenticatedUser = requireAuthenticatedUser(user);
+	if (!hasTesourariaAccess(authenticatedUser)) {
 		error(403, 'Usuário não possui acesso ao sistema da tesouraria.');
 	}
 
-	return user;
+	return authenticatedUser;
 };
 
 export const requireTesourariaAdminAccess = <User extends { roles: string }>(user: User | null | undefined): User => {

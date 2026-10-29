@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { expect, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
 import { db } from '#lib/server/database/connection.js';
@@ -57,5 +58,5 @@ it('rejects the load with a handled error when asynchronous queries fail', async
 it('redirects anonymous visitors before loading reader names', async () => {
 	const event = createRequestEvent();
 
-	await expect(invoke(load, event)).rejects.toMatchObject({ status: 302, location: '/' });
+	await expect(invoke(load, event)).rejects.toMatchObject({ status: 302, location: LOGIN_PATH });
 });

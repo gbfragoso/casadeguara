@@ -1,17 +1,18 @@
 import { hasSecretariaAccess, parseRoles } from '#lib/server/authorization/cadastros.js';
-import { error, redirect } from '@sveltejs/kit';
+import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
+import { error } from '@sveltejs/kit';
 
 type SecretariaUser = { id: string; roles: string } | null | undefined;
 
 const SECRETARIA_ADMIN_ROLE = 'secretaria:admin';
 
 export const requireSecretariaAccess = (user: SecretariaUser) => {
-	if (!user) redirect(302, '/');
-	if (!hasSecretariaAccess(user)) {
+	const authenticatedUser = requireAuthenticatedUser(user);
+	if (!hasSecretariaAccess(authenticatedUser)) {
 		error(401, 'Usuário não possui acesso ao sistema da secretaria.');
 	}
 
-	return user;
+	return authenticatedUser;
 };
 
 export const requireSecretariaAdminAccess = (user: SecretariaUser) => {

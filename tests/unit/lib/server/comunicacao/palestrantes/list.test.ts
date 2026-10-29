@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpeakerListLoad } from '#lib/server/comunicacao/palestrantes/list.js';
@@ -56,7 +57,7 @@ describe('speaker list load', () => {
 	it('sends an anonymous visitor to the login page', async () => {
 		const { redirect } = await expectRedirect(createSpeakerListLoad({ speakers: createFakeSpeakers() }));
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('reports a failure to read the speakers', async () => {

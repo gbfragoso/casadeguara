@@ -20,6 +20,11 @@ describe('route param matchers', () => {
 	it.each([
 		['alphanumeric', 'usuario-01'],
 		['integer', '4a'],
+		['integer', '1.5'],
+		['integer', '-1'],
+		['integer', '0'],
+		['integer', '042'],
+		['integer', '2147483648'],
 		['uuid', 'not-a-uuid'],
 	] as const)('rejects an invalid %s param', (matcher, value) => {
 		const result = matchParam(matcher, value);

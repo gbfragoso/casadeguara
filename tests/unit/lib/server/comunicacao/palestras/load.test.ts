@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { DEFAULT_MEETING_ACTIVITIES, DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
@@ -82,7 +83,7 @@ describe('talk board load', () => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(createBoard().load, { url: BOARD_URL });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('fails with 500 when the agenda cannot be read', async () => {

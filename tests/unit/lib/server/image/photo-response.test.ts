@@ -16,4 +16,10 @@ describe('createPhotoResponse', () => {
 		});
 		expect(new Uint8Array(await response.arrayBuffer())).toEqual(photo);
 	});
+
+	it('uses the cache policy chosen by the caller', () => {
+		const response = createPhotoResponse(new Uint8Array([255, 216, 255, 217]), 'public, max-age=3600');
+
+		expect(response.headers.get('cache-control')).toBe('public, max-age=3600');
+	});
 });

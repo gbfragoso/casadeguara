@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -9,7 +10,9 @@ import {
 
 describe('TU-01 comunicacao authorization', () => {
 	it('redirects an anonymous user to the login page', () => {
-		expect(() => requireComunicacaoAccess(null)).toThrow(expect.objectContaining({ status: 302, location: '/' }));
+		expect(() => requireComunicacaoAccess(null)).toThrow(
+			expect.objectContaining({ status: 302, location: LOGIN_PATH }),
+		);
 	});
 
 	it('forbids a user without a Comunicação role', () => {

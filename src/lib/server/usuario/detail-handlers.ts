@@ -2,14 +2,16 @@ import type { Actions, RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
 import { user } from '#lib/server/database/schema.js';
-import { error, redirect } from '@sveltejs/kit';
+import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
+import { error } from '@sveltejs/kit';
 import { hash } from 'argon2';
 import { eq } from 'drizzle-orm';
 
 const requireAccountOwner = (accountUser: App.Locals['user'], accountId: string) => {
-	if (!accountUser || accountUser.id !== accountId) redirect(302, '/');
+	const owner = requireAuthenticatedUser(accountUser);
+	if (owner.id !== accountId) error(403, 'Você só pode acessar a sua própria conta.');
 
-	return accountUser;
+	return owner;
 };
 
 const accountFields = { id: user.id, username: user.username, name: user.name };

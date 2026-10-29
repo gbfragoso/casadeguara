@@ -1,10 +1,13 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { describe, expect, it } from 'vitest';
 
 import { requireSecretariaAccess, requireSecretariaAdminAccess } from '#lib/server/secretaria/access.js';
 
 describe('requireSecretariaAccess', () => {
 	it('redirects an unauthenticated request', () => {
-		expect(() => requireSecretariaAccess(null)).toThrow(expect.objectContaining({ status: 302, location: '/' }));
+		expect(() => requireSecretariaAccess(null)).toThrow(
+			expect.objectContaining({ status: 302, location: LOGIN_PATH }),
+		);
 	});
 
 	it('rejects a user without secretaria access', () => {

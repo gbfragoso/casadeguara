@@ -1,5 +1,6 @@
+const PRIVATE_CACHE_CONTROL = 'private, no-store';
+
 const PHOTO_HEADERS = {
-	'cache-control': 'private, no-store',
 	'content-disposition': 'inline',
 	'content-type': 'image/jpeg',
 	'x-content-type-options': 'nosniff',
@@ -11,5 +12,5 @@ const toResponseBody = (photo: Uint8Array) => {
 	return bytes.buffer;
 };
 
-export const createPhotoResponse = (photo: Uint8Array): Response =>
-	new Response(toResponseBody(photo), { headers: PHOTO_HEADERS });
+export const createPhotoResponse = (photo: Uint8Array, cacheControl = PRIVATE_CACHE_CONTROL): Response =>
+	new Response(toResponseBody(photo), { headers: { 'cache-control': cacheControl, ...PHOTO_HEADERS } });

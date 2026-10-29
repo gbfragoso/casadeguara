@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { isRedirect } from '@sveltejs/kit';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -60,7 +61,7 @@ describe('createBibliotecaCobrancasHandlers', () => {
 
 		const redirect = await captureRedirect(load({ locals: createLocals(null) }));
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it.each([

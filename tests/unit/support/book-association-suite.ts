@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from './fake-database';
@@ -26,7 +27,7 @@ const describeLoad = ({ listKeys, createHandlers }: SuiteOptions) => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(createHandlers().load, { params });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('rejects a user without library access', async () => {
