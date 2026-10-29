@@ -66,7 +66,7 @@ describe('home page sections', () => {
 				['contato@casadeguara.org', 'mailto:contato@casadeguara.org'],
 				['Instagram', 'https://www.instagram.com/casadeguara/'],
 				['YouTube', 'https://www.youtube.com/channel/UCFz1gRHG5bq750Nma0Ttc4w'],
-				['Área do voluntário', '/login'],
+				['Login', '/login'],
 			]),
 		);
 	});
@@ -74,6 +74,6 @@ describe('home page sections', () => {
 	it('links the volunteer area in the header to the login page', () => {
 		const document = renderEmptyHome();
 
-		expect(readLinks(document, 'header')).toContainEqual(['Área do voluntário', '/login']);
+		expect(readLinks(document, 'header')).toContainEqual(['Login', '/login']);
 	});
 });

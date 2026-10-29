@@ -13,10 +13,12 @@
 </script>
 
 <p class="flex flex-wrap items-center gap-3 font-display text-hero-time font-extrabold text-primary-ink">
-	<span class="rounded-xl bg-accent px-4 text-on-accent">{formatRelativeTalkDay(talk.data, today)}</span>
+	<span class="rounded-xl bg-accent px-4 py-1 text-on-accent">{formatRelativeTalkDay(talk.data, today)}</span>
 	às {formatTalkTime(talk.horario)}
 </p>
-<h1 id="titulo-inicio" class="mt-4 font-display text-hero font-extrabold tracking-tight text-balance text-ink-strong">
+<h1
+	id="titulo-inicio"
+	class="mt-4 font-display text-hero font-extrabold tracking-tight text-balance wrap-break-word text-ink-strong">
 	{title.lead}<span class="underline decoration-accent decoration-8 underline-offset-12">{title.lastWord}</span>
 </h1>
 {#if speaker}

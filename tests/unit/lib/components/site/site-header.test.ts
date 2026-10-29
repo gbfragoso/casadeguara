@@ -20,6 +20,12 @@ describe('SiteHeader', () => {
 		expect(menuButton.getAttribute('aria-expanded')).toBe('false');
 	});
 
+	it('names the icon-only phone menu button for assistive technology', async () => {
+		const { menuButton } = await renderHeader();
+
+		expect(menuButton.getAttribute('aria-label')).toBe('Menu');
+	});
+
 	it('opens the phone menu from the menu button', async () => {
 		const { menuButton } = await renderHeader();
 

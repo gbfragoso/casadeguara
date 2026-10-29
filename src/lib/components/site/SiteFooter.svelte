@@ -44,7 +44,7 @@
 				{#each SITE_SECTIONS as section (section.id)}
 					<li><a href={`#${section.id}`} class="text-primary-100 hover:underline">{section.rotulo}</a></li>
 				{/each}
-				<li><a href={resolve(LOGIN_PATH)} class="text-primary-100 hover:underline">Área do voluntário</a></li>
+				<li><a href={resolve(LOGIN_PATH)} class="text-primary-100 hover:underline">Login</a></li>
 			</ul>
 		</nav>
 	</div>
