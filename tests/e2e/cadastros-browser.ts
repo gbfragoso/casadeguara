@@ -5,8 +5,9 @@ import { installHydrationProbe, waitForHydration } from './fixtures-hydration';
 import { formWithField } from './form-locators';
 
 export const signIn = async (page: Page, email: string, password: string, destination: string) => {
+	await page.context().clearCookies();
 	await installHydrationProbe(page);
-	await page.goto('/');
+	await page.goto('/login');
 	await waitForHydration(page);
 	const form = page.locator('form');
 	await form.getByLabel('Email').fill(email);

@@ -1,5 +1,6 @@
 import { parseRoles } from '#lib/server/authorization/cadastros.js';
-import { error, redirect } from '@sveltejs/kit';
+import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
+import { error } from '@sveltejs/kit';
 
 type RolesHolder = { roles: string };
 
@@ -14,12 +15,12 @@ export const hasComunicacaoAccess = (user: RolesHolder) =>
 export const hasComunicacaoAdminAccess = (user: RolesHolder) => hasRole(user, COMUNICACAO_ADMIN_ROLE);
 
 export const requireComunicacaoAccess = <User extends RolesHolder>(user: User | null | undefined): User => {
-	if (!user) redirect(302, '/');
-	if (!hasComunicacaoAccess(user)) {
+	const authenticatedUser = requireAuthenticatedUser(user);
+	if (!hasComunicacaoAccess(authenticatedUser)) {
 		error(403, 'Usuário não possui acesso ao sistema da comunicação.');
 	}
 
-	return user;
+	return authenticatedUser;
 };
 
 export const requireComunicacaoAdminAccess = <User extends RolesHolder>(user: User | null | undefined): User => {

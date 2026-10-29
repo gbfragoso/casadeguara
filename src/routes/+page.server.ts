@@ -1,9 +1,6 @@
-import { sessionModel } from '#lib/server/auth/session.js';
-import { userModel } from '#lib/server/models/user.js';
-import { createLoginHandlers } from '#lib/server/public/login-handlers.js';
-import { verify } from 'argon2';
+import { palestraModel } from '#lib/server/models/palestra.js';
+import { createHomeLoad } from '#lib/server/public/home-handlers.js';
 
-import type { Actions } from './$types';
+import type { PageServerLoad } from './$types';
 
-const handlers = createLoginHandlers({ users: userModel, sessions: sessionModel, verifyPassword: verify });
-export const actions: Actions = handlers.actions;
+export const load: PageServerLoad = createHomeLoad({ talks: palestraModel, clock: () => new Date() });

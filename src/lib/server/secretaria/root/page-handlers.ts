@@ -2,11 +2,12 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
 import { cadastros, frequencia } from '#lib/server/database/schema.js';
-import { error, redirect } from '@sveltejs/kit';
+import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
+import { error } from '@sveltejs/kit';
 import { and, count, eq, gte, lte } from 'drizzle-orm';
 
 const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
+	requireAuthenticatedUser(locals.user);
 
 	try {
 		const date = new Date();

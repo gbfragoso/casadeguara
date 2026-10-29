@@ -6,6 +6,7 @@ import { listAgenda, listHistory, suggestTimes } from './palestra-board';
 import { moveTalk } from './palestra-move';
 import { listMonthProgram, type MonthRange } from './palestra-program';
 import type { TalkDatabase } from './palestra-projections';
+import { findUpcomingTalkSpeakerPhoto, listUpcomingPublicTalks, type PublicTalkMoment } from './palestra-public';
 import { createTalk, removeTalk, updateTalk, type TalkRules } from './palestra-write';
 
 export class PalestraModel {
@@ -29,6 +30,14 @@ export class PalestraModel {
 
 	listMonthProgram(range: MonthRange) {
 		return listMonthProgram(this.database, range);
+	}
+
+	listUpcomingPublic(moment: PublicTalkMoment, limit: number) {
+		return listUpcomingPublicTalks(this.database, moment, limit);
+	}
+
+	findPublicSpeakerPhoto(talkId: number, moment: PublicTalkMoment) {
+		return findUpcomingTalkSpeakerPhoto(this.database, talkId, moment);
 	}
 
 	create(input: TalkCreateData, actorId: string) {

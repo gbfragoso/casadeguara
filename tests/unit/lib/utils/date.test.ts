@@ -9,6 +9,7 @@ import {
 	formatWeekday,
 	formatWeekdayAbbreviation,
 	readBahiaCivilDate,
+	readBahiaClock,
 	readBahiaIsoDate,
 	readIsoWeekday,
 } from '#lib/utils/date.js';
@@ -163,5 +164,15 @@ describe('TU-07 formatWeekdayAbbreviation', () => {
 		['2026-11-08', 'DOM'],
 	])('abbreviates %s as %s', (data, abbreviation) => {
 		expect(formatWeekdayAbbreviation(data)).toBe(abbreviation);
+	});
+});
+
+describe('readBahiaClock', () => {
+	it('reads the Bahia wall clock three hours behind UTC', () => {
+		expect(readBahiaClock(new Date('2026-03-03T02:59:00Z'))).toBe('23:59');
+	});
+
+	it('writes midnight as 00:00', () => {
+		expect(readBahiaClock(new Date('2026-03-03T03:00:00Z'))).toBe('00:00');
 	});
 });

@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from '../../../support/fake-database';
@@ -20,13 +21,13 @@ describe('createUsuarioDetailHandlers load', () => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(load, { params: { id: 'user-1' } });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
-	it("redirects a user viewing another user's account", async () => {
-		const { redirect } = await expectRedirect(load, { ...owner, params: { id: 'user-2' } });
+	it("forbids a user from viewing another user's account", async () => {
+		const { error } = await expectHttpError(load, { ...owner, params: { id: 'user-2' } });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(error.status).toBe(403);
 		expect(fakeDatabase.queries()).toHaveLength(0);
 	});
 
@@ -73,12 +74,13 @@ describe('createUsuarioDetailHandlers default action', () => {
 	});
 
 	it("refuses to change another user's password", async () => {
-		const { event } = await expectRedirect(actions.default, {
+		const { event, error } = await expectHttpError(actions.default, {
 			...owner,
 			form: validForm,
 			params: { id: 'user-2' },
 		});
 
+		expect(error.status).toBe(403);
 		expect(event.request.bodyUsed).toBe(false);
 		expect(fakeDatabase.queries()).toHaveLength(0);
 	});

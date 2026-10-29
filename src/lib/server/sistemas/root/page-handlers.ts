@@ -2,26 +2,27 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
 import { user } from '#lib/server/database/schema.js';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
+import { error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
-const load = async ({ locals }: RequestEvent) => {
-	if (!locals.user) redirect(302, '/');
-
+const findStoredRoles = async (id: string) => {
 	try {
-		const resultado = await db
-			.select({ roles: user.roles })
-			.from(user)
-			.where(eq(user.id, String(locals.user.id)));
-
-		if (!resultado) {
-			throw fail(404, { message: 'Usuário não encontrado' });
-		}
-		return { roles: resultado[0].roles.split(',') };
+		const [registro] = await db.select({ roles: user.roles }).from(user).where(eq(user.id, id));
+		return registro;
 	} catch (err) {
 		console.error(err);
-		return error(500, 'Falha ao baixar os dados do usuário');
+		error(500, 'Falha ao baixar os dados do usuário');
 	}
+};
+
+const load = async ({ locals }: RequestEvent) => {
+	const sessionUser = requireAuthenticatedUser(locals.user);
+
+	const registro = await findStoredRoles(sessionUser.id);
+	if (!registro) error(404, 'Usuário não encontrado');
+
+	return { roles: registro.roles.split(',') };
 };
 
 export const createSistemasHandlers = () => ({

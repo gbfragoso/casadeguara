@@ -1,7 +1,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 
-import Page from '../../../src/routes/+page.svelte';
+import Page from '../../../src/routes/login/+page.svelte';
 import { hasModuleShell } from '../support/module-shell-regions';
 import { getRenderedButton, getRenderedInput, parseRenderedBody } from '../support/rendered-document';
 

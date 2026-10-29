@@ -18,4 +18,8 @@ export type TalkCard = {
 	versao: number;
 };
 
+export type PublicTalkCard = Omit<TalkCard, 'palestrante' | 'versao'> & {
+	palestrante: Omit<TalkSpeaker, 'id'> | null;
+};
+
 export type MoveDirection = 'up' | 'down';

@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { createComunicacaoUserCreateHandlers } from '#lib/server/comunicacao/usuarios/create-handlers.js';
@@ -42,7 +43,7 @@ describe('comunicacao user creation handlers', () => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(createHandlers().load);
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('forbids a volunteer before reading the form', async () => {

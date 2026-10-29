@@ -3,6 +3,7 @@ export type SystemModule = { role: SystemModulePath; path: SystemModulePath; lab
 
 const ADMIN_ROLE_SUFFIX = ':admin';
 const MODULE_SELECTION_PATH = '/sistemas';
+export const LOGIN_PATH = '/login';
 
 export const SYSTEM_MODULES: readonly SystemModule[] = [
 	{ role: 'biblioteca', path: 'biblioteca', label: 'Biblioteca', icon: 'fa-solid fa-book' },

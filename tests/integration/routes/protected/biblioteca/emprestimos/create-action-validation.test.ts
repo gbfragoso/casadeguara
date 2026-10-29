@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { expect } from 'vitest';
 import { isActionFailure } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
@@ -55,5 +56,5 @@ it('returns a failure without creating another active loan', async ({ loan }) =>
 it('redirects an anonymous submission', async () => {
 	const event = createRequestEvent();
 
-	await expect(invoke(actions.default, event)).rejects.toMatchObject({ status: 302, location: '/' });
+	await expect(invoke(actions.default, event)).rejects.toMatchObject({ status: 302, location: LOGIN_PATH });
 });

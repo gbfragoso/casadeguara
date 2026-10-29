@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from './fake-database';
@@ -30,7 +31,7 @@ const describeAccessRules = ({ domain, createHandlers }: SuiteOptions) => {
 			params,
 		});
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('rejects a non-administrator before reading the form', async () => {

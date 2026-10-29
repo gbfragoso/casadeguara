@@ -1,7 +1,8 @@
 import { fixedPath, type CatalogRoute } from './types';
 
 export const ACCESS_ROUTES: readonly CatalogRoute[] = [
-	{ id: 'login', route: '/', role: 'public', shell: false, path: fixedPath('/') },
+	{ id: 'inicio', route: '/', role: 'public', shell: false, path: fixedPath('/') },
+	{ id: 'login', route: '/login', role: 'public', shell: false, path: fixedPath('/login') },
 	{ id: 'sistemas', route: '/(protected)/sistemas', role: 'admin', shell: false, path: fixedPath('/sistemas') },
 	{
 		id: 'meu-cadastro',

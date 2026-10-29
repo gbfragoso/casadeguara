@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from '../../../../support/fake-database';
@@ -23,7 +24,7 @@ describe.each(endpoints)('loan %s endpoint', (_endpoint, handler, url) => {
 	it('redirects an anonymous visitor without touching the loan', async () => {
 		const { redirect } = await expectRedirect(handler, { url });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 		expect(fakeDatabase.queries()).toHaveLength(0);
 	});
 

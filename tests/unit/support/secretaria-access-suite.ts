@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { expect, it } from 'vitest';
 
 import { fakeDatabase } from './fake-database';
@@ -9,7 +10,7 @@ export const describeSecretariaAccess = (load: Handler, actions: Record<string, 
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(load);
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('lets a secretaria user open the page', async () => {

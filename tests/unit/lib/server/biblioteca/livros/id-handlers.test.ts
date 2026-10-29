@@ -1,3 +1,4 @@
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fakeDatabase } from '../../../../support/fake-database';
@@ -25,7 +26,7 @@ describe('createBibliotecaLivrosIdIntegerHandlers load', () => {
 	it('redirects an anonymous visitor', async () => {
 		const { redirect } = await expectRedirect(load, { params: { id: '3' } });
 
-		expect(redirect).toMatchObject({ status: 302, location: '/' });
+		expect(redirect).toMatchObject({ status: 302, location: LOGIN_PATH });
 	});
 
 	it('rejects a user without library access', async () => {
