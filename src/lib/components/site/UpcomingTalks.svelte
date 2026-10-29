@@ -31,7 +31,7 @@
 				{#each talks as talk, index (talk.id)}
 					{@const badge = formatTalkDateBadge(talk.data)}
 					<li class={['rounded-3xl p-7', CARD_TONES[index % CARD_TONES.length]]}>
-						<p class="flex items-baseline gap-3">
+						<p class="flex items-center gap-3">
 							<span class="font-display text-numeral font-extrabold">{badge.dia}</span>
 							<span class="leading-tight font-bold">
 								{badge.diaSemana} · {badge.mes}<br />{formatTalkTime(talk.horario)}

@@ -24,12 +24,12 @@
 		</a>
 		<button
 			type="button"
-			class="ms-auto inline-flex h-11 items-center gap-2 rounded-full bg-surface px-4 font-bold text-primary-ink desktop:hidden"
+			class="ms-auto inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-surface text-lg text-primary-ink desktop:hidden"
+			aria-label="Menu"
 			aria-expanded={menuOpen}
 			aria-controls="menu-do-site"
 			onclick={() => (menuOpen = !menuOpen)}>
 			<i class={['fa-solid', menuOpen ? 'fa-xmark' : 'fa-bars']} aria-hidden="true"></i>
-			Menu
 		</button>
 		<nav
 			id="menu-do-site"
@@ -49,7 +49,7 @@
 					<a
 						href={resolve(LOGIN_PATH)}
 						class="block rounded-full bg-primary px-5 py-3 text-center font-bold text-on-primary hover:bg-primary-700">
-						Área do voluntário
+						Login
 					</a>
 				</li>
 			</ul>

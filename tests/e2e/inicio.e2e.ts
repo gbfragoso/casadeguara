@@ -7,7 +7,7 @@ const readBahiaTomorrow = () => addCivilDays(readBahiaCivilDate(new Date()), 1).
 
 test.describe('página inicial pública', () => {
 	test(
-		'E2E-INICIO-01 o visitante vê as próximas palestras e chega ao login pela área do voluntário',
+		'E2E-INICIO-01 o visitante vê as próximas palestras e chega ao login pela Login',
 		{ tag: '@isolated' },
 		async ({ page, e2e }) => {
 			const data = readBahiaTomorrow();
@@ -26,7 +26,7 @@ test.describe('página inicial pública', () => {
 			const upcoming = page.getByRole('region', { name: 'As próximas palestras' }).getByRole('listitem');
 			await expect(upcoming.first()).toContainText(`Caridade ${e2e.token}`);
 
-			await page.getByRole('banner').getByRole('link', { name: 'Área do voluntário' }).click();
+			await page.getByRole('banner').getByRole('link', { name: 'Login' }).click();
 			await expect(page).toHaveURL('/login');
 			await expect(page.getByRole('button', { name: 'Entrar' })).toBeVisible();
 		},
