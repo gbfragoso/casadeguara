@@ -19,7 +19,7 @@
 
 <section id="inicio" aria-labelledby="titulo-inicio" class="relative overflow-hidden bg-sky desktop:min-h-208">
 	<div
-		class="relative aspect-4/3 tablet:aspect-video desktop:absolute desktop:inset-y-0 desktop:right-0 desktop:aspect-auto desktop:w-[62%]">
+		class="relative aspect-4/3 overflow-clip tablet:aspect-video desktop:absolute desktop:inset-y-0 desktop:right-0 desktop:aspect-auto desktop:w-[62%]">
 		<picture>
 			<source type="image/webp" srcset={heroSources} sizes="(min-width: 64rem) 62vw, 100vw" />
 			<img

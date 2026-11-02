@@ -30,7 +30,19 @@ export type SheetRuleElement = {
 
 export type SheetLogoElement = { kind: 'logo'; x: number; top: number; size: number };
 
-export type SheetElement<Role extends string = string> = SheetTextElement<Role> | SheetRuleElement | SheetLogoElement;
+export type SheetBoxElement = {
+	kind: 'box';
+	role: 'faixa' | 'marcacao';
+	x: number;
+	top: number;
+	width: number;
+	height: number;
+	fill?: SheetColor;
+	border?: { color: SheetColor; thickness: number };
+};
+
+export type SheetElement<Role extends string = string> =
+	SheetTextElement<Role> | SheetRuleElement | SheetLogoElement | SheetBoxElement;
 
 export type SheetPageLayout<Role extends string = string> = { elements: SheetElement<Role>[] };
 

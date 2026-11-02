@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { scheduleTyping, type TypedGrapheme } from '#lib/motion/typing.js';
 	import { formatRelativeTalkDay, readDistinctTalkLocation, splitLastWord } from '#lib/talks/public/format.js';
 	import { formatTalkTime } from '#lib/talks/schedule.js';
 	import type { PublicTalkCard } from '#lib/talks/types.js';
+
+	import SpeakerPhoto from './SpeakerPhoto.svelte';
 
 	type Props = { talk: PublicTalkCard; today: string };
 
@@ -10,7 +12,15 @@
 	let speaker = $derived(talk.palestrante);
 	let location = $derived(readDistinctTalkLocation(talk.local));
 	let title = $derived(splitLastWord(talk.titulo ?? ''));
+	let [typedLead, typedLastWord] = $derived(scheduleTyping([title.lead, title.lastWord]));
 </script>
+
+{#snippet typedGraphemes(graphemes: TypedGrapheme[])}
+	{#each graphemes as { grapheme, position, delayMs } (position)}<span
+			class="animate-type-in motion-reduce:animate-none"
+			style:animation-delay="{delayMs}ms">{grapheme}</span
+		>{/each}
+{/snippet}
 
 <p class="flex flex-wrap items-center gap-3 font-display text-hero-time font-extrabold text-primary-ink">
 	<span class="rounded-xl bg-accent px-4 py-1 text-on-accent">{formatRelativeTalkDay(talk.data, today)}</span>
@@ -18,22 +28,17 @@
 </p>
 <h1
 	id="titulo-inicio"
+	aria-label={title.lead + title.lastWord}
 	class="mt-4 font-display text-hero font-extrabold tracking-tight text-balance wrap-break-word text-ink-strong">
-	{title.lead}<span class="underline decoration-accent decoration-8 underline-offset-12">{title.lastWord}</span>
+	{@render typedGraphemes(typedLead)}<span class="underline decoration-accent decoration-8 underline-offset-12"
+		>{@render typedGraphemes(typedLastWord)}</span>
 </h1>
 {#if speaker}
 	<div class="mt-6 flex items-center gap-4">
-		{#if speaker.temFoto}
-			<img
-				src={resolve('/palestras/[id=integer]/foto', { id: String(talk.id) })}
-				alt=""
-				width="68"
-				height="68"
-				class="size-16 shrink-0 rounded-full border-4 border-surface object-cover" />
-		{/if}
+		{#if speaker.temFoto}<SpeakerPhoto talkId={talk.id} variant="hero" />{/if}
 		<p>
 			<span class="block text-xl font-bold text-ink-strong">{speaker.nome}</span>
-			{#if talk.observacoes}<span class="block text-ink-muted">{talk.observacoes}</span>{/if}
+			{#if talk.observacoes}<span class="block font-medium text-ink-muted">{talk.observacoes}</span>{/if}
 		</p>
 	</div>
 {/if}
@@ -43,13 +48,13 @@
 {#if talk.reuniaoCom.length > 0}
 	<p class="mt-3 max-w-prose text-ink-muted">
 		<span class="font-bold text-ink-strong">A reunião inclui:</span>
-		{talk.reuniaoCom.join(', ')}.
+		<span class="font-medium">{talk.reuniaoCom.join(', ')}</span>
 	</p>
 {/if}
 <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
 	<a
 		href="#como-chegar"
-		class="inline-flex h-14 items-center rounded-full bg-primary px-7 text-lg font-bold text-on-primary hover:bg-primary-700">
+		class="inline-flex h-14 items-center rounded-full bg-primary px-7 text-lg font-bold text-on-primary hover:bg-primary-700 hover:no-underline">
 		Como chegar
 	</a>
 	<a

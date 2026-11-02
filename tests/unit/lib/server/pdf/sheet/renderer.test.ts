@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, rgb, type PDFPageDrawRectangleOptions } from 'pdf-lib';
 import { describe, expect, it } from 'vitest';
 
 import { BRAND_FONT_CAP_HEIGHT } from '#lib/server/brand/font-metrics.js';
@@ -17,13 +17,15 @@ type DrawnShape = { kind: 'line' | 'image'; x: number; y: number };
 const createRecordingPage = () => {
 	const texts: DrawnText[] = [];
 	const shapes: DrawnShape[] = [];
+	const rectangles: PDFPageDrawRectangleOptions[] = [];
 	const page: SheetPage = {
 		getHeight: () => PAGE_HEIGHT,
 		drawText: (text, options) => texts.push({ text, x: options?.x ?? 0, y: options?.y ?? 0 }),
 		drawLine: ({ start }) => shapes.push({ kind: 'line', ...start }),
 		drawImage: (_, options) => shapes.push({ kind: 'image', x: options?.x ?? 0, y: options?.y ?? 0 }),
+		drawRectangle: (options) => rectangles.push(options ?? {}),
 	};
-	return { page, texts, shapes };
+	return { page, texts, shapes, rectangles };
 };
 
 const loadAssets = async () => {
@@ -97,6 +99,33 @@ describe('drawSheetPage', () => {
 		expect(shapes).toEqual([
 			{ kind: 'line', x: 40, y: PAGE_HEIGHT - 200 - 2 / 2 },
 			{ kind: 'image', x: 40, y: PAGE_HEIGHT - 30 - 30 },
+		]);
+	});
+
+	it('TU-19 draws a box element as a rectangle placed from the top of the page', async () => {
+		const box: SheetElement = {
+			kind: 'box',
+			role: 'marcacao',
+			x: 300,
+			top: 120,
+			width: 11,
+			height: 11,
+			fill: 'neutral100',
+			border: { color: 'neutral600', thickness: 0.5 },
+		};
+
+		const { rectangles } = await draw([box]);
+
+		expect(rectangles).toEqual([
+			{
+				x: 300,
+				y: PAGE_HEIGHT - 120 - 11,
+				width: 11,
+				height: 11,
+				color: rgb(0xee / 255, 0xf0 / 255, 0xf4 / 255),
+				borderColor: rgb(0x50 / 255, 0x5d / 255, 0x7c / 255),
+				borderWidth: 0.5,
+			},
 		]);
 	});
 });

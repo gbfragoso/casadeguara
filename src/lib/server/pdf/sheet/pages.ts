@@ -1,4 +1,3 @@
-import type { CalendarMonth } from '#lib/utils/calendar-month.js';
 import {
 	translateBlock,
 	type SheetBlock,
@@ -7,11 +6,12 @@ import {
 	type SheetMeasurers,
 	type SheetPageLayout,
 } from './elements';
+import type { SheetHeading } from './heading';
 import { paginateBlocks } from './pagination';
 import { buildBlockSeparator, buildSheetFooter, buildSheetHeader } from './sections';
 import { BODY_HEIGHT, BODY_TOP } from './typography';
 
-export type SheetFrame = { heading: string; month: CalendarMonth; generatedOn: string };
+export type SheetFrame = { heading: SheetHeading; generatedOn: string };
 
 type PlacedBlocks<Role extends string> = { top: number; elements: SheetElement<Role>[] };
 
@@ -24,21 +24,27 @@ const placeBlocks = <Role extends string>(blocks: SheetBlock<Role>[]) =>
 		{ top: BODY_TOP, elements: [] },
 	).elements;
 
-export const composeSheetPages = <Role extends string>(
+export const frameSheetPages = <Role extends string>(
 	frame: SheetFrame,
-	blocks: SheetBlock<Role>[],
+	bodies: SheetElement<Role>[][],
 	measurers: SheetMeasurers,
 ): SheetPageLayout<Role | SheetFrameRole>[] => {
-	const header = buildSheetHeader(frame.heading, frame.month, measurers);
-	const pages = paginateBlocks(blocks, BODY_HEIGHT);
-	return pages.map((blocksOfPage, index) => ({
+	const header = buildSheetHeader(frame.heading, measurers);
+	return bodies.map((body, index) => ({
 		elements: [
 			...header,
-			...placeBlocks(blocksOfPage),
+			...body,
 			...buildSheetFooter(
-				{ generatedOn: frame.generatedOn, pageNumber: index + 1, pageCount: pages.length },
+				{ generatedOn: frame.generatedOn, pageNumber: index + 1, pageCount: bodies.length },
 				measurers,
 			),
 		],
 	}));
 };
+
+export const composeSheetPages = <Role extends string>(
+	frame: SheetFrame,
+	blocks: SheetBlock<Role>[],
+	measurers: SheetMeasurers,
+): SheetPageLayout<Role | SheetFrameRole>[] =>
+	frameSheetPages(frame, paginateBlocks(blocks, BODY_HEIGHT).map(placeBlocks), measurers);

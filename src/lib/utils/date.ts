@@ -8,6 +8,22 @@ export const formatCivilDate = (value: string | null | undefined): string => {
 	return `${day}/${month}/${year}`;
 };
 
+const MONTHS_IN_YEAR = 12;
+const FEBRUARY = 2;
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
+
+const isLeapYear = (year: number) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+
+const readDaysInMonth = (year: number, month: number) =>
+	month === FEBRUARY && isLeapYear(year) ? DAYS_IN_MONTH[month - 1] + 1 : DAYS_IN_MONTH[month - 1];
+
+export const isCivilDate = (value: string): boolean => {
+	const match = CIVIL_DATE_PATTERN.exec(value);
+	if (!match) return false;
+	const [year, month, day] = match.slice(1).map(Number);
+	return month >= 1 && month <= MONTHS_IN_YEAR && day >= 1 && day <= readDaysInMonth(year, month);
+};
+
 const monthYearFormatter = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 export const formatMonthYear = (reference: Date): string => monthYearFormatter.format(reference);
@@ -45,7 +61,7 @@ export type IsoWeekday = (typeof ISO_WEEKDAYS_FROM_SUNDAY)[number];
 
 const weekdayFormatter = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', timeZone: 'UTC' });
 
-const toUtcMidnight = (civilDate: string) => new Date(`${civilDate}T00:00:00Z`);
+export const toUtcMidnight = (civilDate: string): Date => new Date(`${civilDate}T00:00:00Z`);
 
 export const readIsoWeekday = (civilDate: string): IsoWeekday =>
 	ISO_WEEKDAYS_FROM_SUNDAY[toUtcMidnight(civilDate).getUTCDay()];

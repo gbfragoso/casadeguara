@@ -31,4 +31,18 @@ test.describe('página inicial pública', () => {
 			await expect(page.getByRole('button', { name: 'Entrar' })).toBeVisible();
 		},
 	);
+
+	test(
+		'E2E-INICIO-02 o visitante que reduz o movimento lê o título da palestra sem a digitação',
+		{ tag: '@isolated' },
+		async ({ page, e2e }) => {
+			await e2e.createTalks([{ titulo: `Prece ${e2e.token}`, data: readBahiaTomorrow(), horario: '08:00' }]);
+			await page.emulateMedia({ reducedMotion: 'reduce' });
+
+			await page.goto('/');
+
+			const heading = page.getByRole('heading', { level: 1, name: `Prece ${e2e.token}` });
+			await expect(heading.locator('span').last()).toHaveCSS('animation-name', 'none');
+		},
+	);
 });

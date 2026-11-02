@@ -79,10 +79,10 @@ export type BirthdayCadastroSeed = {
 	desencarnado: boolean | null;
 };
 
-export const withBirthdayCadastros = async <Result>(
-	seeds: BirthdayCadastroSeed[],
-	callback: (created: { idleitor: number; nome: string }[]) => Promise<Result>,
-) => {
+type CadastroSeed = Omit<typeof cadastros.$inferInsert, 'userCadastro'>;
+type SeededCadastrosCallback<Result> = (created: { idleitor: number; nome: string }[]) => Promise<Result>;
+
+export const withSeededCadastros = async <Result>(seeds: CadastroSeed[], callback: SeededCadastrosCallback<Result>) => {
 	const created = await db
 		.insert(cadastros)
 		.values(seeds.map((seed) => ({ ...seed, userCadastro: TEST_ACTOR })))
@@ -99,3 +99,8 @@ export const withBirthdayCadastros = async <Result>(
 		);
 	}
 };
+
+export const withBirthdayCadastros = <Result>(
+	seeds: BirthdayCadastroSeed[],
+	callback: SeededCadastrosCallback<Result>,
+) => withSeededCadastros(seeds, callback);

@@ -1,8 +1,8 @@
 import { INSTITUTION_ADDRESS, INSTITUTION_NAME } from '#lib/brand/institution.js';
-import { formatCalendarMonth, type CalendarMonth } from '#lib/utils/calendar-month.js';
 import { formatCivilDate } from '#lib/utils/date.js';
 import { type SheetElement, type SheetFrameRole, type SheetMeasurers, type SheetRuleElement } from './elements';
-import { createSheetText, type TextPlacement } from './text';
+import { buildHeadingLine, type SheetHeading } from './heading';
+import { createFrameText, toUpperCase } from './text';
 import {
 	CONTENT_LEFT,
 	CONTENT_RIGHT,
@@ -23,33 +23,7 @@ import {
 
 export type FooterPage = { generatedOn: string; pageNumber: number; pageCount: number };
 
-const toUpperCase = (text: string) => text.toLocaleUpperCase('pt-BR');
-
-const createFrameText = (role: SheetFrameRole, text: string, measurers: SheetMeasurers, placement: TextPlacement) =>
-	createSheetText(role, text, FRAME_STYLES[role], measurers, placement);
-
-const measureFrameText = (role: SheetFrameRole, text: string, measurers: SheetMeasurers) => {
-	const { weight, size } = FRAME_STYLES[role];
-	return Math.ceil(measurers[weight].widthOfTextAtSize(text, size));
-};
-
-const buildHeadingLine = (heading: string, month: CalendarMonth, measurers: SheetMeasurers, top: number) => {
-	const headingText = toUpperCase(heading);
-	const monthText = `— ${toUpperCase(formatCalendarMonth(month))}`;
-	const availableWidth = TEXT_WIDTH - measureFrameText('mes', monthText, measurers);
-	const headingWidth = Math.min(measureFrameText('cabecalho', `${headingText} `, measurers), availableWidth);
-	const monthLeft = TEXT_LEFT + headingWidth;
-	return [
-		{ ...createFrameText('cabecalho', headingText, measurers, { x: TEXT_LEFT, width: headingWidth }), top },
-		{ ...createFrameText('mes', monthText, measurers, { x: monthLeft, width: CONTENT_RIGHT - monthLeft }), top },
-	];
-};
-
-export const buildSheetHeader = (
-	heading: string,
-	month: CalendarMonth,
-	measurers: SheetMeasurers,
-): SheetElement<SheetFrameRole>[] => {
+export const buildSheetHeader = (heading: SheetHeading, measurers: SheetMeasurers): SheetElement<SheetFrameRole>[] => {
 	const institution = createFrameText('instituicao', toUpperCase(INSTITUTION_NAME), measurers, {
 		x: TEXT_LEFT,
 		width: TEXT_WIDTH,
@@ -58,7 +32,7 @@ export const buildSheetHeader = (
 	return [
 		{ kind: 'logo', x: CONTENT_LEFT, top: TOP_MARGIN, size: LOGO_SIZE },
 		{ ...institution, top: TOP_MARGIN },
-		...buildHeadingLine(heading, month, measurers, headingTop),
+		...buildHeadingLine(heading, measurers, headingTop),
 		{
 			kind: 'rule',
 			role: 'filete',

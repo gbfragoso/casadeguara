@@ -1,5 +1,6 @@
 import { db } from '#lib/server/database/connection.js';
 
+import { listAttendanceWorkers } from './cadastro-attendance';
 import { createBiblioteca, updateBiblioteca } from './cadastro-biblioteca';
 import { listMonthBirthdays } from './cadastro-birthdays';
 import type { CadastroDatabase } from './cadastro-database';
@@ -64,6 +65,10 @@ export class CadastroModel {
 
 	listMonthBirthdays(month: number) {
 		return listMonthBirthdays(this.database, month);
+	}
+
+	listAttendanceWorkers() {
+		return listAttendanceWorkers(this.database);
 	}
 
 	fetchTesouraria(name: string) {

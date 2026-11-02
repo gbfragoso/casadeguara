@@ -1,38 +1,16 @@
 import type { RequestEvent } from '@sveltejs/kit';
 
 import { db } from '#lib/server/database/connection.js';
-import { cadastros, frequencia } from '#lib/server/database/schema.js';
+import { cadastros } from '#lib/server/database/schema.js';
 import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
-import { error } from '@sveltejs/kit';
-import { and, count, eq, gte, lte } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 
-const load = async ({ locals }: RequestEvent) => {
+const countWorkers = async () => db.select({ counter: count() }).from(cadastros).where(eq(cadastros.trab, true));
+
+const load = ({ locals }: RequestEvent) => {
 	requireAuthenticatedUser(locals.user);
 
-	try {
-		const date = new Date();
-		const year = date.getFullYear();
-		const month = date.getMonth();
-		const firstDay = new Date(year, month, 1);
-		const lastDay = new Date(year, month + 1, 0);
-		const dateFilter = and(gte(frequencia.dataPresenca, firstDay), lte(frequencia.dataPresenca, lastDay));
-
-		const leitores = async () => {
-			return db.select({ counter: count() }).from(cadastros).where(eq(cadastros.trab, true));
-		};
-
-		const engajamento = async () => {
-			return db.select({ counter: count() }).from(frequencia).where(dateFilter);
-		};
-
-		return {
-			leitores: leitores(),
-			engajamento: engajamento(),
-		};
-	} catch (err) {
-		console.error(err);
-		return error(500, 'Falha ao carregar as informações da secretaria');
-	}
+	return { leitores: countWorkers() };
 };
 
 export const createSecretariaHandlers = () => ({

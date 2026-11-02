@@ -3,6 +3,8 @@
 	import { formatTalkTime } from '#lib/talks/schedule.js';
 	import type { PublicTalkCard } from '#lib/talks/types.js';
 
+	import SpeakerPhoto from './SpeakerPhoto.svelte';
+
 	type Props = { talks: readonly PublicTalkCard[] };
 
 	const CARD_TONES = [
@@ -30,7 +32,7 @@
 			<ul class="mt-12 grid gap-6 tablet:grid-cols-3">
 				{#each talks as talk, index (talk.id)}
 					{@const badge = formatTalkDateBadge(talk.data)}
-					<li class={['rounded-3xl p-7', CARD_TONES[index % CARD_TONES.length]]}>
+					<li class={['flex flex-col rounded-3xl p-7', CARD_TONES[index % CARD_TONES.length]]}>
 						<p class="flex items-center gap-3">
 							<span class="font-display text-numeral font-extrabold">{badge.dia}</span>
 							<span class="leading-tight font-bold">
@@ -38,7 +40,12 @@
 							</span>
 						</p>
 						<h3 class="mt-6 font-display text-2xl font-bold text-balance text-inherit">{talk.titulo}</h3>
-						{#if talk.palestrante}<p class="mt-2">Com {talk.palestrante.nome}</p>{/if}
+						<div class="mt-auto flex min-h-18 items-center gap-3 pt-6 font-bold">
+							{#if talk.palestrante}
+								{#if talk.palestrante.temFoto}<SpeakerPhoto talkId={talk.id} variant="card" />{/if}
+								<p>{talk.palestrante.nome}</p>
+							{/if}
+						</div>
 					</li>
 				{/each}
 			</ul>

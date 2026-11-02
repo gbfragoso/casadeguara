@@ -11,13 +11,13 @@ const loadIndicators = (user: ReturnType<typeof createRequestEvent>['locals']['u
 		.catch((reason: unknown) => reason);
 
 describe('secretaria home route', () => {
-	it('counts the workers and the attendance of the month', async () => {
+	it('counts the workers without an attendance indicator', async () => {
 		const user = { id: 'secretaria-inicio', username: 'ana@exemplo.dev', name: 'Ana', roles: 'secretaria' };
 
-		const data = (await loadIndicators(user)) as { leitores: Promise<unknown>; engajamento: Promise<unknown> };
+		const data = (await loadIndicators(user)) as Record<string, Promise<unknown>>;
 
 		expect(await data.leitores).toEqual([{ counter: expect.any(Number) }]);
-		expect(await data.engajamento).toEqual([{ counter: expect.any(Number) }]);
+		expect(Object.keys(data)).toEqual(['leitores']);
 	});
 
 	it('sends an anonymous visitor to the login page', async () => {

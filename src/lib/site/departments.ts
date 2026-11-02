@@ -31,7 +31,7 @@ export const DEPARTMENTS: readonly Department[] = [
 		nome: 'Juventude Espírita Amélia Rodrigues (JEAR)',
 		resumo: 'Encontros de estudo e convivência abertos a jovens.',
 		horarios: ['Sábado, das 15h às 17h'],
-		publico: 'Acima de 13 anos',
+		publico: 'A partir de 13 anos',
 		link: null,
 	},
 	{

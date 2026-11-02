@@ -41,14 +41,14 @@
 					<li>
 						<a
 							href={`#${section.id}`}
-							class="block rounded-full px-4 py-2.5 text-ink-strong hover:bg-sky desktop:hover:bg-surface"
+							class="block rounded-full px-4 py-2.5 text-ink-strong hover:bg-sky hover:no-underline desktop:hover:bg-surface"
 							onclick={closeMenu}>{section.rotulo}</a>
 					</li>
 				{/each}
 				<li class="mt-2 desktop:ms-3 desktop:mt-0">
 					<a
 						href={resolve(LOGIN_PATH)}
-						class="block rounded-full bg-primary px-5 py-3 text-center font-bold text-on-primary hover:bg-primary-700">
+						class="block rounded-full bg-primary px-5 py-3 text-center font-bold text-on-primary hover:bg-primary-700 hover:no-underline">
 						Login
 					</a>
 				</li>
