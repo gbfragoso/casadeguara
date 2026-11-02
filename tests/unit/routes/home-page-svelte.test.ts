@@ -51,7 +51,7 @@ describe('home page hero', () => {
 		const document = renderHome({ destaque, seguintes: [] });
 
 		expect(readText(document, '#inicio')).toContain(
-			'A reunião inclui: Estudo do Evangelho, Passes e água fluidificada.',
+			'A reunião inclui: Estudo do Evangelho, Passes e água fluidificada',
 		);
 	});
 

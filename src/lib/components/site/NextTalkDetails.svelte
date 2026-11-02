@@ -33,7 +33,7 @@
 		{/if}
 		<p>
 			<span class="block text-xl font-bold text-ink-strong">{speaker.nome}</span>
-			{#if talk.observacoes}<span class="block text-ink-muted">{talk.observacoes}</span>{/if}
+			{#if talk.observacoes}<span class="block font-medium text-ink-muted">{talk.observacoes}</span>{/if}
 		</p>
 	</div>
 {/if}
@@ -43,13 +43,13 @@
 {#if talk.reuniaoCom.length > 0}
 	<p class="mt-3 max-w-prose text-ink-muted">
 		<span class="font-bold text-ink-strong">A reunião inclui:</span>
-		{talk.reuniaoCom.join(', ')}.
+		<span class="font-medium">{talk.reuniaoCom.join(', ')}</span>
 	</p>
 {/if}
 <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
 	<a
 		href="#como-chegar"
-		class="inline-flex h-14 items-center rounded-full bg-primary px-7 text-lg font-bold text-on-primary hover:bg-primary-700">
+		class="inline-flex h-14 items-center rounded-full bg-primary px-7 text-lg font-bold text-on-primary hover:bg-primary-700 hover:no-underline">
 		Como chegar
 	</a>
 	<a
