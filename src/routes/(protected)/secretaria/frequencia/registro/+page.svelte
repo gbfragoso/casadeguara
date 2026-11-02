@@ -2,7 +2,7 @@
 	import { resolve } from '$app/paths';
 	import Button from '#lib/components/actions/Button.svelte';
 	import DataTable from '#lib/components/data/DataTable.svelte';
-	import AttendanceFilters from '#lib/components/forms/AttendanceFilters.svelte';
+	import AttendanceListFields from '#lib/components/forms/AttendanceListFields.svelte';
 	import Card from '#lib/components/layout/Card.svelte';
 	import PageHeader from '#lib/components/navigation/PageHeader.svelte';
 	import { createFormEnhancer } from '#lib/forms/enhancer.svelte.js';
@@ -28,7 +28,7 @@
 	method="POST"
 	class="flex flex-col gap-5"
 	{@attach formEnhancer.submitWithLoading}>
-	<AttendanceFilters />
+	<AttendanceListFields />
 	<div>
 		<Button type="submit" tone="primary" loading={formEnhancer.loading} bold class="tablet:min-w-50">
 			<i class="fa-regular fa-rectangle-list fa-fw" aria-hidden="true"></i>Gerar Lista

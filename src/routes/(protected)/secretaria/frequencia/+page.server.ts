@@ -1,7 +1,6 @@
 import { createSecretariaFrequenciaHandlers } from '#lib/server/secretaria/frequencia/page-handlers.js';
 
-import type { Actions, PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
 const handlers = createSecretariaFrequenciaHandlers();
 export const load: PageServerLoad = handlers.load;
-export const actions: Actions = handlers.actions;

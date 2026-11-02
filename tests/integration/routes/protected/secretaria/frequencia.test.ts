@@ -1,3 +1,5 @@
+import { isRedirect } from '@sveltejs/kit';
+import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 import { PageSizes, PDFDocument } from 'pdf-lib';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -9,6 +11,7 @@ vi.mock('$app/server', async () => {
 import { createTestName, withSeededCadastros } from '../../../lib/server/models/cadastro/test-support';
 import { createRequestEvent, invoke, type TestUser } from '../../../support/request-event';
 import { GET } from '../../../../../src/routes/(protected)/secretaria/frequencia/pdf/+server';
+import * as attendancePage from '../../../../../src/routes/(protected)/secretaria/frequencia/+page.server';
 
 const ATTENDANCE_PDF_URL = 'http://localhost/secretaria/frequencia/pdf';
 const TITLE = 'Lista de presença';
@@ -50,5 +53,28 @@ describe('attendance PDF route', () => {
 		expect(response.status).toBe(status);
 		expect(response.headers.get('content-type')).toBe('application/json');
 		expect(await response.json()).toEqual({ message: expect.any(String) });
+	});
+});
+
+describe('TI-04 attendance page route', () => {
+	const loadPage = (user: TestUser | null) =>
+		Promise.resolve()
+			.then(() => invoke(attendancePage.load, createRequestEvent({ locals: { user, session: null } })))
+			.catch((reason: unknown) => reason);
+
+	it('opens the page to a secretaria user', async () => {
+		const outcome = await loadPage(createUser('secretaria'));
+
+		expect(outcome).toBeUndefined();
+	});
+
+	it('sends an anonymous visitor to the login page', async () => {
+		const outcome = await loadPage(null);
+
+		expect(isRedirect(outcome) && outcome.location).toBe(LOGIN_PATH);
+	});
+
+	it('exports no form action', () => {
+		expect(Object.keys(attendancePage)).toEqual(['load']);
 	});
 });
