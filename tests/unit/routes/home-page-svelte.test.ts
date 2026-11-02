@@ -13,6 +13,15 @@ describe('home page hero', () => {
 		expect(readText(document, '#inicio')).toContain('Hoje às 19h30');
 	});
 
+	it('names the heading with the same title its letters type', () => {
+		const document = renderHome({ destaque: buildTalk({ titulo: '  A fé raciocinada ' }), seguintes: [] });
+
+		const heading = document.querySelector('h1');
+
+		expect(heading?.getAttribute('aria-label')).toBe('A fé raciocinada');
+		expect(heading?.textContent).toBe('A fé raciocinada');
+	});
+
 	it('introduces the speaker with the source work of the talk', () => {
 		const destaque = buildTalk({ observacoes: 'O Livro dos Espíritos, questão 658' });
 
@@ -80,7 +89,16 @@ describe('home page upcoming talks', () => {
 
 		const document = renderHome({ destaque: buildTalk(), seguintes });
 
-		expect(readText(document, '#palestras li')).toBe('30 SEX · OUTUBRO19h30 A fé raciocinada Com Carmélia Amorim');
+		expect(readText(document, '#palestras li')).toBe('30 SEX · OUTUBRO19h30 A fé raciocinada Carmélia Amorim');
+	});
+
+	it('shows the speaker photo beside the speaker name', () => {
+		const seguintes = [buildTalk({ id: 2, palestrante: SPEAKER })];
+
+		const document = renderHome({ destaque: buildTalk(), seguintes });
+
+		const photos = [...document.querySelectorAll('#palestras img')].map((image) => image.getAttribute('src'));
+		expect(photos).toEqual(['/palestras/2/foto']);
 	});
 
 	it('shows only the following talks that exist', () => {
