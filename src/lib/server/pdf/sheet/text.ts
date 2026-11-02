@@ -1,12 +1,21 @@
-import { fitText } from '#lib/image/text/fit.js';
-import type { SheetMeasurers, SheetTextElement, SheetTextStyle } from './elements';
+import { fitText, type TextMeasurer } from '#lib/image/text/fit.js';
+import type { SheetFrameRole, SheetMeasurers, SheetTextElement, SheetTextStyle } from './elements';
+import { FRAME_STYLES } from './typography';
 
 export type TextPlacement = { x: number; width: number; align?: SheetTextElement['align'] };
 
 const FIXED_SIZE_STEP = 1;
+const SIZE_PRECISION = 100;
 const LINE_BREAK = /\r?\n/;
 
 const splitParagraphs = (text: string) => text.split(LINE_BREAK).filter((paragraph) => paragraph.trim());
+
+export const toUpperCase = (text: string) => text.toLocaleUpperCase('pt-BR');
+
+export const fitSizeToWidth = (text: string, measurer: TextMeasurer, maxSize: number, width: number) => {
+	const proportionalSize = (maxSize * width) / measurer.widthOfTextAtSize(text, maxSize);
+	return Math.min(maxSize, Math.floor(proportionalSize * SIZE_PRECISION) / SIZE_PRECISION);
+};
 
 export const createSheetText = <Role extends string>(
 	role: Role,
@@ -36,3 +45,10 @@ export const createSheetText = <Role extends string>(
 		...style,
 	};
 };
+
+export const createFrameText = (
+	role: SheetFrameRole,
+	text: string,
+	measurers: SheetMeasurers,
+	placement: TextPlacement,
+) => createSheetText(role, text, FRAME_STYLES[role], measurers, placement);

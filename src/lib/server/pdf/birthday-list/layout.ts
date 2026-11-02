@@ -1,5 +1,5 @@
 import type { SheetFrameRole, SheetMeasurers, SheetPageLayout } from '#lib/server/pdf/sheet/elements.js';
-import { composeSheetPages } from '#lib/server/pdf/sheet/pages.js';
+import { composeSheetPages, type SheetFrame } from '#lib/server/pdf/sheet/pages.js';
 import { groupBirthdays, type BirthdayListDocument, type BirthdayTextRole } from './content';
 import { buildBirthdayBlocks } from './groups';
 
@@ -10,6 +10,9 @@ export const layoutBirthdayList = (
 	measurers: SheetMeasurers,
 ): SheetPageLayout<BirthdayTextRole | SheetFrameRole>[] => {
 	const blocks = buildBirthdayBlocks(groupBirthdays(document), measurers);
-	const frame = { heading: BIRTHDAY_HEADING, month: document.month, generatedOn: document.generatedOn };
+	const frame: SheetFrame = {
+		heading: { kind: 'monthly', text: BIRTHDAY_HEADING, month: document.month },
+		generatedOn: document.generatedOn,
+	};
 	return composeSheetPages(frame, blocks, measurers);
 };

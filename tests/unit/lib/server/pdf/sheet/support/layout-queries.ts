@@ -34,6 +34,13 @@ export const boundsOf = (element: SheetElement): Box => {
 				right: element.x + element.width,
 				bottom: element.y + element.thickness,
 			};
+		case 'box':
+			return {
+				left: element.x,
+				top: element.top,
+				right: element.x + element.width,
+				bottom: element.top + element.height,
+			};
 		default:
 			return {
 				left: element.x,

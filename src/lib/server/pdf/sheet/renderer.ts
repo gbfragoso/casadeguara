@@ -1,11 +1,18 @@
 import { rgb, type PDFFont, type PDFPage } from 'pdf-lib';
 
 import type { SheetAssets } from './assets';
-import type { SheetElement, SheetLogoElement, SheetPageLayout, SheetRuleElement, SheetTextElement } from './elements';
+import type {
+	SheetBoxElement,
+	SheetElement,
+	SheetLogoElement,
+	SheetPageLayout,
+	SheetRuleElement,
+	SheetTextElement,
+} from './elements';
 import { measureBaselineOffset } from './line-box';
 import { SHEET_PALETTE, type SheetColor } from './palette';
 
-export type SheetPage = Pick<PDFPage, 'getHeight' | 'drawText' | 'drawLine' | 'drawImage'>;
+export type SheetPage = Pick<PDFPage, 'getHeight' | 'drawText' | 'drawLine' | 'drawImage' | 'drawRectangle'>;
 
 const HEX_CHANNEL_OFFSETS = [1, 3, 5] as const;
 const HEX_CHANNEL_LENGTH = 2;
@@ -57,9 +64,21 @@ const drawLogo = (page: SheetPage, element: SheetLogoElement, assets: SheetAsset
 		height: element.size,
 	});
 
+const drawBox = (page: SheetPage, element: SheetBoxElement) =>
+	page.drawRectangle({
+		x: element.x,
+		y: page.getHeight() - element.top - element.height,
+		width: element.width,
+		height: element.height,
+		color: element.fill && toPdfColor(element.fill),
+		borderColor: element.border && toPdfColor(element.border.color),
+		borderWidth: element.border?.thickness,
+	});
+
 const drawElement = (page: SheetPage, element: SheetElement, assets: SheetAssets) => {
 	if (element.kind === 'text') return drawText(page, element, assets.fonts[element.weight]);
 	if (element.kind === 'rule') return drawRule(page, element);
+	if (element.kind === 'box') return drawBox(page, element);
 	drawLogo(page, element, assets);
 };
 
