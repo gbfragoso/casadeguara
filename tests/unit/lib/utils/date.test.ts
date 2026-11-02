@@ -8,6 +8,7 @@ import {
 	formatMonthYear,
 	formatWeekday,
 	formatWeekdayAbbreviation,
+	isCivilDate,
 	readBahiaCivilDate,
 	readBahiaClock,
 	readBahiaIsoDate,
@@ -175,4 +176,17 @@ describe('readBahiaClock', () => {
 	it('writes midnight as 00:00', () => {
 		expect(readBahiaClock(new Date('2026-03-03T03:00:00Z'))).toBe('00:00');
 	});
+});
+
+describe('isCivilDate', () => {
+	it.each(['2026-11-02', '2024-02-29', '2000-02-29'])('accepts the existing calendar day %s', (value) => {
+		expect(isCivilDate(value)).toBe(true);
+	});
+
+	it.each(['2026-02-29', '1900-02-29', '2026-04-31', '2026-13-01', '2026-00-10', '2026-11-00', '02/11/2026', ''])(
+		'rejects %s, which is not a calendar day',
+		(value) => {
+			expect(isCivilDate(value)).toBe(false);
+		},
+	);
 });

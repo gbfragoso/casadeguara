@@ -1,4 +1,8 @@
-import type { z } from 'zod';
+import { z } from 'zod';
+
+export const pdfMessageFailureSchema = z.object({ message: z.string().min(1) });
+
+export type PdfMessageFailure = z.infer<typeof pdfMessageFailureSchema>;
 
 export type PdfResult<Failure> = { ok: true; pdf: Blob } | ({ ok: false } & Failure);
 
