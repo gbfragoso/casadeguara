@@ -1,10 +1,10 @@
 import type { Locator } from '@playwright/test';
 
 import { expect, test } from './fixtures';
-import { holdAttendanceLock } from './support/attendance-lock';
+import { holdCadastrosLock } from './support/cadastros-lock';
 import { readBox } from './support/geometry';
 
-const INDICATOR_LABELS = ['Trabalhadores', /Frequência em [a-zç]+ de \d{4}/];
+const INDICATOR_LABELS = ['Trabalhadores'];
 const BOX_TOLERANCE = 1;
 
 type Box = Awaited<ReturnType<typeof readBox>>;
@@ -23,14 +23,14 @@ const expectLabels = async (indicators: Locator) => {
 
 test.describe('página inicial da secretaria', () => {
 	test(
-		'E2E-12 exibe o esqueleto nos indicadores durante o carregamento real',
+		'E2E-04 exibe apenas o indicador de trabalhadores, com esqueleto durante o carregamento real',
 		{ tag: '@isolated' },
 		async ({ page, e2e }) => {
 			await e2e.authenticate(page, 'owner');
 			const indicators = page.getByTestId('indicadores').getByRole('article');
 			let loadingBoxes: Box[] = [];
 
-			await holdAttendanceLock(e2e.database, async () => {
+			await holdCadastrosLock(e2e.database, async () => {
 				await page.goto('/secretaria', { waitUntil: 'commit' });
 				await expect(indicators).toHaveCount(INDICATOR_LABELS.length);
 				await expectLabels(indicators);
@@ -45,6 +45,8 @@ test.describe('página inicial da secretaria', () => {
 				await expect(indicator.getByRole('heading', { level: 2 })).toBeVisible();
 				expectSameBox(loadingBoxes[index], await readBox(indicator));
 			}
+			await expect(indicators).toHaveCount(INDICATOR_LABELS.length);
+			await expect(page.getByTestId('indicadores')).not.toContainText('Frequência em');
 		},
 	);
 });

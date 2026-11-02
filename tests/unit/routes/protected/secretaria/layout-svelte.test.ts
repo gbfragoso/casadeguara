@@ -21,7 +21,7 @@ const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false };
 
 const ACTIVE_ITEMS = [
 	{ label: 'Início', pathname: '/secretaria' },
-	{ label: 'Frequência', pathname: '/secretaria/frequencia/registro' },
+	{ label: 'Frequência', pathname: '/secretaria/frequencia' },
 	{ label: 'Aniversariantes', pathname: '/secretaria/aniversariantes' },
 	{ label: 'Cadastros', pathname: '/secretaria/cadastros/1' },
 	{ label: 'Amigo Fraterno', pathname: '/secretaria/amigofraterno' },

@@ -18,6 +18,7 @@ import { PDF_BLOB, readPdfBlobHead } from './support/pdf-blob';
 const COLOR_SCHEMES = ['light', 'dark'] as const;
 const NOVEMBER_REQUEST = { title: 'Lista de presença', start: '2026-11-01', end: '2026-11-30' };
 const ATTENDANCE_PDF_ROUTE = '**/secretaria/frequencia/pdf?*';
+const REMOVED_REGISTRATION_PATH = '/secretaria/frequencia/registro';
 
 test('E2E-01 gera a lista de frequência e abre o PDF em nova aba sem perder o formulário', async ({ page, e2e }) => {
 	await seedAttendanceWorkers(e2e, 1);
@@ -71,3 +72,11 @@ for (const scheme of COLOR_SCHEMES) {
 		expect(violations).toEqual([]);
 	});
 }
+
+test('E2E-03 responde 404 no antigo registro de frequências', async ({ page, e2e }) => {
+	await e2e.authenticate(page, 'fullAdmin');
+
+	const response = await page.goto(REMOVED_REGISTRATION_PATH);
+
+	expect(response?.status()).toBe(404);
+});

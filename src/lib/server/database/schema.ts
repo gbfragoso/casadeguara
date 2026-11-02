@@ -209,12 +209,6 @@ export const aviso = pgTable('aviso', {
 	username: varchar({ length: 30 }),
 });
 
-export const frequencia = pgTable('frequencia', {
-	frequenciaid: serial().primaryKey().notNull(),
-	trabalhador: integer().notNull(),
-	dataPresenca: date('data_presenca', { mode: 'date' }).notNull(),
-});
-
 export const emprestimo = pgTable('emprestimo', {
 	idemp: serial().primaryKey().notNull(),
 	leitor: integer().notNull(),
