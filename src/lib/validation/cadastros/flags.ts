@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const INVALID_UPDATE_MESSAGE = 'Cadastro ou campo de atualização inválido.';
-const MAX_CADASTRO_ID = 32_767;
+const MAX_CADASTRO_ID = 2_147_483_647;
 const registrationIdSchema = z
 	.number({ error: INVALID_UPDATE_MESSAGE })
 	.int(INVALID_UPDATE_MESSAGE)

@@ -26,7 +26,6 @@ export type E2EData = {
 	setWorker: (id: number, value: boolean) => Promise<void>;
 	setDisincarnated: (id: number, value: boolean) => Promise<void>;
 	advanceCadastroSequence: (value: number) => Promise<void>;
-	restoreCadastroSequence: () => Promise<void>;
 	createBookCatalog: () => Promise<LivroCatalog>;
 	countBooksByTitle: (titulo: string) => Promise<number>;
 	readBookByTitle: (titulo: string) => Promise<BookSnapshot | null>;

@@ -1,22 +1,29 @@
 import { addCivilDays, readBahiaCivilDate } from '../../src/lib/utils/date';
-import { expect, test } from './fixtures';
+import { expect, test, type E2EData } from './fixtures';
+import type { TalkSeed } from './palestras-database';
 
 const ISO_DATE_LENGTH = 10;
 
 const readBahiaTomorrow = () => addCivilDays(readBahiaCivilDate(new Date()), 1).toISOString().slice(0, ISO_DATE_LENGTH);
 
+const createPublishedTalks = async (e2e: E2EData, seeds: readonly TalkSeed[]) => {
+	const talks = await e2e.createTalks(seeds);
+	const speakerId = await e2e.createSpeaker({ nome: `Início Amorim ${e2e.token}` });
+	await Promise.all(talks.map(({ id }) => e2e.assignSpeaker(id, speakerId)));
+};
+
 test.describe('página inicial pública', () => {
+	test.describe.configure({ mode: 'default' });
+
 	test(
 		'E2E-INICIO-01 o visitante vê as próximas palestras e chega ao login pela Login',
 		{ tag: '@isolated' },
 		async ({ page, e2e }) => {
 			const data = readBahiaTomorrow();
-			const [next, following] = await e2e.createTalks([
+			await createPublishedTalks(e2e, [
 				{ titulo: `Prece ${e2e.token}`, data, horario: '08:00' },
 				{ titulo: `Caridade ${e2e.token}`, data, horario: '19:30' },
 			]);
-			const speakerId = await e2e.createSpeaker({ nome: `Início Amorim ${e2e.token}` });
-			await Promise.all([next, following].map(({ id }) => e2e.assignSpeaker(id, speakerId)));
 
 			await page.goto('/');
 
@@ -36,7 +43,9 @@ test.describe('página inicial pública', () => {
 		'E2E-INICIO-02 o visitante que reduz o movimento lê o título da palestra sem a digitação',
 		{ tag: '@isolated' },
 		async ({ page, e2e }) => {
-			await e2e.createTalks([{ titulo: `Prece ${e2e.token}`, data: readBahiaTomorrow(), horario: '08:00' }]);
+			await createPublishedTalks(e2e, [
+				{ titulo: `Prece ${e2e.token}`, data: readBahiaTomorrow(), horario: '08:00' },
+			]);
 			await page.emulateMedia({ reducedMotion: 'reduce' });
 
 			await page.goto('/');

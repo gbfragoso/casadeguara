@@ -8,7 +8,7 @@ const databaseUrl = process.env.POSTGRES_URL;
 if (!databaseUrl) throw new Error('POSTGRES_URL is required for cadastro E2E tests.');
 
 const TEST_USER_TOKEN_LENGTH = 9;
-const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin';
+const FULL_ADMIN_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin,superuser';
 export type TestDatabase = postgres.Sql;
 
 export const createDatabase = (): TestDatabase => postgres(databaseUrl, { max: 4 });
@@ -21,6 +21,7 @@ export type TestUsers = {
 	admin: TestUser;
 	fullAdmin: TestUser;
 	comunicacao: TestUser;
+	superuser: TestUser;
 };
 export type CadastroSnapshot = {
 	idleitor: number;
@@ -65,6 +66,7 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	const admin = createUser(token, 'admin', password);
 	const fullAdmin = createUser(token, 'full', password);
 	const comunicacao = createUser(token, 'comun', password);
+	const superuser = createUser(token, 'super', password);
 	const passwordHash = await hash(password);
 
 	await insertUser(database, owner, 'biblioteca,secretaria,tesouraria', passwordHash);
@@ -73,8 +75,9 @@ export const createTestUsers = async (database: TestDatabase, token: string): Pr
 	await insertUser(database, admin, 'biblioteca,biblioteca:admin,tesouraria:admin', passwordHash);
 	await insertUser(database, fullAdmin, FULL_ADMIN_ROLES, passwordHash);
 	await insertUser(database, comunicacao, 'comunicacao', passwordHash);
+	await insertUser(database, superuser, 'superuser', passwordHash);
 
-	return { owner, wrongRole, tesouraria, admin, fullAdmin, comunicacao };
+	return { owner, wrongRole, tesouraria, admin, fullAdmin, comunicacao, superuser };
 };
 export const readCadastro = async (database: TestDatabase, name: string): Promise<CadastroSnapshot> => {
 	const [cadastro] = await database<CadastroSnapshot[]>`
@@ -101,13 +104,9 @@ export const deleteTestUsers = async (database: TestDatabase, users: TestUsers) 
 };
 
 export const advanceCadastroSequence = (database: TestDatabase, value: number) =>
-	database`select setval(pg_get_serial_sequence('cadastros', 'idleitor'), ${value}, true)`;
-
-export const restoreCadastroSequence = (database: TestDatabase) =>
-	database`select setval(
-		pg_get_serial_sequence('cadastros', 'idleitor'),
-		coalesce((select max(idleitor) from cadastros), 1),
-		true
-	)`;
+	database`
+		select setval(pg_get_serial_sequence('cadastros', 'idleitor'), ${value}, true)
+		where coalesce(pg_sequence_last_value(pg_get_serial_sequence('cadastros', 'idleitor')::regclass), 0) < ${value}
+	`;
 
 export const closeDatabase = (database: TestDatabase) => database.end();

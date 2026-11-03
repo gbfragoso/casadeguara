@@ -20,6 +20,8 @@ const SIDEBAR_OVERLAY_VIEWPORT = { width: 390, height: 844 };
 const REPRESENTATIVE_ROUTES = selectRoutes([
 	'login',
 	'sistemas',
+	'usuarios',
+	'usuarios-novo',
 	'biblioteca-inicio',
 	'biblioteca-livros',
 	'biblioteca-livros-novo',
