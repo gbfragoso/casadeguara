@@ -12,10 +12,11 @@
 		isAdmin: boolean;
 		username: string;
 		userid: string;
+		canManageUsers: boolean;
 		children: Snippet;
 	};
 
-	let { items, moduleName, isAdmin, username, userid, children }: Props = $props();
+	let { items, moduleName, isAdmin, username, userid, canManageUsers, children }: Props = $props();
 	let sidebarExpanded = $state(false);
 
 	afterNavigate(() => {
@@ -31,7 +32,12 @@
 		expanded={sidebarExpanded}
 		onClose={() => (sidebarExpanded = false)} />
 	<section class="min-w-0 flex-1">
-		<Navbar {username} {userid} {sidebarExpanded} onToggleSidebar={() => (sidebarExpanded = !sidebarExpanded)} />
+		<Navbar
+			{username}
+			{userid}
+			{canManageUsers}
+			{sidebarExpanded}
+			onToggleSidebar={() => (sidebarExpanded = !sidebarExpanded)} />
 		<Section>
 			{@render children()}
 		</Section>

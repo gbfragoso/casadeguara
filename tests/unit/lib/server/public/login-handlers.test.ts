@@ -91,6 +91,13 @@ describe('login handlers', () => {
 		});
 	});
 
+	it('TU-20 sends a user with only the superuser role to the module selection', async () => {
+		const { outcome, sessions } = await submitLogin('superuser', validLogin);
+
+		expect(isRedirect(outcome) && [outcome.status, outcome.location]).toEqual([302, '/sistemas']);
+		expect(sessions).toEqual(['ana']);
+	});
+
 	it('sends a signed-in user with a module straight to the module', async () => {
 		const { load } = createLoginHandlers({ users: createUsers([]), sessions: createSessions(), verifyPassword });
 

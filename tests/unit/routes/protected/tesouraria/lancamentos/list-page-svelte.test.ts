@@ -42,6 +42,7 @@ describe('lancamentos list page', () => {
 					page,
 					values: { tipo: 'todos' },
 					isAdmin: false,
+					canManageUsers: false,
 				},
 			},
 		});
@@ -62,7 +63,16 @@ describe('lancamentos list page', () => {
 
 	it('offers a description edit for every active entry and exit', () => {
 		const { body } = render(Page, {
-			props: { data: { username: 'Tesouraria', userid: 'u', page, values: { tipo: 'todos' }, isAdmin: false } },
+			props: {
+				data: {
+					username: 'Tesouraria',
+					userid: 'u',
+					page,
+					values: { tipo: 'todos' },
+					isAdmin: false,
+					canManageUsers: false,
+				},
+			},
 		});
 		const document = parseRenderedBody(body);
 
@@ -82,6 +92,7 @@ describe('lancamentos list page', () => {
 					page: { ...page, items: [], totais: { entradas: '0', saidas: '0' } },
 					values: {},
 					isAdmin: false,
+					canManageUsers: false,
 				},
 			},
 		});

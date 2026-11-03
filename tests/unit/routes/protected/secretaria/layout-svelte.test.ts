@@ -13,11 +13,12 @@ import {
 	readCurrentSidebarLinks,
 	readPageContent,
 	readSidebarLinks,
+	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
 
-const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true };
-const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false };
+const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true, canManageUsers: false };
+const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false, canManageUsers: false };
 
 const ACTIVE_ITEMS = [
 	{ label: 'Início', pathname: '/secretaria' },
@@ -25,7 +26,6 @@ const ACTIVE_ITEMS = [
 	{ label: 'Aniversariantes', pathname: '/secretaria/aniversariantes' },
 	{ label: 'Cadastros', pathname: '/secretaria/cadastros/1' },
 	{ label: 'Amigo Fraterno', pathname: '/secretaria/amigofraterno' },
-	{ label: 'Usuários', pathname: '/secretaria/usuarios/novo' },
 ];
 
 const READER_LINKS = [
@@ -35,8 +35,6 @@ const READER_LINKS = [
 	{ label: 'Cadastros', title: 'Cadastros', ariaLabel: 'cadastros' },
 	{ label: 'Amigo Fraterno', title: 'Amigo Fraterno', ariaLabel: 'amigo fraterno' },
 ];
-
-const ADMIN_LINKS = [...READER_LINKS, { label: 'Usuários', title: 'Usuários', ariaLabel: 'usuários' }];
 
 describe('secretaria layout', () => {
 	afterEach(unmountModuleLayouts);
@@ -49,15 +47,15 @@ describe('secretaria layout', () => {
 		expect(readCurrentSidebarLinks(target)).toEqual([label]);
 	});
 
-	it('shows the administrative items to administrators', async () => {
+	it('TU-23 shows administrators the same items as regular users, without Usuários', async () => {
 		pageState.url = new URL('http://localhost/secretaria');
 
 		const target = await mountModuleLayout(Layout, ADMIN);
 
-		expect(readSidebarLinks(target)).toEqual(ADMIN_LINKS);
+		expect(readSidebarLinks(target)).toEqual(READER_LINKS);
 	});
 
-	it('hides the administrative items from regular users', async () => {
+	it('shows the module items to regular users', async () => {
 		pageState.url = new URL('http://localhost/secretaria');
 
 		const target = await mountModuleLayout(Layout, READER);
@@ -81,5 +79,11 @@ describe('secretaria layout', () => {
 		const target = await mountModuleLayout(Layout, READER);
 
 		expect(readPageContent(target)).toBe(PAGE_CONTENT);
+	});
+
+	it('TU-22 offers the user management in the user menu to a superuser', async () => {
+		const target = await mountModuleLayout(Layout, { ...READER, canManageUsers: true });
+
+		expect(readUserMenuLinks(target)).toContain('Usuários');
 	});
 });

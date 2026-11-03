@@ -13,11 +13,12 @@ import {
 	readCurrentSidebarLinks,
 	readPageContent,
 	readSidebarLinks,
+	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
 
-const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true };
-const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false };
+const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true, canManageUsers: false };
+const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false, canManageUsers: false };
 
 const ACTIVE_ITEMS = [
 	{ label: 'Início', pathname: '/tesouraria' },
@@ -83,5 +84,11 @@ describe('tesouraria layout', () => {
 		const target = await mountModuleLayout(Layout, READER);
 
 		expect(readPageContent(target)).toBe(PAGE_CONTENT);
+	});
+
+	it('TU-22 offers the user management in the user menu to a superuser', async () => {
+		const target = await mountModuleLayout(Layout, { ...READER, canManageUsers: true });
+
+		expect(readUserMenuLinks(target)).toContain('Usuários');
 	});
 });

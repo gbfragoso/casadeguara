@@ -8,7 +8,13 @@ describe('novo lançamento page', () => {
 	it('requires counterpart and exposes deposit control for entries', () => {
 		const { body } = render(CreatePage, {
 			props: {
-				data: { username: 'Tesouraria', userid: 'u', isAdmin: false, contrapartes: [{ id: 7, nome: 'Ana' }] },
+				data: {
+					username: 'Tesouraria',
+					userid: 'u',
+					isAdmin: false,
+					canManageUsers: false,
+					contrapartes: [{ id: 7, nome: 'Ana' }],
+				},
 				form: {
 					values: { tipo: 'entrada', contraparteId: '', depositado: '' },
 					errors: { contraparteId: ['Contraparte obrigatória.'] },

@@ -23,7 +23,13 @@ const NOVEMBER_SEARCH = { leitores: [{ id: 31, nome: 'Maria', dia: 3, desencarna
 
 const renderPage = (form: PageForm) =>
 	renderComponent(Page, {
-		data: { username: 'secretaria@example.com', userid: 'user-1', isAdmin: false, hoje: '2026-10-27' },
+		data: {
+			username: 'secretaria@example.com',
+			userid: 'user-1',
+			isAdmin: false,
+			canManageUsers: false,
+			hoje: '2026-10-27',
+		},
 		form,
 	});
 

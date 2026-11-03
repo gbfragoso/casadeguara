@@ -20,12 +20,13 @@ const SIDEBAR_OVERLAY_VIEWPORT = { width: 390, height: 844 };
 const REPRESENTATIVE_ROUTES = selectRoutes([
 	'login',
 	'sistemas',
+	'usuarios',
+	'usuarios-novo',
 	'biblioteca-inicio',
 	'biblioteca-livros',
 	'biblioteca-livros-novo',
 	'biblioteca-livros-exemplares',
 	'biblioteca-emprestimos-novo',
-	'biblioteca-usuarios-novo',
 	'biblioteca-emprestimos-recibo',
 	'secretaria-inicio',
 	'secretaria-cadastros-edicao',
@@ -34,7 +35,6 @@ const REPRESENTATIVE_ROUTES = selectRoutes([
 	'comunicacao-palestras',
 	'comunicacao-palestrantes-edicao',
 	'comunicacao-palestrantes-importar',
-	'comunicacao-usuarios-novo',
 	'recibo',
 ]);
 const [LIBRARY_HOME, LAUNCHES, NEW_LAUNCH, ACERVO] = selectRoutes([

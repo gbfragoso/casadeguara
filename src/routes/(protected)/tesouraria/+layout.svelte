@@ -55,6 +55,12 @@
 	];
 </script>
 
-<ModuleShell {items} moduleName="Tesouraria" isAdmin={data.isAdmin} username={data.username} userid={data.userid}>
+<ModuleShell
+	{items}
+	moduleName="Tesouraria"
+	isAdmin={data.isAdmin}
+	username={data.username}
+	userid={data.userid}
+	canManageUsers={data.canManageUsers}>
 	{@render children()}
 </ModuleShell>

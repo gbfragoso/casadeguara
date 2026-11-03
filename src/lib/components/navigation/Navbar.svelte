@@ -7,6 +7,7 @@
 	type Props = {
 		username: string;
 		userid: string;
+		canManageUsers: boolean;
 		sidebarExpanded: boolean;
 		onToggleSidebar: () => void;
 		search?: Snippet;
@@ -17,7 +18,7 @@
 	const MENU_ENTRY = 'flex min-h-10 items-center rounded-md px-3 text-sm';
 	const THEME_TOGGLE_LABELS: Record<Theme, string> = { light: 'Ativar tema escuro', dark: 'Ativar tema claro' };
 
-	let { username, userid, sidebarExpanded, onToggleSidebar, search }: Props = $props();
+	let { username, userid, canManageUsers, sidebarExpanded, onToggleSidebar, search }: Props = $props();
 	let dropdownOpen = $state(false);
 	let userMenu: HTMLElement | undefined;
 	let userMenuTrigger: HTMLButtonElement | undefined;
@@ -124,6 +125,13 @@
 				class={[MENU_ENTRY, 'gap-2 text-ink hover:bg-surface-muted hover:no-underline']}>
 				<i class="fa-solid fa-table-cells-large fa-fw text-ink-muted" aria-hidden="true"></i>Trocar módulo
 			</a>
+			{#if canManageUsers}
+				<a
+					href={resolve('/(protected)/usuarios')}
+					class={[MENU_ENTRY, 'gap-2 text-ink hover:bg-surface-muted hover:no-underline']}>
+					<i class="fa-solid fa-users-gear fa-fw text-ink-muted" aria-hidden="true"></i>Usuários
+				</a>
+			{/if}
 			<hr class="my-1" />
 			<form action="/logout" method="POST">
 				<button

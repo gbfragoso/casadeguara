@@ -18,7 +18,13 @@ export const getInput = (selector: string) => {
 
 export async function mountCreatePage(form?: ComponentProps<typeof CreatePage>['form']) {
 	const props = $state<ComponentProps<typeof CreatePage>>({
-		data: { username: 'Tesouraria', userid: 'u', isAdmin: false, contrapartes: [{ id: 7, nome: 'Clício Fogaça' }] },
+		data: {
+			username: 'Tesouraria',
+			userid: 'u',
+			isAdmin: false,
+			canManageUsers: false,
+			contrapartes: [{ id: 7, nome: 'Clício Fogaça' }],
+		},
 		form,
 	});
 	const target = document.createElement('div');

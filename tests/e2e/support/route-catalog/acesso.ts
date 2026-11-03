@@ -11,6 +11,21 @@ export const ACCESS_ROUTES: readonly CatalogRoute[] = [
 		shell: false,
 		path: ({ contaPropria }) => `/usuario/${contaPropria}`,
 	},
+	{ id: 'usuarios', route: '/(protected)/usuarios', role: 'admin', shell: false, path: fixedPath('/usuarios') },
+	{
+		id: 'usuarios-novo',
+		route: '/(protected)/usuarios/novo',
+		role: 'admin',
+		shell: false,
+		path: fixedPath('/usuarios/novo'),
+	},
+	{
+		id: 'usuarios-edicao',
+		route: '/(protected)/usuarios/[id=alphanumeric]',
+		role: 'admin',
+		shell: false,
+		path: ({ contaPropria }) => `/usuarios/${contaPropria}`,
+	},
 	{ id: 'acervo', route: '/acervo', role: 'public', shell: false, path: fixedPath('/acervo') },
 	{
 		id: 'recibo',

@@ -29,6 +29,14 @@ describe('TU-02 system modules', () => {
 		expect(resolveLoginDestination('desconhecido')).toBeNull();
 	});
 
+	it('TU-19 sends a user with only the superuser role to the module selection', () => {
+		expect(resolveLoginDestination('superuser')).toBe('/sistemas');
+	});
+
+	it('TU-19 sends a superuser with a single module straight to the module', () => {
+		expect(resolveLoginDestination('secretaria, superuser')).toBe('/secretaria');
+	});
+
 	it('ignores spaces around the roles', () => {
 		expect(listLabels([' tesouraria ', ' comunicacao:admin'])).toEqual(['Tesouraria', 'Comunicação']);
 	});

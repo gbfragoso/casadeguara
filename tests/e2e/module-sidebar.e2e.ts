@@ -61,7 +61,7 @@ test.describe('menu lateral dos módulos', () => {
 
 		const { sidebar } = shellRegions(page);
 		expect(await isInsideViewport(sidebar)).toBe(true);
-		await sidebar.getByRole('link', { name: 'usuários' }).click({ trial: true });
+		await sidebar.getByRole('link', { name: 'keywords' }).click({ trial: true });
 	});
 
 	test('E2E-02 rola o menu sozinho quando os itens não cabem na janela', async ({ page, e2e }) => {
@@ -69,7 +69,7 @@ test.describe('menu lateral dos módulos', () => {
 		await openModulePage(page, e2e);
 		await extendDocumentHeight(page);
 		const { sidebar } = shellRegions(page);
-		const lastItem = sidebar.getByRole('link', { name: 'usuários' });
+		const lastItem = sidebar.getByRole('link', { name: 'keywords' });
 		expect(await sidebar.evaluate((nav) => nav.scrollHeight > nav.clientHeight)).toBe(true);
 
 		await sidebar.hover();

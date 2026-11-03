@@ -2,16 +2,20 @@ import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
 
 import { contrastRatio } from '../../support/contrast';
+import { isTopmostAtCenter } from './geometry';
 
 export const NON_TEXT_CONTRAST_RATIO = 3;
 
 const CONTRAST_PROBE = 'tests/e2e/support/contrast-probe.js';
+const BACKGROUND_OVERLAP = 'bgOverlap';
 const FOCUSABLE =
 	'a[href], button:not(:disabled), input:not([type="hidden"]):not(:disabled), select, textarea, [tabindex]';
 
 type ContrastPair = { label: string; adjacent: string | null; candidates: (string | null)[] };
 type ProbeWindow = Window & { __probeNonTextContrast?: () => ContrastPair[] };
 type FocusState = { label: string; outlineStyle: string; outlineWidth: number; boxShadow: string };
+type AxeResults = Awaited<ReturnType<AxeBuilder['analyze']>>;
+type IncompleteNode = { selector: string; overlapped: boolean };
 
 const hasGradientBackground = (page: Page, selector: string) =>
 	page.locator(selector).evaluate((element) => {
@@ -21,15 +25,27 @@ const hasGradientBackground = (page: Page, selector: string) =>
 		return false;
 	});
 
+const readIncompleteNodes = (results: AxeResults): IncompleteNode[] =>
+	results.incomplete.flatMap((rule) =>
+		rule.nodes.map((node) => ({
+			selector: node.target.join(' '),
+			overlapped: node.any.some((check) => check.data?.messageKey === BACKGROUND_OVERLAP),
+		})),
+	);
+
+const isCoveredText = async (page: Page, { selector, overlapped }: IncompleteNode) =>
+	overlapped && !(await isTopmostAtCenter(page.locator(selector)));
+
+const isUnresolved = async (page: Page, node: IncompleteNode) =>
+	!(await hasGradientBackground(page, node.selector)) && !(await isCoveredText(page, node));
+
 export const auditTextContrast = async (page: Page) => {
 	const results = await new AxeBuilder({ page }).withRules(['color-contrast']).analyze();
-	const incompleteTargets = results.incomplete.flatMap((rule) => rule.nodes.map((node) => node.target.join(' ')));
-	const gradientChecks = await Promise.all(
-		incompleteTargets.map((selector) => hasGradientBackground(page, selector)),
-	);
+	const incompleteNodes = readIncompleteNodes(results);
+	const unresolvedChecks = await Promise.all(incompleteNodes.map((node) => isUnresolved(page, node)));
 	return {
 		violations: results.violations.flatMap((rule) => rule.nodes.map((node) => node.target.join(' '))),
-		unresolved: incompleteTargets.filter((_, index) => !gradientChecks[index]),
+		unresolved: incompleteNodes.filter((_, index) => unresolvedChecks[index]).map((node) => node.selector),
 	};
 };
 

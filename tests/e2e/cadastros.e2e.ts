@@ -82,11 +82,9 @@ test('E2E-20 protects personal identifiers between roles', async ({ browser, pag
 test('E2E-21 creates a cadastro above the previous identifier limit', async ({ page, e2e }) => {
 	const fixture = e2e.createCadastro();
 	await e2e.authenticate(page);
-	try {
-		await createBibliotecaCadastro(page, fixture, () => e2e.advanceCadastroSequence(32767));
-	} finally {
-		await e2e.restoreCadastroSequence();
-	}
+
+	await createBibliotecaCadastro(page, fixture, () => e2e.advanceCadastroSequence(32767));
+
 	const created = await e2e.readCadastro(fixture.name);
 	expect(created.idleitor).toBeGreaterThan(32767);
 });

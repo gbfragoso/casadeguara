@@ -8,7 +8,13 @@ import { parseRenderedBody } from '../../../../support/rendered-document';
 
 type PageForm = ComponentProps<typeof Page>['form'];
 
-const PAGE_DATA = { username: 'secretaria@example.com', userid: 'user-1', isAdmin: false, hoje: '2026-10-27' };
+const PAGE_DATA = {
+	username: 'secretaria@example.com',
+	userid: 'user-1',
+	isAdmin: false,
+	canManageUsers: false,
+	hoje: '2026-10-27',
+};
 const MARIA = { id: 31, nome: 'Maria', dia: 15, desencarnado: false };
 
 const renderPage = (form: PageForm = null) =>

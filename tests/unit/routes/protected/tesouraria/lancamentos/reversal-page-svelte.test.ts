@@ -21,7 +21,7 @@ const lancamento = {
 	usuarioEstorno: null,
 	dataEstorno: null,
 };
-const data = { username: 'Tesouraria', userid: 'u', isAdmin: false, lancamento };
+const data = { username: 'Tesouraria', userid: 'u', isAdmin: false, canManageUsers: false, lancamento };
 
 describe('lançamento reversal page', () => {
 	it('summarizes the launch before asking for the reversal reason', async () => {

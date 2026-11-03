@@ -13,7 +13,6 @@ export type RouteEntities = {
 	emprestimo: number;
 	lancamento: number;
 	recibo: string;
-	usuario: string;
 	contaPropria: string;
 };
 
@@ -39,7 +38,6 @@ export const createRouteEntities = async (e2e: E2EData): Promise<RouteEntities> 
 		palestrante: await e2e.createSpeaker({ nome: `Palestrante catálogo ${e2e.token}` }),
 		emprestimo: await e2e.createLoan(loanedBook, participant.id),
 		...(await createReceipt(e2e, participant.id)),
-		usuario: e2e.users.owner.id,
 		contaPropria: e2e.users.fullAdmin.id,
 	};
 };

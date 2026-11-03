@@ -15,7 +15,13 @@ const notices = [
 	{ idaviso: 4, dataCadastro: new Date('2026-08-19'), texto: 'Aviso anterior', username: 'bibliotecaria' },
 ];
 
-const createData = (avisos = notices) => ({ username: 'bibliotecaria', userid: 'user-1', isAdmin: false, avisos });
+const createData = (avisos = notices) => ({
+	username: 'bibliotecaria',
+	userid: 'user-1',
+	isAdmin: false,
+	canManageUsers: false,
+	avisos,
+});
 
 describe('notice list page', () => {
 	it('renders notices in the received order with accessible edit actions', () => {

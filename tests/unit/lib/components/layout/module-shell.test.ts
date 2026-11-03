@@ -26,6 +26,7 @@ const renderShell = () =>
 		isAdmin: false,
 		username: 'Ana Silva',
 		userid: 'ana-1',
+		canManageUsers: false,
 		children: htmlSnippet('<p>Conteúdo</p>'),
 	});
 

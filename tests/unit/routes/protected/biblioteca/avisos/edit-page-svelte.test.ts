@@ -5,7 +5,7 @@ import Page from '../../../../../../src/routes/(protected)/biblioteca/avisos/[id
 import { getRenderedButton, getRenderedTextarea, parseRenderedBody } from '../../../../support/rendered-document';
 
 const aviso = { idaviso: 7, dataCadastro: new Date('2026-08-20'), texto: 'Aviso carregado', username: 'bibliotecaria' };
-const data = { username: 'bibliotecaria', userid: 'user-1', isAdmin: false, aviso };
+const data = { username: 'bibliotecaria', userid: 'user-1', isAdmin: false, canManageUsers: false, aviso };
 
 describe('notice edit page', () => {
 	it('renders the loaded notice with equivalent input constraints', () => {

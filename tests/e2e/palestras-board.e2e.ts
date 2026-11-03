@@ -27,46 +27,50 @@ const seedMonth = async (e2e: E2EData) => {
 	return { a, b, c, titles };
 };
 
-test('E2E-02 monta o mês com sugestões, edição no card e reordenação por data', async ({ page, e2e }) => {
-	const { titles } = await seedMonth(e2e);
-	const newDate = e2e.talkDate(MONDAY_IN_TWO_WEEKS);
-	await e2e.authenticate(page, 'comunicacao');
+test(
+	'E2E-02 monta o mês com sugestões, edição no card e reordenação por data',
+	{ tag: '@isolated' },
+	async ({ page, e2e }) => {
+		const { titles } = await seedMonth(e2e);
+		const newDate = e2e.talkDate(MONDAY_IN_TWO_WEEKS);
+		await e2e.authenticate(page, 'comunicacao');
 
-	await page.getByRole('button', { name: 'Nova palestra' }).click();
-	await page.getByLabel('Data', { exact: true }).fill(newDate);
-	await expect(page.getByLabel('Horário', { exact: true })).toHaveValue('08:45');
-	await expect(page.getByLabel('Local', { exact: true })).toHaveValue(DEFAULT_LOCATION);
-	const created = waitForTalkAction(page, 'criar');
-	await page.getByRole('button', { name: 'Criar palestra' }).click();
-	await created;
+		await page.getByRole('button', { name: 'Nova palestra' }).click();
+		await page.getByLabel('Data', { exact: true }).fill(newDate);
+		await expect(page.getByLabel('Horário', { exact: true })).toHaveValue('08:45');
+		await expect(page.getByLabel('Local', { exact: true })).toHaveValue(DEFAULT_LOCATION);
+		const created = waitForTalkAction(page, 'criar');
+		await page.getByRole('button', { name: 'Criar palestra' }).click();
+		await created;
 
-	const newCard = page.getByRole('article', { name: scheduleName(newDate, '08:45', 'Título a definir') });
-	await newCard.getByRole('button', { name: 'Editar título: Título a definir' }).click();
-	await newCard.getByRole('textbox', { name: 'Título' }).fill(`${e2e.token} D`);
-	const titled = waitForTalkAction(page, 'atualizar');
-	await newCard.getByRole('textbox', { name: 'Título' }).blur();
-	await titled;
-	await openBoard(page);
-	const titledCard = talkCard(page, `${e2e.token} D`);
-	await expect(titledCard).toHaveAccessibleName(scheduleName(newDate, '08:45', `${e2e.token} D`));
+		const newCard = page.getByRole('article', { name: scheduleName(newDate, '08:45', 'Título a definir') });
+		await newCard.getByRole('button', { name: 'Editar título: Título a definir' }).click();
+		await newCard.getByRole('textbox', { name: 'Título' }).fill(`${e2e.token} D`);
+		const titled = waitForTalkAction(page, 'atualizar');
+		await newCard.getByRole('textbox', { name: 'Título' }).blur();
+		await titled;
+		await openBoard(page);
+		const titledCard = talkCard(page, `${e2e.token} D`);
+		await expect(titledCard).toHaveAccessibleName(scheduleName(newDate, '08:45', `${e2e.token} D`));
 
-	await titledCard.getByRole('button', { name: `Editar título: ${e2e.token} D` }).click();
-	await titledCard.getByRole('textbox', { name: 'Título' }).fill('Descartado');
-	await titledCard.getByRole('textbox', { name: 'Título' }).press('Escape');
-	await expect(titledCard.getByRole('button', { name: `Editar título: ${e2e.token} D` })).toBeFocused();
+		await titledCard.getByRole('button', { name: `Editar título: ${e2e.token} D` }).click();
+		await titledCard.getByRole('textbox', { name: 'Título' }).fill('Descartado');
+		await titledCard.getByRole('textbox', { name: 'Título' }).press('Escape');
+		await expect(titledCard.getByRole('button', { name: `Editar título: ${e2e.token} D` })).toBeFocused();
 
-	const cardA = talkCard(page, titles.a);
-	await cardA.getByRole('button', { name: /^Editar data:/ }).click();
-	await cardA.getByLabel('Data', { exact: true }).fill(e2e.talkDate(SUNDAY));
-	const moved = waitForTalkAction(page, 'atualizar');
-	await cardA.getByLabel('Data', { exact: true }).press('Enter');
-	await moved;
+		const cardA = talkCard(page, titles.a);
+		await cardA.getByRole('button', { name: /^Editar data:/ }).click();
+		await cardA.getByLabel('Data', { exact: true }).fill(e2e.talkDate(SUNDAY));
+		const moved = waitForTalkAction(page, 'atualizar');
+		await cardA.getByLabel('Data', { exact: true }).press('Enter');
+		await moved;
 
-	const cards = ownCards(page, e2e.token);
-	await expect(cards.nth(0)).toHaveAccessibleName(scheduleName(e2e.talkDate(SATURDAY), '14:30', titles.b));
-	await expect(cards.nth(1)).toHaveAccessibleName(scheduleName(e2e.talkDate(SUNDAY), '08:45', titles.a));
-	await expect(cards.nth(2)).toHaveAccessibleName(scheduleName(e2e.talkDate(NEXT_MONDAY), '08:45', titles.c));
-});
+		const cards = ownCards(page, e2e.token);
+		await expect(cards.nth(0)).toHaveAccessibleName(scheduleName(e2e.talkDate(SATURDAY), '14:30', titles.b));
+		await expect(cards.nth(1)).toHaveAccessibleName(scheduleName(e2e.talkDate(SUNDAY), '08:45', titles.a));
+		await expect(cards.nth(2)).toHaveAccessibleName(scheduleName(e2e.talkDate(NEXT_MONDAY), '08:45', titles.c));
+	},
+);
 
 test('E2E-03 troca as datas ao arrastar um card com o mouse', async ({ page, e2e }) => {
 	const { a, b, titles } = await seedMonth(e2e);

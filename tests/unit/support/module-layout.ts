@@ -1,7 +1,7 @@
 import { createRawSnippet, mount, tick, unmount, type Component, type Snippet } from 'svelte';
 
 export type SidebarLink = { label: string; title: string; ariaLabel: string | null };
-export type ModuleLayoutData = { username: string; userid: string; isAdmin: boolean };
+export type ModuleLayoutData = { username: string; userid: string; isAdmin: boolean; canManageUsers: boolean };
 type ModuleLayoutProps = { data: ModuleLayoutData; children: Snippet };
 
 export const PAGE_CONTENT = 'Conteúdo da página';
@@ -44,6 +44,9 @@ export const readCurrentSidebarLinks = (target: HTMLElement) =>
 	getSidebarAnchors(target)
 		.filter((anchor) => anchor.getAttribute('aria-current') === 'page')
 		.map((anchor) => anchor.textContent.trim());
+
+export const readUserMenuLinks = (target: HTMLElement) =>
+	[...target.querySelectorAll('#dropdown-menu a')].map((anchor) => anchor.textContent.trim());
 
 export const readPageContent = (target: HTMLElement) =>
 	target.querySelector('main section [data-testid="conteudo"]')?.textContent ?? null;

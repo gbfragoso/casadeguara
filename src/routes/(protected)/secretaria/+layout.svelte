@@ -50,18 +50,15 @@
 			icon: 'fa-solid fa-people-group',
 			match: 'prefix',
 		},
-		{
-			href: resolve('secretaria/usuarios'),
-			label: 'Usuários',
-			title: 'Usuários',
-			ariaLabel: 'usuários',
-			icon: 'fa-solid fa-user-plus',
-			match: 'prefix',
-			adminOnly: true,
-		},
 	];
 </script>
 
-<ModuleShell {items} moduleName="Secretaria" isAdmin={data.isAdmin} username={data.username} userid={data.userid}>
+<ModuleShell
+	{items}
+	moduleName="Secretaria"
+	isAdmin={data.isAdmin}
+	username={data.username}
+	userid={data.userid}
+	canManageUsers={data.canManageUsers}>
 	{@render children()}
 </ModuleShell>

@@ -1,46 +1,53 @@
 import { db } from '#lib/server/database/connection.js';
 import { user } from '#lib/server/database/schema.js';
-import { COMUNICACAO_AREA, SECRETARIA_AREA } from '#lib/server/users/area-roles.js';
 import { DuplicateUsernameError } from '#lib/server/models/user-error.js';
 import { UserModel } from '#lib/server/models/user.js';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
 import { createTestUserValues, withUsers } from './user-test-support';
 
 const model = new UserModel(db);
-const LONGEST_COORDINATION_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin';
+const LONGEST_SAVED_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin,superuser';
 
-const listIds = async (areaRoles: readonly string[]) =>
-	(await model.listByAreaRoles(areaRoles, { name: '0teste-', page: 1 })).map(({ id }) => id);
-
-describe('TI-16 UserModel.listByAreaRoles', () => {
-	it('lists a user whose area role is not the first one', async () => {
-		await withUsers(['tesouraria,comunicacao'], async ([id]) => {
-			expect(await listIds(COMUNICACAO_AREA.areaRoles)).toContain(id);
-		});
-	});
-
-	it('lists the area users when no name is searched', async () => {
-		await withUsers(['comunicacao'], async ([id]) => {
-			const users = await model.listByAreaRoles(COMUNICACAO_AREA.areaRoles, { page: 1 });
-
-			expect(users.map((listed) => listed.id)).toContain(id);
-		});
-	});
-
-	it('leaves a user of another area out of the listing', async () => {
-		await withUsers(['comunicacao'], async ([id]) => {
-			expect(await listIds(SECRETARIA_AREA.areaRoles)).not.toContain(id);
+describe('TI-14 User.roles', () => {
+	it('stores the longest combination saved by the user management screen', async () => {
+		await withUsers([LONGEST_SAVED_ROLES], async ([id]) => {
+			expect(await model.get(id)).toMatchObject({ roles: LONGEST_SAVED_ROLES });
 		});
 	});
 });
 
-describe('TI-17 User.roles', () => {
-	it('stores the longest combination of coordination roles', async () => {
-		await withUsers([LONGEST_COORDINATION_ROLES], async ([id]) => {
-			expect(await model.get(id)).toMatchObject({ roles: LONGEST_COORDINATION_ROLES });
-		});
+describe('TI-03 UserModel.listAll', () => {
+	it('lists every user, including those without roles, by unaccented name and then by id', async () => {
+		const suffix = createTestUserValues('').name;
+		const bruna = { ...createTestUserValues(''), name: `Bruna ${suffix}` };
+		const [firstAlvaro, secondAlvaro] = [createTestUserValues('superuser'), createTestUserValues('secretaria')]
+			.map((values) => ({ ...values, name: `Álvaro ${suffix}` }))
+			.toSorted((first, second) => (first.id < second.id ? -1 : 1));
+		const inserted = [bruna, secondAlvaro, firstAlvaro];
+		await db.insert(user).values(inserted);
+
+		try {
+			const listed = await model.listAll();
+
+			const ours = listed.filter(({ name }) => name.endsWith(suffix));
+			expect(ours).toEqual(
+				[firstAlvaro, secondAlvaro, bruna].map(({ id, username, name, roles }) => ({
+					id,
+					username,
+					name,
+					roles,
+				})),
+			);
+		} finally {
+			await db.delete(user).where(
+				inArray(
+					user.id,
+					inserted.map(({ id }) => id),
+				),
+			);
+		}
 	});
 });
 
@@ -51,19 +58,37 @@ describe('UserModel writes', () => {
 		try {
 			await model.create(values);
 
-			const updated = await model.update(values.id, { ...values, name: `${values.name}-novo`, roles: undefined });
+			const updated = await model.update(values.id, {
+				...values,
+				name: `${values.name}-novo`,
+				roles: 'superuser',
+			});
 
 			expect(updated).toBe(true);
-			expect(await model.get(values.id)).toMatchObject({ name: `${values.name}-novo`, roles: 'comunicacao' });
+			expect(await model.get(values.id)).toMatchObject({ name: `${values.name}-novo`, roles: 'superuser' });
 		} finally {
 			await db.delete(user).where(eq(user.id, values.id));
 		}
 	});
 
-	it('reports when the updated user does not exist', async () => {
-		const { username, name, passwordHash } = createTestUserValues('comunicacao');
+	it('keeps the current password hash when no new hash is given', async () => {
+		await withUsers(['comunicacao'], async ([id]) => {
+			const { username, name } = createTestUserValues('');
 
-		expect(await model.update('inexistente', { username, name, passwordHash })).toBe(false);
+			await model.update(id, { username, name, roles: 'secretaria' });
+
+			expect(await model.findCredentials(username)).toEqual({
+				id,
+				passwordHash: 'hash-de-teste',
+				roles: 'secretaria',
+			});
+		});
+	});
+
+	it('reports when the updated user does not exist', async () => {
+		const { username, name, passwordHash, roles } = createTestUserValues('comunicacao');
+
+		expect(await model.update('inexistente', { username, name, passwordHash, roles })).toBe(false);
 	});
 
 	it('translates a duplicate login on creation', async () => {
@@ -78,9 +103,9 @@ describe('UserModel writes', () => {
 	it('translates a duplicate login on update', async () => {
 		await withUsers(['comunicacao', 'comunicacao'], async ([firstId, secondId]) => {
 			const first = await model.get(firstId);
-			const { name, passwordHash } = createTestUserValues('comunicacao');
+			const { name, roles } = createTestUserValues('comunicacao');
 
-			const update = model.update(secondId, { username: first?.username ?? '', name, passwordHash });
+			const update = model.update(secondId, { username: first?.username ?? '', name, roles });
 
 			await expect(update).rejects.toThrow('Já existe um usuário com este login.');
 		});

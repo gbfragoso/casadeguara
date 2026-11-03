@@ -13,11 +13,12 @@ import {
 	readCurrentSidebarLinks,
 	readPageContent,
 	readSidebarLinks,
+	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
 
-const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true };
-const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false };
+const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true, canManageUsers: false };
+const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false, canManageUsers: false };
 
 const ACTIVE_ITEMS = [
 	{ label: 'Início', pathname: '/biblioteca' },
@@ -30,7 +31,6 @@ const ACTIVE_ITEMS = [
 	{ label: 'Leitores', pathname: '/biblioteca/leitores/novo' },
 	{ label: 'Livros', pathname: '/biblioteca/livros/1/exemplares' },
 	{ label: 'Palavras-chave', pathname: '/biblioteca/keywords/novo' },
-	{ label: 'Usuários', pathname: '/biblioteca/usuarios/novo' },
 ];
 
 const READER_LINKS = [
@@ -49,7 +49,6 @@ const ADMIN_LINKS = [
 	...READER_LINKS.slice(0, 3),
 	{ label: 'Cobranças', title: 'Cobranças', ariaLabel: 'cobranças' },
 	...READER_LINKS.slice(3),
-	{ label: 'Usuários', title: 'Usuários', ariaLabel: 'usuários' },
 ];
 
 describe('biblioteca layout', () => {
@@ -63,7 +62,7 @@ describe('biblioteca layout', () => {
 		expect(readCurrentSidebarLinks(target)).toEqual([label]);
 	});
 
-	it('shows the administrative items to administrators', async () => {
+	it('TU-23 shows the administrative items, without Usuários, to administrators', async () => {
 		pageState.url = new URL('http://localhost/biblioteca');
 
 		const target = await mountModuleLayout(Layout, ADMIN);
@@ -95,5 +94,11 @@ describe('biblioteca layout', () => {
 		const target = await mountModuleLayout(Layout, READER);
 
 		expect(readPageContent(target)).toBe(PAGE_CONTENT);
+	});
+
+	it('TU-22 offers the user management in the user menu to a superuser', async () => {
+		const target = await mountModuleLayout(Layout, { ...READER, canManageUsers: true });
+
+		expect(readUserMenuLinks(target)).toContain('Usuários');
 	});
 });

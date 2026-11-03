@@ -1,12 +1,12 @@
 import type { RouteEntities } from '../route-entities';
 import { moduleRoute, staticModuleRoute, type CatalogRoute } from './types';
 
-const registryRoutes = (segment: string, entity: (entities: RouteEntities) => number | string) => [
+const registryRoutes = (segment: string, entity: (entities: RouteEntities) => number) => [
 	staticModuleRoute(`biblioteca-${segment}`, `/biblioteca/${segment}`),
 	staticModuleRoute(`biblioteca-${segment}-novo`, `/biblioteca/${segment}/novo`),
 	moduleRoute(
 		`biblioteca-${segment}-edicao`,
-		`/biblioteca/${segment}/[id=${segment === 'usuarios' ? 'alphanumeric' : 'integer'}]`,
+		`/biblioteca/${segment}/[id=integer]`,
 		(entities) => `/biblioteca/${segment}/${entity(entities)}`,
 	),
 ];
@@ -41,5 +41,4 @@ export const BIBLIOTECA_ROUTES: readonly CatalogRoute[] = [
 	...registryRoutes('leitores', ({ cadastro }) => cadastro),
 	...registryRoutes('livros', ({ livro }) => livro),
 	...bookAssociationRoutes,
-	...registryRoutes('usuarios', ({ usuario }) => usuario),
 ];

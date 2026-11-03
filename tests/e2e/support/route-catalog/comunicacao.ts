@@ -10,11 +10,4 @@ export const COMUNICACAO_ROUTES: readonly CatalogRoute[] = [
 		'/comunicacao/palestrantes/[id=integer]',
 		({ palestrante }) => `/comunicacao/palestrantes/${palestrante}`,
 	),
-	staticModuleRoute('comunicacao-usuarios', '/comunicacao/usuarios'),
-	staticModuleRoute('comunicacao-usuarios-novo', '/comunicacao/usuarios/novo'),
-	moduleRoute(
-		'comunicacao-usuarios-edicao',
-		'/comunicacao/usuarios/[id=alphanumeric]',
-		({ contaPropria }) => `/comunicacao/usuarios/${contaPropria}`,
-	),
 ];

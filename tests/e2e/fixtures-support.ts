@@ -7,7 +7,6 @@ import {
 	deleteCadastro,
 	deleteTestUsers,
 	readCadastro,
-	restoreCadastroSequence,
 } from './cadastros-database';
 import { createCadastroFixture } from './cadastros-fixture';
 import {
@@ -47,6 +46,7 @@ const destinations = {
 	admin: '**/sistemas',
 	fullAdmin: '**/sistemas',
 	comunicacao: '**/comunicacao/palestras',
+	superuser: '**/sistemas',
 } as const;
 const createToken = () => randomUUID().replaceAll('-', '').slice(0, 12);
 
@@ -116,9 +116,6 @@ export const createFixtureResources = async (): Promise<FixtureResources> => {
 		},
 		advanceCadastroSequence: async (value) => {
 			await advanceCadastroSequence(database, value);
-		},
-		restoreCadastroSequence: async () => {
-			await restoreCadastroSequence(database);
 		},
 		createBookCatalog: async () => createBookCatalog(database, token),
 		countBooksByTitle: (titulo) => countBooksByTitle(database, titulo),
