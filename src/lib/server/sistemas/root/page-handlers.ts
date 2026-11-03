@@ -3,6 +3,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { db } from '#lib/server/database/connection.js';
 import { user } from '#lib/server/database/schema.js';
 import { requireAuthenticatedUser } from '#lib/server/authorization/authenticated-user.js';
+import { hasSuperuserAccess } from '#lib/server/authorization/superuser.js';
 import { error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
@@ -22,7 +23,7 @@ const load = async ({ locals }: RequestEvent) => {
 	const registro = await findStoredRoles(sessionUser.id);
 	if (!registro) error(404, 'Usuário não encontrado');
 
-	return { roles: registro.roles.split(',') };
+	return { roles: registro.roles.split(','), canManageUsers: hasSuperuserAccess(registro) };
 };
 
 export const createSistemasHandlers = () => ({

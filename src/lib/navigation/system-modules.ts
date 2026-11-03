@@ -2,6 +2,7 @@ export type SystemModulePath = 'biblioteca' | 'secretaria' | 'tesouraria' | 'com
 export type SystemModule = { role: SystemModulePath; path: SystemModulePath; label: string; icon: string };
 
 const ADMIN_ROLE_SUFFIX = ':admin';
+export const SUPERUSER_ROLE = 'superuser';
 const MODULE_SELECTION_PATH = '/sistemas';
 export const LOGIN_PATH = '/login';
 
@@ -25,8 +26,11 @@ export const listAccessibleModules = (roles: readonly string[]) => {
 };
 
 export const resolveLoginDestination = (roles: string): `/${string}` | null => {
-	const modules = listAccessibleModules(roles.split(','));
-	if (modules.length === 0) return null;
+	const userRoles = roles.split(',');
+	const modules = listAccessibleModules(userRoles);
+	if (modules.length === 0) {
+		return userRoles.some((role) => role.trim() === SUPERUSER_ROLE) ? MODULE_SELECTION_PATH : null;
+	}
 
 	return modules.length === 1 ? `/${modules[0].path}` : MODULE_SELECTION_PATH;
 };

@@ -5,7 +5,10 @@ import Page from '../../../../../src/routes/(protected)/sistemas/+page.svelte';
 import { hasModuleShell } from '../../../support/module-shell-regions';
 import { parseRenderedBody } from '../../../support/rendered-document';
 
-const renderModules = (roles: string[]) => parseRenderedBody(render(Page, { props: { data: { roles } } }).body);
+const renderModules = (roles: string[], canManageUsers = false) =>
+	parseRenderedBody(render(Page, { props: { data: { roles, canManageUsers } } }).body);
+
+const readStatus = (document: ReturnType<typeof renderModules>) => document.querySelector('[role="status"]');
 
 const readModuleLinks = (roles: string[]) =>
 	[...renderModules(roles).querySelectorAll('main a')].map((link) => [
@@ -50,8 +53,26 @@ describe('module selection page', () => {
 		const document = renderModules([]);
 
 		expect(document.querySelector('main a')).toBeNull();
-		expect(document.querySelector('[role="status"]')?.textContent?.trim()).toBe(
+		expect(readStatus(document)?.textContent?.trim()).toBe(
 			'Seu usuário ainda não tem acesso a nenhum módulo. Peça à coordenação do seu setor para liberar o acesso.',
 		);
+	});
+
+	it('TU-21 offers the user management to a superuser without a module', () => {
+		const document = renderModules(['superuser'], true);
+
+		expect([...document.querySelectorAll('main a')].map((link) => link.getAttribute('href'))).toEqual([
+			'/usuarios',
+		]);
+		expect(readStatus(document)).toBeNull();
+	});
+
+	it('TU-21 offers the user management after the modules of a superuser', () => {
+		const document = renderModules(['secretaria', 'superuser'], true);
+
+		expect([...document.querySelectorAll('main a')].map((link) => link.textContent?.trim())).toEqual([
+			'Secretaria',
+			'Usuários',
+		]);
 	});
 });

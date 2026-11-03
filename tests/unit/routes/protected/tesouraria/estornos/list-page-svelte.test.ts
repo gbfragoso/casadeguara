@@ -30,6 +30,7 @@ describe('estornos list page', () => {
 					page,
 					values: { tipo: 'todos', contraparte: 'arvore' },
 					isAdmin: true,
+					canManageUsers: false,
 				},
 			},
 		});
@@ -64,7 +65,14 @@ describe('estornos list page', () => {
 	it('shows an explicit empty state after a search with no reversals', () => {
 		const { body } = render(Page, {
 			props: {
-				data: { username: 'Admin', userid: 'admin', page: { items: [] }, values: {}, isAdmin: true },
+				data: {
+					username: 'Admin',
+					userid: 'admin',
+					page: { items: [] },
+					values: {},
+					isAdmin: true,
+					canManageUsers: false,
+				},
 			},
 		});
 		const document = parseRenderedBody(body);
@@ -88,7 +96,14 @@ describe('estornos list page', () => {
 		const exit = { ...page.items[0], id: 13, tipo: 'saida' as const, contraparte: null };
 		const { body } = render(Page, {
 			props: {
-				data: { username: 'Admin', userid: 'admin', page: { items: [exit] }, values: {}, isAdmin: true },
+				data: {
+					username: 'Admin',
+					userid: 'admin',
+					page: { items: [exit] },
+					values: {},
+					isAdmin: true,
+					canManageUsers: false,
+				},
 			},
 		});
 		const document = parseRenderedBody(body);

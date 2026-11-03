@@ -16,6 +16,12 @@ describe('TU-05 comunicacao layout load', () => {
 	])('tells whether %s administers the module', async (_scenario, roles, isAdmin) => {
 		const { result } = await runHandler(load, { roles, userId: 'user-7' });
 
-		expect(result).toEqual({ username: 'Usuário', userid: 'user-7', isAdmin });
+		expect(result).toEqual({ username: 'Usuário', userid: 'user-7', isAdmin, canManageUsers: false });
+	});
+
+	it('lets a superuser with the module manage users', async () => {
+		const { result } = await runHandler(load, { roles: 'comunicacao,superuser', userId: 'user-7' });
+
+		expect(result).toMatchObject({ canManageUsers: true });
 	});
 });

@@ -8,6 +8,7 @@ import { getElement, htmlSnippet, renderComponent } from '../support/render-comp
 
 type NavbarOptions = {
 	username?: string;
+	canManageUsers?: boolean;
 	sidebarExpanded?: boolean;
 	onToggleSidebar?: () => void;
 	search?: Snippet;
@@ -17,6 +18,7 @@ const renderNavbar = (options: NavbarOptions = {}) =>
 	renderComponent(Navbar, {
 		username: options.username ?? 'Ana Silva',
 		userid: 'ana-1',
+		canManageUsers: options.canManageUsers ?? false,
 		sidebarExpanded: options.sidebarExpanded ?? false,
 		onToggleSidebar: options.onToggleSidebar ?? vi.fn(),
 		search: options.search,
@@ -80,6 +82,22 @@ describe('Navbar', () => {
 		const menu = getUserMenu(target);
 
 		expect(menu.querySelector('a[href="/sistemas"]')?.textContent?.trim()).toBe('Trocar módulo');
+	});
+
+	it('TU-22 offers the user management to a superuser in the user menu', async () => {
+		const target = await renderNavbar({ canManageUsers: true });
+
+		const menu = getUserMenu(target);
+
+		expect(menu.querySelector('a[href="/usuarios"]')?.textContent?.trim()).toBe('Usuários');
+	});
+
+	it('TU-22 hides the user management from a user who is not a superuser', async () => {
+		const target = await renderNavbar({ canManageUsers: false });
+
+		const menu = getUserMenu(target);
+
+		expect(menu.querySelector('a[href="/usuarios"]')).toBeNull();
 	});
 
 	it('toggles the color theme between dark and light', async () => {

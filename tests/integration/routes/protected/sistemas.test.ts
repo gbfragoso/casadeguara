@@ -20,7 +20,15 @@ describe('module selection route', () => {
 		await withUsers(['secretaria,comunicacao'], async ([id]) => {
 			const data = await loadModules(sessionUser(id));
 
-			expect(data).toEqual({ roles: ['secretaria', 'comunicacao'] });
+			expect(data).toEqual({ roles: ['secretaria', 'comunicacao'], canManageUsers: false });
+		});
+	});
+
+	it('TI-11 lets a user with only the superuser role manage users', async () => {
+		await withUsers(['superuser'], async ([id]) => {
+			const data = await loadModules(sessionUser(id));
+
+			expect(data).toEqual({ roles: ['superuser'], canManageUsers: true });
 		});
 	});
 

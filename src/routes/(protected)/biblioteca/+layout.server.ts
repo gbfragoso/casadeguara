@@ -1,3 +1,4 @@
+import { hasSuperuserAccess } from '#lib/server/authorization/superuser.js';
 import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 
@@ -10,5 +11,6 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 		username: locals.user.name,
 		userid: locals.user.id,
 		isAdmin: locals.user.roles.includes('biblioteca:admin'),
+		canManageUsers: hasSuperuserAccess(locals.user),
 	};
 };

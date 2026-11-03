@@ -11,11 +11,12 @@ import {
 	readCurrentSidebarLinks,
 	readPageContent,
 	readSidebarLinks,
+	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
 
-const COORDINATOR = { username: 'Ana Coordenadora', userid: 'admin-1', isAdmin: true };
-const VOLUNTEER = { username: 'Rui Voluntário', userid: 'volunteer-1', isAdmin: false };
+const COORDINATOR = { username: 'Ana Coordenadora', userid: 'admin-1', isAdmin: true, canManageUsers: false };
+const VOLUNTEER = { username: 'Rui Voluntário', userid: 'volunteer-1', isAdmin: false, canManageUsers: false };
 
 const VOLUNTEER_LINKS = [
 	{ label: 'Palestras', title: 'Palestras', ariaLabel: 'palestras' },
@@ -49,5 +50,11 @@ describe('TU-05 comunicacao layout', () => {
 		const target = await mountModuleLayout(Layout, VOLUNTEER);
 
 		expect(readPageContent(target)).toBe(PAGE_CONTENT);
+	});
+
+	it('TU-22 offers the user management in the user menu to a superuser', async () => {
+		const target = await mountModuleLayout(Layout, { ...VOLUNTEER, canManageUsers: true });
+
+		expect(readUserMenuLinks(target)).toContain('Usuários');
 	});
 });

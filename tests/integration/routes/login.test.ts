@@ -19,22 +19,34 @@ const loginEvent = (email: string) => {
 	return createRequestEvent({ request: new Request('http://localhost/', { method: 'POST', body: form }) });
 };
 
+const loginAs = async (roles: string, email: (username: string) => string = (username) => username) => {
+	const values = { ...createTestUserValues(roles), passwordHash: await hash(PASSWORD) };
+	await db.insert(user).values(values);
+
+	try {
+		const outcome = await Promise.resolve()
+			.then(() => invoke(actions.default, loginEvent(email(values.username))))
+			.catch((reason: unknown) => reason);
+		const sessions = await db.select({ id: session.id }).from(session).where(eq(session.userId, values.id));
+
+		return { outcome, sessions };
+	} finally {
+		await db.delete(session).where(eq(session.userId, values.id));
+		await db.delete(user).where(eq(user.id, values.id));
+	}
+};
+
 describe('login route', () => {
 	it('opens a session and sends a user with only Comunicação to the module', async () => {
-		const values = { ...createTestUserValues('comunicacao'), passwordHash: await hash(PASSWORD) };
-		await db.insert(user).values(values);
+		const { outcome, sessions } = await loginAs('comunicacao', (username) => username.toUpperCase());
 
-		try {
-			const outcome = await Promise.resolve()
-				.then(() => invoke(actions.default, loginEvent(values.username.toUpperCase())))
-				.catch((reason: unknown) => reason);
-			const sessions = await db.select({ id: session.id }).from(session).where(eq(session.userId, values.id));
+		expect(isRedirect(outcome) && outcome.location).toBe('/comunicacao');
+		expect(sessions).toHaveLength(1);
+	});
 
-			expect(isRedirect(outcome) && outcome.location).toBe('/comunicacao');
-			expect(sessions).toHaveLength(1);
-		} finally {
-			await db.delete(session).where(eq(session.userId, values.id));
-			await db.delete(user).where(eq(user.id, values.id));
-		}
+	it('TI-12 sends a user with only the superuser role to the module selection', async () => {
+		const { outcome } = await loginAs('superuser');
+
+		expect(isRedirect(outcome) && [outcome.status, outcome.location]).toEqual([302, '/sistemas']);
 	});
 });

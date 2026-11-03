@@ -18,10 +18,15 @@
 			<Button href={resolve(module.path)} fullwidth bold class="min-h-12">
 				<i class={[module.icon, 'fa-fw text-primary-ink']} aria-hidden="true"></i>{module.label}
 			</Button>
-		{:else}
+		{/each}
+		{#if data.canManageUsers}
+			<Button href={resolve('usuarios')} fullwidth bold class="min-h-12">
+				<i class="fa-solid fa-users-gear fa-fw text-primary-ink" aria-hidden="true"></i>Usuários
+			</Button>
+		{:else if availableModules.length === 0}
 			<p role="status" class="text-center text-ink">
 				Seu usuário ainda não tem acesso a nenhum módulo. Peça à coordenação do seu setor para liberar o acesso.
 			</p>
-		{/each}
+		{/if}
 	</div>
 </AccessCard>

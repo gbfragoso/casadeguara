@@ -1,6 +1,6 @@
 import type { SystemModulePath } from '#lib/navigation/system-modules.js';
 
-export const SUPERUSER_ROLE = 'superuser';
+export { SUPERUSER_ROLE } from '#lib/navigation/system-modules.js';
 
 export const ACCESS_LEVEL_VALUES = ['none', 'volunteer', 'coordination'] as const;
 export type AccessLevel = (typeof ACCESS_LEVEL_VALUES)[number];

@@ -29,6 +29,12 @@
 	];
 </script>
 
-<ModuleShell {items} moduleName="Comunicação" isAdmin={data.isAdmin} username={data.username} userid={data.userid}>
+<ModuleShell
+	{items}
+	moduleName="Comunicação"
+	isAdmin={data.isAdmin}
+	username={data.username}
+	userid={data.userid}
+	canManageUsers={data.canManageUsers}>
 	{@render children()}
 </ModuleShell>

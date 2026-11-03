@@ -1,4 +1,5 @@
 import { hasComunicacaoAdminAccess, requireComunicacaoAccess } from '#lib/server/authorization/comunicacao.js';
+import { hasSuperuserAccess } from '#lib/server/authorization/superuser.js';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = ({ locals }) => {
@@ -7,5 +8,6 @@ export const load: LayoutServerLoad = ({ locals }) => {
 		username: user.name,
 		userid: user.id,
 		isAdmin: hasComunicacaoAdminAccess(user),
+		canManageUsers: hasSuperuserAccess(user),
 	};
 };
