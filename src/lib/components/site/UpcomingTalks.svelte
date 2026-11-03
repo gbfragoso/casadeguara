@@ -40,6 +40,7 @@
 							</span>
 						</p>
 						<h3 class="mt-6 font-display text-2xl font-bold text-balance text-inherit">{talk.titulo}</h3>
+						{#if talk.observacoes}<p class="mt-2 font-medium">{talk.observacoes}</p>{/if}
 						<div class="mt-auto flex min-h-18 items-center gap-3 pt-6 font-bold">
 							{#if talk.palestrante}
 								{#if talk.palestrante.temFoto}<SpeakerPhoto talkId={talk.id} variant="card" />{/if}

@@ -92,6 +92,16 @@ describe('home page upcoming talks', () => {
 		expect(readText(document, '#palestras li')).toBe('30 SEX · OUTUBRO19h30 A fé raciocinada Carmélia Amorim');
 	});
 
+	it('shows the talk notes below its theme', () => {
+		const seguintes = [buildTalk({ id: 2, titulo: 'A fé raciocinada', observacoes: 'O Evangelho, capítulo 19' })];
+
+		const document = renderHome({ destaque: buildTalk(), seguintes });
+
+		expect(readText(document, '#palestras li')).toContain(
+			'A fé raciocinada O Evangelho, capítulo 19 Carmélia Amorim',
+		);
+	});
+
 	it('shows the speaker photo beside the speaker name', () => {
 		const seguintes = [buildTalk({ id: 2, palestrante: SPEAKER })];
 
