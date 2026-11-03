@@ -91,15 +91,6 @@
 			icon: 'fa-solid fa-key',
 			match: 'prefix',
 		},
-		{
-			href: resolve('biblioteca/usuarios'),
-			label: 'Usuários',
-			title: 'Usuários',
-			ariaLabel: 'usuários',
-			icon: 'fa-solid fa-user-plus',
-			match: 'prefix',
-			adminOnly: true,
-		},
 	];
 </script>
 

@@ -12,11 +12,4 @@ export const SECRETARIA_ROUTES: readonly CatalogRoute[] = [
 		({ cadastro }) => `/secretaria/cadastros/${cadastro}`,
 	),
 	staticModuleRoute('secretaria-frequencia', '/secretaria/frequencia'),
-	staticModuleRoute('secretaria-usuarios', '/secretaria/usuarios'),
-	staticModuleRoute('secretaria-usuarios-novo', '/secretaria/usuarios/novo'),
-	moduleRoute(
-		'secretaria-usuarios-edicao',
-		'/secretaria/usuarios/[id=alphanumeric]',
-		({ usuario }) => `/secretaria/usuarios/${usuario}`,
-	),
 ];

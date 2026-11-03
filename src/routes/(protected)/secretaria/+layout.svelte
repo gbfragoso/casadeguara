@@ -50,15 +50,6 @@
 			icon: 'fa-solid fa-people-group',
 			match: 'prefix',
 		},
-		{
-			href: resolve('secretaria/usuarios'),
-			label: 'Usuários',
-			title: 'Usuários',
-			ariaLabel: 'usuários',
-			icon: 'fa-solid fa-user-plus',
-			match: 'prefix',
-			adminOnly: true,
-		},
 	];
 </script>
 

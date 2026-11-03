@@ -26,15 +26,6 @@
 			icon: 'fa-solid fa-user-tie',
 			match: 'prefix',
 		},
-		{
-			href: resolve('comunicacao/usuarios'),
-			label: 'Usuários',
-			title: 'Usuários',
-			ariaLabel: 'usuários',
-			icon: 'fa-solid fa-user-plus',
-			match: 'prefix',
-			adminOnly: true,
-		},
 	];
 </script>
 

@@ -1,6 +1,5 @@
 import { db } from '#lib/server/database/connection.js';
 import { user } from '#lib/server/database/schema.js';
-import { COMUNICACAO_AREA, SECRETARIA_AREA } from '#lib/server/users/area-roles.js';
 import { DuplicateUsernameError } from '#lib/server/models/user-error.js';
 import { UserModel } from '#lib/server/models/user.js';
 import { eq } from 'drizzle-orm';
@@ -10,31 +9,6 @@ import { createTestUserValues, withUsers } from './user-test-support';
 
 const model = new UserModel(db);
 const LONGEST_COORDINATION_ROLES = 'biblioteca:admin,secretaria:admin,tesouraria:admin,comunicacao:admin';
-
-const listIds = async (areaRoles: readonly string[]) =>
-	(await model.listByAreaRoles(areaRoles, { name: '0teste-', page: 1 })).map(({ id }) => id);
-
-describe('TI-16 UserModel.listByAreaRoles', () => {
-	it('lists a user whose area role is not the first one', async () => {
-		await withUsers(['tesouraria,comunicacao'], async ([id]) => {
-			expect(await listIds(COMUNICACAO_AREA.areaRoles)).toContain(id);
-		});
-	});
-
-	it('lists the area users when no name is searched', async () => {
-		await withUsers(['comunicacao'], async ([id]) => {
-			const users = await model.listByAreaRoles(COMUNICACAO_AREA.areaRoles, { page: 1 });
-
-			expect(users.map((listed) => listed.id)).toContain(id);
-		});
-	});
-
-	it('leaves a user of another area out of the listing', async () => {
-		await withUsers(['comunicacao'], async ([id]) => {
-			expect(await listIds(SECRETARIA_AREA.areaRoles)).not.toContain(id);
-		});
-	});
-});
 
 describe('TI-17 User.roles', () => {
 	it('stores the longest combination of coordination roles', async () => {

@@ -30,7 +30,6 @@ const ACTIVE_ITEMS = [
 	{ label: 'Leitores', pathname: '/biblioteca/leitores/novo' },
 	{ label: 'Livros', pathname: '/biblioteca/livros/1/exemplares' },
 	{ label: 'Palavras-chave', pathname: '/biblioteca/keywords/novo' },
-	{ label: 'Usuários', pathname: '/biblioteca/usuarios/novo' },
 ];
 
 const READER_LINKS = [
@@ -49,7 +48,6 @@ const ADMIN_LINKS = [
 	...READER_LINKS.slice(0, 3),
 	{ label: 'Cobranças', title: 'Cobranças', ariaLabel: 'cobranças' },
 	...READER_LINKS.slice(3),
-	{ label: 'Usuários', title: 'Usuários', ariaLabel: 'usuários' },
 ];
 
 describe('biblioteca layout', () => {
@@ -63,7 +61,7 @@ describe('biblioteca layout', () => {
 		expect(readCurrentSidebarLinks(target)).toEqual([label]);
 	});
 
-	it('shows the administrative items to administrators', async () => {
+	it('TU-23 shows the administrative items, without Usuários, to administrators', async () => {
 		pageState.url = new URL('http://localhost/biblioteca');
 
 		const target = await mountModuleLayout(Layout, ADMIN);

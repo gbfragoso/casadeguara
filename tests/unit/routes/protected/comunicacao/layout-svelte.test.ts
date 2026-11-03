@@ -31,21 +31,18 @@ describe('TU-05 comunicacao layout', () => {
 		expect(readSidebarLinks(target)).toEqual(VOLUNTEER_LINKS);
 	});
 
-	it('adds Usuários for the coordination', async () => {
+	it('TU-23 shows the coordination the same items as a volunteer, without Usuários', async () => {
 		const target = await mountModuleLayout(Layout, COORDINATOR);
 
-		expect(readSidebarLinks(target)).toEqual([
-			...VOLUNTEER_LINKS,
-			{ label: 'Usuários', title: 'Usuários', ariaLabel: 'usuários' },
-		]);
+		expect(readSidebarLinks(target)).toEqual(VOLUNTEER_LINKS);
 	});
 
 	it('marks the section of a nested page as current', async () => {
-		pageState.url = new URL('http://localhost/comunicacao/usuarios/abc123');
+		pageState.url = new URL('http://localhost/comunicacao/palestrantes/abc123');
 
 		const target = await mountModuleLayout(Layout, COORDINATOR);
 
-		expect(readCurrentSidebarLinks(target)).toEqual(['Usuários']);
+		expect(readCurrentSidebarLinks(target)).toEqual(['Palestrantes']);
 	});
 
 	it('renders the page content inside the module shell', async () => {
