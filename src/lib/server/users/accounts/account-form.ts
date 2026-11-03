@@ -5,14 +5,16 @@ import {
 	type AccessLevel,
 	type UserAccess,
 } from '#lib/users/access.js';
-import { createUserAccountSchema, editUserAccountSchema, type UserAccountInput } from '#lib/validation/user-account.js';
-import { flattenError } from 'zod';
+import { createUserAccountSchema, editUserAccountSchema } from '#lib/validation/user-account.js';
+import { flattenError, type output } from 'zod';
 
 const NO_ACCESS: AccessLevel = 'none';
 const SUPERUSER_FIELD = 'superuser';
 const CHECKED_VALUE = 'on';
 
 export type AccountFormMode = 'create' | 'edit';
+export type CreateAccountInput = output<typeof createUserAccountSchema>;
+export type EditAccountInput = output<typeof editUserAccountSchema>;
 export type UserAccountField = 'username' | 'name' | 'password' | 'access' | 'superuser';
 export type UserAccountValues = { username: string; name: string; access: UserAccess };
 export type UserAccountFailure = {
@@ -40,7 +42,7 @@ const readRawInput = (formData: FormData) => ({
 	},
 });
 
-const readValues = (formData: FormData): UserAccountValues => ({
+export const readUserAccountValues = (formData: FormData): UserAccountValues => ({
 	username: readText(formData, 'username'),
 	name: readText(formData, 'name'),
 	access: {
@@ -53,21 +55,25 @@ const readValues = (formData: FormData): UserAccountValues => ({
 	},
 });
 
+type AccountFormResult<Input> = { success: true; data: Input } | { success: false; failure: UserAccountFailure };
+
 const validate = (formData: FormData, mode: AccountFormMode) => {
 	const rawInput = readRawInput(formData);
 
 	return mode === 'create' ? createUserAccountSchema.safeParse(rawInput) : editUserAccountSchema.safeParse(rawInput);
 };
 
-export const parseUserAccountForm = (
+export function parseUserAccountForm(formData: FormData, mode: 'create'): AccountFormResult<CreateAccountInput>;
+export function parseUserAccountForm(formData: FormData, mode: 'edit'): AccountFormResult<EditAccountInput>;
+export function parseUserAccountForm(
 	formData: FormData,
 	mode: AccountFormMode,
-): { success: true; data: UserAccountInput } | { success: false; failure: UserAccountFailure } => {
+): AccountFormResult<CreateAccountInput | EditAccountInput> {
 	const result = validate(formData, mode);
 	if (result.success) return { success: true, data: result.data };
 
 	return {
 		success: false,
-		failure: { values: readValues(formData), errors: flattenError(result.error).fieldErrors },
+		failure: { values: readUserAccountValues(formData), errors: flattenError(result.error).fieldErrors },
 	};
-};
+}

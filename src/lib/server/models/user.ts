@@ -1,4 +1,5 @@
 import { db } from '#lib/server/database/connection.js';
+import { unaccent } from '#lib/server/database/functions.js';
 import { user } from '#lib/server/database/schema.js';
 import { translateUserError } from '#lib/server/models/user-error.js';
 import { eq } from 'drizzle-orm';
@@ -7,10 +8,15 @@ const editableUserFields = { id: user.id, username: user.username, name: user.na
 const credentialFields = { id: user.id, passwordHash: user.passwordHash, roles: user.roles };
 
 export type NewUser = { id: string; username: string; name: string; passwordHash: string; roles: string };
-export type UserChanges = Omit<NewUser, 'id' | 'roles'> & { roles?: string };
+export type ListedUser = Omit<NewUser, 'passwordHash'>;
+export type UserChanges = Omit<NewUser, 'id' | 'passwordHash'> & { passwordHash?: string };
 
 export class UserModel {
 	constructor(private readonly database: typeof db = db) {}
+
+	listAll(): Promise<ListedUser[]> {
+		return this.database.select(editableUserFields).from(user).orderBy(unaccent(user.name), user.id);
+	}
 
 	async get(id: string) {
 		const found = await this.database.select(editableUserFields).from(user).where(eq(user.id, id));
