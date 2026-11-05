@@ -22,7 +22,7 @@
 		content="Palestras públicas, departamentos e o Recanto de Potira do Grupo Espírita Casa de Guará, na Rua Major Dórea, 86, em Itabuna-BA." />
 </svelte:head>
 
-<div class="relative scroll-smooth bg-ground text-ink motion-reduce:scroll-auto">
+<div data-site-home class="relative bg-ground text-ink">
 	<SiteHeader />
 	<main>
 		<NextTalkHero talk={data.destaque} today={data.hoje} unavailable={data.programacaoIndisponivel} />
@@ -33,3 +33,11 @@
 	</main>
 	<SiteFooter />
 </div>
+
+<style>
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html:has([data-site-home])) {
+			scroll-behavior: smooth;
+		}
+	}
+</style>

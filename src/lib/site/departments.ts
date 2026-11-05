@@ -1,7 +1,11 @@
+import type { DrawnIconName, DrawnIconTone } from './drawn-icons.js';
+
 export type DepartmentLink = { href: '/acervo'; rotulo: string };
 
 export type Department = {
 	slug: string;
+	icone: DrawnIconName;
+	tom: DrawnIconTone;
 	nome: string;
 	resumo: string;
 	horarios: readonly string[];
@@ -12,6 +16,8 @@ export type Department = {
 export const DEPARTMENTS: readonly Department[] = [
 	{
 		slug: 'biblioteca',
+		icone: 'biblioteca',
+		tom: 'sky',
 		nome: 'Biblioteca Batuíra',
 		resumo: 'Aberta ao público, com empréstimo de livros espíritas.',
 		horarios: ['Segunda, das 8h às 8h45', 'Terça e quinta, das 19h às 19h30'],
@@ -20,14 +26,18 @@ export const DEPARTMENTS: readonly Department[] = [
 	},
 	{
 		slug: 'manjedoura',
+		icone: 'manjedoura',
+		tom: 'gold',
 		nome: 'Manjedoura Dr. Bezerra de Menezes',
 		resumo: 'Produz os enxovais entregues às gestantes do Recanto de Potira e aceita doação de roupas.',
-		horarios: [],
-		publico: null,
+		horarios: ['Sexta, das 14h30 às 17h'],
+		publico: 'Somente para trabalhadores',
 		link: null,
 	},
 	{
 		slug: 'jear',
+		icone: 'jear',
+		tom: 'sky',
 		nome: 'Juventude Espírita Amélia Rodrigues (JEAR)',
 		resumo: 'Encontros de estudo e convivência abertos a jovens.',
 		horarios: ['Sábado, das 15h às 17h'],
@@ -36,6 +46,8 @@ export const DEPARTMENTS: readonly Department[] = [
 	},
 	{
 		slug: 'evangelizacao',
+		icone: 'evangelizacao',
+		tom: 'gold',
 		nome: 'Evangelização Infantil Meimei',
 		resumo: 'Evangelização para crianças, com inscrição prévia.',
 		horarios: ['Sábado, das 9h às 11h'],

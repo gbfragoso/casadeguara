@@ -2,8 +2,10 @@
 	import recantoLogo560 from '#lib/site/images/recanto-logo-560.webp';
 	import recantoLogo1120 from '#lib/site/images/recanto-logo-1120.webp';
 	import recantoLogoPng from '#lib/site/images/recanto-logo-1120.png';
-	import { RECANTO_HIGHLIGHTS, RECANTO_LOGO_ALT } from '#lib/site/recanto.js';
+	import { INSTITUTION_ADDRESS, INSTITUTION_PIX_KEY } from '#lib/brand/institution.js';
+	import { RECANTO_LOGO_ALT, RECANTO_STAGES } from '#lib/site/recanto.js';
 
+	import DrawnIcon from './DrawnIcon.svelte';
 	import RecantoBackdrop from './RecantoBackdrop.svelte';
 	import SectionWave from './SectionWave.svelte';
 </script>
@@ -11,8 +13,9 @@
 <section
 	id="recanto"
 	aria-labelledby="titulo-recanto"
-	class="relative isolate bg-warm-band pt-12 pb-28 tablet:pt-16 tablet:pb-36">
+	class="relative isolate bg-warm-band pt-24 pb-28 tablet:pt-36 tablet:pb-36">
 	<RecantoBackdrop />
+	<SectionWave shape="crest" fill="fill-primary" edge="top" />
 	<div class="relative mx-auto max-w-7xl px-4 tablet:px-8">
 		<h2 id="titulo-recanto">
 			<picture>
@@ -26,15 +29,31 @@
 					class="mx-auto w-full max-w-3xl dark:brightness-0 dark:invert" />
 			</picture>
 		</h2>
-		<ul class="mt-12 grid gap-5 tablet:grid-cols-2 desktop:grid-cols-4">
-			{#each RECANTO_HIGHLIGHTS as highlight (highlight.titulo)}
-				<li class="rounded-3xl bg-surface/90 p-7 text-ink">
-					<i class={['fa-solid text-3xl text-primary-ink', highlight.icone]} aria-hidden="true"></i>
-					<h3 class="mt-4 font-display text-2xl font-bold text-ink-strong">{highlight.titulo}</h3>
-					<p class="mt-3 text-lg">{highlight.descricao}</p>
-				</li>
-			{/each}
-		</ul>
+		<div class="mt-12 rounded-3xl bg-card p-5 text-ink tablet:p-10">
+			<ol class="grid gap-8 desktop:grid-cols-4">
+				{#each RECANTO_STAGES as stage (stage.titulo)}
+					<li
+						class="relative grid grid-cols-[4.5rem_1fr] gap-x-4 before:absolute before:top-22 before:-bottom-6 before:left-9 before:w-0.5 before:bg-sky-wave last:before:hidden desktop:block desktop:before:top-9 desktop:before:-right-4 desktop:before:bottom-auto desktop:before:left-22 desktop:before:h-0.5 desktop:before:w-auto">
+						<DrawnIcon name={stage.icone} tone={stage.tom} />
+						<div class="desktop:mt-6">
+							<h3 class="font-display text-2xl font-bold text-ink-strong">{stage.titulo}</h3>
+							<p class="mt-1 font-bold text-primary-ink">{stage.etapa}</p>
+							<p class="mt-3 text-lg">{stage.descricao}</p>
+						</div>
+					</li>
+				{/each}
+			</ol>
+			<div class="mt-10 border-t border-sky pt-8 desktop:flex desktop:items-baseline desktop:gap-8">
+				<h3 class="shrink-0 font-display text-2xl font-bold text-ink-strong">Como ajudar</h3>
+				<ul class="mt-3 grid list-disc gap-2 ps-5 text-lg marker:text-primary-ink desktop:mt-0">
+					<li>Doações de roupas podem ser feitas em nossa sede, na {INSTITUTION_ADDRESS}.</li>
+					<li>
+						Doações em dinheiro podem ser feitas na nossa tesouraria ou através da chave PIX:
+						<span class="font-bold text-ink-strong select-all">{INSTITUTION_PIX_KEY}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 	<SectionWave shape="trough" fill="fill-ground" edge="bottom" />
 </section>

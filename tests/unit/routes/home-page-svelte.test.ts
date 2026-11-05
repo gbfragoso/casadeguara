@@ -21,6 +21,16 @@ describe('home page hero', () => {
 		expect(heading?.textContent).toBe('A fé raciocinada');
 	});
 
+	it('lists each activity included in the meeting as its own item', () => {
+		const destaque = buildTalk({ reuniaoCom: ['Estudo do Evangelho', 'Passes e água fluidificada'] });
+
+		const document = renderHome({ destaque, seguintes: [] });
+
+		const activities = [...document.querySelectorAll('#inicio ul li')].map((item) => item.textContent);
+
+		expect(activities).toEqual(['Estudo do Evangelho', 'Passes e água fluidificada']);
+	});
+
 	it('introduces the speaker with the source work of the talk', () => {
 		const destaque = buildTalk({ observacoes: 'O Livro dos Espíritos, questão 658' });
 
@@ -51,16 +61,6 @@ describe('home page hero', () => {
 
 		expect(readText(away, '#inicio')).toContain('Local: Praça Olinto Leone');
 		expect(readText(atHome, '#inicio')).not.toContain('Local:');
-	});
-
-	it('lists what the meeting includes', () => {
-		const destaque = buildTalk({ reuniaoCom: ['Estudo do Evangelho', 'Passes e água fluidificada'] });
-
-		const document = renderHome({ destaque, seguintes: [] });
-
-		expect(readText(document, '#inicio')).toContain(
-			'A reunião inclui: Estudo do Evangelho, Passes e água fluidificada',
-		);
 	});
 
 	it('points the main actions to the directions and the next talks', () => {

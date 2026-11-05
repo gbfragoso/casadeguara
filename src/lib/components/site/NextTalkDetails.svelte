@@ -40,10 +40,14 @@
 	<p class="mt-4 text-ink-muted"><span class="font-bold text-ink-strong">Local:</span> {location}</p>
 {/if}
 {#if talk.reuniaoCom.length > 0}
-	<p class="mt-3 max-w-prose text-ink-muted">
-		<span class="font-bold text-ink-strong">A reunião inclui:</span>
-		<span class="font-medium">{talk.reuniaoCom.join(', ')}</span>
-	</p>
+	<div class="mt-5 max-w-prose text-lg">
+		<p class="font-bold text-ink-strong">A reunião inclui:</p>
+		<ul class="mt-2 grid list-disc gap-1 ps-5 text-ink marker:text-primary-ink">
+			{#each talk.reuniaoCom as activity (activity)}
+				<li>{activity}</li>
+			{/each}
+		</ul>
+	</div>
 {/if}
 <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
 	<a

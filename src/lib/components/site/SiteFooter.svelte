@@ -18,7 +18,7 @@
 	<SectionWave shape="crest" fill="fill-ground" edge="top" />
 	<div class="mx-auto flex max-w-7xl flex-wrap justify-between gap-x-16 gap-y-10 px-4 tablet:px-8">
 		<div class="max-w-xs">
-			<p class="font-display text-2xl font-bold text-on-primary">{INSTITUTION_NAME}</p>
+			<p class="font-display text-2xl font-bold text-balance text-on-primary">{INSTITUTION_NAME}</p>
 			<p class="mt-3 text-primary-100">{INSTITUTION_ADDRESS}<br />CEP {INSTITUTION_POSTAL_CODE}</p>
 		</div>
 		<div>
