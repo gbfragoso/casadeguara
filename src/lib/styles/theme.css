@@ -187,8 +187,6 @@
 	--animate-skeleton: skeleton 1.4s ease-in-out infinite;
 	--animate-hero-settle: hero-settle 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 	--animate-hero-rise: hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-	--animate-recanto-fade: recanto-fade 24s linear infinite both;
-	--animate-type-in: type-in 1ms linear backwards;
 
 	@keyframes hero-settle {
 		from {
@@ -201,26 +199,6 @@
 		from {
 			opacity: 0.5;
 			transform: translateY(1rem);
-		}
-	}
-
-	@keyframes recanto-fade {
-		0%,
-		30%,
-		100% {
-			opacity: 0;
-		}
-
-		5%,
-		25% {
-			opacity: 1;
-		}
-	}
-
-	@keyframes type-in {
-		from,
-		to {
-			visibility: hidden;
 		}
 	}
 

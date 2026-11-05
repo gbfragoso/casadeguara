@@ -18,12 +18,12 @@ export const buildTalk = (overrides: Partial<PublicTalkCard> = {}): PublicTalkCa
 	...overrides,
 });
 
-type HomeData = { destaque: PublicTalkCard | null; seguintes: PublicTalkCard[] };
+type HomeData = { destaque: PublicTalkCard | null; seguintes: PublicTalkCard[]; programacaoIndisponivel?: boolean };
 
-export const renderHome = ({ destaque, seguintes }: HomeData) =>
+export const renderHome = ({ destaque, seguintes, programacaoIndisponivel = false }: HomeData) =>
 	parseRenderedBody(
 		render(Page, {
-			props: { data: { hoje: TODAY, destaque, seguintes, programacaoIndisponivel: destaque === null } },
+			props: { data: { hoje: TODAY, destaque, seguintes, programacaoIndisponivel } },
 		}).body,
 	);
 

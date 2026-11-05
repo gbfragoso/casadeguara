@@ -25,8 +25,8 @@
 <div class="relative scroll-smooth bg-ground text-ink motion-reduce:scroll-auto">
 	<SiteHeader />
 	<main>
-		<NextTalkHero talk={data.destaque} today={data.hoje} />
-		<UpcomingTalks talks={data.seguintes} />
+		<NextTalkHero talk={data.destaque} today={data.hoje} unavailable={data.programacaoIndisponivel} />
+		<UpcomingTalks talks={data.seguintes} today={data.hoje} heroAnnouncesEmpty={data.destaque === null} />
 		<DepartmentList />
 		<RecantoSection />
 		<LocationSection />

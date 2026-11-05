@@ -10,9 +10,9 @@
 	import NextTalkDetails from './NextTalkDetails.svelte';
 	import SectionWave from './SectionWave.svelte';
 
-	type Props = { talk: PublicTalkCard | null; today: string };
+	type Props = { talk: PublicTalkCard | null; today: string; unavailable: boolean };
 
-	let { talk, today }: Props = $props();
+	let { talk, today, unavailable }: Props = $props();
 
 	const heroSources = `${acolhida640} 640w, ${acolhida960} 960w, ${acolhida1280} 1280w, ${acolhida1365} 1365w`;
 </script>
@@ -39,6 +39,16 @@
 		<div class="max-w-2xl animate-hero-rise motion-reduce:animate-none desktop:max-w-[44%]">
 			{#if talk}
 				<NextTalkDetails {talk} {today} />
+			{:else if unavailable}
+				<h1 id="titulo-inicio" class="font-display text-display font-extrabold text-balance text-ink-strong">
+					Não conseguimos carregar a programação agora.
+				</h1>
+				<p class="mt-4 text-lg text-ink-muted">
+					Veja no
+					<a href={INSTITUTION_INSTAGRAM_URL} rel="external" class="font-bold text-primary-ink underline"
+						>Instagram</a
+					>.
+				</p>
 			{:else}
 				<h1 id="titulo-inicio" class="font-display text-display font-extrabold text-balance text-ink-strong">
 					A programação será divulgada em breve.
