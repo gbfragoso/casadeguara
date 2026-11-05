@@ -10,9 +10,16 @@ import {
 import { frameSheetPages, type SheetFrame } from '#lib/server/pdf/sheet/pages.js';
 import { createSheetText } from '#lib/server/pdf/sheet/text.js';
 import { BODY_HEIGHT, BODY_TOP, CONTENT_LEFT, CONTENT_WIDTH } from '#lib/server/pdf/sheet/typography.js';
-import { formatDateColumn, normalizeWorkerName, type AttendanceListDocument, type AttendanceTextRole } from './content';
+import { normalizeWorkerName, type AttendanceListDocument, type AttendanceTextRole } from './content';
 import { paginateRows } from './pagination';
-import { buildTableHeader, buildWorkerRow, countRowsFitting, type AttendanceTable } from './table';
+import {
+	buildTableHeader,
+	buildWeekDividers,
+	buildWorkerRow,
+	countRowsFitting,
+	createAttendanceTable,
+	type AttendanceTable,
+} from './table';
 import { ATTENDANCE_STYLES, NOTICE_GAP, ROW_HEIGHT, TABLE_HEADER_HEIGHT } from './typography';
 
 type PageBody = SheetElement<AttendanceTextRole>[];
@@ -22,6 +29,7 @@ const buildTable = (table: AttendanceTable, names: string[], top: number): PageB
 	return [
 		...buildTableHeader(table, top),
 		...names.flatMap((name, index) => buildWorkerRow(table, name, index, rowsTop + index * ROW_HEIGHT)),
+		...buildWeekDividers(table, rowsTop, rowsTop + names.length * ROW_HEIGHT),
 	];
 };
 
@@ -36,7 +44,7 @@ export const layoutAttendanceList = (
 	document: AttendanceListDocument,
 	measurers: SheetMeasurers,
 ): SheetPageLayout<AttendanceTextRole | SheetFrameRole>[] => {
-	const table = { days: document.dates.map(formatDateColumn), measurers };
+	const table = createAttendanceTable(document.dates, measurers);
 	const notice = createSheetText('aviso', ATTENDANCE_NOTICE, ATTENDANCE_STYLES.aviso, measurers, {
 		x: CONTENT_LEFT,
 		width: CONTENT_WIDTH,

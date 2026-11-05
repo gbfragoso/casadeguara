@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { ATTENDANCE_NOTICE } from '#lib/attendance/format.js';
-import type { SheetBoxElement, SheetPageLayout } from '#lib/server/pdf/sheet/elements.js';
+import type { SheetBoxElement, SheetPageLayout, SheetTextElement } from '#lib/server/pdf/sheet/elements.js';
 import { layoutAttendanceList } from '#lib/server/pdf/attendance-list/layout.js';
-import { boundsOf, listRules, listTexts, readTexts } from '../sheet/support/layout-queries';
+import { DATE_CELL_WIDTH } from '#lib/server/pdf/attendance-list/typography.js';
+import { boundsOf, drawnLeftOf, listRules, listTexts, readTexts, type Box } from '../sheet/support/layout-queries';
 import { testMeasurers } from '../sheet/support/measurers';
 import {
 	createAttendanceDocument,
@@ -13,7 +14,15 @@ import {
 } from './support/attendance-fixtures';
 
 const REFERENCE_WORKER_COUNT = 181;
-const NOVEMBER_COLUMNS = ['Nome', '02', '03', '05', '09', '10', '12', '16', '17', '19', '23', '24', '26', '30'];
+const NOVEMBER_DAYS = ['02', '03', '05', '09', '10', '12', '16', '17', '19', '23', '24', '26', '30'];
+const NOVEMBER_WEEKDAYS = ['SEG', 'TER', 'QUI'];
+const NOVEMBER_COLUMNS = ['Nome', ...Array.from({ length: 4 }, () => NOVEMBER_WEEKDAYS).flat(), 'SEG'];
+const WEEK_BOUNDARIES = [
+	['05', '09'],
+	['12', '16'],
+	['19', '23'],
+	['26', '30'],
+];
 
 const layoutWorkers = (workers: string[], dates?: string[]) =>
 	layoutAttendanceList(createAttendanceDocument(workers, dates), testMeasurers);
@@ -24,8 +33,20 @@ const listNames = <Role extends string>(page: SheetPageLayout<Role>) =>
 const listBoxes = ({ elements }: SheetPageLayout, role: SheetBoxElement['role']) =>
 	elements.filter((element): element is SheetBoxElement => element.kind === 'box' && element.role === role);
 
+const isDrawnInside = (text: SheetTextElement, container: Box) => {
+	const bounds = boundsOf(text);
+	const left = drawnLeftOf(text);
+	const right = left + testMeasurers[text.weight].widthOfTextAtSize(text.lines[0], text.size);
+	return (
+		bounds.top >= container.top &&
+		bounds.bottom <= container.bottom &&
+		left > container.left &&
+		right < container.right
+	);
+};
+
 describe('layoutAttendanceList', () => {
-	it('TU-11 shows "Nome" and the two-digit days in the table header of every page', () => {
+	it('TU-11 shows "Nome" and the weekday abbreviations in the table header of every page', () => {
 		const pages = layoutWorkers(createWorkers(REFERENCE_WORKER_COUNT));
 
 		expect(pages.map((page) => readTexts(page, 'coluna'))).toEqual(pages.map(() => NOVEMBER_COLUMNS));
@@ -87,5 +108,57 @@ describe('layoutAttendanceList', () => {
 		expect(
 			rows.map((row) => checkboxes.filter(({ top, bottom }) => top > row.top && bottom < row.bottom).length),
 		).toEqual([3, 3, 3, 3]);
+	});
+
+	it('writes the day number inside every checkbox', () => {
+		const [page] = layoutWorkers(createWorkers(2));
+
+		const dayNumbers = listTexts(page).filter(({ role }) => role === 'dia');
+		const checkboxes = listBoxes(page, 'marcacao').map(boundsOf);
+		const spilledDays = dayNumbers
+			.filter((dayNumber, index) => !isDrawnInside(dayNumber, checkboxes[index]))
+			.map(({ lines }) => lines[0]);
+		expect(dayNumbers.map(({ lines }) => lines.join(' '))).toEqual([...NOVEMBER_DAYS, ...NOVEMBER_DAYS]);
+		expect(spilledDays).toEqual([]);
+	});
+
+	it('fits every weekday abbreviation in one line within its date cell', () => {
+		const [page] = layoutWorkers(createWorkers(1), FIFTEEN_DATES);
+
+		const weekdays = listTexts(page).filter(({ role, align }) => role === 'coluna' && align === 'center');
+		const overflowingWeekdays = weekdays
+			.filter(
+				({ lines, size, width }) =>
+					lines.length > 1 ||
+					width !== DATE_CELL_WIDTH ||
+					testMeasurers.bold.widthOfTextAtSize(lines[0], size) > DATE_CELL_WIDTH,
+			)
+			.map(({ lines }) => lines.join(' '));
+		expect(new Set(weekdays.map(({ lines }) => lines.join(' ')))).toEqual(
+			new Set(['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB']),
+		);
+		expect(overflowingWeekdays).toEqual([]);
+	});
+
+	it('divides the weeks between neighbouring checkboxes along the page rows', () => {
+		const [, page] = layoutWorkers(createWorkers(REFERENCE_WORKER_COUNT));
+
+		const dividers = listBoxes(page, 'divisoria').map(boundsOf);
+		const firstRowCheckboxes = listBoxes(page, 'marcacao').slice(0, NOVEMBER_DAYS.length).map(boundsOf);
+		const rows = listNames(page);
+		const neighbourDays = dividers.map((divider) => [
+			NOVEMBER_DAYS[firstRowCheckboxes.findLastIndex(({ right }) => right <= divider.left)],
+			NOVEMBER_DAYS[firstRowCheckboxes.findIndex(({ left }) => left >= divider.right)],
+		]);
+		expect(neighbourDays).toEqual(WEEK_BOUNDARIES);
+		expect(dividers.map(({ top, bottom }) => [top, bottom])).toEqual(
+			dividers.map(() => [rows[0].top, boundsOf(rows[rows.length - 1]).bottom]),
+		);
+	});
+
+	it('draws no week divider when every date falls in the same week', () => {
+		const [page] = layoutWorkers(createWorkers(3), ['2026-11-02', '2026-11-03', '2026-11-04']);
+
+		expect(listBoxes(page, 'divisoria')).toEqual([]);
 	});
 });
