@@ -3,17 +3,23 @@ import { DEFAULT_TALK_LOCATION } from '#lib/talks/defaults.js';
 import { addCivilDays, formatCivilDateWithWeekday, formatWeekdayAbbreviation } from '#lib/utils/date.js';
 
 const ISO_DATE_LENGTH = 10;
+const UNTITLED_TALK_HEADING = 'Palestra pública';
 
 const readNextCivilDay = (civilDate: string) =>
 	addCivilDays(new Date(`${civilDate}T00:00:00Z`), 1)
 		.toISOString()
 		.slice(0, ISO_DATE_LENGTH);
 
-export const formatRelativeTalkDay = (data: string, today: string): string => {
+export const readNearTalkDay = (data: string, today: string): 'Hoje' | 'Amanhã' | null => {
 	if (data === today) return 'Hoje';
 	if (data === readNextCivilDay(today)) return 'Amanhã';
-	return formatCivilDateWithWeekday(data);
+	return null;
 };
+
+export const formatRelativeTalkDay = (data: string, today: string): string =>
+	readNearTalkDay(data, today) ?? formatCivilDateWithWeekday(data);
+
+export const readTalkHeading = (titulo: string | null): string => titulo?.trim() || UNTITLED_TALK_HEADING;
 
 export const splitLastWord = (text: string) => {
 	const trimmed = text.trim();

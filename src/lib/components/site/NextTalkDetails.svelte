@@ -1,6 +1,10 @@
 <script lang="ts">
-	import { scheduleTyping, type TypedGrapheme } from '#lib/motion/typing.js';
-	import { formatRelativeTalkDay, readDistinctTalkLocation, splitLastWord } from '#lib/talks/public/format.js';
+	import {
+		formatRelativeTalkDay,
+		readDistinctTalkLocation,
+		readTalkHeading,
+		splitLastWord,
+	} from '#lib/talks/public/format.js';
 	import { formatTalkTime } from '#lib/talks/schedule.js';
 	import type { PublicTalkCard } from '#lib/talks/types.js';
 
@@ -11,16 +15,8 @@
 	let { talk, today }: Props = $props();
 	let speaker = $derived(talk.palestrante);
 	let location = $derived(readDistinctTalkLocation(talk.local));
-	let title = $derived(splitLastWord(talk.titulo ?? ''));
-	let [typedLead, typedLastWord] = $derived(scheduleTyping([title.lead, title.lastWord]));
+	let title = $derived(splitLastWord(readTalkHeading(talk.titulo)));
 </script>
-
-{#snippet typedGraphemes(graphemes: TypedGrapheme[])}
-	{#each graphemes as { grapheme, position, delayMs } (position)}<span
-			class="animate-type-in motion-reduce:animate-none"
-			style:animation-delay="{delayMs}ms">{grapheme}</span
-		>{/each}
-{/snippet}
 
 <p class="flex flex-wrap items-center gap-3 font-display text-hero-time font-extrabold text-primary-ink">
 	<span class="rounded-xl bg-accent px-4 py-1 text-on-accent">{formatRelativeTalkDay(talk.data, today)}</span>
@@ -28,10 +24,8 @@
 </p>
 <h1
 	id="titulo-inicio"
-	aria-label={title.lead + title.lastWord}
 	class="mt-4 font-display text-hero font-extrabold tracking-tight text-balance wrap-break-word text-ink-strong">
-	{@render typedGraphemes(typedLead)}<span class="underline decoration-accent decoration-8 underline-offset-12"
-		>{@render typedGraphemes(typedLastWord)}</span>
+	{title.lead}<span class="underline decoration-accent decoration-8 underline-offset-12">{title.lastWord}</span>
 </h1>
 {#if speaker}
 	<div class="mt-6 flex items-center gap-4">
@@ -46,10 +40,14 @@
 	<p class="mt-4 text-ink-muted"><span class="font-bold text-ink-strong">Local:</span> {location}</p>
 {/if}
 {#if talk.reuniaoCom.length > 0}
-	<p class="mt-3 max-w-prose text-ink-muted">
-		<span class="font-bold text-ink-strong">A reunião inclui:</span>
-		<span class="font-medium">{talk.reuniaoCom.join(', ')}</span>
-	</p>
+	<div class="mt-5 max-w-prose text-lg">
+		<p class="font-bold text-ink-strong">A reunião inclui:</p>
+		<ul class="mt-2 grid list-disc gap-1 ps-5 text-ink marker:text-primary-ink">
+			{#each talk.reuniaoCom as activity (activity)}
+				<li>{activity}</li>
+			{/each}
+		</ul>
+	</div>
 {/if}
 <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
 	<a

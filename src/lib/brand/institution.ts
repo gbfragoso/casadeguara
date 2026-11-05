@@ -2,6 +2,7 @@ export const INSTITUTION_NAME = 'Grupo Espírita Casa de Guará';
 export const INSTITUTION_ADDRESS = 'Rua Major Dórea, 86, Castália, Itabuna-BA';
 export const INSTITUTION_POSTAL_CODE = '45603-184';
 export const INSTITUTION_EMAIL = 'contato@casadeguara.org';
+export const INSTITUTION_PIX_KEY = '13.271.788/0001-12';
 export const INSTITUTION_INSTAGRAM_URL = 'https://www.instagram.com/casadeguara/';
 export const INSTITUTION_YOUTUBE_URL = 'https://www.youtube.com/channel/UCFz1gRHG5bq750Nma0Ttc4w';
 export const INSTITUTION_COORDINATES = { latitude: -14.7818467, longitude: -39.2738578 } as const;

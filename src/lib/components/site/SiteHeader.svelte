@@ -24,7 +24,7 @@
 		</a>
 		<button
 			type="button"
-			class="ms-auto inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-surface text-lg text-primary-ink desktop:hidden"
+			class="ms-auto inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-lg text-primary-ink desktop:hidden"
 			aria-label="Menu"
 			aria-expanded={menuOpen}
 			aria-controls="menu-do-site"
@@ -36,7 +36,7 @@
 			aria-label="Seções da página"
 			class={['w-full desktop:ms-auto desktop:block desktop:w-auto', menuOpen ? 'block' : 'hidden']}>
 			<ul
-				class="flex flex-col gap-1 rounded-3xl bg-surface p-3 text-lg font-semibold text-ink-strong desktop:flex-row desktop:items-center desktop:bg-transparent desktop:p-0">
+				class="flex flex-col gap-1 rounded-3xl bg-card p-3 text-lg font-semibold text-ink-strong desktop:flex-row desktop:items-center desktop:bg-transparent desktop:p-0">
 				{#each SITE_SECTIONS as section (section.id)}
 					<li>
 						<a

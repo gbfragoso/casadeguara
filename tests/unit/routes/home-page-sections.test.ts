@@ -25,6 +25,12 @@ describe('home page sections', () => {
 		expect(readText(document, '#departamentos')).toContain('Sábado, das 9h às 11h De 3 a 12 anos');
 	});
 
+	it('opens the Manjedoura on Friday afternoons to workers only', () => {
+		const document = renderEmptyHome();
+
+		expect(readText(document, '#departamentos')).toContain('Sexta, das 14h30 às 17h Somente para trabalhadores');
+	});
+
 	it('links the library to the public catalogue', () => {
 		const document = renderEmptyHome();
 
@@ -39,12 +45,25 @@ describe('home page sections', () => {
 		expect(logo?.getAttribute('alt')).toBe('Recanto de Potira, Núcleo de Promoção Social para Gestantes');
 	});
 
-	it('summarises what each pregnant woman receives at the Recanto', () => {
+	it('follows what each pregnant woman receives at the Recanto in the order of the pregnancy', () => {
 		const document = renderEmptyHome();
 
-		const topics = [...document.querySelectorAll('#recanto h3')].map((heading) => heading.textContent);
+		const stages = [...document.querySelectorAll('#recanto ol h3')].map((heading) => heading.textContent);
 
-		expect(topics).toEqual(['Acompanhamento', 'Feira mensal', 'Enxoval', 'Oficinas']);
+		expect(stages).toEqual(['Acompanhamento', 'Feira mensal', 'Oficinas', 'Enxoval']);
+	});
+
+	it('tells the visitor where to donate clothes and how to donate money to the Recanto', () => {
+		const document = renderEmptyHome();
+
+		const ways = [...document.querySelectorAll('#recanto ul li')].map((item) =>
+			item.textContent?.replace(/\s+/g, ' ').trim(),
+		);
+
+		expect(ways).toEqual([
+			'Doações de roupas podem ser feitas em nossa sede, na Rua Major Dórea, 86, Castália, Itabuna-BA.',
+			'Doações em dinheiro podem ser feitas na nossa tesouraria ou através da chave PIX: 13.271.788/0001-12',
+		]);
 	});
 
 	it('routes the visitor to the Casa and shows it on the map', () => {

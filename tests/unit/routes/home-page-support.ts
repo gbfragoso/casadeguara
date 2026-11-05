@@ -6,6 +6,8 @@ import { parseRenderedBody } from '../support/rendered-document';
 
 export const TODAY = '2026-10-28';
 
+export const SPEAKER_WITH_PHOTO = { nome: 'Carmélia Amorim', temFoto: true };
+
 export const buildTalk = (overrides: Partial<PublicTalkCard> = {}): PublicTalkCard => ({
 	id: 1,
 	data: TODAY,
@@ -18,12 +20,12 @@ export const buildTalk = (overrides: Partial<PublicTalkCard> = {}): PublicTalkCa
 	...overrides,
 });
 
-type HomeData = { destaque: PublicTalkCard | null; seguintes: PublicTalkCard[] };
+type HomeData = { destaque: PublicTalkCard | null; seguintes: PublicTalkCard[]; programacaoIndisponivel?: boolean };
 
-export const renderHome = ({ destaque, seguintes }: HomeData) =>
+export const renderHome = ({ destaque, seguintes, programacaoIndisponivel = false }: HomeData) =>
 	parseRenderedBody(
 		render(Page, {
-			props: { data: { hoje: TODAY, destaque, seguintes, programacaoIndisponivel: destaque === null } },
+			props: { data: { hoje: TODAY, destaque, seguintes, programacaoIndisponivel } },
 		}).body,
 	);
 

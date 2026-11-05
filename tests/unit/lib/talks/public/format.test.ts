@@ -5,6 +5,8 @@ import {
 	formatRelativeTalkDay,
 	formatTalkDateBadge,
 	readDistinctTalkLocation,
+	readNearTalkDay,
+	readTalkHeading,
 	splitLastWord,
 } from '#lib/talks/public/format.js';
 
@@ -51,5 +53,29 @@ describe('splitLastWord', () => {
 
 	it('keeps a one-word title whole', () => {
 		expect(splitLastWord(' Caridade ')).toEqual({ lead: '', lastWord: 'Caridade' });
+	});
+});
+
+describe('readNearTalkDay', () => {
+	it('names tomorrow for a talk on the next day', () => {
+		expect(readNearTalkDay('2027-01-01', TODAY)).toBe('Amanhã');
+	});
+
+	it('names no day for a talk further ahead', () => {
+		expect(readNearTalkDay('2027-01-02', TODAY)).toBeNull();
+	});
+});
+
+describe('readTalkHeading', () => {
+	it('keeps the trimmed title of the talk', () => {
+		expect(readTalkHeading(' A prece ')).toBe('A prece');
+	});
+
+	it('falls back to a generic heading when the title is blank', () => {
+		expect(readTalkHeading('   ')).toBe('Palestra pública');
+	});
+
+	it('falls back to a generic heading when the title is missing', () => {
+		expect(readTalkHeading(null)).toBe('Palestra pública');
 	});
 });

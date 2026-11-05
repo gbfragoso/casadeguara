@@ -2,26 +2,26 @@
 	import { resolve } from '$app/paths';
 	import { DEPARTMENTS } from '#lib/site/departments.js';
 
-	import DepartmentIcon from './DepartmentIcon.svelte';
+	import DrawnIcon from './DrawnIcon.svelte';
 	import SectionWave from './SectionWave.svelte';
 </script>
 
 <section
 	id="departamentos"
 	aria-labelledby="titulo-departamentos"
-	class="relative bg-primary pt-24 pb-28 text-on-primary tablet:pt-36 tablet:pb-36">
+	class="relative bg-primary pt-24 pb-16 text-on-primary tablet:pt-36 tablet:pb-20">
 	<SectionWave shape="crest" fill="fill-ground" edge="top" />
 	<div class="mx-auto max-w-7xl px-4 tablet:px-8">
 		<h2 id="titulo-departamentos" class="font-display text-display font-extrabold text-on-primary">
-			Para todas as idades
+			Nossos departamentos
 		</h2>
 		<p class="mt-4 max-w-xl text-lg text-primary-100">
 			Estudo, convivência e trabalho no bem, de segunda a sábado.
 		</p>
 		<ul class="mt-12 grid gap-5 tablet:grid-cols-2 desktop:grid-cols-4">
 			{#each DEPARTMENTS as department (department.slug)}
-				<li class="flex flex-col rounded-3xl bg-surface p-7 text-ink">
-					<DepartmentIcon slug={department.slug} />
+				<li class="flex flex-col rounded-3xl bg-card p-7 text-ink">
+					<DrawnIcon name={department.slug} tone={department.tom} />
 					<h3 class="mt-5 font-display text-2xl font-bold text-balance text-ink-strong">{department.nome}</h3>
 					<p class="mt-3 grow text-ink-muted">{department.resumo}</p>
 					{#if department.horarios.length > 0 || department.publico}
@@ -47,5 +47,4 @@
 			{/each}
 		</ul>
 	</div>
-	<SectionWave shape="trough" fill="fill-warm-band" edge="bottom" />
 </section>
