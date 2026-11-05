@@ -32,7 +32,7 @@ export type SheetLogoElement = { kind: 'logo'; x: number; top: number; size: num
 
 export type SheetBoxElement = {
 	kind: 'box';
-	role: 'faixa' | 'marcacao';
+	role: 'faixa' | 'marcacao' | 'divisoria';
 	x: number;
 	top: number;
 	width: number;

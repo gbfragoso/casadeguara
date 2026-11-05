@@ -26,9 +26,10 @@ const buildMonthlyLine = (text: string, month: CalendarMonth, measurers: SheetMe
 
 const buildFreeLine = (text: string, measurers: SheetMeasurers, top: number): HeadingLine => {
 	const style = FRAME_STYLES.cabecalho;
-	const size = fitSizeToWidth(text, measurers[style.weight], style.size, TEXT_WIDTH);
+	const headingText = toUpperCase(text);
+	const size = fitSizeToWidth(headingText, measurers[style.weight], style.size, TEXT_WIDTH);
 	const placement = { x: TEXT_LEFT, width: TEXT_WIDTH };
-	return [{ ...createSheetText('cabecalho', text, { ...style, size }, measurers, placement), top }];
+	return [{ ...createSheetText('cabecalho', headingText, { ...style, size }, measurers, placement), top }];
 };
 
 export const buildHeadingLine = (heading: SheetHeading, measurers: SheetMeasurers, top: number): HeadingLine =>

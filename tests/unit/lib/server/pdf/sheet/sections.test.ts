@@ -84,7 +84,7 @@ describe('TU-02 sheet header', () => {
 });
 
 describe('TU-08 free sheet header', () => {
-	it('shows the free title exactly as typed, at the monthly heading position and style', () => {
+	it('shows the free title in upper case, at the monthly heading position and style', () => {
 		const monthlyHeading = findText(buildSheetHeader(monthly(PROGRAM_HEADING), testMeasurers), 'cabecalho');
 
 		const header = buildSheetHeader({ kind: 'free', text: FREE_TITLE }, testMeasurers);
@@ -93,7 +93,7 @@ describe('TU-08 free sheet header', () => {
 		expect(header.map(describeElement)).toEqual([
 			'logo',
 			'instituicao: GRUPO ESPÍRITA CASA DE GUARÁ',
-			`cabecalho: ${FREE_TITLE}`,
+			'cabecalho: LISTA DE FREQUÊNCIA — TRABALHADORES, 1º SEMESTRE (SEG/TER/QUI)',
 			'filete',
 		]);
 		expect(findText(header, 'cabecalho')).toMatchObject({ x, top, size, weight, color });
