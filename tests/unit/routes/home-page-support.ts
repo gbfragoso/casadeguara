@@ -6,6 +6,8 @@ import { parseRenderedBody } from '../support/rendered-document';
 
 export const TODAY = '2026-10-28';
 
+export const SPEAKER_WITH_PHOTO = { nome: 'Carmélia Amorim', temFoto: true };
+
 export const buildTalk = (overrides: Partial<PublicTalkCard> = {}): PublicTalkCard => ({
 	id: 1,
 	data: TODAY,

@@ -21,7 +21,7 @@
 		<ul class="mt-12 grid gap-5 tablet:grid-cols-2 desktop:grid-cols-4">
 			{#each DEPARTMENTS as department (department.slug)}
 				<li class="flex flex-col rounded-3xl bg-card p-7 text-ink">
-					<DrawnIcon name={department.icone} tone={department.tom} />
+					<DrawnIcon name={department.slug} tone={department.tom} />
 					<h3 class="mt-5 font-display text-2xl font-bold text-balance text-ink-strong">{department.nome}</h3>
 					<p class="mt-3 grow text-ink-muted">{department.resumo}</p>
 					{#if department.horarios.length > 0 || department.publico}

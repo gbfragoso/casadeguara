@@ -3,8 +3,7 @@ import type { DrawnIconName, DrawnIconTone } from './drawn-icons.js';
 export type DepartmentLink = { href: '/acervo'; rotulo: string };
 
 export type Department = {
-	slug: string;
-	icone: DrawnIconName;
+	slug: DrawnIconName;
 	tom: DrawnIconTone;
 	nome: string;
 	resumo: string;
@@ -16,7 +15,6 @@ export type Department = {
 export const DEPARTMENTS: readonly Department[] = [
 	{
 		slug: 'biblioteca',
-		icone: 'biblioteca',
 		tom: 'sky',
 		nome: 'Biblioteca Batuíra',
 		resumo: 'Aberta ao público, com empréstimo de livros espíritas.',
@@ -26,7 +24,6 @@ export const DEPARTMENTS: readonly Department[] = [
 	},
 	{
 		slug: 'manjedoura',
-		icone: 'manjedoura',
 		tom: 'gold',
 		nome: 'Manjedoura Dr. Bezerra de Menezes',
 		resumo: 'Produz os enxovais entregues às gestantes do Recanto de Potira e aceita doação de roupas.',
@@ -36,7 +33,6 @@ export const DEPARTMENTS: readonly Department[] = [
 	},
 	{
 		slug: 'jear',
-		icone: 'jear',
 		tom: 'sky',
 		nome: 'Juventude Espírita Amélia Rodrigues (JEAR)',
 		resumo: 'Encontros de estudo e convivência abertos a jovens.',
@@ -46,7 +42,6 @@ export const DEPARTMENTS: readonly Department[] = [
 	},
 	{
 		slug: 'evangelizacao',
-		icone: 'evangelizacao',
 		tom: 'gold',
 		nome: 'Evangelização Infantil Meimei',
 		resumo: 'Evangelização para crianças, com inscrição prévia.',
