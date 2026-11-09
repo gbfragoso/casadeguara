@@ -13,6 +13,6 @@ export const SITE_ROUTES: readonly CatalogRoute[] = [
 	siteRoute('a-instituicao', '/a-instituicao', '/a-instituicao'),
 	siteRoute('diretoria', '/diretoria', '/diretoria'),
 	siteRoute('palestras', '/palestras', '/palestras'),
-	siteRoute('departamento', '/departamentos/[departamento=departamento]', '/departamentos/recanto'),
-	siteRoute('material-de-estudo', '/material-de-estudo/[material=material]', '/material-de-estudo/curso-de-passes'),
+	siteRoute('departamento', '/departamentos/[departamento]', '/departamentos/recanto'),
+	siteRoute('material-de-estudo', '/material-de-estudo/[material]', '/material-de-estudo/curso-de-passes'),
 ];

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { expectHttpError, runHandler } from '../../support/handler-event';
-import { load as loadDepartment } from '../../../../src/routes/(site)/departamentos/[departamento=departamento]/+page';
-import { load as loadStudyMaterial } from '../../../../src/routes/(site)/material-de-estudo/[material=material]/+page';
+import { load as loadDepartment } from '../../../../src/routes/(site)/departamentos/[departamento]/+page';
+import { load as loadStudyMaterial } from '../../../../src/routes/(site)/material-de-estudo/[material]/+page';
 
 describe('public page loads', () => {
 	it('opens a known department page with its homepage summary', async () => {

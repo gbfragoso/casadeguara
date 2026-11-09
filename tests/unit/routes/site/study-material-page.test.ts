@@ -5,7 +5,7 @@ import { findStudyMaterial } from '#lib/site/study-materials/index.js';
 import type { StudyMaterialSlug } from '#lib/site/study-materials/slugs.js';
 
 import { parseRenderedBody } from '../../support/rendered-document';
-import StudyMaterialRoute from '../../../../src/routes/(site)/material-de-estudo/[material=material]/+page.svelte';
+import StudyMaterialRoute from '../../../../src/routes/(site)/material-de-estudo/[material]/+page.svelte';
 
 const renderStudyMaterial = (slug: StudyMaterialSlug) =>
 	render(StudyMaterialRoute, { props: { data: { conteudo: findStudyMaterial(slug) } } });

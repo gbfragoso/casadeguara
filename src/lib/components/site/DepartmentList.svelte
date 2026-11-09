@@ -38,7 +38,7 @@
 					{/if}
 					<div class="mt-5 flex flex-wrap gap-x-6 gap-y-2">
 						<a
-							href={resolve('/(site)/departamentos/[departamento=departamento]', {
+							href={resolve('/(site)/departamentos/[departamento]', {
 								departamento: department.pagina,
 							})}
 							class="font-bold text-primary-ink underline underline-offset-4">

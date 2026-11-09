@@ -34,7 +34,7 @@
 			<RecantoStages />
 			<RecantoHelp />
 			<a
-				href={resolve('/(site)/departamentos/[departamento=departamento]', { departamento: 'recanto' })}
+				href={resolve('/(site)/departamentos/[departamento]', { departamento: 'recanto' })}
 				class="mt-8 inline-block text-lg font-bold text-primary-ink underline underline-offset-4">
 				Saiba mais <span class="sr-only">sobre o Recanto de Potira</span>
 			</a>

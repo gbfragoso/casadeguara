@@ -5,7 +5,7 @@ import { findDepartmentPage } from '#lib/site/department-pages/index.js';
 import type { DepartmentPageSlug } from '#lib/site/department-pages/slugs.js';
 
 import { parseRenderedBody } from '../../support/rendered-document';
-import DepartmentRoute from '../../../../src/routes/(site)/departamentos/[departamento=departamento]/+page.svelte';
+import DepartmentRoute from '../../../../src/routes/(site)/departamentos/[departamento]/+page.svelte';
 
 const renderDepartment = (slug: DepartmentPageSlug, resumo: string | null = null) => {
 	const { body } = render(DepartmentRoute, { props: { data: { slug, conteudo: findDepartmentPage(slug), resumo } } });
