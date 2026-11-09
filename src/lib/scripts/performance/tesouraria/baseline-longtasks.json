@@ -1,7 +1,7 @@
 [
-	{ "durations": [], "maxMs": 0 },
-	{ "durations": [52], "maxMs": 52 },
-	{ "durations": [], "maxMs": 0 },
-	{ "durations": [], "maxMs": 0 },
+	{ "durations": [100, 228, 69], "maxMs": 228 },
+	{ "durations": [258, 126], "maxMs": 258 },
+	{ "durations": [71, 55], "maxMs": 71 },
+	{ "durations": [50], "maxMs": 50 },
 	{ "durations": [], "maxMs": 0 }
 ]

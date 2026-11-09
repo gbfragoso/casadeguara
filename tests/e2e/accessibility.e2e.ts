@@ -18,6 +18,9 @@ type AuditScreen = {
 const COLOR_SCHEMES = ['light', 'dark'] as const;
 const SIDEBAR_OVERLAY_VIEWPORT = { width: 390, height: 844 };
 const REPRESENTATIVE_ROUTES = selectRoutes([
+	'a-instituicao',
+	'departamento',
+	'palestras',
 	'login',
 	'sistemas',
 	'usuarios',

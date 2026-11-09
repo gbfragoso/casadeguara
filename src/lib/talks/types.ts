@@ -23,3 +23,5 @@ export type PublicTalkCard = Omit<TalkCard, 'palestrante' | 'versao'> & {
 };
 
 export type MoveDirection = 'up' | 'down';
+
+export type MonthTalk = PublicTalkCard & { realizada: boolean };

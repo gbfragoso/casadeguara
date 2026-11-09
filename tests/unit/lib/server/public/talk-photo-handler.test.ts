@@ -9,15 +9,15 @@ const photo = new Uint8Array([255, 216, 255, 217]);
 
 type FindPhoto = PalestraModel['findPublicSpeakerPhoto'];
 
-const requestPhoto = (findPublicSpeakerPhoto: FindPhoto) => {
-	const handler = createTalkPhotoHandler({ talks: { findPublicSpeakerPhoto }, clock: () => BAHIA_MORNING });
+const requestPhoto = (findPublicSpeakerPhoto: FindPhoto, reference = BAHIA_MORNING) => {
+	const handler = createTalkPhotoHandler({ talks: { findPublicSpeakerPhoto }, clock: () => reference });
 	return handler({ params: { id: `${TALK_ID}` } });
 };
 
 describe('talk photo handler', () => {
 	afterEach(() => vi.restoreAllMocks());
 
-	it('serves the square speaker photo of an upcoming talk', async () => {
+	it('serves the square speaker photo of a talk of the current month', async () => {
 		const findPhoto = vi.fn<FindPhoto>().mockResolvedValue(photo);
 
 		const response = await requestPhoto(findPhoto);
@@ -25,7 +25,15 @@ describe('talk photo handler', () => {
 		expect(response.status).toBe(200);
 		expect(response.headers.get('content-type')).toBe('image/jpeg');
 		expect(new Uint8Array(await response.arrayBuffer())).toEqual(photo);
-		expect(findPhoto).toHaveBeenCalledWith(TALK_ID, { today: '2026-10-28', now: '06:00' });
+		expect(findPhoto).toHaveBeenCalledWith(TALK_ID, '2026-10-01');
+	});
+
+	it('keeps the previous month public while its last talk is still upcoming', async () => {
+		const findPhoto = vi.fn<FindPhoto>().mockResolvedValue(photo);
+
+		await requestPhoto(findPhoto, new Date('2026-11-01T04:00:00Z'));
+
+		expect(findPhoto).toHaveBeenCalledWith(TALK_ID, '2026-10-01');
 	});
 
 	it('lets browsers and shared caches keep the public photo for an hour', async () => {

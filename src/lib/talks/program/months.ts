@@ -7,9 +7,13 @@ import {
 
 export type ProgramMonth = CalendarMonth;
 
+export const readProgramMonth = (civilDate: string): ProgramMonth => {
+	const [year, month] = civilDate.split('-').map(Number);
+	return createCalendarMonth(year, month);
+};
+
 export const listProgramMonths = (today: string): [ProgramMonth, ProgramMonth] => {
-	const [year, month] = today.split('-').map(Number);
-	const currentMonth = createCalendarMonth(year, month);
+	const currentMonth = readProgramMonth(today);
 	return [currentMonth, followCalendarMonth(currentMonth)];
 };
 
