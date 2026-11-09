@@ -1,9 +1,11 @@
+import type { DepartmentPageSlug } from './department-pages/slugs.js';
 import type { DrawnIconName, DrawnIconTone } from './drawn-icons.js';
 
 export type DepartmentLink = { href: '/acervo'; rotulo: string };
 
 export type Department = {
-	slug: DrawnIconName;
+	pagina: DepartmentPageSlug;
+	icone: DrawnIconName;
 	tom: DrawnIconTone;
 	nome: string;
 	resumo: string;
@@ -14,7 +16,8 @@ export type Department = {
 
 export const DEPARTMENTS: readonly Department[] = [
 	{
-		slug: 'biblioteca',
+		pagina: 'biblioteca',
+		icone: 'biblioteca',
 		tom: 'sky',
 		nome: 'Biblioteca Batuíra',
 		resumo: 'Aberta ao público, com empréstimo de livros espíritas.',
@@ -23,7 +26,8 @@ export const DEPARTMENTS: readonly Department[] = [
 		link: { href: '/acervo', rotulo: 'Consultar o acervo' },
 	},
 	{
-		slug: 'manjedoura',
+		pagina: 'manjedoura',
+		icone: 'manjedoura',
 		tom: 'gold',
 		nome: 'Manjedoura Dr. Bezerra de Menezes',
 		resumo: 'Produz os enxovais entregues às gestantes do Recanto de Potira e aceita doação de roupas.',
@@ -32,7 +36,8 @@ export const DEPARTMENTS: readonly Department[] = [
 		link: null,
 	},
 	{
-		slug: 'jear',
+		pagina: 'juventude',
+		icone: 'jear',
 		tom: 'sky',
 		nome: 'Juventude Espírita Amélia Rodrigues (JEAR)',
 		resumo: 'Encontros de estudo e convivência abertos a jovens.',
@@ -41,7 +46,8 @@ export const DEPARTMENTS: readonly Department[] = [
 		link: null,
 	},
 	{
-		slug: 'evangelizacao',
+		pagina: 'evangelizacao',
+		icone: 'evangelizacao',
 		tom: 'gold',
 		nome: 'Evangelização Infantil Meimei',
 		resumo: 'Evangelização para crianças, com inscrição prévia.',
@@ -50,3 +56,6 @@ export const DEPARTMENTS: readonly Department[] = [
 		link: null,
 	},
 ];
+
+export const findDepartmentCard = (pagina: DepartmentPageSlug) =>
+	DEPARTMENTS.find((department) => department.pagina === pagina);

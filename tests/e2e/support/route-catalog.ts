@@ -2,6 +2,7 @@ import { ACCESS_ROUTES } from './route-catalog/acesso';
 import { BIBLIOTECA_ROUTES } from './route-catalog/biblioteca';
 import { COMUNICACAO_ROUTES } from './route-catalog/comunicacao';
 import { SECRETARIA_ROUTES } from './route-catalog/secretaria';
+import { SITE_ROUTES } from './route-catalog/site';
 import { TESOURARIA_ROUTES } from './route-catalog/tesouraria';
 import type { CatalogRoute } from './route-catalog/types';
 
@@ -10,6 +11,7 @@ export type { CatalogRoute, RouteRole } from './route-catalog/types';
 export const NOT_FOUND_PATH = '/rota-inexistente';
 
 export const ROUTE_CATALOG: readonly CatalogRoute[] = [
+	...SITE_ROUTES,
 	...ACCESS_ROUTES,
 	...BIBLIOTECA_ROUTES,
 	...SECRETARIA_ROUTES,

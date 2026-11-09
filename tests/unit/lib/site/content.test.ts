@@ -10,7 +10,7 @@ import { DEPARTMENTS } from '#lib/site/departments.js';
 
 describe('public site content', () => {
 	it('points the library to the public catalogue', () => {
-		const library = DEPARTMENTS.find(({ slug }) => slug === 'biblioteca');
+		const library = DEPARTMENTS.find(({ pagina }) => pagina === 'biblioteca');
 
 		expect(library?.link?.href).toBe('/acervo');
 	});

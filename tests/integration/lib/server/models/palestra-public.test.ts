@@ -73,6 +73,25 @@ describe('PalestraModel.listUpcomingPublic', () => {
 	});
 });
 
+describe('PalestraModel.listMonthPublic', () => {
+	it('lists only the ready talks of the month, in order', async () => {
+		await withTalkFixtures(async ({ insertTalk, insertSpeaker, token }) => {
+			const palestranteId = await insertSpeaker(`Mês Amorim ${token}`);
+			const ready = { titulo: 'A humildade', palestranteId };
+			await insertTalk({ ...ready, data: '2806-02-28', horario: '19:30' });
+			const evening = await insertTalk({ ...ready, data: '2806-03-01', horario: '19:30' });
+			const morning = await insertTalk({ ...ready, data: '2806-03-01', horario: '08:45' });
+			const last = await insertTalk({ ...ready, data: '2806-03-31', horario: '19:30' });
+			await insertTalk({ data: '2806-03-15', horario: '19:30', titulo: 'Sem palestrante' });
+			await insertTalk({ ...ready, data: '2806-04-01', horario: '08:45' });
+
+			const month = await talks.listMonthPublic({ firstDay: '2806-03-01', nextMonthFirstDay: '2806-04-01' });
+
+			expect(month.map(({ id }) => id)).toEqual([morning, evening, last]);
+		});
+	});
+});
+
 describe('PalestraModel.findPublicSpeakerPhoto', () => {
 	const withPhotographedSpeaker = <T>(callback: Parameters<typeof withTalkFixtures<T>>[0]) =>
 		withTalkFixtures(async (fixtures) => {
@@ -82,24 +101,27 @@ describe('PalestraModel.findPublicSpeakerPhoto', () => {
 			return callback({ ...fixtures, insertTalk: (values) => fixtures.insertTalk({ palestranteId, ...values }) });
 		});
 
-	it('returns the square photo of an upcoming ready talk', async () => {
+	it.each([
+		['an upcoming ready talk', { data: '2804-03-20', horario: '19:30', titulo: 'A esperança' }],
+		['a ready talk already held this month', { data: '2804-03-01', horario: '08:45', titulo: 'A esperança' }],
+	])('returns the square photo of %s', async (_scenario, values) => {
 		await withPhotographedSpeaker(async ({ insertTalk }) => {
-			const id = await insertTalk({ data: '2804-03-02', horario: '19:30', titulo: 'A esperança' });
+			const id = await insertTalk(values);
 
-			const photo = await talks.findPublicSpeakerPhoto(id, { today: '2804-03-01', now: '08:00' });
+			const photo = await talks.findPublicSpeakerPhoto(id, '2804-03-01');
 
 			expect(photo?.byteLength).toBeGreaterThan(0);
 		});
 	});
 
 	it.each([
-		['a past talk', { data: '2804-02-28', horario: '19:30', titulo: 'A esperança' }],
+		['a talk of the previous month', { data: '2804-02-28', horario: '19:30', titulo: 'A esperança' }],
 		['an untitled talk', { data: '2804-03-02', horario: '19:30', titulo: null }],
 	])('hides the photo of %s', async (_scenario, values) => {
 		await withPhotographedSpeaker(async ({ insertTalk }) => {
 			const id = await insertTalk(values);
 
-			const photo = await talks.findPublicSpeakerPhoto(id, { today: '2804-03-01', now: '08:00' });
+			const photo = await talks.findPublicSpeakerPhoto(id, '2804-03-01');
 
 			expect(photo).toBeNull();
 		});

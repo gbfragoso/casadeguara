@@ -14,6 +14,7 @@ const TOUCH_WIDTHS = [390, 820];
 const TOUCH_HEIGHT = 844;
 const MIGRATED_ROUTES = [
 	...selectRoutes(['login', 'sistemas', 'meu-cadastro', 'acervo', 'recibo']),
+	...selectRoutes(['a-instituicao', 'diretoria', 'palestras', 'departamento', 'material-de-estudo']),
 	...BIBLIOTECA_ROUTES,
 	...SECRETARIA_ROUTES,
 	...TESOURARIA_ROUTES,

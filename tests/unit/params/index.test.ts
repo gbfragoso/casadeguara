@@ -9,7 +9,11 @@ const matchParam = (matcher: MatcherName, value: string) => params[matcher]['~st
 describe('route param matchers', () => {
 	it.each([
 		['alphanumeric', 'usuario01'],
+		['departamento', 'biblioteca'],
+		['departamento', 'recanto'],
 		['integer', '42'],
+		['material', 'curso-de-passes'],
+		['material', 'evangelho-no-lar'],
 		['uuid', '0f8fad5b-d9cb-469f-a165-70867728950e'],
 	] as const)('accepts a valid %s param unchanged', (matcher, value) => {
 		const result = matchParam(matcher, value);
@@ -19,6 +23,10 @@ describe('route param matchers', () => {
 
 	it.each([
 		['alphanumeric', 'usuario-01'],
+		['departamento', 'jear'],
+		['departamento', 'Biblioteca'],
+		['material', 'passe'],
+		['material', 'evangelho-no-lar/'],
 		['integer', '4a'],
 		['integer', '1.5'],
 		['integer', '-1'],

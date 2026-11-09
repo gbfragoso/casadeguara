@@ -40,7 +40,7 @@ describe('color literals outside the tokens', () => {
 	it('scans markup, styles and component modules but not the token file', () => {
 		const files = listColorScannedFiles('src');
 
-		expect(files).toContain('src/routes/+page.svelte');
+		expect(files).toContain('src/routes/(site)/+page.svelte');
 		expect(files).toContain('src/app.css');
 		expect(files).toContain('src/lib/components/forms/control-classes.ts');
 		expect(files).not.toContain(TOKEN_SOURCE);

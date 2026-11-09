@@ -19,9 +19,9 @@
 			Estudo, convivência e trabalho no bem, de segunda a sábado.
 		</p>
 		<ul class="mt-12 grid gap-5 tablet:grid-cols-2 desktop:grid-cols-4">
-			{#each DEPARTMENTS as department (department.slug)}
+			{#each DEPARTMENTS as department (department.pagina)}
 				<li class="flex flex-col rounded-3xl bg-card p-7 text-ink">
-					<DrawnIcon name={department.slug} tone={department.tom} />
+					<DrawnIcon name={department.icone} tone={department.tom} />
 					<h3 class="mt-5 font-display text-2xl font-bold text-balance text-ink-strong">{department.nome}</h3>
 					<p class="mt-3 grow text-ink-muted">{department.resumo}</p>
 					{#if department.horarios.length > 0 || department.publico}
@@ -36,13 +36,22 @@
 							{/if}
 						</ul>
 					{/if}
-					{#if department.link}
+					<div class="mt-5 flex flex-wrap gap-x-6 gap-y-2">
 						<a
-							href={resolve(department.link.href)}
-							class="mt-5 font-bold text-primary-ink underline underline-offset-4">
-							{department.link.rotulo}
+							href={resolve('/(site)/departamentos/[departamento=departamento]', {
+								departamento: department.pagina,
+							})}
+							class="font-bold text-primary-ink underline underline-offset-4">
+							Saiba mais <span class="sr-only">sobre {department.nome}</span>
 						</a>
-					{/if}
+						{#if department.link}
+							<a
+								href={resolve(department.link.href)}
+								class="font-bold text-primary-ink underline underline-offset-4">
+								{department.link.rotulo}
+							</a>
+						{/if}
+					</div>
 				</li>
 			{/each}
 		</ul>
