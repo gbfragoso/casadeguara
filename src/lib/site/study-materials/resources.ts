@@ -7,7 +7,7 @@ const readPhoto = createPhotoReader(
 	import.meta.glob<string>('../images/material-de-estudo/*.webp', { eager: true, query: '?url', import: 'default' }),
 );
 
-const FEB_BASIC_WORKS_URL = 'https://www.febnet.org.br/blog/geral/divulgacao/downloads-divulgacao/obras-basicas/';
+const FEB_BASIC_WORKS_URL = 'https://febnet.org.br/categorias-download/obras-kardec/';
 
 export const readStudyFileUrl = (name: string) => {
 	const url = FILE_URLS[`./files/${name}.pdf`];
@@ -38,7 +38,7 @@ export const externalLink = (rotulo: string, href: string, origem: string): Stud
 export const youtubeVideo = (rotulo: string, videoId: string) =>
 	externalLink(rotulo, `https://www.youtube.com/watch?v=${videoId}`, 'Vídeo no YouTube');
 
-export const febBasicWorks = (rotulo: string) => externalLink(rotulo, FEB_BASIC_WORKS_URL, 'Portal da FEB');
+export const febBasicWorks = (rotulo: string) => externalLink(rotulo, FEB_BASIC_WORKS_URL, 'Página oficial da FEB');
 
 export const libraryBook = (rotulo: string): StudyResource => ({ kind: 'acervo', rotulo });
 
