@@ -23,7 +23,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Consulta de coleções</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de coleções" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome da coleção" errors={form?.errors?.nome}>

@@ -16,6 +16,7 @@ import {
 	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
+import { usePhoneViewport } from '../../../support/viewport';
 
 const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true, canManageUsers: false };
 const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false, canManageUsers: false };
@@ -28,18 +29,9 @@ const ACTIVE_ITEMS = [
 	{ label: 'Contribuintes', pathname: '/tesouraria/contribuintes/1' },
 ];
 
-const READER_LINKS = [
-	{ label: 'Início', title: 'Página Inicial', ariaLabel: 'home' },
-	{ label: 'Lançamentos', title: 'Lançamentos', ariaLabel: 'lançamentos' },
-	{ label: 'Contribuintes', title: 'Contribuintes', ariaLabel: 'contribuintes' },
-];
+const READER_LINKS = ['Início', 'Lançamentos', 'Contribuintes'];
 
-const ADMIN_LINKS = [
-	...READER_LINKS.slice(0, 2),
-	{ label: 'Estornos', title: 'Estornos', ariaLabel: 'estornos' },
-	{ label: 'Caixa', title: 'Caixa', ariaLabel: 'caixa' },
-	...READER_LINKS.slice(2),
-];
+const ADMIN_LINKS = [...READER_LINKS.slice(0, 2), 'Estornos', 'Caixa', ...READER_LINKS.slice(2)];
 
 describe('tesouraria layout', () => {
 	afterEach(unmountModuleLayouts);
@@ -69,6 +61,7 @@ describe('tesouraria layout', () => {
 	});
 
 	it('expands the sidebar from the menu button', async () => {
+		usePhoneViewport();
 		pageState.url = new URL('http://localhost/tesouraria');
 		const target = await mountModuleLayout(Layout, READER);
 

@@ -75,7 +75,7 @@
 		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<PageHeader {breadcrumb}>Cadastrar leitor</PageHeader>
+<PageHeader {breadcrumb} title="Cadastrar leitor" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	{#each fieldRows as row, index (index)}

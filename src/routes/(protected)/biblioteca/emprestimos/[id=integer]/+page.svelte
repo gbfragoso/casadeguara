@@ -26,7 +26,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb}>Atualizar empréstimo</PageHeader>
+<PageHeader {breadcrumb} title="Atualizar empréstimo" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="leitor" label="Leitor">

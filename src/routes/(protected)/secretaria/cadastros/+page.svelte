@@ -58,7 +58,7 @@
 	}
 </script>
 
-<PageHeader {breadcrumb}>Consulta de cadastros</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de cadastros" />
 
 <Card element="form" method="POST" class="flex flex-col gap-4" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do trabalhador" errors={form?.errors?.nome}>

@@ -31,7 +31,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Confirmar estorno</PageHeader>
+<PageHeader {breadcrumb} title="Confirmar estorno" />
 
 {#if lancamento}
 	<Card class="flex flex-col gap-3">

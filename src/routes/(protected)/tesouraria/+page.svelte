@@ -28,7 +28,7 @@
 	};
 </script>
 
-<PageHeader {breadcrumb}>Balanço de {formatMonthYear(new Date())}</PageHeader>
+<PageHeader {breadcrumb} title={`Balanço de ${formatMonthYear(new Date())}`} />
 
 <div data-testid="indicadores" class="mb-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,11.5rem),1fr))] gap-4">
 	{#await entradaMesAtual}

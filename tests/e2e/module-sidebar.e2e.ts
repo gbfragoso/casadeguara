@@ -45,7 +45,7 @@ test.describe('menu lateral dos módulos', () => {
 		const { sidebar, menuButton } = shellRegions(page);
 		await menuButton.click();
 
-		await sidebar.getByRole('link', { name: 'livros' }).click();
+		await sidebar.getByRole('link', { name: 'Livros' }).click();
 
 		await expect(page).toHaveURL(/\/biblioteca\/livros$/);
 		await expect(sidebar).toBeHidden();
@@ -61,7 +61,7 @@ test.describe('menu lateral dos módulos', () => {
 
 		const { sidebar } = shellRegions(page);
 		expect(await isInsideViewport(sidebar)).toBe(true);
-		await sidebar.getByRole('link', { name: 'keywords' }).click({ trial: true });
+		await sidebar.getByRole('link', { name: 'Palavras-chave' }).click({ trial: true });
 	});
 
 	test('E2E-02 rola o menu sozinho quando os itens não cabem na janela', async ({ page, e2e }) => {
@@ -69,7 +69,7 @@ test.describe('menu lateral dos módulos', () => {
 		await openModulePage(page, e2e);
 		await extendDocumentHeight(page);
 		const { sidebar } = shellRegions(page);
-		const lastItem = sidebar.getByRole('link', { name: 'keywords' });
+		const lastItem = sidebar.getByRole('link', { name: 'Palavras-chave' });
 		expect(await sidebar.evaluate((nav) => nav.scrollHeight > nav.clientHeight)).toBe(true);
 
 		await sidebar.hover();
@@ -85,7 +85,7 @@ test.describe('menu lateral dos módulos', () => {
 
 		const active = shellRegions(page).sidebar.locator('[aria-current="page"]');
 
-		await expect(active).toHaveAccessibleName('livros');
+		await expect(active).toHaveAccessibleName('Livros');
 		await expect(active).toHaveCSS('background-color', GOLD);
 		await expect(active).toHaveCSS('color', DARK_INK);
 	});

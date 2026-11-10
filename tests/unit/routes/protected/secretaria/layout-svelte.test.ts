@@ -16,6 +16,7 @@ import {
 	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
+import { usePhoneViewport } from '../../../support/viewport';
 
 const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true, canManageUsers: false };
 const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false, canManageUsers: false };
@@ -28,13 +29,7 @@ const ACTIVE_ITEMS = [
 	{ label: 'Amigo Fraterno', pathname: '/secretaria/amigofraterno' },
 ];
 
-const READER_LINKS = [
-	{ label: 'Início', title: 'Página Inicial', ariaLabel: 'início' },
-	{ label: 'Frequência', title: 'Frequência', ariaLabel: 'frequência' },
-	{ label: 'Aniversariantes', title: 'Aniversariantes', ariaLabel: 'aniversariantes' },
-	{ label: 'Cadastros', title: 'Cadastros', ariaLabel: 'cadastros' },
-	{ label: 'Amigo Fraterno', title: 'Amigo Fraterno', ariaLabel: 'amigo fraterno' },
-];
+const READER_LINKS = ['Início', 'Frequência', 'Aniversariantes', 'Cadastros', 'Amigo Fraterno'];
 
 describe('secretaria layout', () => {
 	afterEach(unmountModuleLayouts);
@@ -64,6 +59,7 @@ describe('secretaria layout', () => {
 	});
 
 	it('expands the sidebar from the menu button', async () => {
+		usePhoneViewport();
 		pageState.url = new URL('http://localhost/secretaria');
 		const target = await mountModuleLayout(Layout, READER);
 

@@ -1,6 +1,7 @@
 import { createRawSnippet, mount, tick, unmount, type Component, type Snippet } from 'svelte';
 
-export type SidebarLink = { label: string; title: string; ariaLabel: string | null };
+import { restoreDefaultViewport } from './viewport';
+
 export type ModuleLayoutData = { username: string; userid: string; isAdmin: boolean; canManageUsers: boolean };
 type ModuleLayoutProps = { data: ModuleLayoutData; children: Snippet };
 
@@ -22,6 +23,7 @@ export const mountModuleLayout = async (layout: Component<never>, data: ModuleLa
 export const unmountModuleLayouts = () => {
 	MOUNTED_LAYOUTS.splice(0).forEach((mounted) => unmount(mounted));
 	document.body.replaceChildren();
+	restoreDefaultViewport();
 };
 
 const getSidebar = (target: HTMLElement) => {
@@ -32,13 +34,8 @@ const getSidebar = (target: HTMLElement) => {
 
 const getSidebarAnchors = (target: HTMLElement) => [...getSidebar(target).querySelectorAll('a')];
 
-const describeLink = (anchor: HTMLAnchorElement): SidebarLink => ({
-	label: anchor.textContent.trim(),
-	title: anchor.title,
-	ariaLabel: anchor.getAttribute('aria-label'),
-});
-
-export const readSidebarLinks = (target: HTMLElement) => getSidebarAnchors(target).map(describeLink);
+export const readSidebarLinks = (target: HTMLElement) =>
+	getSidebarAnchors(target).map((anchor) => anchor.textContent.trim());
 
 export const readCurrentSidebarLinks = (target: HTMLElement) =>
 	getSidebarAnchors(target)

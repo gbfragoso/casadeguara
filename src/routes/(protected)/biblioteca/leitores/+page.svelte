@@ -25,7 +25,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Consulta de leitores</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de leitores" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do leitor" errors={form?.errors?.nome}>

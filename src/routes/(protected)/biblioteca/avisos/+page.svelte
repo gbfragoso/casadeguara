@@ -27,7 +27,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Avisos</PageHeader>
+<PageHeader {breadcrumb} title="Avisos" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="texto" label="Texto do aviso" errors={errorMessages}>

@@ -10,12 +10,14 @@
 	} from '#lib/brand/institution.js';
 	import { LOGIN_PATH } from '#lib/navigation/system-modules.js';
 	import { SITE_MENU } from '#lib/site/menu.js';
+	import type { SiteIconName } from '#lib/site/site-icons.js';
 
 	import SectionWave from './SectionWave.svelte';
+	import SiteIcon from './SiteIcon.svelte';
 
-	const SOCIAL_LINKS = [
-		{ rotulo: 'Instagram', href: INSTITUTION_INSTAGRAM_URL, icone: 'fa-instagram' },
-		{ rotulo: 'YouTube', href: INSTITUTION_YOUTUBE_URL, icone: 'fa-youtube' },
+	const SOCIAL_LINKS: readonly { rotulo: string; href: string; icone: SiteIconName }[] = [
+		{ rotulo: 'Instagram', href: INSTITUTION_INSTAGRAM_URL, icone: 'instagram' },
+		{ rotulo: 'YouTube', href: INSTITUTION_YOUTUBE_URL, icone: 'youtube' },
 	];
 </script>
 
@@ -39,7 +41,7 @@
 							rel="external"
 							aria-label={social.rotulo}
 							class="inline-flex size-11 items-center justify-center rounded-full text-2xl text-primary-100 hover:bg-primary-800 hover:text-on-primary hover:no-underline">
-							<i class={['fa-brands', social.icone]} aria-hidden="true"></i>
+							<SiteIcon name={social.icone} />
 						</a>
 					</li>
 				{/each}

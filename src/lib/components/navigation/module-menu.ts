@@ -3,8 +3,6 @@ import type { ResolvedPathname } from '$app/types';
 export type ModuleMenuItem = {
 	href: ResolvedPathname;
 	label: string;
-	title: string;
-	ariaLabel: string;
 	icon: string;
 	match: 'exact' | 'prefix';
 	adminOnly?: boolean;

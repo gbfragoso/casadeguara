@@ -31,7 +31,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb}>Caixa</PageHeader>
+<PageHeader {breadcrumb} title="Caixa" />
 
 {#if entradas.length === 0}
 	<Card><p role="status">Nenhuma entrada aguardando depósito.</p></Card>

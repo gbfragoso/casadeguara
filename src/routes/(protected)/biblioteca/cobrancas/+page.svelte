@@ -47,7 +47,7 @@
 	</form>
 {/snippet}
 
-<PageHeader {breadcrumb}>Empréstimos em atraso</PageHeader>
+<PageHeader {breadcrumb} title="Empréstimos em atraso" />
 
 <Card id="printable-content" class="notranslate overflow-hidden" translate="no" padded={false}>
 	<DataTable>

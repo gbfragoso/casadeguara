@@ -11,8 +11,6 @@ const urlAt = (path: string) => new URL(path, ORIGIN);
 const menuItem = (href: ResolvedPathname, adminOnly?: boolean): ModuleMenuItem => ({
 	href,
 	label: href,
-	title: href,
-	ariaLabel: href,
 	icon: 'fa-solid fa-house',
 	match: 'prefix',
 	adminOnly,

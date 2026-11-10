@@ -16,6 +16,7 @@ import {
 	readUserMenuLinks,
 	unmountModuleLayouts,
 } from '../../../support/module-layout';
+import { usePhoneViewport } from '../../../support/viewport';
 
 const ADMIN = { username: 'Ana Admin', userid: 'admin-1', isAdmin: true, canManageUsers: false };
 const READER = { username: 'Rui Leitor', userid: 'reader-1', isAdmin: false, canManageUsers: false };
@@ -34,22 +35,18 @@ const ACTIVE_ITEMS = [
 ];
 
 const READER_LINKS = [
-	{ label: 'Início', title: 'Página inicial', ariaLabel: 'home' },
-	{ label: 'Autores', title: 'Autores', ariaLabel: 'autores' },
-	{ label: 'Avisos', title: 'Avisos', ariaLabel: 'avisos' },
-	{ label: 'Coleções', title: 'Coleções', ariaLabel: 'coleções' },
-	{ label: 'Editoras', title: 'Editoras', ariaLabel: 'editoras' },
-	{ label: 'Empréstimos', title: 'Empréstimos', ariaLabel: 'empréstimos' },
-	{ label: 'Leitores', title: 'Leitores', ariaLabel: 'leitores' },
-	{ label: 'Livros', title: 'Livros', ariaLabel: 'livros' },
-	{ label: 'Palavras-chave', title: 'Palavras-chave', ariaLabel: 'keywords' },
+	'Início',
+	'Autores',
+	'Avisos',
+	'Coleções',
+	'Editoras',
+	'Empréstimos',
+	'Leitores',
+	'Livros',
+	'Palavras-chave',
 ];
 
-const ADMIN_LINKS = [
-	...READER_LINKS.slice(0, 3),
-	{ label: 'Cobranças', title: 'Cobranças', ariaLabel: 'cobranças' },
-	...READER_LINKS.slice(3),
-];
+const ADMIN_LINKS = [...READER_LINKS.slice(0, 3), 'Cobranças', ...READER_LINKS.slice(3)];
 
 describe('biblioteca layout', () => {
 	afterEach(unmountModuleLayouts);
@@ -79,6 +76,7 @@ describe('biblioteca layout', () => {
 	});
 
 	it('expands the sidebar from the menu button', async () => {
+		usePhoneViewport();
 		pageState.url = new URL('http://localhost/biblioteca');
 		const target = await mountModuleLayout(Layout, READER);
 

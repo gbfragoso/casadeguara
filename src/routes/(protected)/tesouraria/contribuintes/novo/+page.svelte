@@ -26,7 +26,7 @@
 		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<PageHeader {breadcrumb}>Cadastrar novo contribuinte</PageHeader>
+<PageHeader {breadcrumb} title="Cadastrar novo contribuinte" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome">

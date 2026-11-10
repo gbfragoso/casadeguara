@@ -21,7 +21,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Importar do cadastro</PageHeader>
+<PageHeader {breadcrumb} title="Importar do cadastro" />
 
 <Card element="form" action="/comunicacao/palestrantes/importar" method="GET">
 	<Field id="nome" label="Nome no cadastro da Secretaria">

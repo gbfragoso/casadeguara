@@ -38,7 +38,7 @@
 	let photoForm = $derived(form && 'operation' in form ? form : null);
 </script>
 
-<PageHeader {breadcrumb}>{palestrante.nome}</PageHeader>
+<PageHeader {breadcrumb} title={palestrante.nome} />
 
 <Card
 	element="form"

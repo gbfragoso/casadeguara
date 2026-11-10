@@ -13,24 +13,18 @@ const ITEMS: readonly ModuleMenuItem[] = [
 	{
 		href: '/tesouraria',
 		label: 'Início',
-		title: 'Página Inicial',
-		ariaLabel: 'home',
 		icon: 'fa-solid fa-house',
 		match: 'exact',
 	},
 	{
 		href: '/tesouraria/lancamentos',
 		label: 'Lançamentos',
-		title: 'Lançamentos',
-		ariaLabel: 'lançamentos',
 		icon: 'fa-solid fa-wallet',
 		match: 'prefix',
 	},
 	{
 		href: '/tesouraria/caixa',
 		label: 'Caixa',
-		title: 'Caixa',
-		ariaLabel: 'caixa',
 		icon: 'fa-solid fa-cash-register',
 		match: 'prefix',
 		adminOnly: true,
@@ -67,16 +61,39 @@ describe('ModuleSidebar', () => {
 		expect(current.map((link) => link.label)).toEqual(['Lançamentos']);
 	});
 
-	it('shows the administrative items with their current labels to administrators', async () => {
+	it('shows the administrative items to administrators', async () => {
 		const target = await renderSidebar('/tesouraria', true);
 
-		const links = readLinks(target);
+		const labels = readLinks(target).map((link) => link.label);
 
-		expect(links.map(({ label, title, ariaLabel }) => ({ label, title, ariaLabel }))).toEqual([
-			{ label: 'Início', title: 'Página Inicial', ariaLabel: 'home' },
-			{ label: 'Lançamentos', title: 'Lançamentos', ariaLabel: 'lançamentos' },
-			{ label: 'Caixa', title: 'Caixa', ariaLabel: 'caixa' },
-		]);
+		expect(labels).toEqual(['Início', 'Lançamentos', 'Caixa']);
+	});
+
+	it('names each link by its visible label alone', async () => {
+		const target = await renderSidebar('/tesouraria', true);
+
+		const overrides = readLinks(target).map(({ title, ariaLabel }) => ({ title, ariaLabel }));
+
+		expect(overrides).toEqual(Array.from({ length: 3 }, () => ({ title: '', ariaLabel: null })));
+	});
+
+	it('moves focus to the first link when the drawer is expanded', async () => {
+		pageState.url = new URL('http://localhost/tesouraria');
+
+		await renderComponent(ModuleSidebar, {
+			items: ITEMS,
+			moduleName: 'Tesouraria',
+			isAdmin: false,
+			expanded: true,
+		});
+
+		expect(document.activeElement?.textContent?.trim()).toBe('Início');
+	});
+
+	it('leaves focus in place while the drawer is collapsed', async () => {
+		await renderSidebar('/tesouraria', false);
+
+		expect(document.activeElement).toBe(document.body);
 	});
 
 	it('hides the administrative items from regular users', async () => {

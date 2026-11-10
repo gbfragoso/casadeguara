@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 
 import PageHeader from '#lib/components/navigation/PageHeader.svelte';
-import { getElement, htmlSnippet, renderComponent } from '../support/render-component.js';
+import { getElement, renderComponent } from '../support/render-component.js';
 
 const BREADCRUMB = [
 	{ label: 'Biblioteca', href: '/biblioteca' },
@@ -13,7 +13,7 @@ describe('PageHeader', () => {
 	it('renders the breadcrumb with the current page and the title heading', async () => {
 		const target = await renderComponent(PageHeader, {
 			breadcrumb: BREADCRUMB,
-			children: htmlSnippet('<span>Balanço de outubro de 2026</span>'),
+			title: 'Balanço de outubro de 2026',
 		});
 
 		const current = getElement(
@@ -27,11 +27,14 @@ describe('PageHeader', () => {
 		expect(heading.textContent.trim()).toBe('Balanço de outubro de 2026');
 	});
 
+	it('names the tab after the page title outside a module', async () => {
+		await renderComponent(PageHeader, { breadcrumb: BREADCRUMB, title: 'Consulta de livros' });
+
+		expect(document.title).toBe('Consulta de livros · Casa de Guará');
+	});
+
 	it('keeps the header printable by default', async () => {
-		const target = await renderComponent(PageHeader, {
-			breadcrumb: BREADCRUMB,
-			children: htmlSnippet('<span>Livros</span>'),
-		});
+		const target = await renderComponent(PageHeader, { breadcrumb: BREADCRUMB, title: 'Livros' });
 
 		expect(getElement(target, 'header', HTMLElement).dataset.print).toBeUndefined();
 	});
@@ -40,7 +43,7 @@ describe('PageHeader', () => {
 		const target = await renderComponent(PageHeader, {
 			breadcrumb: BREADCRUMB,
 			printTitle: false,
-			children: htmlSnippet('<span>Recibo</span>'),
+			title: 'Recibo',
 		});
 
 		expect(getElement(target, 'header', HTMLElement).dataset.print).toBe('hidden');

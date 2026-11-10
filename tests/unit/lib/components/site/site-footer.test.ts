@@ -32,6 +32,16 @@ describe('SiteFooter', () => {
 		expect(texts).toEqual(['', '']);
 	});
 
+	it('draws each social network with its own brand mark', async () => {
+		const target = await renderComponent(SiteFooter, {});
+
+		const marks = [...target.querySelectorAll('ul[aria-label="Redes sociais"] a svg')].map((icon) =>
+			icon.getAttribute('data-icon'),
+		);
+
+		expect(marks).toEqual(['instagram', 'youtube']);
+	});
+
 	it('keeps the e-mail contact', async () => {
 		const target = await renderComponent(SiteFooter, {});
 

@@ -46,7 +46,7 @@
 	};
 </script>
 
-<PageHeader {breadcrumb}>Novo lançamento</PageHeader>
+<PageHeader {breadcrumb} title="Novo lançamento" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="tipo" label="Tipo">

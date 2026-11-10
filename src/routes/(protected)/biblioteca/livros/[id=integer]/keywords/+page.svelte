@@ -33,7 +33,7 @@
 	]);
 </script>
 
-<PageHeader {breadcrumb}>Consulta de palavras-chave</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de palavras-chave" />
 
 <Card
 	element="form"

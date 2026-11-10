@@ -18,10 +18,7 @@ import {
 const COORDINATOR = { username: 'Ana Coordenadora', userid: 'admin-1', isAdmin: true, canManageUsers: false };
 const VOLUNTEER = { username: 'Rui Voluntário', userid: 'volunteer-1', isAdmin: false, canManageUsers: false };
 
-const VOLUNTEER_LINKS = [
-	{ label: 'Palestras', title: 'Palestras', ariaLabel: 'palestras' },
-	{ label: 'Palestrantes', title: 'Palestrantes', ariaLabel: 'palestrantes' },
-];
+const VOLUNTEER_LINKS = ['Palestras', 'Palestrantes'];
 
 describe('TU-05 comunicacao layout', () => {
 	afterEach(unmountModuleLayouts);

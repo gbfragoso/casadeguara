@@ -25,7 +25,7 @@
 
 <main>
 	<Section class="mx-auto max-w-2xl">
-		<PageHeader {breadcrumb}>Meu cadastro</PageHeader>
+		<PageHeader {breadcrumb} title="Meu cadastro" />
 
 		<Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 			<Field id="name" label="Nome">

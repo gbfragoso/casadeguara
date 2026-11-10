@@ -21,7 +21,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb}>Balanço de {formatMonthYear(new Date())}</PageHeader>
+<PageHeader {breadcrumb} title={`Balanço de ${formatMonthYear(new Date())}`} />
 
 <div data-testid="indicadores" class="grid gap-4 tablet:grid-cols-3">
 	<Indicator label="Empréstimos" highlight>
