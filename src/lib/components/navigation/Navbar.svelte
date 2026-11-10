@@ -76,7 +76,7 @@
 		bind:this={sidebarToggle}
 		class={[ICON_BUTTON, 'rounded-md desktop:hidden']}
 		onclick={onToggleSidebar}>
-		<i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+		<i class={['fa-solid fa-fw', sidebarExpanded ? 'fa-xmark' : 'fa-bars']} aria-hidden="true"></i>
 	</button>
 	<div class="flex min-w-0 flex-1 items-center">
 		{@render search?.()}

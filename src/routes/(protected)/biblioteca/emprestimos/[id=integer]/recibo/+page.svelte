@@ -32,7 +32,7 @@
 	});
 </script>
 
-<PageHeader {breadcrumb} printTitle={false}>Recibo</PageHeader>
+<PageHeader {breadcrumb} printTitle={false} title="Recibo" />
 
 <LoanReceipt {recibo} />
 

@@ -82,7 +82,7 @@
 		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<PageHeader {breadcrumb}>Atualizar dados do leitor</PageHeader>
+<PageHeader {breadcrumb} title="Atualizar dados do leitor" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Columns class="flex-wrap">

@@ -2,6 +2,8 @@
 	import { resolve } from '$app/paths';
 	import { holdsCurrentPage, isCurrentPage, type SiteMenuGroup } from '#lib/site/menu.js';
 
+	import SiteIcon from './SiteIcon.svelte';
+
 	type Props = {
 		group: SiteMenuGroup;
 		currentPath: string;
@@ -56,12 +58,9 @@
 			{group.rotulo}
 			{#if holdsCurrent}<span class="sr-only">(seção atual)</span>{/if}
 		</span>
-		<i
-			class={[
-				'fa-solid fa-chevron-down text-sm transition-transform duration-200 motion-reduce:transition-none',
-				open && 'rotate-180',
-			]}
-			aria-hidden="true"></i>
+		<SiteIcon
+			name="chevronDown"
+			class={['text-sm transition-transform duration-200 motion-reduce:transition-none', open && 'rotate-180']} />
 	</button>
 	<ul
 		id={submenuId}

@@ -20,7 +20,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Palestrantes</PageHeader>
+<PageHeader {breadcrumb} title="Palestrantes" />
 
 <Card element="form" action="/comunicacao/palestrantes" method="GET">
 	<Field id="nome" label="Nome do palestrante">

@@ -47,7 +47,7 @@
 	const releaseOnUnmount = () => () => attendancePdf.release();
 </script>
 
-<PageHeader {breadcrumb} printTitle={false}>Lista de frequência</PageHeader>
+<PageHeader {breadcrumb} printTitle={false} title="Lista de frequência" />
 
 <Card
 	element="form"

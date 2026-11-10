@@ -41,6 +41,15 @@ describe('SiteHeader', () => {
 		expect(menuButton.getAttribute('aria-label')).toBe('Menu');
 	});
 
+	it('turns the menu button glyph into a close mark while the menu is open', async () => {
+		const { menuButton } = await renderHeader();
+		const closedIcon = menuButton.querySelector('svg')?.getAttribute('data-icon');
+
+		await click(menuButton);
+
+		expect([closedIcon, menuButton.querySelector('svg')?.getAttribute('data-icon')]).toEqual(['menu', 'close']);
+	});
+
 	it('opens the phone menu from the menu button', async () => {
 		const { menuButton } = await renderHeader();
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import '@fortawesome/fontawesome-free/css/all.min.css';
+	import { formatDocumentTitle } from '#lib/brand/document-title.js';
 	import Button from '#lib/components/actions/Button.svelte';
 	import ErrorMessage from '#lib/components/forms/ErrorMessage.svelte';
 	import Field from '#lib/components/forms/Field.svelte';
@@ -19,6 +21,10 @@
 		),
 	);
 </script>
+
+<svelte:head>
+	<title>{formatDocumentTitle('Entrar')}</title>
+</svelte:head>
 
 <AccessCard>
 	<div class="mb-6 flex justify-center">

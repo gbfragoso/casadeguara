@@ -48,7 +48,7 @@
 	}
 </script>
 
-<PageHeader {breadcrumb}>Auditoria de estornos</PageHeader>
+<PageHeader {breadcrumb} title="Auditoria de estornos" />
 
 <Card
 	element="form"

@@ -53,7 +53,7 @@
 	const fieldErrors = (field: string) => errors[field] ?? [];
 </script>
 
-<PageHeader {breadcrumb}>Lançamentos</PageHeader>
+<PageHeader {breadcrumb} title="Lançamentos" />
 
 <Card
 	element="form"

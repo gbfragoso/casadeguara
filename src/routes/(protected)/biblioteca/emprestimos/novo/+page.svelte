@@ -28,7 +28,7 @@
 	const failedField = (field: string) => form?.field === field;
 </script>
 
-<PageHeader {breadcrumb}>Novo empréstimo</PageHeader>
+<PageHeader {breadcrumb} title="Novo empréstimo" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Columns>

@@ -26,7 +26,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Atualizar livro</PageHeader>
+<PageHeader {breadcrumb} title="Atualizar livro" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="tombo" label="Tombo">

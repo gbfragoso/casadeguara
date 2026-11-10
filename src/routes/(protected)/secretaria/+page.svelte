@@ -16,7 +16,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Secretaria</PageHeader>
+<PageHeader {breadcrumb} title="Secretaria" />
 
 <div data-testid="indicadores" class="grid gap-4 tablet:grid-cols-2">
 	{#await leitores}

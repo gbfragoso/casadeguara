@@ -13,16 +13,12 @@
 		{
 			href: resolve('comunicacao/palestras'),
 			label: 'Palestras',
-			title: 'Palestras',
-			ariaLabel: 'palestras',
 			icon: 'fa-solid fa-microphone',
 			match: 'prefix',
 		},
 		{
 			href: resolve('comunicacao/palestrantes'),
 			label: 'Palestrantes',
-			title: 'Palestrantes',
-			ariaLabel: 'palestrantes',
 			icon: 'fa-solid fa-user-tie',
 			match: 'prefix',
 		},

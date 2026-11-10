@@ -39,7 +39,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb}>Consulta de exemplares</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de exemplares" />
 
 <Card
 	element="form"

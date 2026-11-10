@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { formatDocumentTitle } from '#lib/brand/document-title.js';
 	import Button from '#lib/components/actions/Button.svelte';
 	import AccessCard from '#lib/components/layout/AccessCard.svelte';
 	import { listAccessibleModules } from '#lib/navigation/system-modules.js';
@@ -10,6 +11,10 @@
 	let { data }: Props = $props();
 	let availableModules = $derived(listAccessibleModules(data.roles));
 </script>
+
+<svelte:head>
+	<title>{formatDocumentTitle('Selecione o módulo')}</title>
+</svelte:head>
 
 <AccessCard>
 	<h1 class="mb-6 text-center text-2xl font-medium text-balance text-ink-strong">Selecione o módulo</h1>

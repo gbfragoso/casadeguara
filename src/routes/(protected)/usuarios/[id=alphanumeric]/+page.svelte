@@ -20,7 +20,7 @@
 
 <main>
 	<Section class="mx-auto max-w-2xl">
-		<PageHeader {breadcrumb}>Editar usuário</PageHeader>
+		<PageHeader {breadcrumb} title="Editar usuário" />
 
 		<UserAccountForm {form} user={usuario} />
 	</Section>

@@ -25,7 +25,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Atualizar aviso</PageHeader>
+<PageHeader {breadcrumb} title="Atualizar aviso" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="texto" label="Texto do aviso" errors={errorMessages}>

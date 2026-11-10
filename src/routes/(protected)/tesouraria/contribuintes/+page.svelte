@@ -25,7 +25,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Contribuintes</PageHeader>
+<PageHeader {breadcrumb} title="Contribuintes" />
 
 <Card element="form" method="POST" class="flex flex-col gap-4" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do contribuinte" errors={form?.errors?.nome}>

@@ -85,7 +85,7 @@
 		form?.errors?.[field]?.length ? { 'aria-describedby': `${field}-errors`, 'aria-invalid': 'true' as const } : {};
 </script>
 
-<PageHeader {breadcrumb}>Atualizar dados do trabalhador</PageHeader>
+<PageHeader {breadcrumb} title="Atualizar dados do trabalhador" />
 
 <Card
 	element="form"

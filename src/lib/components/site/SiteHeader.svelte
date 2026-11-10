@@ -5,6 +5,7 @@
 	import { SITE_MENU, isCurrentPage } from '#lib/site/menu.js';
 
 	import SiteNavGroup from './SiteNavGroup.svelte';
+	import SiteIcon from './SiteIcon.svelte';
 
 	type Props = { currentPath: string };
 
@@ -43,7 +44,7 @@
 			aria-expanded={menuOpen}
 			aria-controls="menu-do-site"
 			onclick={() => (menuOpen = !menuOpen)}>
-			<i class={['fa-solid', menuOpen ? 'fa-xmark' : 'fa-bars']} aria-hidden="true"></i>
+			<SiteIcon name={menuOpen ? 'close' : 'menu'} />
 		</button>
 		<nav
 			id="menu-do-site"

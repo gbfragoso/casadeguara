@@ -1,6 +1,7 @@
 import { test, expect } from './fixtures';
 
 import { assertBlockedSecretariaAccess } from './amigo-fraterno-access-support';
+import { shellRegions } from './support/module-shell';
 
 test('E2E-01 blocks Amigo Fraterno access for invalid sessions and roles', async ({ browser, page, e2e }) => {
 	const participant = await e2e.createParticipant('acesso', true);
@@ -30,7 +31,7 @@ test('E2E-02 keeps the Amigo Fraterno list keyboard-operable on mobile', async (
 	await e2e.setAmigoFraterno(participant.id, true);
 	await e2e.authenticate(page);
 	await page.goto('/secretaria');
-	await page.locator('a[aria-label="amigo fraterno"]').focus();
+	await shellRegions(page).sidebar.getByRole('link', { name: 'Amigo Fraterno' }).focus();
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL(/\/secretaria\/amigofraterno$/);
 	await expect(page.locator('[aria-live="polite"]')).toContainText('Sem foto:');

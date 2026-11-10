@@ -21,7 +21,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Amigo Fraterno</PageHeader>
+<PageHeader {breadcrumb} title="Amigo Fraterno" />
 
 <Card class="flex flex-col gap-5">
 	<p>

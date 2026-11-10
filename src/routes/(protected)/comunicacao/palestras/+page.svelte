@@ -38,7 +38,7 @@
 	};
 </script>
 
-<PageHeader {breadcrumb}>Palestras</PageHeader>
+<PageHeader {breadcrumb} title="Palestras" />
 
 <div class="flex max-w-3xl flex-col gap-4">
 	<div class="flex flex-col gap-3 tablet:flex-row tablet:items-center tablet:justify-between">

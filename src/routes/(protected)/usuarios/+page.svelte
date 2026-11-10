@@ -19,7 +19,7 @@
 
 <main>
 	<Section class="mx-auto max-w-2xl">
-		<PageHeader {breadcrumb}>Usuários</PageHeader>
+		<PageHeader {breadcrumb} title="Usuários" />
 
 		<div class="mb-6">
 			<Button href={resolve('usuarios/novo')} tone="primary" bold>

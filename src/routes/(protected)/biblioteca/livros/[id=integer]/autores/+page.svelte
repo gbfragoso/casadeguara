@@ -28,7 +28,7 @@
 	]);
 </script>
 
-<PageHeader {breadcrumb}>Consulta de autores</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de autores" />
 
 <Card
 	element="form"

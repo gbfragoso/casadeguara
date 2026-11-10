@@ -20,7 +20,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Novo palestrante</PageHeader>
+<PageHeader {breadcrumb} title="Novo palestrante" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome" errors={form?.errors?.nome}>

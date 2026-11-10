@@ -29,7 +29,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Consulta de livros</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de livros" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<div class="grid gap-4 tablet:grid-cols-6">

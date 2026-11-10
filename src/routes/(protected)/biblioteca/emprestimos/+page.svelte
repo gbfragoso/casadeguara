@@ -94,7 +94,7 @@
 	dayjs.extend(utc);
 </script>
 
-<PageHeader {breadcrumb}>Consulta de empréstimos</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de empréstimos" />
 
 <Card element="form" method="POST" class="flex flex-col gap-5" {@attach formEnhancer.submitWithLoading}>
 	<Field id="leitor" label="Leitor">

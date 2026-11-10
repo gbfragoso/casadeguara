@@ -12,6 +12,10 @@
 
 	let { items, moduleName, isAdmin, expanded, onClose }: Props = $props();
 	let visibleItems = $derived(visibleMenuItems(items, isAdmin));
+
+	function focusFirstLinkWhenExpanded(nav: HTMLElement) {
+		if (expanded) nav.querySelector('a')?.focus();
+	}
 </script>
 
 {#if expanded}
@@ -27,6 +31,7 @@
 		id="sidebar"
 		aria-label="Menu do módulo"
 		data-testid="regiao-menu-lateral"
+		{@attach focusFirstLinkWhenExpanded}
 		class={[
 			'w-sidebar max-w-[85vw] [scrollbar-color:var(--color-sidebar-hover)_transparent] flex-col overflow-y-auto overscroll-contain bg-sidebar [--color-focus:var(--color-sidebar-focus)] desktop:sticky desktop:top-0 desktop:z-auto desktop:flex desktop:h-dvh desktop:max-w-none desktop:shadow-none print:hidden',
 			expanded ? 'fixed top-topbar bottom-0 left-0 z-30 flex shadow-raised' : 'hidden',
@@ -45,8 +50,6 @@
 				<li>
 					<a
 						href={item.href}
-						aria-label={item.ariaLabel}
-						title={item.title}
 						aria-current={isMenuItemActive(page.url, item) ? 'page' : undefined}
 						class="group flex min-h-11 items-center gap-3 rounded-md px-3 font-medium text-sidebar-ink transition-colors hover:bg-sidebar-hover hover:text-sidebar-hover-ink hover:no-underline aria-[current=page]:bg-sidebar-active aria-[current=page]:font-bold aria-[current=page]:text-sidebar-active-ink motion-reduce:transition-none">
 						<i

@@ -50,7 +50,7 @@
 	const releaseOnUnmount = () => () => birthdayPdf.release();
 </script>
 
-<PageHeader {breadcrumb} printTitle={false}>Lista de aniversariantes</PageHeader>
+<PageHeader {breadcrumb} printTitle={false} title="Lista de aniversariantes" />
 
 <Card element="form" method="POST" class="flex flex-col gap-3 tablet:flex-row" {@attach formEnhancer.submitWithLoading}>
 	<Select name="mes" aria-label="Mês" class="grow" bind:value={chosenMonth} onchange={() => birthdayPdf.reset()}>

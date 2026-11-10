@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import type { Snippet } from 'svelte';
 	import PublicHeader from '#lib/components/layout/PublicHeader.svelte';
 	import Section from '#lib/components/layout/Section.svelte';

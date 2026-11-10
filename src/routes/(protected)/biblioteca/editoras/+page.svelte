@@ -23,7 +23,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Consulta de editoras</PageHeader>
+<PageHeader {breadcrumb} title="Consulta de editoras" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome da editora" errors={form?.errors?.nome}>

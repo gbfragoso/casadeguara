@@ -18,7 +18,7 @@
 
 <main>
 	<Section class="mx-auto max-w-2xl">
-		<PageHeader {breadcrumb}>Novo usuário</PageHeader>
+		<PageHeader {breadcrumb} title="Novo usuário" />
 
 		<UserAccountForm {form} />
 	</Section>

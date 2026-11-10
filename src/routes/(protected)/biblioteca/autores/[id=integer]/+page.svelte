@@ -23,7 +23,7 @@
 	];
 </script>
 
-<PageHeader {breadcrumb}>Atualizar autor</PageHeader>
+<PageHeader {breadcrumb} title="Atualizar autor" />
 
 <Card element="form" method="POST" {@attach formEnhancer.submitWithLoading}>
 	<Field id="nome" label="Nome do autor" errors={form?.errors?.nome}>

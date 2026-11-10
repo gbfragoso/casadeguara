@@ -1,5 +1,7 @@
 <script lang="ts">
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import { page } from '$app/state';
+	import { formatDocumentTitle } from '#lib/brand/document-title.js';
 	import Button from '#lib/components/actions/Button.svelte';
 	import InlineNotification from '#lib/components/feedback/InlineNotification.svelte';
 	import PublicHeader from '#lib/components/layout/PublicHeader.svelte';
@@ -32,6 +34,10 @@
 		<span class="rounded-sm border border-black px-3 py-1">{content}</span>
 	</p>
 {/snippet}
+
+<svelte:head>
+	<title>{formatDocumentTitle('Recibo de contribuição')}</title>
+</svelte:head>
 
 <PublicHeader />
 <main class="px-4 py-6 tablet:py-10 print:p-0">
