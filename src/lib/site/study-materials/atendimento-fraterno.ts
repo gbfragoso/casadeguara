@@ -1,4 +1,4 @@
-import { externalLink, studyCover, studySection, youtubeVideo } from './resources.js';
+import { studyCover, studySection, youtubeVideo } from './resources.js';
 import type { StudyMaterialContent } from './types.js';
 
 const QUALIFICATION_VIDEOS = [
@@ -39,7 +39,6 @@ export const FRATERNAL_CARE_MATERIAL: StudyMaterialContent = {
 				'“Como acolher os que buscam no Espiritismo o lenitivo para suas dores, respostas para suas dúvidas?',
 				'O atendimento fraterno é a porta de entrada ao Centro Espírita. Realizá-lo de forma adequada requer estudo, reflexão, planejamento. Ética e técnica precisam estar em sintonia para que o consolo e esclarecimento cheguem aos corações aflitos e produzam resultados positivos. Marlon Reikdal compartilha sua experiência nesta área, sempre pautada nas diretrizes da Doutrina Espírita, especialmente na obra de Allan Kardec, Manoel Philomeno de Miranda e Joanna de Ângelis, sob o farol seguro dos ensinamentos do Mestre Jesus. Excelente roteiro para aqueles que se dedicam à tarefa de acolher e ouvir.”',
 			],
-			recursos: [externalLink('Blog de Marlon Reikdal', 'https://marlonreikdal.blogspot.com/', 'Fonte do texto')],
 		}),
 		studySection({
 			titulo: 'Curso de qualificação para Atendimento Fraterno nas Casas Espíritas',

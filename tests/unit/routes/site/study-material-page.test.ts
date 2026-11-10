@@ -60,9 +60,7 @@ describe('study material page', () => {
 		const gospel = findLink(document, 'O Evangelho Segundo o Espiritismo');
 
 		expect(gospel?.getAttribute('rel')).toBe('external');
-		expect(gospel?.getAttribute('href')).toBe(
-			'https://www.febnet.org.br/blog/geral/divulgacao/downloads-divulgacao/obras-basicas/',
-		);
+		expect(gospel?.getAttribute('href')).toBe('https://febnet.org.br/categorias-download/obras-kardec/');
 	});
 
 	it('numbers the qualification course videos', () => {
@@ -81,6 +79,30 @@ describe('study material page', () => {
 		const works = [...document.querySelectorAll('h3')].map((heading) => normalize(heading.textContent));
 
 		expect(works).toEqual(['Obras Póstumas', 'O que é o Espiritismo']);
+	});
+
+	it('points the codification works to a single official FEB page', () => {
+		const document = renderDocument('codificacao');
+
+		const links = [...document.querySelectorAll('a[rel="external"]')].map((link) => ({
+			href: link.getAttribute('href'),
+			text: normalize(link.textContent),
+		}));
+
+		expect(links).toEqual([
+			{
+				href: 'https://febnet.org.br/categorias-download/obras-kardec/',
+				text: 'Obras de Kardec para download Página oficial da FEB',
+			},
+		]);
+	});
+
+	it('no longer links the fraternal care book to the retired author blog', () => {
+		const document = renderDocument('atendimento-fraterno');
+
+		const blogLink = document.querySelector('a[href*="marlonreikdal"]');
+
+		expect(blogLink).toBeNull();
 	});
 
 	it('describes the book cover', () => {
