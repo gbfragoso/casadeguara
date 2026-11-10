@@ -16,7 +16,7 @@ export const LIBRARY_PAGE: DepartmentPageContent = {
 		'Interior da Biblioteca Batuíra, com estantes de livros dos dois lados e uma mesa com computador',
 	),
 	paragrafos: [
-		'Com mais de 3.000 livros e 1.500 títulos em seu acervo, contendo obras de médiuns como Francisco Cândido Xavier e Divaldo Pereira Franco, a biblioteca Batuíra é uma fonte pura e rica de conhecimento moral e espiritual. Conhecimento indispensável para quem busca sua reforma íntima.',
+		'Com mais de 3.000 livros e 1.500 títulos em seu acervo, contendo obras de médiuns como Francisco Cândido Xavier e Divaldo Pereira Franco, a biblioteca Batuíra é uma fonte rica de conhecimento moral e espiritual. Conhecimento indispensável para quem busca sua reforma íntima.',
 		'Para efetuar um empréstimo é muito fácil, basta comparecer à nossa Biblioteca e efetuar um cadastro simples e rápido.',
 		'Venham nos visitar e conhecer nossas novas aquisições.',
 	],
@@ -25,7 +25,7 @@ export const LIBRARY_PAGE: DepartmentPageContent = {
 			titulo: 'Empréstimos',
 			itens: [
 				'Cada empréstimo tem duração de 15 dias, sendo possível uma renovação por igual período.',
-				'Cada frequentador tem direito de tomar como empréstimo, simultaneamente, até dois exemplares.',
+				'Cada frequentador tem direito de tomar como empréstimo 1 (um) exemplar por vez.',
 				'Nossos empréstimos estão disponíveis para os frequentadores de Itabuna e região.',
 			],
 		},

@@ -71,7 +71,7 @@ describe('home page hero', () => {
 
 		expect(links).toEqual([
 			['Como chegar', '#como-chegar'],
-			['Ver as próximas palestras', '#palestras'],
+			['Ver as próximas palestras', '/palestras'],
 		]);
 	});
 
