@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import {
 		formatRelativeTalkDay,
 		readDistinctTalkLocation,
@@ -56,7 +57,7 @@
 		Como chegar
 	</a>
 	<a
-		href="#palestras"
+		href={resolve('/(site)/palestras')}
 		class="inline-flex items-center gap-2 text-lg font-bold text-primary-ink underline-offset-4 hover:underline">
 		Ver as próximas palestras
 		<svg aria-hidden="true" viewBox="0 0 46 22" class="h-5 w-10 fill-none stroke-current" stroke-width="2.4">

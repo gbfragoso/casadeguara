@@ -75,7 +75,7 @@ describe('layoutAttendanceList', () => {
 		const pages = layoutWorkers(createWorkers(REFERENCE_WORKER_COUNT));
 
 		const names = pages.map(listNames);
-		expect(names.map((pageNames) => pageNames.length)).toEqual([41, 43, 43, 43, 11]);
+		expect(names.map((pageNames) => pageNames.length)).toEqual([41, 42, 42, 42, 14]);
 		expect(names.flat().every(({ lines }) => lines.length === 1)).toBe(true);
 	});
 
