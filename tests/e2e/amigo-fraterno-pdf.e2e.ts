@@ -1,3 +1,5 @@
+import type { Page } from '@playwright/test';
+
 import { test, expect, waitForHydration } from './fixtures';
 
 import { getPdfPageCount } from './amigo-fraterno-support';
@@ -22,17 +24,11 @@ const createEligibleParticipants = async (e2e: import('./fixtures').E2EData, cou
 	);
 };
 
-test('E2E-13 downloads a paginated PDF with varied and missing photos', async ({ page, e2e }) => {
-	await createEligibleParticipants(e2e, 7);
-	await e2e.authenticate(page);
-	await page.goto('/secretaria/amigofraterno');
-	await waitForHydration(page);
+const downloadPdfPageCount = async (page: Page, pathname: string, buttonName: string) => {
 	await page.getByLabel('Data do próximo sorteio').fill('2026-11-22');
-	const responsePromise = page.waitForResponse(
-		(response) => new URL(response.url()).pathname === '/secretaria/amigofraterno/pdf',
-	);
+	const responsePromise = page.waitForResponse((response) => new URL(response.url()).pathname === pathname);
 	const downloadPromise = page.waitForEvent('download');
-	await page.getByRole('button', { name: 'Baixar cartões em PDF' }).click();
+	await page.getByRole('button', { name: buttonName }).click();
 	const response = await responsePromise;
 	expect(response.ok()).toBe(true);
 	const download = await downloadPromise;
@@ -40,7 +36,33 @@ test('E2E-13 downloads a paginated PDF with varied and missing photos', async ({
 	if (!stream) throw new Error('Download do PDF não foi iniciado.');
 	const chunks: Buffer[] = [];
 	for await (const chunk of stream) chunks.push(chunk);
-	expect(await getPdfPageCount(Buffer.concat(chunks))).toBe(2);
+	return getPdfPageCount(Buffer.concat(chunks));
+};
+
+test('E2E-13 downloads a paginated PDF with varied and missing photos', async ({ page, e2e }) => {
+	await createEligibleParticipants(e2e, 7);
+	await e2e.authenticate(page);
+	await page.goto('/secretaria/amigofraterno');
+	await waitForHydration(page);
+
+	const pageCount = await downloadPdfPageCount(page, '/secretaria/amigofraterno/pdf', 'Baixar cartões em PDF');
+
+	expect(pageCount).toBe(2);
+});
+
+test('E2E-15 downloads a single blank card page', async ({ page, e2e }) => {
+	await createEligibleParticipants(e2e, 1);
+	await e2e.authenticate(page);
+	await page.goto('/secretaria/amigofraterno');
+	await waitForHydration(page);
+
+	const pageCount = await downloadPdfPageCount(
+		page,
+		'/secretaria/amigofraterno/pdf/em-branco',
+		'Baixar página em branco',
+	);
+
+	expect(pageCount).toBe(1);
 });
 
 test('E2E-14 requires a valid draw date before generating the PDF', async ({ page, e2e }) => {

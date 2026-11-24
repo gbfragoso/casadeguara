@@ -32,7 +32,31 @@ describe('amigo fraterno page', () => {
 		expect(document.body.textContent).toContain('Baixar cartões em PDF');
 	});
 
-	it('renders a textual empty state without the download form', () => {
+	it('submits the draw date to the blank page download', () => {
+		const { body } = render(Page, {
+			props: {
+				data: {
+					username: 'Secretaria',
+					userid: 'secretaria',
+					isAdmin: false,
+					canManageUsers: false,
+					total: 1,
+					withoutPhoto: 0,
+					participants: [{ id: 5, name: 'JOANA', hasPhoto: true }],
+				},
+			},
+		});
+		const document = parseRenderedBody(body);
+
+		const blankButton = [...document.querySelectorAll('form button')].find(
+			(button) => button.textContent?.trim() === 'Baixar página em branco',
+		);
+
+		expect(blankButton?.getAttribute('formaction')).toBe('/secretaria/amigofraterno/pdf/em-branco');
+		expect(blankButton?.closest('form')?.querySelector('input[name="nextDrawDate"]')).not.toBeNull();
+	});
+
+	it('renders a textual empty state offering only the blank page download', () => {
 		const { body } = render(Page, {
 			props: {
 				data: {
@@ -49,7 +73,9 @@ describe('amigo fraterno page', () => {
 		const document = parseRenderedBody(body);
 
 		expect(document.body.textContent).toContain('Não há participantes elegíveis no momento.');
-		expect(document.querySelector('input[name="nextDrawDate"]')).toBeNull();
+		expect(document.querySelector('input[name="nextDrawDate"]')).not.toBeNull();
+		expect(document.body.textContent).toContain('Baixar página em branco');
+		expect(document.body.textContent).not.toContain('Baixar cartões em PDF');
 	});
 
 	it('marks a participant with a registered photo', () => {

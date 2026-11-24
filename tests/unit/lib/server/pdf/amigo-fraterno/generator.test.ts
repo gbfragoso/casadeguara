@@ -13,7 +13,11 @@ vi.mock('$app/server', async () => {
 	return { read: () => new Response(assets[readCount++ % assets.length]) };
 });
 
-import { generateAmigoFraternoPdf, sortPdfParticipants } from '#lib/server/pdf/amigo-fraterno/generator.js';
+import {
+	generateAmigoFraternoPdf,
+	generateBlankAmigoFraternoPdf,
+	sortPdfParticipants,
+} from '#lib/server/pdf/amigo-fraterno/generator.js';
 
 describe('amigo fraterno PDF generator', () => {
 	it('sorts participant names and uses identifier as a stable tiebreaker', () => {
@@ -39,6 +43,14 @@ describe('amigo fraterno PDF generator', () => {
 
 		expect(result.pageCount).toBe(2);
 		expect(document.getPageCount()).toBe(2);
+		expect(document.getPage(0).getSize()).toMatchObject({ width: 595.28, height: 841.89 });
+	});
+
+	it('generates a single A4 page of blank cards', async () => {
+		const bytes = await generateBlankAmigoFraternoPdf('2026-11-22');
+		const document = await PDFDocument.load(bytes);
+
+		expect(document.getPageCount()).toBe(1);
 		expect(document.getPage(0).getSize()).toMatchObject({ width: 595.28, height: 841.89 });
 	});
 });

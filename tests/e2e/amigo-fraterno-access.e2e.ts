@@ -6,7 +6,10 @@ import { shellRegions } from './support/module-shell';
 test('E2E-01 blocks Amigo Fraterno access for invalid sessions and roles', async ({ browser, page, e2e }) => {
 	const participant = await e2e.createParticipant('acesso', true);
 	await e2e.setAmigoFraterno(participant.id, true);
-	await assertBlockedSecretariaAccess(page.request, e2e.database, participant.id, participant.name, 302);
+	await assertBlockedSecretariaAccess(page.request, e2e.database, participant.id, participant.name, {
+		action: 302,
+		pdf: 401,
+	});
 
 	const bibliotecaContext = await browser.newContext();
 	const tesourariaContext = await browser.newContext();
@@ -16,7 +19,10 @@ test('E2E-01 blocks Amigo Fraterno access for invalid sessions and roles', async
 		await e2e.authenticate(biblioteca, 'wrongRole');
 		await e2e.authenticate(tesouraria, 'tesouraria');
 		for (const rolePage of [biblioteca, tesouraria]) {
-			await assertBlockedSecretariaAccess(rolePage.request, e2e.database, participant.id, participant.name, 401);
+			await assertBlockedSecretariaAccess(rolePage.request, e2e.database, participant.id, participant.name, {
+				action: 401,
+				pdf: 403,
+			});
 			await rolePage.goto('/secretaria/amigofraterno');
 			await expect(rolePage.getByText(participant.name, { exact: true })).toBeHidden();
 		}

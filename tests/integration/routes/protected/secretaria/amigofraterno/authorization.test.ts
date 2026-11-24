@@ -5,6 +5,7 @@ import { GET as getPhoto } from '../../../../../../src/routes/(protected)/secret
 import { GET as getOriginalPhoto } from '../../../../../../src/routes/(protected)/secretaria/cadastros/[id=integer]/foto/original/+server';
 import { load as loadAmigoFraterno } from '../../../../../../src/routes/(protected)/secretaria/amigofraterno/+page.server';
 import { GET as getPdf } from '../../../../../../src/routes/(protected)/secretaria/amigofraterno/pdf/+server';
+import { GET as getBlankPdf } from '../../../../../../src/routes/(protected)/secretaria/amigofraterno/pdf/em-branco/+server';
 import { createRawCadastro, createTestName, deleteCadastro } from '../../../../lib/server/models/cadastro/test-support';
 import { secretariaPhotoModel } from '#lib/server/models/secretaria-photo.js';
 import { createRequestEvent, invoke } from '../../../../support/request-event';
@@ -61,6 +62,13 @@ describe('TI-06 protected route exports', () => {
 					url: new URL('http://localhost/pdf?nextDrawDate=2026-11-22'),
 				}),
 			);
+			const blankPdf = await invoke(
+				getBlankPdf,
+				createRequestEvent({
+					locals: { user: null, session: null },
+					url: new URL('http://localhost/pdf/em-branco?nextDrawDate=2026-11-22'),
+				}),
+			);
 
 			expect(allowed.status).toBe(200);
 			expect(rejected.status).toBe(401);
@@ -70,6 +78,7 @@ describe('TI-06 protected route exports', () => {
 			expect(await original.bytes()).toEqual(Uint8Array.of(1));
 			await expect(page).rejects.toMatchObject({ status: 401 });
 			expect(pdf.status).toBe(401);
+			expect(blankPdf.status).toBe(401);
 		} finally {
 			await deleteCadastro(created.idleitor);
 		}

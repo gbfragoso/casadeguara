@@ -36,18 +36,24 @@
 	</Tags>
 	{#if data.total === 0}
 		<p role="status">Não há participantes elegíveis no momento. Revise os Cadastros para atualizar a lista.</p>
-	{:else}
-		<form
-			class="flex flex-col gap-4 tablet:flex-row tablet:items-end"
-			method="GET"
-			action={resolve('secretaria/amigofraterno/pdf')}>
-			<Field id="nextDrawDate" label="Data do próximo sorteio" class="tablet:w-64">
-				{#snippet control()}
-					<TextInput id="nextDrawDate" type="date" name="nextDrawDate" required />
-				{/snippet}
-			</Field>
+	{/if}
+	<form
+		class="flex flex-col gap-4 tablet:flex-row tablet:items-end"
+		method="GET"
+		action={resolve('secretaria/amigofraterno/pdf')}>
+		<Field id="nextDrawDate" label="Data do próximo sorteio" class="tablet:w-64">
+			{#snippet control()}
+				<TextInput id="nextDrawDate" type="date" name="nextDrawDate" required />
+			{/snippet}
+		</Field>
+		{#if data.total > 0}
 			<Button type="submit" tone="primary" bold>Baixar cartões em PDF</Button>
-		</form>
+		{/if}
+		<Button type="submit" formaction={resolve('secretaria/amigofraterno/pdf/em-branco')}>
+			Baixar página em branco
+		</Button>
+	</form>
+	{#if data.total > 0}
 		<DataTable class="-mx-5 tablet:-mx-6">
 			{#snippet head()}
 				<tr><th>Nome</th><th>Foto</th></tr>

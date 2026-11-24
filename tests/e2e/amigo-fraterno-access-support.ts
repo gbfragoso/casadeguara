@@ -70,7 +70,7 @@ export const assertBlockedSecretariaAccess = async (
 	database: TestDatabase,
 	id: number,
 	name: string,
-	status: number,
+	statuses: { action: number; pdf: number },
 ) => {
 	const before = await readCadastro(database, name);
 	if (!before.foto) throw new Error('A fixture de foto não foi persistida.');
@@ -83,8 +83,8 @@ export const assertBlockedSecretariaAccess = async (
 	};
 	const [save, reframe, remove] = await postBlockedActions(request, id, multipart);
 	const pdf = await request.get('/secretaria/amigofraterno/pdf?nextDrawDate=2026-08-27');
-	await Promise.all([save, reframe, remove].map((response) => assertBlockedAction(response, status, name)));
-	expect(pdf.status()).toBe(401);
+	await Promise.all([save, reframe, remove].map((response) => assertBlockedAction(response, statuses.action, name)));
+	expect(pdf.status()).toBe(statuses.pdf);
 	expect(await pdf.text()).not.toContain(name);
 	await assertPhotoUnchanged(database, name, before);
 };

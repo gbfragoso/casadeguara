@@ -1,9 +1,9 @@
 import { PDFDocument } from 'pdf-lib';
 
-import { A4_HEIGHT, A4_WIDTH } from '#lib/image/geometry/card.js';
+import { A4_HEIGHT, A4_WIDTH, createCardSlots } from '#lib/image/geometry/card.js';
 import type { AmigoFraternoPdfParticipant } from './participant-projections';
 import { loadPdfAssets } from './assets';
-import { drawCard } from './card';
+import { drawBlankCard, drawCard } from './card';
 import { formatNextDrawDate } from './date';
 import { numberParticipants, paginateCards } from './pagination';
 
@@ -22,4 +22,13 @@ export const generateAmigoFraternoPdf = async (participants: AmigoFraternoPdfPar
 			await drawCard(page, participant, slot, assets, formatNextDrawDate({ nextDrawDate }));
 	}
 	return { bytes: await document.save(), pageCount: pages.length };
+};
+
+export const generateBlankAmigoFraternoPdf = async (nextDrawDate: string) => {
+	const document = await PDFDocument.create();
+	const assets = await loadPdfAssets(document);
+	const page = document.addPage([A4_WIDTH, A4_HEIGHT]);
+	const formattedDate = formatNextDrawDate({ nextDrawDate });
+	for (const slot of createCardSlots()) await drawBlankCard(page, slot, assets, formattedDate);
+	return document.save();
 };
